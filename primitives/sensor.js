@@ -280,16 +280,16 @@ window.TOONTALK.sensor = (function (TT) {
         return new_sensor;
     };
     
-    TT.creators_from_json["sensor"] = function (json, additional_info) {
-        var previous_contents = TT.UTILITIES.create_array_from_json(json.contents, additional_info);
+    TT.creators_from_json["sensor"] = function (json, additional_info) {   
         var sensor = TT.sensor.create(json.event_name,
                                       json.attribute,
                                       json.description, 
-                                      previous_contents,
+                                      [],         // contents defined below
                                       false,
-                                      undefined, // defined below
+                                      undefined,  // sensor_of defined below
                                       json.name); // will be (re)set below
-                                      // following postponed because of circularity of sensors and their widgets
+        var previous_contents;
+        // following postponed because of circularity of sensors and their widgets
         if (json.sensor_of) {
             // delay this due to the circularity of sensors and their widgets
             TT.UTILITIES.set_timeout(function () {
@@ -300,9 +300,12 @@ window.TOONTALK.sensor = (function (TT) {
         } else {
             sensor.set_active(json.active);
         }
-        if (previous_contents.length > 0) {
+        if (json.contents.length > 0) { 
             setTimeout(function () {
-                // delay to give it a chance to be added to the DOM
+                // delay to deal with possible circularity (e.g. widget added events)
+                previous_contents = TT.UTILITIES.create_array_from_json(json.contents, additional_info);
+                sensor.set_contents(previous_contents);
+                // delay also gives it a chance to be added to the DOM
                 previous_contents.forEach(function (side) {
                     style_contents(side.get_widget(), sensor);
                 });

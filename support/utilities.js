@@ -856,6 +856,7 @@ window.TOONTALK.UTILITIES =
                 // was undefined and still is
                 return;
             }
+//             console.log(json);
             if (!additional_info) {
                 additional_info = {};
             }
@@ -881,35 +882,14 @@ window.TOONTALK.UTILITIES =
             if (additional_info && additional_info.shared_widgets && json.shared_widget_index >= 0) {
                 shared_widget = additional_info.shared_widgets[json.shared_widget_index];
                 if (shared_widget) {
-//                     if (shared_widget.shared_widget_index >= 0) {
-//                         console.log("Warning cyclic JSON not fully supported")
-//                         // this isn't a widget but a promise of one -- so must be a cycle
-//                         if (!additional_info.cyclic_widgets_json) {
-//                             additional_info.cyclic_widgets_json = [];
-//                         }
-//                         if (additional_info.cyclic_widgets_json.indexOf(shared_widget) < 0) {
-//                             additional_info.cyclic_widgets_json.push(shared_widget);
-//                         }
-//                     }
                     return shared_widget;
                 }
                 // otherwise create it from the JSON and store it
                 json_of_shared_widget = additional_info.json_of_shared_widgets[json.shared_widget_index];
-                // following is to deal with reconstructing cyclic references
-                // if this is encountered again recursively will discover the JSON with shared_widget_index
-//                 additional_info.shared_widgets[json.shared_widget_index] = json;
-                // following postpones creation of backside widgets to deal with cycles
                 widget_side = utilities.create_from_json(json_of_shared_widget, additional_info, true);
-//                 if (additional_info.cyclic_widgets_json && typeof json_of_shared_widget.shared_widget_index === 'undefined') {
-//                     if (additional_info.cyclic_widgets_json.indexOf(json) >= 0) {
-//                         // contains cyclic references so make json into the widget_side
-//                         // clobber json to have all the (deep) properties of the widget_side
-//                         $.extend(true, json, widget_side);
-//                         json.shared_widget_index = undefined;
-//                         // all references shared including the top-level one
-//                         widget_side = json;
-//                     }
-//                 }
+                // following is to deal with reconstructing cyclic references
+                // but not needed anymore 
+//              additional_info.shared_widgets[json.shared_widget_index] = widget_side;
                 return handle_delayed_backside_widgets(widget_side, additional_info, json.shared_widget_index);
             }
             json_semantic = json.semantic;
@@ -945,13 +925,6 @@ window.TOONTALK.UTILITIES =
                         utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e); 
                     }
                 }
-               // following was needed when get_json_top_level wasn't working properly
-//             } else if (json_semantic.shared_widget_index >= 0) {
-//                 widget_side = additional_info.shared_widgets[json_semantic.shared_widget_index];
-//                 if (!widget_side) {
-//                     // try again with the JSON of the shared widget
-//                     widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info);
-//                 }
             } else {
                 utilities.report_internal_error("JSON type '" + json_semantic.type + "' not supported. Perhaps a JavaScript file implementing it is missing.");
                 return;
@@ -2275,13 +2248,61 @@ window.TOONTALK.UTILITIES =
         utilities.speak = function (text, when_finished, volume, pitch, rate, voice_number) {
             var speech_utterance = new SpeechSynthesisUtterance(text);
             var voices = window.speechSynthesis.getVoices();
-            var language_code;
+            var maximum_length = 200; // not sure what a good value is
+            var break_into_short_segments = function (text) {
+                var segments = [];
+                var break_text = function (text) {
+                    var segment, index;
+                    if (text.length < maximum_length) {
+                        return text.length+1;
+                    }
+                    segment = text.substring(0, maximum_length);
+                    index = segment.lastIndexOf(". ") || segment.lastIndexOf(".\n");
+                    if (index > 0) {
+                        return index+2;
+                    }
+                    index = segment.lastIndexOf(".");
+                    if (index === segment.length-1) {
+                        // final period need not have space after it
+                        return index+1;
+                    }
+                    index = segment.lastIndexOf(", ");
+                    if (index > 0) {
+                        return index+2;
+                    }
+                    index = segment.lastIndexOf(" ");
+                    if (index > 0) {
+                        return index+1;
+                    }
+                    // give up - no periods, commas, or spaces
+                    return Math.min(text.length+1, maximum_length);
+                };
+                var best_break;
+                while (text.length > 0) {
+                    best_break = break_text(text);
+                    if (best_break > 1) {
+                        segments.push(text.substring(0, best_break-1));
+                    }
+                    text = text.substring(best_break);
+                }
+                return segments;
+            };
+            var language_code, segments;
             if (voices.length === 0) {
                 // not yet loaded -- see https://bugs.chromium.org/p/chromium/issues/detail?id=334847
                 window.speechSynthesis.onvoiceschanged = function () {
                                                              utilities.speak(text, when_finished, volume, pitch, rate, voice_number);
                                                              window.speechSynthesis.onvoiceschanged = undefined;
                                                          };
+                return;
+            }
+            // if the text is too long it needs to be broken into pieces
+            // see http://stackoverflow.com/questions/21947730/chrome-speech-synthesis-with-longer-texts
+            if (text.length > maximum_length) {
+                segments = break_into_short_segments(text);
+                segments.forEach(function (segment, index) {
+                    utilities.speak(segment, index === segments.length-1 ? when_finished : undefined, volume, pitch, rate, voice_number)
+                });
                 return;
             }
             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
@@ -3683,7 +3704,7 @@ window.TOONTALK.UTILITIES =
                     }
                    return;
                 }
-                sub_widget = utilities.find_widget_on_page_side(event.changedTouches[0], undefined, 0, 0);
+                sub_widget = utilities.find_widget_side_on_page(event.changedTouches[0], undefined, 0, 0);
                 if (sub_widget && sub_widget.is_of_type("empty hole")) {
                     sub_widget = sub_widget.get_parent_of_frontside();
                 }
@@ -3792,7 +3813,7 @@ window.TOONTALK.UTILITIES =
                 event.preventDefault();
                 utilities.set_absolute_position(element, {left: touch.pageX-drag_x_offset-TT.USABILITY_DRAG_OFFSET.x,
                                                           top:  touch.pageY-drag_y_offset-TT.USABILITY_DRAG_OFFSET.y});
-                widget_side_under_element = utilities.find_widget_on_page_side(touch, element, TT.USABILITY_DRAG_OFFSET.x, TT.USABILITY_DRAG_OFFSET.y);
+                widget_side_under_element = utilities.find_widget_side_on_page(touch, element, TT.USABILITY_DRAG_OFFSET.x, TT.USABILITY_DRAG_OFFSET.y);
                 if (widget_drag_entered && widget_drag_entered !== widget_side_under_element) {
                     drag_leave_handler(touch, widget_drag_entered.get_frontside_element());
                     widget_drag_entered = undefined;
@@ -3822,11 +3843,11 @@ window.TOONTALK.UTILITIES =
             return event[attribute];
         };
 
-        utilities.find_widget_on_page_side = function (event, element, x_offset, y_offset) {
+        utilities.find_widget_side_on_page = function (event, element, x_offset, y_offset) {
             // return what is under the element
             var page_x = utilities.get_mouse_or_first_touch_event_attribute("pageX", event);
             var page_y = utilities.get_mouse_or_first_touch_event_attribute("pageY", event);
-            var element_on_page, widget_on_page_side;
+            var element_on_page, widget_side_on_page;
             // hide the tool so it is not under itself
             if (element) {
                 $(element).hide();
@@ -3841,22 +3862,22 @@ window.TOONTALK.UTILITIES =
                 element_on_page = element_on_page.parentNode;
             }
             if (element_on_page) {
-                widget_on_page_side = element_on_page.toontalk_widget_side;
+                widget_side_on_page = element_on_page.toontalk_widget_side;
             }
-            if (!widget_on_page_side) {
+            if (!widget_side_on_page) {
                 return;
             }
-            if (widget_on_page_side && widget_on_page_side.get_contents && widget_on_page_side.get_contents()) {
-                widget_on_page_side = widget_on_page_side.get_contents();
+            if (widget_side_on_page && widget_side_on_page.get_contents && widget_side_on_page.get_contents()) {
+                widget_side_on_page = widget_side_on_page.get_contents();
             }
-            if (widget_on_page_side.element_to_highlight && event) {
-                element_on_page = widget_on_page_side.element_to_highlight(event);
-                if (!element_on_page) {
-                    return;
-                }
-                widget_on_page_side = element_on_page.toontalk_widget_side;    
-            }
-            return widget_on_page_side;
+//             if (widget_side_on_page.element_to_highlight && event) {
+//                 element_on_page = widget_side_on_page.element_to_highlight(event);
+//                 if (!element_on_page) {
+//                     return;
+//                 }
+//                 widget_side_on_page = element_on_page.toontalk_widget_side;    
+//             }
+            return widget_side_on_page;
        };
 
        utilities.closest_top_level_backside = function (x, y) {
@@ -4038,6 +4059,7 @@ window.TOONTALK.UTILITIES =
                callback = function () {
                               old_callback();
                               new_callback();
+                              element.toontalk_attached_callback = undefined;
                           };
            } else {
                callback = new_callback;
@@ -4197,7 +4219,306 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //             return $element;
 //         };
 
+        utilities.number_to_words = function (input) {
+            var slash_index = input.indexOf('/');
+            var short_denominator = function (n) {
+                var names = ["", "", "half", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth",
+                             "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth"];
+                if (n <= 20) {
+                    return names[n];
+                }
+                if (n%10 === 0 && n < 100) {
+                    return ["thirtieth", "fortieth", "fiftieth", "sixtieth", "seventieth", "eightieth", "ninetieth"][n/10-3];
+                }
+                if (n === 100) {
+                    return "hundredth";
+                }
+                if (n === 1000) {
+                    return "thousandth";
+                }
+                if (n === 10000) {
+                    return "ten thousandth";
+                }
+                if (n === 100000) {
+                    return "hundred thousandth";
+                }
+                if (n === 1000000) {
+                    return "millionth";
+                }
+                if (n === 10000000) {
+                    return "ten millionth";
+                }
+                if (n === 100000000) {
+                    return "hundred millionth";
+                }
+                if (n === 1000000000) {
+                    return "billionth";
+                }
+                return utilities.integer_to_words(n.toString());
+            }
+            var numerator, plural;
+            if (slash_index < 0) {
+                return utilities.integer_to_words(input);
+            }
+            numerator = input.substring(0, slash_index);
+            plural = numerator !== "1";
+            if (slash_index+3 >= input.length || (!plural && slash_index+11 >= input.length)) {
+                // denominator is either 2 digits or 1 over at most 10 digits so speak it specially
+                return utilities.integer_to_words(numerator) + " " + short_denominator(parseInt(input.substring(slash_index+1))) + (plural ? "s" : "");
+            }
+            return utilities.integer_to_words(input.substring(0, slash_index)) + " over " + utilities.integer_to_words(input.substring(slash_index+1));
+        };
+
+        utilities.integer_to_words = function (input) {
+        // largely based on information in http://home.earthlink.net/~mrob/pub/math/largenum.html
+        // web page seems to be gone but see http://web.archive.org/web/20061006084112/http://home.earthlink.net/~mrob/pub/math/largenum.html
+
+        // note that this is incorrect for long form languages -- see https://en.wikipedia.org/wiki/Long_and_short_scales#Long_scale_users
+        // however Google translate translates billion, trillion, correctly to French (and presumably the like)
+
+/*
+ Rules for one system extending up to 103000 are given in The Book of Numbers by Conway and Guy.
+ This system was developed by John Conway and Allan Wechsler after significant research into Latin5 but Olivier Miakinen4 has refined it, as described below. 
+ The name is built out of pieces representing powers of 10^3, 10^30 and 10^300 as shown by this table: 
+   
+ 1's				10's							100's  
+0  -				-								-  
+1  un			(n) deci					(nx) centi  
+2  duo			(ms) viginti				(n) ducenti  
+3  tre (*)		(ns) triginta				(ns) trecenti  
+4  quattuor		(ns) quadraginta			(ns) quadringenti  
+5  quin			(ns) quinquaginta			(ns) quingenti  
+6  se (sx)		(n) sexaginta				(n) sescenti  
+7  septe (mn)   (n) septuaginta			    (n) septingenti  
+8  octo			(mx) octoginta  			(mx) octingenti  
+9  nove (mn)	nonaginta					nongenti  
+   The rules are: 
+ 
+- Take the power of 10 you're naming and subtract 3. 
+- Divide by 3. If the remainder is 0, 1 or 2, put one, ten or one hundred at the beginning of your name (respectively). 
+- Break the quotient up into 1's, 10's and 100's. Find the appropriate name segments for each piece in the table. (NOTE: The original Conway-Wechsler system specifies quinqua for 5, not quin.) 
+- String the segments together, inserting an extra letter if the letter shown in parentheses at the end of one segment match a letter in parentheses at the beginning of the next. For example: septe(mn) + (ms)viginti = septemviginti; se(sx) + (mx)octoginta = sexoctoginta. For the special case of tre, the letter s should be inserted if the following part is marked with either an s or an x. 
+- If the result ends in a, change the a to i. 
+- Add llion at the end. You're done. 
+*/
+        // note that the above web site does not have "prefix" "m" for nonaginta or nongenti but many sites seem to require it -- e.g. http://www.webster-dictionary.org/definition/Names%20of%20large%20numbers
+        // based on desktop ToonTalk code in https://github.com/ToonTalk/desktop-toontalk/blob/781b9fa035304b93b015447f1c7773b07e912eb2/source/martian.cpp
+        // note that this assumes the short scale which is appropriate for English -- seee https://en.wikipedia.org/wiki/Long_and_short_scales
+        var output = "";
+        var one_names = ["", "un", "duo", "tre", "quattuor", "quin", "se", "septe", "octo", "nove"];
+        var one_suffixes = ["", "", "", "*", "", "", "sx", "mn", "", "mx"];
+        var ten_names = ["", "deci", "viginti", "triginta", "quadraginta", "quinquaginta", "sexaginta", "septuaginta", "octoginta", "nonaginta"];
+        var ten_prefixes = ["", "n", "ms", "ns", "ns", "ns", "n", "n", "mx", "m"];
+        var hundred_names = ["", "centi", "ducenti", "trecenti", "quadringenti", "quingenti", "sescenti", "septingenti", "octingenti", "nongenti"];
+        var hundred_prefixes = ["", "nx", "n", "ns", "ns", "ns", "n", "n", "mx", "m"];
+        // following are my attempt to generalize for higher powers:
+        var thousand_names = ["", "milli", "dumilli", "tremilli", "quadrinmilli", "quinmilli", "sesmilli", "septinmilli", "octinmilli", "nonmilli"];
+        var ten_thousand_names = ["", "decimilli", "vigintimilli", "trigintamilli", "quadragintanmilli", "quinquagintamilli", "sexagintamilli", "septuagintamilli", "octogintamilli", "nonagintamilli"];
+        var hundred_thousand_names = ["", "centimilli", "ducentimilli", "trecentimilli", "quadringentimilli", "quingentimilli", "sescentimilli", "septingentimilli", "octingentimilli", "nongentimilli"];
+        var million_names = ["", "milli-milli", "milli-dumilli", "milli-tremilli", "milli-quadrinmilli", "milli-quinmilli", "milli-sesmilli", "milli-septinmilli", "milli-octinmilli", "milli-nonmilli"];
+        var small_names = ["thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion",  "nonillion"];
+        var digits_remaining, power_minus_3, up_to_three_digits, digits_copied, to_name, previous_suffix, suffix,
+            ones, tens, hundreds, thousands, ten_thousands, hundred_thousands, millions,
+            one_name, ten_name, hundred_name, thousand_name, ten_thousand_name, hundred_thousand_name, million_name;
+        var copy_all_but_leading_zeros = function (digit_count) {
+            var output_count = 0;
+            var String_less_than_a_thousand = "";
+            var i;
+            for (i = 0; i < digit_count; i++) {
+                if (input[i] !== '0' || output_count > 0) {
+                    String_less_than_a_thousand += input[i];
+                    output_count++;
+                };
+            };
+            if (String_less_than_a_thousand) {
+                output += less_than_a_thousand(parseInt(String_less_than_a_thousand));
+            }
+            return output_count;
+        };
+        var less_than_a_thousand = function (n) {
+            var first_twenty = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"];
+            var tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+            var output = "";
+            if (n >= 100) {
+                output += first_twenty[Math.floor(n/100)] + " hundred";
+                n = n%100;
+            }
+            if (n > 20) {
+                if (output != "") {
+                    output += " ";
+                }
+                output += tens[Math.floor(n/10)];
+                n = n%10;
+                if (n > 0) {
+                    output += "-"; // see for example https://www.grammarly.com/handbook/punctuation/hyphen/11/hyphen-in-compound-numbers/
+                }
+            } else if (output != "" && n > 0) {
+                output += " ";
+            }
+            if (n > 0) {
+                output += first_twenty[n];
+            }
+            return output.toString();
+        }
+        var in_common = function (s1, s2) {
+            var i, j;
+            if (s1 === undefined || s2 === undefined) {
+                return;
+            }
+            for (i = 0; i < s1.length; i++) {
+                for (j = 0; j < s2.length; j++) {
+                    // special rule of tre represented by * matching s or x
+                    if (s1[i] == s2[j] || (s1[i] === '*' && (s2[j] === 's' || s2[j] === 'x'))) { 
+                        return(s2[j]); //  s1[i] is wrong for *
+                    };
+                };
+            };
+        };
+        while (input.length > 0 && input[0] === '0') {
+            // ignore leading zeros
+            input = input.substring(1);
+        }
+        if (input.length === 0) {
+            return "zero";
+        };
+        digits_remaining = input.length;
+        while (true) {
+            if (output[output.length-1] !== " ") {
+                output += " ";
+            }
+            if (digits_remaining < 4) {
+                output = output.trim(); // removed any unneeded spaces
+                if (copy_all_but_leading_zeros(digits_remaining) === 0 && output.substring(output.length-1) === ',') {
+                    // remove trailing comma since exact multiple of 1000
+    	            output = output.substring(0, output.length-1);
+                }
+                break;
+            }
+            power_minus_3 = digits_remaining-4; // e.g. 1234 (4 digits) is 10 to the power 3
+            up_to_three_digits = 1+power_minus_3%3; 
+            digits_copied = copy_all_but_leading_zeros(up_to_three_digits);
+            input = input.substring(up_to_three_digits);
+            digits_remaining -= up_to_three_digits;
+            if (digits_copied > 0) { // may be 1000000...
+                if (output[output.length-1] !== " ") {
+                    output += " ";
+                }
+                to_name = Math.floor(power_minus_3/3);
+                ones = to_name%10;
+                if (to_name < 10) {
+                    // use familar names thousands, millions, billions, and trillions
+                    output += small_names[to_name];
+                } else {
+                    tens = Math.floor((to_name/10)%10);
+                    hundreds = Math.floor((to_name/100)%10);
+                    thousands = Math.floor((to_name/1000)%10);
+                    ten_thousands = Math.floor((to_name/10000)%10);
+                    hundred_thousands = Math.floor((to_name/100000)%10);
+                    millions = Math.floor((to_name/1000000)%10);
+                    one_name = one_names[ones];
+                    ten_name = ten_names[tens];
+                    hundred_name = hundred_names[hundreds];
+                    thousand_name = thousand_names[thousands];
+                    ten_thousand_name = ten_thousand_names[ten_thousands];
+                    hundred_thousand_name = hundred_thousand_names[hundred_thousands];
+                    million_name = million_names[millions];
+                    previous_suffix = undefined;
+                    if (one_name) {
+                        output += one_name;
+                        previous_suffix = one_suffixes[ones];
+                    };
+                    if (ten_name) {
+                        suffix = in_common(previous_suffix,ten_prefixes[tens]);
+                        if (suffix) {
+                            output += suffix;
+                        };
+                        previous_suffix = undefined; // used it up
+                        output += ten_name;
+                    };
+                    if (hundred_name) {
+                        suffix = in_common(previous_suffix,hundred_prefixes[hundreds]);
+                        if (suffix) {
+                            output += suffix;
+                        };
+                        previous_suffix = undefined; // used it up
+                        output += hundred_name;
+                    };
+                    // not clear what should be the suffix so skipping it for the following
+                    output += thousand_name;
+                    output += ten_thousand_name;
+                    output += hundred_thousand_name;
+                    output += million_name;
+                    if (output[output.length-1] === 'a') {
+                        output = output.substring(0, output.length-2) + 'i';
+                    };
+                    output += "llion";
+                };
+                output += ","; // reads better and segmented text-to-speech breaks at better places
+            };
+        };
+        return output.trim();
+    };
+    utilities.test_number_to_words = function (n) {
+        var i, x;
+        for (i = 0; i < n; i++) {
+            x = Math.round(1000000000*Math.random());
+            console.log(x + " = " + utilities.number_to_words(x.toString()));
+        }
+    };
+// for comparison with the above (which handles much bigger numbers than this)
+// it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
+// utilities.to_words = function (n) {
+//     // based upon http://stackoverflow.com/questions/14766951/convert-digits-into-words-with-javascript
+//       if (n == 0) return 'zero';
+//       var a = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+//       var b = ['', '', 'twenty', 'thirty', 'fourty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+//       var g = ['', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion', 'nonillion',
+//                'decillion', 'undecillion', 'duodecillion', 'tredecillion', 'quattuordecillion', 'quindecillion', 'sexdecillion', 'septendecillion', 'octodecillion', 'novemdecillion', 'vigintillion',
+//                'unvigintillion', 'dovigintillion', 'trevigintillion', 'quattuorvigintillion', 'quinvigintillion', 'sexvigintillion', 'septenvigintillion', 'octovigintillion', 'novemvigintillion',
+//                'trigintillion', 'untrigintillion', 'dotrigintillion',
+//                'tretrigintillion', 'quattuortrigintillion', 'quintrigintillion', 'sextrigintillion', 'septentrigintillion', 'octotrigintillion', 'novemtrigintillion'];
+//       var grp = function grp(n) {
+//           return ('000' + n).substr(-3);
+//       };
+//       var rem = function rem(n) {
+//           return n.substr(0, n.length - 3);
+//       };
+//       var fmt = function fmt(_ref) {
+//           var h = _ref[0];
+//           var t = _ref[1];
+//           var o = _ref[2];
+//           return [Number(h) === 0 ? '' : a[h] + ' hundred ', Number(o) === 0 ? b[t] : b[t] && b[t] + '-' || '', a[t + o] || a[o]].join('');
+//       };
+//       var cons = function cons(xs) {
+//         return function (x) {
+//           return function (g) {
+//             return x ? [x, g && ' ' + g || '', ' ', xs].join('') : xs;
+//           };
+//         };
+//       };
+//       var iter = function iter(str) {
+//         return function (i) {
+//           return function (x) {
+//             return function (r) {
+//               if (x === '000' && r.length === 0) return str;
+//               return iter(cons(str)(fmt(x))(g[i]))(i + 1)(grp(r))(rem(r));
+//             };
+//           };
+//         };
+//       };
+//       return iter('')(0)(grp(String(n)))(rem(String(n)));
+//     };
         utilities.initialize = function (callback) {
+            var translation_observer = new MutationObserver(function (mutations) {
+                                                                mutations.forEach(function (mutation) {
+                                                                    var translation_element = $(mutation.target).closest(".toontalk-translation-element").get(0);
+                                                                    if (translation_element && translation_element.toontalk_callback) {
+                                                                        translation_element.toontalk_callback(translation_element.innerText);
+                                                                        translation_element.innerText = '';
+                                                                        translation_element.toontalk_callback = undefined;
+                                                                    }
+                                                                });
+                                                            });
             var document_click, translation_div, translation_element, $saved_selection;
             if (toontalk_initialized) {
                 return;
@@ -4244,6 +4565,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.DEFAULT_QUEUE.start();
             window.addEventListener('beforeunload', function (event) {
                 try {
+                    window.speechSynthesis.cancel();
+                } catch (e) {
+                    // ignore error    
+                }
+                try {
                     utilities.backup_all_top_level_widgets(true);
                 } catch (error) {
                     TT.UTILITIES.report_internal_error(error);
@@ -4266,25 +4592,13 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 translation_element = document.createElement('div');
                 translation_element.className = 'toontalk-translation-element';
                 document.body.appendChild(translation_element);
-                utilities.translate = function (text, callback, maximum_wait) {
+                translation_observer.observe(translation_element, {characterData: true,
+                                                                   subtree: true});
+                utilities.translate = function (text, callback) {
                                           var original;
-                                          if (maximum_wait === undefined) {
-                                              // hoping 1/2 second is enough for Google to translate this
-                                              // could use a longer time if could text if translation is needed
-                                              maximum_wait = 500;
-                                          }
                                           translation_element.innerHTML = text;
                                           original = translation_element.innerText;
-                                          setTimeout(function () {
-                                                         if (original !== translation_element.innerText || maximum_wait <= 0) {
-                                                             callback(translation_element.innerText);
-                                                             translation_element.innerText = '';
-                                                         } else {
-                                                             // not yet translated check again in 100ms
-                                                             utilities.translate(text, callback, maximum_wait-100);
-                                                         }
-                                                      },
-                                                      100);
+                                          translation_element.toontalk_callback = callback;
                 };
             } else {
                 $("#google_translate_element").remove();

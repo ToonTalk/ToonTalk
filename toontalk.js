@@ -150,7 +150,7 @@ var loadFile = function (index, offline) {
                                                 });                                                
                                             }
                                         };
-                   if (file_name.indexOf("https:") >= 0) {
+                   if (file_name.indexOf("http") >= 0) {
                        if (!offline) { // window.navigator.onLine was true even after disconnecting from the net
                            script.src = file_name;
                        } else if (local_replacements[file_name]) {
@@ -160,7 +160,7 @@ var loadFile = function (index, offline) {
                            load_next_file();
                        }
                    } else {
-                      script.src = path_prefix + file_name;
+                       script.src = path_prefix + file_name;
                    }
                    script.addEventListener('load', load_next_file);
                    script.addEventListener('error', function (event) {
@@ -208,6 +208,6 @@ if (published_page) {
     add_css("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css");
 }
 
-loadFile(0, this_url.indexOf("file://")  === 0);
+loadFile(0, this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0);
 
 }());

@@ -318,12 +318,9 @@ window.TOONTALK.scale = (function (TT) {
         };
         new_scale.match_with_scale = function (scale_pattern) {
             var left_contents, right_contents;
-            if (this.get_state() === scale_pattern.get_state()) {
-                return 'matched';
-            }
             left_contents  = this.get_hole_contents(0);
             if (left_contents && left_contents.is_nest() && !left_contents.has_contents()) {
-               // suspend on nest rather than fail
+                // suspend on nest rather than fail
                 return [[left_contents, this]];
             }
             right_contents = this.get_hole_contents(1);
@@ -331,7 +328,12 @@ window.TOONTALK.scale = (function (TT) {
                 // suspend on nest rather than fail
                 return [[right_contents, this]];
             }
-            return scale_pattern;
+            if (this.get_state() !== scale_pattern.get_state()) {
+                // mismatch if tilted differently
+                this.last_match = scale_pattern;
+                return this;
+            }
+            return this.match_with_this_box(scale_pattern);
         };
         new_scale.compare_with = function (other) {
             if (other.compare_with_scale) {

@@ -1014,6 +1014,11 @@ window.TOONTALK.widget = (function (TT) {
                     // backside is closed but this was saved when it was hidden
                     json_view.backside_geometry = this.backside_geometry;
                 }
+                if (json_view.frontside_left === undefined && this.json_view) {
+                    // if still undefined use saved view when this widget's parent was loaded
+                    json_view.frontside_left = this.json_view.frontside_left;
+                    json_view.frontside_top = this.json_view.frontside_top;
+                }
                 json_semantic.description = this.get_description && this.get_description();
                 // following are typically undefined unless in a container
                 json_view.saved_width  = this.saved_width;
@@ -1035,6 +1040,8 @@ window.TOONTALK.widget = (function (TT) {
                         var json_view, widget_index;
                         json_backside_widget_side = json.semantic.backside_widgets[index];
                         if (!json_backside_widget_side) {
+                            // save the parent's json view of children with child
+                            backside_widgets[index].json_view = backside_widgets_json_views[index];
                             return;
                         }
                         if (json_backside_widget_side.widget.shared_widget_index >= 0) {
@@ -1213,6 +1220,15 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
             });
+            if (this.walk_children) {
+                this.walk_children(function (child) {
+                                       if (child.can_run()) {
+                                           can_run = true;
+                                       } else {
+                                           return true; // go on to next child
+                                       }
+                                   });
+            }
             return can_run;
         },
 
@@ -1587,7 +1603,7 @@ window.TOONTALK.widget = (function (TT) {
                     functions.process_response(response, box_size_and_bird.bird, message, event, robot);
                 };
                 widget = widget.get_widget(); // either side is fine
-                text = widget.get_text ? widget.get_text() : widget.toString();
+                text = widget.get_text ? widget.get_text(true) : widget.toString();
                 if (TT.TRANSLATION_ENABLED) {
                     // TT.UTILITIES.speak doesn't translate since it should already be translated
                     // but the text of a widget may not be
@@ -1625,6 +1641,42 @@ window.TOONTALK.widget = (function (TT) {
                 voice_number = voice_number && voice_number.to_float && voice_number.to_float();
             }
             speak(message.get_hole_contents(1));
+            return true;
+        }},
+        get_description_function: function (functions) {
+            return function (message, event, robot) {
+            var describe = function (widget) {
+                var text, speech_utterance, respond;
+                if (!widget) {
+                    TT.UTILITIES.display_message("Description birds need something in the second box hole.");
+                    return;
+                }
+                respond = function (description) {
+                    var response = TT.element.create(description, [], widget.toString());
+                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                };
+                widget = widget.get_widget(); // either side is fine
+                text = widget.get_text ? widget.get_text(true) : widget.toString();
+                if (TT.TRANSLATION_ENABLED) {
+                    // TT.UTILITIES.speak doesn't translate since it should already be translated
+                    // but the text of a widget may not be
+                    TT.UTILITIES.translate(text,
+                                           function (translated_text) {
+                                               respond(translated_text);
+                                           });
+                } else {
+                    respond(text);
+                }
+            };
+            var box_size_and_bird = functions.check_message(message);
+            if (!box_size_and_bird) {
+                return;
+            }
+            if (box_size_and_bird.size < 2) {
+                TT.UTILITIES.display_message("Description birds need a box with two holes containing a bird and a widget.");
+                return;
+            }
+            describe(message.get_hole_contents(1));
             return true;
         }},
         create_top_level_widget: function (settings) {
@@ -1820,7 +1872,10 @@ window.TOONTALK.widget = (function (TT) {
                                100);
                     return;
                 }
-                save_to_google_drive = parameters.google_drive && !this.get_setting('google_drive_unavailable');
+                save_to_google_drive = parameters.google_drive && 
+                                       !this.get_setting('google_drive_unavailable') &&
+                                       // localhost can't connect to Google Drive
+                                       TT.TOONTALK_URL.indexOf("http://localhost") < 0;
                 if (!save_to_google_drive && !parameters.local_storage) {
                     // nothing to save 
                     if (callback) {

@@ -1171,9 +1171,451 @@ top level widget
   ]
 }</div></div>
 <br>
-<p>
-More to come.
-</p>
+
+<h3>A gadget for replacing the current page</h3>
+<p>This gadget senses when something is dropped on it and treats it as a URL that it passes along to a special bird that changes the current URL of the current tab.</p>
+<br>
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by an element.
+<div style='display:none;'>{
+  "semantic": {
+    "shared_widget_index": 0
+  },
+  "view": {
+    "frontside_left": 143.321,
+    "frontside_top": 70.6302,
+    "backside_geometry": {
+      "x_scale": 0.9746765342596788,
+      "y_scale": 0.7457044673539522,
+      "original_width": 620.71875,
+      "original_height": 288
+    },
+    "saved_width": 277.734,
+    "saved_height": 44,
+    "drag_x_offset": 83.27999877929688,
+    "drag_y_offset": 20.651031494140625,
+    "frontside_width": 219,
+    "frontside_height": 19
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "element",
+        "html": "Drop%20a%20URL%20on%20me%20and%20I'll%20go%20there.",
+        "attributes": [
+          "width",
+          "height"
+        ],
+        "attribute_values": [
+          277.734,
+          44
+        ],
+        "attributes_backsides": [
+          [],
+          []
+        ],
+        "children": false,
+        "description": "a gadget that changes the current URL to the text widget dropped on me.",
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "bird",
+                "nest": {
+                  "semantic": {
+                    "type": "function_nest",
+                    "function_type": "element",
+                    "function_name": "go to page"
+                  },
+                  "view": {},
+                  "version": 1
+                }
+              },
+              "view": {
+                "saved_width": 70,
+                "saved_height": 102
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "sensor",
+                "contents": [],
+                "guid": "sensor",
+                "serial_number": 6,
+                "name": "sensor",
+                "event_name": "widget added",
+                "attribute": "widget",
+                "active": false,
+                "sensor_of": {
+                  "shared_widget_index": 0
+                }
+              },
+              "view": {
+                "frontside_width": 116,
+                "frontside_height": 98,
+                "frontside_left": "25.4803794419572%",
+                "frontside_top": "38.57087893699701%",
+                "saved_width": 116,
+                "saved_height": 98
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "element",
+                    "html": "Drop%20a%20URL%20on%20me%20and%20I'll%20go%20there.",
+                    "attributes": [
+                      "left",
+                      "top",
+                      "width",
+                      "height"
+                    ],
+                    "attribute_values": [
+                      0,
+                      0,
+                      277.734,
+                      22
+                    ],
+                    "attributes_backsides": [
+                      [],
+                      [],
+                      [],
+                      []
+                    ],
+                    "children": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "element",
+                            "html": "p2.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
+                            "attributes": [
+                              "left",
+                              "top",
+                              "width",
+                              "height"
+                            ],
+                            "attribute_values": [
+                              11,
+                              7,
+                              400,
+                              38
+                            ],
+                            "attributes_backsides": [
+                              [],
+                              [],
+                              [],
+                              []
+                            ],
+                            "children": false
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "erased": true,
+                    "description": "a gadget that changes the current URL to the text widget dropped on me."
+                  },
+                  "view": {
+                    "saved_width": 277.734,
+                    "saved_height": 22
+                  },
+                  "version": 1
+                },
+                "backside_conditions": [
+                  {
+                    "widget": {
+                      "type": "backside",
+                      "my_widget": {
+                        "semantic": {
+                          "type": "element",
+                          "html": "p2.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
+                          "attributes": [
+                            "left",
+                            "top",
+                            "width",
+                            "height"
+                          ],
+                          "attribute_values": [
+                            8,
+                            637.188,
+                            47.5,
+                            117
+                          ],
+                          "attributes_backsides": [
+                            [],
+                            [],
+                            [],
+                            []
+                          ],
+                          "children": false
+                        },
+                        "view": {},
+                        "version": 1
+                      },
+                      "css": {
+                        "top": 0,
+                        "left": 0
+                      },
+                      "erased": true,
+                      "view": {}
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "box",
+                        "size": 2,
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          null
+                        ],
+                        "horizontal": true,
+                        "name": ";;"
+                      },
+                      "view": {
+                        "saved_width": 240,
+                        "saved_height": 60
+                      },
+                      "version": 1
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "bird"
+                      },
+                      "view": {},
+                      "version": 1
+                    }
+                  }
+                ],
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "sensor",
+                        "backside_index": 0,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 7865
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.top_level_backside"
+                      },
+                      "additional_info": {
+                        "left_offset_fraction": 0.7009208874824719,
+                        "top_offset_fraction": 0.09630002917898013,
+                        "time": 3902
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "click the button of",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "element_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "button_selector": ".toontalk-settings-backside-button",
+                        "time": 25232
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "element_path",
+                          "index": 0,
+                          "removing_widget": true
+                        }
+                      },
+                      "additional_info": {
+                        "time": 24532
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 1,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2816
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 1,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 3255
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "bird",
+                        "backside_index": 2
+                      },
+                      "additional_info": {
+                        "time": 3537
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "remove",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 1,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 34556
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "remove",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 0
+                      }
+                    }
+                  ]
+                },
+                "name": "#1"
+              },
+              "view": {
+                "frontside_width": 66,
+                "frontside_height": 110,
+                "frontside_left": "73.6691726213967%",
+                "frontside_top": "39.76331641338802%",
+                "saved_width": 66,
+                "saved_height": 110
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "box",
+                "size": 2,
+                "contents": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "bird",
+                        "nest": {
+                          "semantic": {
+                            "type": "nest",
+                            "contents": [],
+                            "guid": "toontalk_id_1462729009164",
+                            "serial_number": 1,
+                            "name": "#1"
+                          },
+                          "view": {
+                            "saved_width": 116,
+                            "saved_height": 98
+                          },
+                          "version": 1
+                        }
+                      },
+                      "view": {
+                        "saved_width": 70,
+                        "saved_height": 102
+                      },
+                      "version": 1
+                    }
+                  },
+                  null
+                ],
+                "horizontal": true,
+                "name": ";;"
+              },
+              "view": {
+                "frontside_width": 164,
+                "frontside_height": 68,
+                "frontside_left": "40.32513137638085%",
+                "frontside_top": "37.71254149999583%",
+                "saved_width": 164,
+                "saved_height": 68
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_left": 143.321,
+        "frontside_top": 70.6302,
+        "backside_geometry": {
+          "x_scale": 0.9746765342596788,
+          "y_scale": 0.7457044673539522,
+          "original_width": 620.71875,
+          "original_height": 288
+        },
+        "saved_width": 277.734,
+        "saved_height": 44,
+        "drag_x_offset": 83.27999877929688,
+        "drag_y_offset": 20.651031494140625,
+        "frontside_width": 219,
+        "frontside_height": 19
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<br>
 <p>
 <a href="index.html">Return to ToonTalk manual home page</a>
 </p>

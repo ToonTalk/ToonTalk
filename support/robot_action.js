@@ -33,9 +33,11 @@ window.TOONTALK.robot_action =
                          if (TT.debugging && thing_in_hand === target) {
                              TT.UTILITIES.report_internal_error("Dropping something on itself! " + target);
                          }
-                         // might be a robot was running watched but window hidden or robot's context closed
-                         // so thing dropped should be removed from DOM
-                         $(thing_in_hand.get_frontside_element()).remove();
+                         if (!target.visible()) {
+                            // might be a robot was running watched but window hidden or robot's context closed
+                            // so thing dropped on top-level backside should be removed from DOM
+                            $(thing_in_hand.get_frontside_element()).remove();
+                         }
                          thing_in_hand.drop_on(target, undefined, robot);
                          robot.set_thing_in_hand(undefined);
                          target.rerender();
@@ -159,6 +161,10 @@ window.TOONTALK.robot_action =
              // no need to do this if unwatched
              return true;
          },
+         "open the backside of": function () {
+             // no need to do this if unwatched
+             return true;
+         },
          "close the backside of": function () {
              // no need to do this if unwatched
              return true;
@@ -193,6 +199,13 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget_element = side.get_element();
+        var close_memmber = function (x, max_difference, xs) {
+            return xs.some(function (other) {
+                              if (Math.abs(other-x) <= max_difference) {
+                                  return true;
+                              }
+                          });
+        };
         var widget_bounding_box,
             left_offset,
             top_offset,
@@ -233,8 +246,8 @@ window.TOONTALK.robot_action =
                 }
             }
             if (thing_in_hand && 
-                robot.original_animation_left_offset.indexOf(animation_left_offset) >= 0 && 
-                robot.original_animation_top_offset .indexOf(animation_top_offset)  >= 0) {
+                close_memmber(animation_left_offset, robot.last_thing_in_hand_width, robot.original_animation_left_offset) && 
+                robot.original_animation_top_offset.indexOf(animation_top_offset)  >= 0) {
                 // robot has already dropped something here
                 animation_left_offset = robot.animation_left_offset+robot.last_thing_in_hand_width;
                 animation_top_offset  = robot.animation_top_offset;
@@ -245,14 +258,19 @@ window.TOONTALK.robot_action =
                         animation_top_offset = 0;
                     }
                 }
-                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width(thing_in_hand_element);
-                if (typeof robot.max_thing_in_hand_height === 'undefined') {
-                    robot.max_thing_in_hand_height = 0;
-                }
-                robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
+                TT.UTILITIES.when_attached(thing_in_hand_element,
+                                           function () {
+                                                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width(thing_in_hand_element);
+                                                if (typeof robot.max_thing_in_hand_height === 'undefined') {
+                                                    robot.max_thing_in_hand_height = 0;
+                                                }
+                                                robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
+                                           });
             } else {
                 robot.original_animation_left_offset.push(animation_left_offset);
-                robot.original_animation_top_offset .push(animation_top_offset);
+                if (robot.original_animation_top_offset .indexOf(animation_top_offset) < 0) {
+                    robot.original_animation_top_offset .push(animation_top_offset);
+                }
                 robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width (thing_in_hand_element);
                 robot.max_thing_in_hand_height = TT.UTILITIES.get_element_height(thing_in_hand_element);
             }
@@ -675,6 +693,7 @@ window.TOONTALK.robot_action =
          "stop training":                      stop_training_animation,
          "train":                              train_another_animation,
          "open the backside":                  open_backside_animation,
+         "open the backside of":               open_backside_animation,
          "close the backside of":              close_backside,
          "close the backside":                 close_backside, // old name
          "click the button of":                click_button_animation

@@ -65,7 +65,7 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_move = function (event) {
-                var widget_side_under_tool = TT.UTILITIES.find_widget_on_page_side(event, element, drag_x_offset, drag_y_offset-tool_height/2);
+                var widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var new_highlighted_element, scroll_adjustment;
                 var point = {};
                 event.preventDefault();
@@ -104,7 +104,7 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_up = function (event) {
-                var widget_side_under_tool = TT.UTILITIES.find_widget_on_page_side(event, element, drag_x_offset, drag_y_offset-tool_height/2);
+                var widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var top_level_widget;
                 event.preventDefault();
                 if (widget_side_under_tool && widget_side_under_tool.is_of_type("empty hole")) {

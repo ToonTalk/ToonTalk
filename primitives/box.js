@@ -1126,6 +1126,9 @@ window.TOONTALK.box_hole =
                 }
                 return this;
             };
+            hole.can_run = function () {
+                return contents && contents.can_run();
+            };
             hole.get_index = function () {
                 return index;
             };

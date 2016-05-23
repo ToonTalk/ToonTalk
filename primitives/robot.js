@@ -642,7 +642,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         if (context) {
             // context should be undefined if this robot is just repeatedly running
-            this.set_context(context);        
+            this.set_context(context);
             this.set_context_is_backside(context_is_backside);
             this.set_top_level_context(top_level_context);
             this.set_queue(queue);
@@ -680,6 +680,7 @@ window.TOONTALK.robot = (function (TT) {
                                     // robots ignore themselves when matching backside widgets
                                     if (!backside_widget_side.is_backside()) {   
                                         if (clear_all_mismatch_displays) {
+                                            // this is only defined if the backside is visible
                                             clear_all_mismatch_displays(backside_widget_side);
                                         }
                                         sub_match_status = TT.UTILITIES.match(condition, backside_widget_side);

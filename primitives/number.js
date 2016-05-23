@@ -993,21 +993,32 @@ window.TOONTALK.number = (function () {
         }
     };
 
-    number.get_text = function () {
+    number.get_text = function (for_speaking) {
+        // for_speaking is because most (all?) text-to-speech engines fail to speak large numbers correctly
         var format = this.get_format();
         var integer_part, fractional_part;
         if (this.get_approximate() || (this.is_attribute_widget && this.is_attribute_widget())) {
             return "approximately " + bigrat.toDecimal(this.get_value()).toString();
         }
         if (this.is_integer() || format === 'improper_fraction') {
+            if (for_speaking) {
+                return TT.UTILITIES.number_to_words(this.toString());
+            }
             return this.toString();
         }
         integer_part = this.integer_part();
         if (integer_part.is_zero()) {
+            if (for_speaking) {
+                return TT.UTILITIES.number_to_words(this.toString());
+            }
             return this.toString();
         }
         fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
-        return integer_part + " " + fractional_part; 
+        if (for_speaking) {
+            return TT.UTILITIES.number_to_words(integer_part.toString()) + (for_speaking ? " and " : " ") + 
+                   TT.UTILITIES.number_to_words(fractional_part.toString());
+        }
+        return integer_part + " " + fractional_part;
     };
     
     number.to_float = function () {
@@ -1600,11 +1611,16 @@ window.TOONTALK.number.function =
                         },
                         "The bird will return with an approximation of the arc tangent (in radians) of the point where the first number is the y coordinate and the second one is the x.",
                         "atan2 rad");
-   functions.add_function_object('speak', 
-                                 TT.widget.get_speak_function(functions),
-                                 "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
-                                 "speak",
-                                 ['a widget']);
+    functions.add_function_object('turn into words', 
+                                  TT.widget.get_description_function(functions),
+                                  "The bird will return with words describing what is in the second hole.",
+                                  "describe",
+                                  ['a widget']);
+    functions.add_function_object('speak', 
+                                  TT.widget.get_speak_function(functions),
+                                  "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
+                                  "speak",
+                                  ['a widget']);
     return functions.get_function_table();
 }());
 
