@@ -1008,10 +1008,17 @@ window.TOONTALK.number = (function () {
         }
         integer_part = this.integer_part();
         if (integer_part.is_zero()) {
+            if (for_speaking) {
+                return TT.UTILITIES.number_to_words(this.toString());
+            }
             return this.toString();
         }
         fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
-        return integer_part + " " + fractional_part; 
+        if (for_speaking) {
+            return TT.UTILITIES.number_to_words(integer_part.toString()) + (for_speaking ? " and " : " ") + 
+                   TT.UTILITIES.number_to_words(fractional_part.toString());
+        }
+        return integer_part + " " + fractional_part;
     };
     
     number.to_float = function () {

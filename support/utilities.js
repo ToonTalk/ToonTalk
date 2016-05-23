@@ -4219,6 +4219,56 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //         };
 
         utilities.number_to_words = function (input) {
+            var slash_index = input.indexOf('/');
+            var short_denominator = function (n) {
+                var names = ["", "", "half", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth",
+                             "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth"];
+                if (n <= 20) {
+                    return names[n];
+                }
+                if (n%10 === 0 && n < 100) {
+                    return ["thirtieth", "fortieth", "fiftieth", "sixtieth", "seventieth", "eightieth", "ninetieth"][n/10-3];
+                }
+                if (n === 100) {
+                    return "hundredth";
+                }
+                if (n === 1000) {
+                    return "thousandth";
+                }
+                if (n === 10000) {
+                    return "ten thousandth";
+                }
+                if (n === 100000) {
+                    return "hundred thousandth";
+                }
+                if (n === 1000000) {
+                    return "millionth";
+                }
+                if (n === 10000000) {
+                    return "ten millionth";
+                }
+                if (n === 100000000) {
+                    return "hundred millionth";
+                }
+                if (n === 1000000000) {
+                    return "billionth";
+                }
+                return utilities.integer_to_words(n.toString());
+            }
+            var numerator, plural;
+            if (slash_index < 0) {
+                return utilities.integer_to_words(input);
+            }
+            numerator = input.substring(0, slash_index);
+            plural = numerator !== "1";
+            if (slash_index+3 >= input.length || (!plural && slash_index+11 >= input.length)) {
+                // denominator is either 2 digits or 1 over at most 10 digits so speak it specially
+                return utilities.integer_to_words(numerator) + " " + short_denominator(parseInt(input.substring(slash_index+1))) + (plural ? "s" : "");
+            }
+            return utilities.integer_to_words(input.substring(0, slash_index)) + " over " + utilities.integer_to_words(input.substring(slash_index+1));
+        };
+
+        utilities.integer_to_words = function (input) {
         // largely based on information in http://home.earthlink.net/~mrob/pub/math/largenum.html
         // web page seems to be gone but see http://web.archive.org/web/20061006084112/http://home.earthlink.net/~mrob/pub/math/largenum.html
 /*
