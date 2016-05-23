@@ -4271,6 +4271,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         utilities.integer_to_words = function (input) {
         // largely based on information in http://home.earthlink.net/~mrob/pub/math/largenum.html
         // web page seems to be gone but see http://web.archive.org/web/20061006084112/http://home.earthlink.net/~mrob/pub/math/largenum.html
+
+        // note that this is incorrect for long form languages -- see https://en.wikipedia.org/wiki/Long_and_short_scales#Long_scale_users
+        
 /*
  Rules for one system extending up to 103000 are given in The Book of Numbers by Conway and Guy.
  This system was developed by John Conway and Allan Wechsler after significant research into Latin5 but Olivier Miakinen4 has refined it, as described below. 
@@ -4575,7 +4578,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                           var original;
                                           if (maximum_wait === undefined) {
                                               // hoping 1/2 second is enough for Google to translate this
-                                              // could use a longer time if could text if translation is needed
+                                              // could use a longer time but then there is a delay is speaking
                                               maximum_wait = 500;
                                           }
                                           translation_element.innerHTML = text;
