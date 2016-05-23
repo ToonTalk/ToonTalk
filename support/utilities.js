@@ -4383,9 +4383,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         while (true) {
             output += ' ';
             if (digits_remaining < 4) {
-                if (copy_all_but_leading_zeros(digits_remaining) === 0) {
-                    // remove trailing space since exact multiple of 1000
-    // 	            output = output.substring(0, output.length-2);
+                output = output.trim(); // removed any unneeded spaces
+                if (copy_all_but_leading_zeros(digits_remaining) === 0 && output.substring(output.length-1) === ',') {
+                    // remove trailing comma since exact multiple of 1000
+    	            output = output.substring(0, output.length-1);
                 }
                 break;
             }
