@@ -4366,7 +4366,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             }
             for (i = 0; i < s1.length; i++) {
                 for (j = 0; j < s2.length; j++) {
-                    if (s1[i] == s2[j] || (s1[i] === '*' && (s2[j] === 's' || s2[j] === 'x'))) { // special rule of tre represented by * matching s or x
+                    // special rule of tre represented by * matching s or x
+                    if (s1[i] == s2[j] || (s1[i] === '*' && (s2[j] === 's' || s2[j] === 'x'))) { 
                         return(s2[j]); //  s1[i] is wrong for *
                     };
                 };
@@ -4381,7 +4382,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         };
         digits_remaining = input.length;
         while (true) {
-            output += ' ';
+            if (output[output.length-1] !== " ") {
+                output += " ";
+            }
             if (digits_remaining < 4) {
                 output = output.trim(); // removed any unneeded spaces
                 if (copy_all_but_leading_zeros(digits_remaining) === 0 && output.substring(output.length-1) === ',') {
@@ -4396,7 +4399,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             input = input.substring(up_to_three_digits);
             digits_remaining -= up_to_three_digits;
             if (digits_copied > 0) { // may be 1000000...
-                output += ' ';
+                if (output[output.length-1] !== " ") {
+                    output += " ";
+                }
                 to_name = Math.floor(power_minus_3/3);
                 ones = to_name%10;
                 if (to_name < 10) {
