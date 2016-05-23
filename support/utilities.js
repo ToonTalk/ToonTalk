@@ -4059,6 +4059,7 @@ window.TOONTALK.UTILITIES =
                callback = function () {
                               old_callback();
                               new_callback();
+                              element.toontalk_attached_callback = undefined;
                           };
            } else {
                callback = new_callback;
