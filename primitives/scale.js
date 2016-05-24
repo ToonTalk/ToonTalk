@@ -330,8 +330,8 @@ window.TOONTALK.scale = (function (TT) {
             }
             if (this.get_state() !== scale_pattern.get_state()) {
                 // mismatch if tilted differently
-                this.last_match = scale_pattern;
-                return this;
+                scale_pattern.last_match = this;
+                return scale_pattern;
             }
             return this.match_with_this_box(scale_pattern);
         };
