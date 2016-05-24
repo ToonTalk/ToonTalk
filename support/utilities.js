@@ -4261,7 +4261,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 return utilities.integer_to_words(input);
             }
             numerator = input.substring(0, slash_index);
-            plural = numerator !== "1";
+            plural = numerator !== "1" && numerator !== "-1";
             if (slash_index+3 >= input.length || (!plural && slash_index+11 >= input.length)) {
                 // denominator is either 2 digits or 1 over at most 10 digits so speak it specially
                 return utilities.integer_to_words(numerator) + " " + short_denominator(parseInt(input.substring(slash_index+1))) + (plural ? "s" : "");
@@ -4374,6 +4374,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 };
             };
         };
+        if (input[0] === '-') {
+            output += "negative ";
+            input = input.substring(1);
+        }
         while (input.length > 0 && input[0] === '0') {
             // ignore leading zeros
             input = input.substring(1);
@@ -4387,7 +4391,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 output += " ";
             }
             if (digits_remaining < 4) {
-                output = output.trim(); // removed any unneeded spaces
+//                 output = output.trim(); // removed any unneeded spaces
                 if (copy_all_but_leading_zeros(digits_remaining) === 0 && output.substring(output.length-1) === ',') {
                     // remove trailing comma since exact multiple of 1000
     	            output = output.substring(0, output.length-1);
