@@ -612,7 +612,7 @@ window.TOONTALK.number = (function () {
         // --2 needs to be displayed as - -2
         var subtraction_of_negative_number;
         if (this.is_attribute_widget && this.is_attribute_widget()) {
-             extra_class += " toontalk-attribute-number";
+            extra_class += " toontalk-attribute-number";
         } else if (this.get_approximate()) {
             extra_class += " toontalk-approximate-number";
         }
@@ -763,9 +763,11 @@ window.TOONTALK.number = (function () {
                 shifted_value = bigrat.multiply(bigrat.create(), this.get_value(), ten_to_accurancy_missing);
                 decimal_digits = bigrat.toBigInteger(shifted_value).toString().substring(0, max_decimal_places+1);
             } else {
-                decimal_digits = bigrat.toBigInteger(this.get_value()).toString().substring(0, max_decimal_places+1);
+                decimal_digits = bigrat.toBigInteger(this.get_value()).toString().substring(0, max_decimal_places+1);     
             }
-            decimal_digits = remove_trailing_zeroes(decimal_digits);
+            if (this.is_integer() || this.is_reciprocal_of_integer()) {
+                decimal_digits = remove_trailing_zeroes(decimal_digits);
+            }
             if (negative) { // negative so include sign and first digit
                 integer_digit = "-" + decimal_digits.substring(0, 1);
                 decimal_digits = decimal_digits.substring(1);
@@ -1063,6 +1065,12 @@ window.TOONTALK.number = (function () {
         // check if denominator is 1 or numerator is 0
         return this.get_value()[1].compare(BigInteger.ONE)  === 0 ||
                this.get_value()[0].compare(BigInteger.ZERO) === 0;
+    };
+
+    number.is_reciprocal_of_integer = function () {
+        // check numerator is 1 and denominator is not one
+        return this.get_value()[0].compare(BigInteger.ONE) === 0 &&
+               this.get_value()[1].compare(BigInteger.ONE) !== 0;
     };
 
     number.numerator = function () {
