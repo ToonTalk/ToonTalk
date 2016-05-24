@@ -279,7 +279,11 @@ window.TOONTALK.number = (function () {
         }
         integer_approximation_as_string = integer_approximation.toString();
         if (negative_exponent) {
-            return -integer_approximation_as_string.length+1;
+            if (remove_trailing_zeroes(integer_approximation_as_string) === '1') {
+                // 1/10 has 10 as a reciprocal but is -1 not -2 exponent
+                return -integer_approximation_as_string.length+1;
+            }
+            return -integer_approximation_as_string.length;
         }
         return integer_approximation_as_string.length-1;
     };
