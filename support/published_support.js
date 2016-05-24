@@ -159,7 +159,8 @@ return {
                 widgets_json[index] = json_div;
             });
         });
-        if (any_edits) {
+        if (any_edits && widgets_json.length > 0) {
+            // don't save if there is no JSON
             saving_window.postMessage({title: document.title, editable_contents: editable_contents, widgets_json: widgets_json, file_id: file_id}, saving_window_URL);
         }
         // check every 10 seconds for edits
