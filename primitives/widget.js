@@ -250,7 +250,7 @@ window.TOONTALK.widget = (function (TT) {
                         this.saved_width  = width;
                     }
                     if (height > 0) {
-                        this.saved_height =height;
+                        this.saved_height = height;
                     }
                     return true;
                 }

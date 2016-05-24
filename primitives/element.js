@@ -657,8 +657,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.plain_text_dimensions = function () {
             // this is to scale the element (and its font) properly
             // TODO: fix this in a principled manner
-            original_width  = 9*this.get_HTML().length;
-            original_height = 24;
+            original_width  = 12*this.get_HTML().length;
+            original_height = 32;
+            this.saved_width  = original_width;
+            this.saved_height = original_height;
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 

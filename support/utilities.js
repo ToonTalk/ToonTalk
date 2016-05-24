@@ -3167,7 +3167,7 @@ window.TOONTALK.UTILITIES =
                 utilities.set_css(element, pending_css);
             }; 
             var widget, x_scale, y_scale, $image;
-             if ($(element).is(".toontalk-not-observable")) {
+            if ($(element).is(".toontalk-not-observable")) {
                  // this happens on FireFox where this is called before the widget has been "rendered"
                  widget = TT.UTILITIES.widget_side_of_element(element);
                  if (widget) {
