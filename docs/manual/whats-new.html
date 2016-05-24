@@ -13,6 +13,84 @@ For the full gory details visit <a href="https://github.com/ToonTalk/ToonTalk/co
 <h2>Highlights of recent changes</h2>
 <ul>
 <li>
+<b style="color: brown">Any number can be spoken</b>.</br>
+Numbers with over 1,000,000 digits can be spoken now.
+Ten to the millionth is ten duotrigintatrecentitremillitrigintamillitrecentimillillion.
+(Using the power function bird to calculate 10 to the 1,000,000 took about a minute but converting it to words was very fast.)
+A <a href='function-birds.html#number_functions'>new function bird</a> can be obtained from a number by clicking on the advanced options on the backside of a number.
+Or you can drag this bird into your work area:
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a bird.
+a 'speak' function bird
+<div style='display:none;'>{
+  "semantic": {
+    "type": "bird",
+    "nest": {
+      "semantic": {
+        "type": "function_nest",
+        "function_type": "number",
+        "function_name": "speak"
+      },
+      "view": {},
+      "version": 1
+    }
+  },
+  "view": {
+    "frontside_width": 70,
+    "frontside_height": 102,
+    "frontside_left": 54.9531,
+    "frontside_top": 226.609,
+    "saved_width": 70,
+    "saved_height": 102,
+    "drag_x_offset": 36.09375,
+    "drag_y_offset": 60.25
+  },
+  "version": 1
+}</div></div>
+Just give it a box with a bird and a number in it.
+Note that on <a href='http://caniuse.com/#search=speech%20syn' target='_blank'>some browsers</a> nothing happens.
+<i>Released 24 May 2016.</i>
+</li>
+<li>
+<b style="color: brown">Numbers can be turned into words</b>.</br>
+For example, <a href='https://en.wikipedia.org/wiki/Avogadro_constant' target='_blank'>Avogadro constant</a>
+602,214,090,000,000,000,000,000 is six hundred two sextillion, two hundred fourteen quintillion, ninety quadrillion.
+A <a href='function-birds.html#number_functions'>new function bird</a> can be obtained from a number by clicking on the advanced options on the backside of a number.
+Or you can drag this bird into your work area:
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a bird.
+a 'turn into words' function bird
+<div style='display:none;'>{
+  "semantic": {
+    "type": "bird",
+    "nest": {
+      "semantic": {
+        "type": "function_nest",
+        "function_type": "number",
+        "function_name": "turn into words"
+      },
+      "view": {},
+      "version": 1
+    }
+  },
+  "view": {
+    "frontside_width": 70,
+    "frontside_height": 102,
+    "frontside_left": 54.9531,
+    "frontside_top": 226.609,
+    "backside_left": 57.59375,
+    "backside_top": 365.25,
+    "saved_width": 70,
+    "saved_height": 102,
+    "drag_x_offset": 32.03125,
+    "drag_y_offset": 56.1875
+  },
+  "version": 1
+}</div></div>
+Just give it a box with a bird and a number in it.
+<i>Released 24 May 2016.</i>
+</li>
+<li>
 <b style="color: brown">Tool tips can be spoken</b>.</br>
 Adding speak=1 to the URL enables spoken tool tips.
 Works together with translate=1 in other languages.
@@ -25,7 +103,7 @@ If speech without text balloons is desired then also add balloons=0 to the URL.
 A <a href='function-birds.html#element_functions'>new function bird</a> can be obtained from an element (e.g. a text widget).
 It can speak numbers, text, or a decription of any widget given to it.
 One can optionally control the volume, pitch, rate, and voice.
-Ignored in those browsers that don't yet support <a href='http://caniuse.com/#search=speech%20syn'>speech synthesis</a>. 
+Ignored in those browsers that don't yet support <a href='http://caniuse.com/#search=speech%20syn' target='_blank'>speech synthesis</a>. 
 <i>Released 12 April 2016.</i>
 </li>
 <li>
