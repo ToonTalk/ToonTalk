@@ -4221,7 +4221,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 
         utilities.number_to_words = function (input) {
             var slash_index = input.indexOf('/');
-            var short_denominator = function (n) {
+            var special_denominator = function (n) {
                 var names = ["", "", "half", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth",
                              "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth"];
                 if (n <= 20) {
@@ -4254,7 +4254,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 if (n === 1000000000) {
                     return "billionth";
                 }
-                return utilities.integer_to_words(n.toString());
             }
             var numerator, plural;
             if (slash_index < 0) {
@@ -4264,7 +4263,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             plural = numerator !== "1" && numerator !== "-1";
             if (slash_index+3 >= input.length || (!plural && slash_index+11 >= input.length)) {
                 // denominator is either 2 digits or 1 over at most 10 digits so speak it specially
-                return utilities.integer_to_words(numerator) + " " + short_denominator(parseInt(input.substring(slash_index+1))) + (plural ? "s" : "");
+                var denominator = special_denominator(parseInt(input.substring(slash_index+1)));
+                if (denominator) {
+                    return utilities.integer_to_words(numerator) + " " + denominator + (plural ? "s" : "");
+                }
+                return utilities.integer_to_words(numerator) + " over " + utilities.integer_to_words(input.substring(slash_index+1));
             }
             return utilities.integer_to_words(input.substring(0, slash_index)) + " over " + utilities.integer_to_words(input.substring(slash_index+1));
         };
