@@ -2739,7 +2739,11 @@ window.TOONTALK.UTILITIES =
                 }
                 select.appendChild(option);
             });
-            $(select).addClass("ui-widget");
+            $(select).selectmenu({width: "50%",
+                                  open: function () {
+                                      // was ending up under the top-level and this backside without explicitly setting the z index
+                                      $(".ui-selectmenu-open").css({"z-index": 9999999});
+                                  }});
             $(label_element).addClass("ui-widget");
             utilities.use_custom_tooltip(select);
             return {container: container,
@@ -4345,6 +4349,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             if (n >= 100) {
                 output += first_twenty[Math.floor(n/100)] + " hundred";
                 n = n%100;
+                if (n > 0 && n < 10) {
                     // e.g. 103 to one hundred and three
                     output += " and";
                 }
