@@ -33,9 +33,10 @@ window.TOONTALK.bird = (function (TT) {
         var backside_element = backside.get_element();
         var $description_text_area;
         if (function_object) {
-            select_menu.menu.value = function_object.name;
+            $(select_menu.menu).val(function_object.name).selectmenu("refresh");
         }
-        select_menu.menu.addEventListener('change', function (event) {
+        $(select_menu.menu).on('selectmenuselect', function (event) {
+            // not sure why addEventListener didn't work
             bird.set_function_name(event.target.value);
             if (!bird.get_description()) {
                 $description_text_area = $(bird.get_backside_element()).find(".toontalk-description-input");

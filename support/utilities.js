@@ -2739,7 +2739,11 @@ window.TOONTALK.UTILITIES =
                 }
                 select.appendChild(option);
             });
-            $(select).addClass("ui-widget");
+            $(select).selectmenu({width: "50%",
+                                  open: function () {
+                                      // was ending up under the top-level and this backside without explicitly setting the z index
+                                      $(".ui-selectmenu-open").css({"z-index": 9999999});
+                                  }});
             $(label_element).addClass("ui-widget");
             utilities.use_custom_tooltip(select);
             return {container: container,
@@ -3167,7 +3171,7 @@ window.TOONTALK.UTILITIES =
                 utilities.set_css(element, pending_css);
             }; 
             var widget, x_scale, y_scale, $image;
-             if ($(element).is(".toontalk-not-observable")) {
+            if ($(element).is(".toontalk-not-observable")) {
                  // this happens on FireFox where this is called before the widget has been "rendered"
                  widget = TT.UTILITIES.widget_side_of_element(element);
                  if (widget) {
@@ -4221,7 +4225,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 
         utilities.number_to_words = function (input) {
             var slash_index = input.indexOf('/');
-            var short_denominator = function (n) {
+            var special_denominator = function (n) {
                 var names = ["", "", "half", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth",
                              "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth"];
                 if (n <= 20) {
@@ -4254,7 +4258,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 if (n === 1000000000) {
                     return "billionth";
                 }
-                return utilities.integer_to_words(n.toString());
             }
             var numerator, plural;
             if (slash_index < 0) {
@@ -4264,7 +4267,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             plural = numerator !== "1" && numerator !== "-1";
             if (slash_index+3 >= input.length || (!plural && slash_index+11 >= input.length)) {
                 // denominator is either 2 digits or 1 over at most 10 digits so speak it specially
-                return utilities.integer_to_words(numerator) + " " + short_denominator(parseInt(input.substring(slash_index+1))) + (plural ? "s" : "");
+                var denominator = special_denominator(parseInt(input.substring(slash_index+1)));
+                if (denominator) {
+                    return utilities.integer_to_words(numerator) + " " + denominator + (plural ? "s" : "");
+                }
+                return utilities.integer_to_words(numerator) + " over " + utilities.integer_to_words(input.substring(slash_index+1));
             }
             return utilities.integer_to_words(input.substring(0, slash_index)) + " over " + utilities.integer_to_words(input.substring(slash_index+1));
         };
@@ -4317,7 +4324,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         var hundred_thousand_names = ["", "centimilli", "ducentimilli", "trecentimilli", "quadringentimilli", "quingentimilli", "sescentimilli", "septingentimilli", "octingentimilli", "nongentimilli"];
         var million_names = ["", "milli-milli", "milli-dumilli", "milli-tremilli", "milli-quadrinmilli", "milli-quinmilli", "milli-sesmilli", "milli-septinmilli", "milli-octinmilli", "milli-nonmilli"];
         var small_names = ["thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion",  "nonillion"];
-        var digits_remaining, power_minus_3, up_to_three_digits, digits_copied, to_name, previous_suffix, suffix,
+        var digits_remaining, power_minus_3, up_to_three_digits, digits_copied, to_name, previous_suffix, suffix, last_comma,
             ones, tens, hundreds, thousands, ten_thousands, hundred_thousands, millions,
             one_name, ten_name, hundred_name, thousand_name, ten_thousand_name, hundred_thousand_name, million_name;
         var copy_all_but_leading_zeros = function (digit_count) {
@@ -4342,6 +4349,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             if (n >= 100) {
                 output += first_twenty[Math.floor(n/100)] + " hundred";
                 n = n%100;
+                if (n > 0 && n < 10) {
+                    // e.g. 103 to one hundred and three
+                    output += " and";
+                }
             }
             if (n > 20) {
                 if (output != "") {
@@ -4460,7 +4471,12 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 output += ","; // reads better and segmented text-to-speech breaks at better places
             };
         };
-        return output.trim();
+        output =  output.trim();
+        last_comma = output.lastIndexOf(", ");
+        if (last_comma >= 0) {
+            return output.substring(0, last_comma) + " and" + output.substring(last_comma+1);
+        }
+        return output;
     };
     utilities.test_number_to_words = function (n) {
         var i, x;

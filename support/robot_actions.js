@@ -282,11 +282,6 @@ window.TOONTALK.actions =
                                     console.log(step + " (watched)");
                                 }
                                 step.run_watched(robot);
-                                if (robot.get_thing_in_hand()) {
-                                    // TODO: move this elsewhere
-                                    robot.get_thing_in_hand().save_dimensions();
-                                    robot.rerender();
-                                }
                             } else {
                                 robot.set_running_or_in_run_queue(false);
                                 // restore position

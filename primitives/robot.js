@@ -401,6 +401,10 @@ window.TOONTALK.robot = (function (TT) {
                     console.log(this.to_debug_string() + " now has in his hand " + (new_value ? new_value.to_debug_string() : "nothing"));
                 }
             }
+            if (new_value && !new_value.location_constrained_by_container()) {
+                // if location is constrained by container than so is size so don't save this
+                new_value.save_dimensions();
+            }
             thing_in_hand = new_value;
         };
         new_robot.get_next_robot = function () {
@@ -1683,8 +1687,8 @@ window.TOONTALK.robot_backside =
             // TODO: replace JQuery data with element property
             $(next_robot_area).data("drop_area_owner", robot);
             run_once_input.button.addEventListener('click', run_once_button_clicked);
-            speed_menu.menu.value = speed_value_to_name(robot.get_watched_speed());
-            speed_menu.menu.addEventListener('change', function (event) {
+            $(speed_menu.menu).val(speed_value_to_name(robot.get_watched_speed())).selectmenu("refresh");
+            $(speed_menu.menu).on('selectmenuselect', function (event) {
                 robot.set_watched_speed(speed_name_to_value(event.target.value));
             });
             if (next_robot) {
