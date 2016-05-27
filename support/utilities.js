@@ -4320,7 +4320,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         var hundred_thousand_names = ["", "centimilli", "ducentimilli", "trecentimilli", "quadringentimilli", "quingentimilli", "sescentimilli", "septingentimilli", "octingentimilli", "nongentimilli"];
         var million_names = ["", "milli-milli", "milli-dumilli", "milli-tremilli", "milli-quadrinmilli", "milli-quinmilli", "milli-sesmilli", "milli-septinmilli", "milli-octinmilli", "milli-nonmilli"];
         var small_names = ["thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion",  "nonillion"];
-        var digits_remaining, power_minus_3, up_to_three_digits, digits_copied, to_name, previous_suffix, suffix,
+        var digits_remaining, power_minus_3, up_to_three_digits, digits_copied, to_name, previous_suffix, suffix, last_comma,
             ones, tens, hundreds, thousands, ten_thousands, hundred_thousands, millions,
             one_name, ten_name, hundred_name, thousand_name, ten_thousand_name, hundred_thousand_name, million_name;
         var copy_all_but_leading_zeros = function (digit_count) {
@@ -4463,7 +4463,12 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 output += ","; // reads better and segmented text-to-speech breaks at better places
             };
         };
-        return output.trim();
+        output =  output.trim();
+        last_comma = output.lastIndexOf(", ");
+        if (last_comma >= 0) {
+            return output.substring(0, last_comma) + " and" + output.substring(last_comma+1);
+        }
+        return output;
     };
     utilities.test_number_to_words = function (n) {
         var i, x;
