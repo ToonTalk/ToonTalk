@@ -4345,6 +4345,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             if (n >= 100) {
                 output += first_twenty[Math.floor(n/100)] + " hundred";
                 n = n%100;
+                    // e.g. 103 to one hundred and three
+                    output += " and";
+                }
             }
             if (n > 20) {
                 if (output != "") {
