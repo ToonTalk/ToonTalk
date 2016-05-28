@@ -101,7 +101,11 @@ window.TOONTALK.sensor = (function (TT) {
             } else {
                 copy = TT.sensor.create(event_name, this.get_attributes_string(), description, undefined, active, widget, this.get_name());
             }
-            return new_sensor.add_to_copy(copy, parameters);
+            copy = new_sensor.add_to_copy(copy, parameters);
+            // even though copy is created with the same active value as this
+            // add_to_copy calls set_running to sets it to false
+            copy.set_active(this.get_active());
+            return copy;
         };
         new_sensor.get_json = function (json_history, callback, start_time) {
             var new_callback = function (json, start_time) {
