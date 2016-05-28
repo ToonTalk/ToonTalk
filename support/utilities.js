@@ -3029,9 +3029,14 @@ window.TOONTALK.UTILITIES =
             return first_part + " ... " + string.substring(string.length-(maximum_length-first_part.length));
         };
 
-        utilities.backup_all_top_level_widgets = function (immediately) {
+        utilities.each_top_level_widget = function (callback) {
             $(".toontalk-top-level-backside").each(function (index, element) {
-                var top_level_widget = utilities.widget_side_of_element(element).get_widget();
+                callback(utilities.widget_side_of_element(element).get_widget());
+            });
+        };
+
+        utilities.backup_all_top_level_widgets = function (immediately) {
+            utilities.each_top_level_widget(function (top_level_widget) {
                 top_level_widget.save(immediately);
             });
         };
@@ -4647,7 +4652,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 if (document.hidden) {
                     utilities.mute_audio_objects_playing();
                 } else {
-                    // make sure all widgets are redisplayed
+//                     // make sure all widgets are redisplayed
+//                     // first add to DOM element of any widgets that have been created but never rendered
+//                     utilities.each_top_level_widget(function (top_level_widget) {
+//                         top_level_widget.update_display();
+//                     });
                     utilities.rerender_all();
                     utilities.restore_audio_volumes();
                 }

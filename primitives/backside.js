@@ -755,6 +755,7 @@ window.TOONTALK.backside =
                 // default -- some backsides do more and call this
                 var description_text_area = this.get_description_text_area();
                 var name_text_input = this.get_name_text_input();
+                var bounding_box = backside_element.getBoundingClientRect();
                 var description;
                 if (description_text_area) {
                     description = this.get_widget().get_description();
@@ -770,6 +771,20 @@ window.TOONTALK.backside =
                 } else {
                     $(backside_element).find().show();      
                 }
+                // look for new backside widgets that need to be added to DOM tree
+                this.get_widget().get_backside_widgets().forEach(function (widget) {
+                            var element;
+                            if (widget.get_frontside()) {
+                                // is not new
+                                return;
+                            }
+                            element = widget.get_element(true);
+                            TT.UTILITIES.set_css(element,
+                                                 {left: bounding_box.width *Math.random(),
+                                                  top:  bounding_box.height*Math.random()});
+                            backside_element.appendChild(element);
+                            widget.update_display();
+                });
                 backside.display_updated();
             };
             backside.display_updated = function () {
