@@ -39,7 +39,7 @@ window.TOONTALK.robot = (function (TT) {
         // frontside_conditions is a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions is a list of required widgets on the backside
         // body holds the actions the robot does when it runs
-        // if watched_speed is undefined then runs at original speed
+        // if watched_speed is 0 then runs at original speed
         // otherwise is a positive number which is the multiplier of the normal default speed for each step
         var new_robot = Object.create(robot);
         // grab the default definition of remove_backside_widget so can use it while overriding it
@@ -1625,10 +1625,11 @@ window.TOONTALK.robot_backside =
                                                                "When finished start again",
                                                                run_once_title(robot.get_run_once()));
             var speed_names  = ["normal", "original", "double", "half", "very fast", "very slow"];
-            var speed_values = [ 1,        undefined,  2,       .5,      10,         .25];
+            var speed_values = [ 1,        0,          2,       .5,      10,         .25];
+            // 0 used to be undefined and the default -- means follow original timing if available
             var speed_value_to_name = function (value) {
                 // default is normal (index 0)
-                var index = value ? speed_values.indexOf(value) : 0;
+                var index = value !== undefined ? speed_values.indexOf(value) : 0;
                 return speed_names[index];
             };
             var speed_name_to_value = function (name) {
