@@ -348,13 +348,13 @@ window.TOONTALK.path =
                              }
                        },
                        toString: function (to_string_info) {
-                        var string = ((to_string_info && to_string_info.robot && to_string_info.robot.get_backside_conditions()) ? to_string_info.robot.get_backside_conditions()[type_name] :
-                                                                                 TT.UTILITIES.add_a_or_an(type_name)) + 
-                                     " on the back of what I'm working on";
-                        if (this.removing_widget) {
-                            return "what is on " + string;
-                        }
-                        return string;
+                           var string = ((to_string_info && to_string_info.robot && to_string_info.robot.get_backside_conditions()) ? to_string_info.robot.get_backside_conditions()[type_name] :
+                                                                                    TT.UTILITIES.add_a_or_an(type_name)) + 
+                                        " on the back of what I'm working on";
+                           if (this.removing_widget) {
+                               return "what is on " + string;
+                           }
+                           return string;
                     },
                     get_json: function (json_history, callback, start_time) {
                             callback({type: "path.to_backside_widget_of_context",
@@ -378,10 +378,11 @@ window.TOONTALK.path =
                     },
                     toString: function (to_string_info) {
                         var conditions =  robot.get_frontside_conditions();
-                        var back = conditions && conditions.is_top_level() ? "work area" : "back of what";
+                        var top_level_condition = conditions && conditions.is_top_level();
+                        var back = top_level_condition ? "work area" : "back of what";
                         var string = TT.UTILITIES.add_a_or_an(type_name || "thing") + 
                                      " on the " + back + " I'm working on";
-                        if (this.removing_widget) {
+                        if (this.removing_widget && !top_level_condition) {
                             return "what is on " + string;
                         }
                         return string;

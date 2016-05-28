@@ -222,6 +222,7 @@ window.TOONTALK.robot_action =
         if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible()) {
             // is running in a context where the source of this widget isn't available
             // e.g. published page or test file without standard resource widgets
+            // or robot was hidden while running
             continuation();
             return;
         }
