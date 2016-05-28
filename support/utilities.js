@@ -2406,6 +2406,9 @@ window.TOONTALK.UTILITIES =
             }
             // replaced add_one_shot_event_handler with time outs because transition end can be triggered by changes in the frontside_element
             // e.g. when a robot is holding a tool
+            if (document.hidden) {
+                duration = 0;
+            }
             if (more_animation_follows) {
                setTimeout(continuation, duration);
             } else {
@@ -4496,6 +4499,27 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         for (i = 0; i < n; i++) {
             x = Math.round(1000000000*Math.random());
             console.log(x + " = " + utilities.number_to_words(x.toString()));
+        }
+    };
+    utilities.for_each_batch = function (array, callback, chunk_size, start_index) {
+        // same as forEach except yields every chunk_size elements
+        // if the list is long and much needs to be done to each element then everything can freeze for a while
+        // this way we yield to other processes
+        var i, stop_index;
+        if (start_index === undefined) {
+            start_index = 0;
+        }
+        if (!chunk_size) {
+            chunk_size = 100;
+        }
+        stop_index = Math.min(array.length, start_index+chunk_size);
+        for (i = start_index; i < stop_index; i++) {
+            callback(array[i], i);
+        }
+        if (stop_index < array.length) {
+            utilities.set_timeout(function () {
+                utilities.for_each_batch(array, callback, chunk_size, stop_index);
+            });
         }
     };
 // for comparison with the above (which handles much bigger numbers than this)
