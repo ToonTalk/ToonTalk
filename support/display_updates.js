@@ -51,8 +51,10 @@ window.TOONTALK.DISPLAY_UPDATES =
             var updates = pending_updates;
             var ensure_childen_have_higer_z_index = function (element, z_index) {
                 $(element).children().each(function (index, child_element) {
-                        $(child_element).css({"z-index": z_index+1});
-                        ensure_childen_have_higer_z_index(child_element, z_index+1);
+                        if ($(child_element).is(".toontalk-side")) {
+                            $(child_element).css({"z-index": z_index+1});
+                            ensure_childen_have_higer_z_index(child_element, z_index+1);
+                        }
                 });
             };
             pending_updates = [];
