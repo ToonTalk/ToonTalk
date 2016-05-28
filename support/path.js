@@ -368,7 +368,17 @@ window.TOONTALK.path =
             // type_name is only used to generate better robot titles
             return {dereference_path: function (robot) {
                         var referenced = robot.get_backside_matched_widgets()[backside_index];
+                        var container;
                         if (referenced) {
+                            if (this.removing_widget) {
+                                container = referenced.get_parent_of_frontside();
+                                if (container && container.is_hole()) {
+                                    container = container.get_parent_of_frontside();
+                                }
+                                if (container && container.removed_from_container) {
+                                    robot.remove_from_container(referenced, container);
+                                }
+                            }
                             return TT.path.continue_dereferencing_path(this, referenced, robot);
                         }
                         // else signal an error?
