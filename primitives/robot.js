@@ -664,8 +664,9 @@ window.TOONTALK.robot = (function (TT) {
                     backside_conditions.some(function (condition) {
                         // check that a widget on the back matches this condition
                         var sub_match_status, best_sub_match_status;
-                        if (condition.matching_widget && condition.matching_widget.get_parent_widget_of_frontside()) {
-                            // try the last widget (if not recently removed) first to see if it matches since corresponding widget rarely changes
+                        if (condition.matching_widget && 
+                            condition.matching_widget.get_parent === context) {
+                            // try the last widget (if still a backside widget) first to see if it matches since corresponding widget rarely changes
                             sub_match_status = TT.UTILITIES.match(condition, condition.matching_widget);
                             if (sub_match_status === 'matched') {
                                 backside_matched_widgets.push(condition.matching_widget);
