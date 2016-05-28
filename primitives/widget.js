@@ -533,7 +533,7 @@ window.TOONTALK.widget = (function (TT) {
                     var target_absolute_position = $(target_element).offset();
                     var frontside_element = this.get_frontside_element();
                     var target_is_backside = $(target_element).is(".toontalk-backside");
-                    if (!target_element || !TT.UTILITIES.visible_element(target_element)) {
+                    if (!target_element || !TT.UTILITIES.visible_element(target_element) || speed === 0) {
                         // don't know where to go so just start doing the next thing
                         if (continuation) {
                             continuation();
