@@ -258,25 +258,25 @@ window.TOONTALK.widget = (function (TT) {
                     var frontside_element, css;
                     if (this.saved_width > 0) {
                        frontside_element = this.get_frontside_element(true);
-                       if (this.use_scaling_transform) {
-                           this.use_scaling_transform({width:  this.saved_width,
-                                                       height: this.saved_height});  
-                       } else if (!this.ok_to_set_dimensions()) {
+                       if (!this.ok_to_set_dimensions()) {
                            css = {width:  '',
                                   height: ''};
                            // remove transforms as well
                            TT.UTILITIES.set_css_transform(css, '');
-                           TT.UTILITIES.set_css(frontside_element, css);                          
-                        } else if (this.set_size_attributes) {
-                            // e.g. element widgets need to update their attributes
-                            this.set_size_attributes(this.saved_width, this.saved_height);
-                        } else {
-                            TT.UTILITIES.set_css(frontside_element,
-                                                 {width:  this.saved_width,
-                                                  height: this.saved_height});                                 
-                        }
-                        this.saved_width =  undefined;
-                        this.saved_height = undefined;
+                           TT.UTILITIES.set_css(frontside_element, css);
+                       } else if (this.use_scaling_transform) {
+                           this.use_scaling_transform({width:  this.saved_width,
+                                                       height: this.saved_height});                       
+                       } else if (this.set_size_attributes) {
+                           // e.g. element widgets need to update their attributes
+                           this.set_size_attributes(this.saved_width, this.saved_height);
+                       } else {
+                           TT.UTILITIES.set_css(frontside_element,
+                                                {width:  this.saved_width,
+                                                 height: this.saved_height});                                 
+                       }
+                       this.saved_width =  undefined;
+                       this.saved_height = undefined;
                     }
                 };
             }
