@@ -1864,7 +1864,8 @@ window.TOONTALK.element_backside =
                 $play_sound_effect_button, $play_video_button,
                 sound_effect, audio_label_and_title,
                 video_object, video_label_and_title,
-                play_sound_effect_button_clicked, play_video_button_clicked;
+                play_sound_effect_button_clicked, play_video_button_clicked,
+                good_height;
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
@@ -1877,7 +1878,7 @@ window.TOONTALK.element_backside =
                                                                                                           toString: "for the element's text"});
                     }
                 };
-                html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "My HTML is", "Type here to edit the text.", drop_handler);
+                html_input = TT.UTILITIES.create_text_area(text, "toontalk-html-input", "My HTML is", "Type here to edit the text.", drop_handler, undefined, true);
                 update_html = function (event) {
                     // replace character code 160 with ordinary space (32)
                     var new_text = html_input.button.value.trim().replace(/\xA0/g," ");
@@ -1893,7 +1894,15 @@ window.TOONTALK.element_backside =
                 // commented out the following since the resize handles for backside end up only applying to the HTML input element
 //              $(html_input.container).resizable();
                 $(html_input.container).css({width: "100%"});
-                $(html_input.button).css({width: "100%"});
+                if (html_input.button.value.length <= 60) {
+                    good_height = 2;
+                } else if (html_input.button.value.length < 600) {
+                    good_height = Math.ceil(html_input.button.value.length/60);
+                } else {
+                    good_height = 10;
+                }
+                $(html_input.button).css({width: "95%",
+                                          height: good_height + "em"});
                 html_input.button.addEventListener('change',   update_html);
                 html_input.button.addEventListener('mouseout', update_html);
                 if (element_widget.is_plain_text_element()) {

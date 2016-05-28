@@ -2637,7 +2637,7 @@ window.TOONTALK.UTILITIES =
                     button: text_input};
         };
         
-        utilities.create_text_area = function (value, class_name, label, title, drop_handler, type) {
+        utilities.create_text_area = function (value, class_name, label, title, drop_handler, type, place_label_above) {
             var text_area = document.createElement("textarea");
             var label_element, container, new_drop_handler;
             text_area.className = class_name;
@@ -2654,7 +2654,11 @@ window.TOONTALK.UTILITIES =
             label_element.innerHTML = label;
             text_area.id = utilities.generate_unique_id();
             label_element.htmlFor = text_area.id;
-            container = utilities.create_horizontal_table(label_element, text_area);
+            if (place_label_above) {
+                container = utilities.create_vertical_table(  label_element, text_area);
+            } else {
+                container = utilities.create_horizontal_table(label_element, text_area);
+            }
             $(text_area).button()
                         .addClass("toontalk-text-area")
                         .css({"background": "white"}); // somehow JQuery gives a background color despite toontalk-text-area's CSS
