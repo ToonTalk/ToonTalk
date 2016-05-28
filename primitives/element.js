@@ -369,16 +369,18 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                        function (original_parent) {
                                                            var parent = this.get_parent_of_frontside();
                                                            wrap_location(this, current_pending_css);
-                                                           TT.UTILITIES.scale_element(frontside_element,
-                                                                                      current_width,
-                                                                                      current_height,
-                                                                                      original_width,
-                                                                                      original_height,
-                                                                                      transform,
-                                                                                      current_pending_css,
-                                                                                      original_parent,
-                                                                                      // no need to translate if no parent
-                                                                                      !parent);
+                                                           if (this.ok_to_set_dimensions() || this.location_constrained_by_container()) {
+                                                               TT.UTILITIES.scale_element(frontside_element,
+                                                                                          current_width,
+                                                                                          current_height,
+                                                                                          original_width,
+                                                                                          original_height,
+                                                                                          transform,
+                                                                                          current_pending_css,
+                                                                                          original_parent,
+                                                                                          // no need to translate if no parent
+                                                                                          !parent);
+                                                           }
                                                            pending_css = undefined;
                                                        }.bind(this));
                 return;
