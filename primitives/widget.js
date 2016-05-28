@@ -1306,7 +1306,7 @@ window.TOONTALK.widget = (function (TT) {
             var frontside
             if (document.hidden) {
                 // e.g. window is minimised
-                return;
+                return false;
             }
             frontside = this.get_frontside();
             if (!frontside) {
@@ -1748,9 +1748,8 @@ window.TOONTALK.widget = (function (TT) {
                 return this;
             };
             top_level_widget.visible = function () {
-                // might want to be able to make top-level backsides invisible 
-                // for a while to run faster
-                return true;
+                // visible only if tab/window is
+                return !document.hidden;
             };
             top_level_widget.get_parent_of_frontside = function () {
                 return undefined;
