@@ -294,6 +294,10 @@ window.TOONTALK.backside =
                 return widget;
             };
             backside.visible = function () {
+                if (document.hidden) {
+                    // e.g. window is minimised
+                    return false;
+                }
                 return visible;
             };
             backside.set_visible = function (new_value) {
