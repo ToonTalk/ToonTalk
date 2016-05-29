@@ -1037,6 +1037,7 @@ window.TOONTALK.robot = (function (TT) {
                 // the following will ignore this due to the last argument being true
                 container.removed_from_container(part_side, undefined, index, true);
         };
+        part_side = part_side.dereference();
         if (this.animate_consequences_of_actions()) {
             // if animating then delay removing it
             // otherwise hole empties before the robot gets there
