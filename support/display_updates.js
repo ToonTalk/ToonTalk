@@ -68,11 +68,6 @@ window.TOONTALK.DISPLAY_UPDATES =
                     // became invisible after being queued
                     return;
                 }
-                if ($(element).is(".toontalk-not-observable")) {
-                    // not ready
-                    pending_update.render();
-                    return;
-                }
                 // if window was hidden and then shown elements might be stuck hidden
                 // perhaps worth calling the following only when needed
                 $(element).show(); 

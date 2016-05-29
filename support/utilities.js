@@ -58,7 +58,7 @@ window.TOONTALK.UTILITIES =
                                                                                       // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
                                                                                       // When stepping through the code it works fine so must be some kind of timing dependent problem
                                                                                       element.toontalk_attached_callback();
-                                                                                      element.toontalk_attached_callback = undefined;;
+                                                                                      element.toontalk_attached_callback = undefined;
                                                                                   }
                                                                               });
                                                                           });
@@ -3318,6 +3318,7 @@ window.TOONTALK.UTILITIES =
                                }
                 }); 
             }
+            // toontalk-not-observable still needs to be rendered since how else could its dimensions be comput4ed
             $(element).addClass("toontalk-not-observable");
             document.body.appendChild(element);
             if (recompute) {
@@ -4079,6 +4080,7 @@ window.TOONTALK.UTILITIES =
                callback = function () {
                               old_callback();
                               new_callback();
+                              $(element).removeClass("toontalk-has-attached-callback");
                               element.toontalk_attached_callback = undefined;
                           };
            } else {
