@@ -995,7 +995,9 @@ window.TOONTALK.nest = (function (TT) {
                     $(contents[0].get_element()).show();
                 }
                 // if empty container or new top contents may need to update -- e.g. scales
-                this.get_containing_widget().render();
+                if (!this.get_containing_widget().is_top_level()) {
+                    this.get_containing_widget().render();
+                }
             }
             if (contents.length <= nest.maximum_capacity && nest_under_capacity_listeners.length > 0) {
                 // remove the limit while running the listeners
@@ -1063,10 +1065,12 @@ window.TOONTALK.nest = (function (TT) {
                     if ($top_level_backside_element.length > 0) {
                         robot.add_watched_step_end_listeners(function () {
                             // run this after step has finished since removal from parent may happen during this step
-                            $top_level_backside_element.get(0).appendChild(widget_element);
-                            TT.UTILITIES.set_css(widget_element, {left: left, 
-                                                                   top: top});
-                            });
+                            if (widget_side.get_parent()) {
+                                $top_level_backside_element.get(0).appendChild(widget_element);
+                                TT.UTILITIES.set_css(widget_element, {left: left, 
+                                                                       top: top});
+                            }
+                        });
                     }
                 }
                 return widget_side;
