@@ -32,6 +32,7 @@ window.TOONTALK.UTILITIES =
     var div_close  = "</div>";
     var muted_audio_objects = [];
     var audio_objects_playing = [];
+    var browser_is_internet_explorer;
     var observer = new MutationObserver(function (mutations) {
                                             mutations.forEach(function(mutation) {
                                                                   var i, added_node;
@@ -3542,9 +3543,11 @@ window.TOONTALK.UTILITIES =
             return window.navigator.userAgent.indexOf(type) >= 0;
         };
 
+        browser_is_internet_explorer = utilities.is_browser_of_type("MSIE") || // before version 11
+                                       utilities.is_browser_of_type("Trident");
+
         utilities.is_internet_explorer = function () {
-            return utilities.is_browser_of_type("MSIE") || // before version 11
-                   utilities.is_browser_of_type("Trident");
+            return browser_is_internet_explorer;
         };
 
         utilities.add_position = function (position_1, position_2) {
