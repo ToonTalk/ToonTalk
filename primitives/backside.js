@@ -705,8 +705,8 @@ window.TOONTALK.backside =
                 return this.get_widget().compare_with && this.get_widget().compare_with(other);
             };
             if (TT.debugging || TT.logging) {
-                backside.to_debug_string = function () {
-                    return "backside of " + this.get_widget().to_debug_string();
+                backside.to_debug_string = function (max_length) {
+                    return ("backside of " + this.get_widget().to_debug_string()).substring(0, max_length);
                 };
             }
             backside_element.toontalk_widget_side = backside;

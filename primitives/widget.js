@@ -172,8 +172,8 @@ window.TOONTALK.widget = (function (TT) {
                    return TT.UTILITIES.get_element_height(widget.get_frontside_element());
                }
             }
-            if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
-                widget.to_debug_string = function () {
+            if ((TT.debugging || TT.logging) && !widget.to_debug_string) {
+                widget.to_debug_string = function (max_length) {
                     var parent = this.get_parent_widget_of_frontside();
                     var id = this._debug_id;
                     var description = this.get_description();
@@ -193,7 +193,7 @@ window.TOONTALK.widget = (function (TT) {
                     if (description) {
                        description += " "; // space before next item
                     }
-                    return this.toString({plain_text: true}) + " (" + description + ((this.get_name && (this.get_name() + " ")) || "") + id + ")";
+                    return (this.toString({plain_text: true}) + " (" + description + ((this.get_name && (this.get_name() + " ")) || "") + id + ")").substring(0, max_length);
                 };
             }
             widget.is_top_level = return_false;
@@ -1767,9 +1767,9 @@ window.TOONTALK.widget = (function (TT) {
                 return this;
             };
             if (TT.debugging || TT.logging) {
-                top_level_widget.to_debug_string = function () {
+                top_level_widget.to_debug_string = function (max_length) {
                     var location = $(this.get_backside_element()).offset();
-                    return "top-level widget at " + Math.round(location.left) + ", " + Math.round(location.top);
+                    return ("top-level widget at " + Math.round(location.left) + ", " + Math.round(location.top)).substring(0, max_length);
                 };
             }
             top_level_widget.add_sides_functionality(top_level_widget);

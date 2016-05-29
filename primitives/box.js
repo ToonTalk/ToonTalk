@@ -1330,11 +1330,11 @@ window.TOONTALK.box_hole =
             TT.widget.has_parent(hole);
             TT.widget.has_listeners(hole);
             if (TT.debugging || TT.logging) {
-                hole.to_debug_string = function () {
-                    var info =  "the " + TT.UTILITIES.ordinal(index) + " hole of the " +
-                                (this.get_parent_of_frontside() ? this.get_parent_of_frontside().to_debug_string() : "not-yet-defined box");
+                hole.to_debug_string = function (max_length) {
+                    var info =  ("the " + TT.UTILITIES.ordinal(index) + " hole of the " +
+                                 (this.get_parent_of_frontside() ? this.get_parent_of_frontside().to_debug_string() : "not-yet-defined box")).substring(0, max_length);
                     if (contents) {
-                        return info + " which contains " + contents.to_debug_string();
+                        return info + " which contains " + contents.to_debug_string(max_length);
                     }
                     return info + " which is empty";
                 };

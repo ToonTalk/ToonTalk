@@ -352,7 +352,7 @@ window.TOONTALK.bird = (function (TT) {
                                   width:  width,
                                   height: height});
             if (TT.logging && TT.logging.indexOf('bird') >= 0) {
-                console.log(this.to_debug_string() + " from " + 
+                console.log(this.to_debug_string(50) + " from " + 
                            (starting_left || bird_offset.left-top_level_backside_element_bounding_box.left) + ", " + 
                            (starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top) + 
                             " to " + target_offset.left + ", " + target_offset.top);
@@ -841,8 +841,8 @@ window.TOONTALK.nest = (function (TT) {
                 // if robot or nest is visible let it keep running even if nest goes over capactity
                 // robot_removed_contents_since_empty ensures that programs to add to top-level nests or nests without robots removing things don't stop
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
-                    console.log(this.to_debug_string() + " postponing addition of " + widget_side.to_debug_string() +
-                                " by " + robot.to_debug_string() + ". Stack is " + contents.length + " long. " +
+                    console.log(this.to_debug_string(50) + " postponing addition of " + widget_side.to_debug_string(50) +
+                                " by " + robot.to_debug_string(50) + ". Stack is " + contents.length + " long. " +
                                 nest_under_capacity_listeners.length + " previously postponed.");
                 }
                 // stop the robot at the end of this cycle
@@ -966,9 +966,9 @@ window.TOONTALK.nest = (function (TT) {
             var removed = contents.shift();
             if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                 if (removed) {
-                    console.log(this.to_debug_string() + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
+                    console.log(this.to_debug_string(50) + " removed " + removed.to_debug_string() + " remaining widgets is " + contents.length);
                 } else {
-                    console.log(this.to_debug_string() + " nothing left to remove.");
+                    console.log(this.to_debug_string(50) + " nothing left to remove.");
                 }
             }
             if (removed) {
@@ -1002,7 +1002,8 @@ window.TOONTALK.nest = (function (TT) {
             if (contents.length <= nest.maximum_capacity && nest_under_capacity_listeners.length > 0) {
                 // remove the limit while running the listeners
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
-                    console.log(this.to_debug_string() + " running " + nest_under_capacity_listeners.length + " postponed additions. Stack is " + contents.length + " long.");
+                    console.log(this.to_debug_string(50) + " running " + nest_under_capacity_listeners.length +
+                                " postponed additions. Stack is " + contents.length + " long.");
                 }
                 nest.maximum_capacity = Number.MAX_VALUE;
                 nest_under_capacity_listeners.forEach(function (listener) {

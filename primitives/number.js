@@ -470,7 +470,7 @@ window.TOONTALK.number = (function () {
             font_height, font_width, max_decimal_places, new_HTML, backside, 
             size_unconstrained_by_container, no_borders, parent_widget, child_element;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
-            console.log("Updating display of " + this.to_debug_string());
+            console.log("Updating display of " + this.to_debug_string(50));
         }
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {

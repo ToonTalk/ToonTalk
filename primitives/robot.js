@@ -398,7 +398,7 @@ window.TOONTALK.robot = (function (TT) {
                     return;
                 }
                 if (TT.logging && TT.logging.indexOf("thing_in_hand") >= 0) {
-                    console.log(this.to_debug_string() + " now has in his hand " + (new_value ? new_value.to_debug_string() : "nothing"));
+                    console.log(this.to_debug_string(50) + " now has in his hand " + (new_value ? new_value.to_debug_string(50) : "nothing"));
                 }
             }
             if (new_value && !new_value.location_constrained_by_container()) {
@@ -534,10 +534,10 @@ window.TOONTALK.robot = (function (TT) {
             }
         };      
         if (TT.debugging || TT.logging) {
-            new_robot.to_debug_string = function () {
+            new_robot.to_debug_string = function (max_length) {
                 var frontside_conditions = this.get_frontside_conditions();
-                return "Robot (" + (this.get_description() || "") + " " + this.get_name() + ") runs if working on " + 
-                       (frontside_conditions ? TT.UTILITIES.add_a_or_an(frontside_conditions.toString()) : "anything");
+                return ("Robot (" + (this.get_description() || "") + " " + this.get_name() + ") runs if working on " + 
+                        (frontside_conditions ? TT.UTILITIES.add_a_or_an(frontside_conditions.toString()) : "anything")).substring(0, max_length);;
             };
         }
         if (next_robot) {
@@ -1037,6 +1037,7 @@ window.TOONTALK.robot = (function (TT) {
                 // the following will ignore this due to the last argument being true
                 container.removed_from_container(part_side, undefined, index, true);
         };
+        // if part_side is a covered nest then its contents are removed not the nest itself
         part_side = part_side.dereference();
         if (this.animate_consequences_of_actions()) {
             // if animating then delay removing it
