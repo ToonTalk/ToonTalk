@@ -41,7 +41,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                 return;
             }
             update_scheduled = true;
-            setTimeout(function () {
+            TT.UTILITIES.set_timeout(function () {
                 // delay until others have chance to add to the queue (e.g. contents of box holes)  
                 this.update_display_workhorse(now);
             }.bind(this));

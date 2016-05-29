@@ -54,9 +54,9 @@ window.TOONTALK.queue =
         },
         
         run: function () {
-            var end_time, next_robot_run, context, now, element;
+            var end_time = Date.now()+queue.maximum_run;
+            var next_robot_run, context, now, element;
             this.running = true;
-            end_time = Date.now()+queue.maximum_run;
             while (!this.to_run.isEmpty() && !this.paused && Date.now() < end_time) {
                 // tried checking the time every nth time but then add 1 unwatched looked funny (appeared to skip some additions)
                 next_robot_run = this.to_run.dequeue();
