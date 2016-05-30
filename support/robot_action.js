@@ -191,7 +191,7 @@ window.TOONTALK.robot_action =
                     robot.update_display();
                 }
             }
-            robot.run_next_step();
+            robot.run_next_step(true);
         };
         move_robot_animation(widget, robot, new_continuation, additional_info);
     };
@@ -300,7 +300,7 @@ window.TOONTALK.robot_action =
                 // and if dropped soon its location is known
                 robot.update_display();
             }
-            robot.run_next_step();
+            robot.run_next_step(true);
         };
         if (TT.debugging && widget_side.get_type_name() === 'empty hole') {
             TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
@@ -350,7 +350,7 @@ window.TOONTALK.robot_action =
                 thing_in_hand.restore_dimensions();
             }
             if (thing_in_hand.robot_waiting_before_next_step !== robot) {
-                robot.run_next_step();
+                robot.run_next_step(true);
             }
         };
         if (target.is_backside() && !TT.UTILITIES.visible_element(target.get_element())) {
@@ -388,7 +388,7 @@ window.TOONTALK.robot_action =
                 parent.render();
             }
             robot.set_thing_in_hand(undefined);
-            robot.run_next_step();
+            robot.run_next_step(true);
         }
         find_text_area = function () {
             // will be called once the backside exists
@@ -441,7 +441,7 @@ window.TOONTALK.robot_action =
 //                                    }
 //                                });         
 //                            }
-                           robot.run_next_step();
+                           robot.run_next_step(true);
                       },
                       delay);
         };
@@ -482,12 +482,12 @@ window.TOONTALK.robot_action =
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
         };
         var speed, where, top_level_element;
         if (!robot.animate_consequences_of_actions()) {
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
             return;
         }
         robot.carrying_tool = tool_held_by_robot_css_class;
@@ -547,7 +547,7 @@ window.TOONTALK.robot_action =
         if (!frontside_element) {
             // was hidden while running
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
             return;
         }
         new_continuation = function () {
@@ -566,7 +566,7 @@ window.TOONTALK.robot_action =
                            frontside_element.style.transitionDuration = '';
                            continuation();
                            widget.render();
-                           robot.run_next_step();
+                           robot.run_next_step(true);
                        },
                        duration);
         }
@@ -580,7 +580,7 @@ window.TOONTALK.robot_action =
             button_use_animation(source_widget, robot, continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(3000));
         } else {
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
         }      
     };
     var start_training_animation = function (robot_to_train, robot, continuation) {
@@ -595,7 +595,7 @@ window.TOONTALK.robot_action =
                                                                  left_offset: 30,
                                                                  top_offset: -20};
         robot_to_train_frontside_element.toontalk_return_to = $(robot_to_train_frontside_element).offset();
-        robot.run_next_step();
+        robot.run_next_step(true);
     };
     var stop_training_animation = function (trained_robot, robot, continuation, additional_info) {
         var trained_robot_frontside_element = trained_robot.get_frontside_element();
@@ -621,7 +621,7 @@ window.TOONTALK.robot_action =
     var train_another_animation = function (robot_being_trained, robot, continuation, additional_info) {
         var new_continuation = function () {
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
         };
         var watched_step = additional_info.step.run_watched;
         if (!watched_step) {
@@ -635,7 +635,7 @@ window.TOONTALK.robot_action =
     var open_backside_animation = function (widget, robot, continuation) {
         widget.open_backside(function () {
                                  continuation();
-                                 robot.run_next_step();
+                                 robot.run_next_step(true);
                              });
         close_backside_when_finished(widget, robot);
     };
@@ -653,7 +653,7 @@ window.TOONTALK.robot_action =
         setTimeout(function () {
                        $(widget.get_backside_element()).children(".toontalk-close-button").click();
                        continuation();
-                       robot.run_next_step();
+                       robot.run_next_step(true);
                    },
                    delay);     
     };
@@ -687,7 +687,7 @@ window.TOONTALK.robot_action =
          "add to the top-level backside": function (widget, robot, continuation) {
               // do nothing -- this action is only needed if unwatched
               continuation();
-              robot.run_next_step();
+              robot.run_next_step(true);
          },
          "add a new widget to the work space": animate_widget_creation,
          "start training":                     start_training_animation,
@@ -749,8 +749,12 @@ window.TOONTALK.robot_action =
                 if (referenced.wait_until_this_nest_receives_something) {         
                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(
                         function () {
-                            this.run_unwatched(robot);
-                                    }.bind(this),
+                            if (robot.visible()) {
+                                this.run_watched(robot);
+                            } else {
+                                this.run_unwatched(robot);
+                            }
+                        }.bind(this),
                         robot);
                     return;
                 }

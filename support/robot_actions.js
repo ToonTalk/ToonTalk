@@ -120,7 +120,7 @@ window.TOONTALK.actions =
                 // step_number may already be bound if called when a watched robot was hidden while running
                 step_number = 0;
             }
-            robot.run_next_step = function () {
+            robot.run_next_step = function (now_visible) {
                 if (step_number < steps.length) {
                     var step = steps[step_number];
                     step_number++;
@@ -128,7 +128,12 @@ window.TOONTALK.actions =
                         console.log(step + " (unwatched) at " + Date.now() + " by robot " + robot.get_name());
                     }
                     // each step needs to call robot.run_next_step
-                    step.run_unwatched(robot);
+                    if (now_visible) {
+                        robot.run_watched_step_end_listeners();
+                        step.run_watched(robot);
+                    } else {
+                        step.run_unwatched(robot);
+                    }
                 } else {
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
