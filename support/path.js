@@ -375,7 +375,8 @@ window.TOONTALK.path =
                                 if (container && container.is_hole()) {
                                     container = container.get_parent_of_frontside();
                                 }
-                                if (container && container.removed_from_container) {
+                                if (container && container.removed_from_container && type_name !== 'nest') {
+                                    // taking someting off the nest not removing the nest itself
                                     robot.remove_from_container(referenced, container);
                                 }
                             }
