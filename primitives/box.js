@@ -944,8 +944,8 @@ window.TOONTALK.box_backside =
                 }
             };
             var update_orientation = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button);
-                var orientation = selected_button.value;
+                var selected = TT.UTILITIES.selected_radio_button(horizontal, vertical);
+                var orientation = selected.button.value;
                 var is_horizontal = (orientation === "horizontal");
                 box.set_horizontal(is_horizontal, true);
                 if (box.robot_in_training()) {
@@ -953,7 +953,7 @@ window.TOONTALK.box_backside =
                                                          argument_1: is_horizontal,
                                                          toString: "by changing the orientation to " + orientation + " of the box",
                                                          // just use the first className to find this button later
-                                                         button_selector: "." + selected_button.className.split(" ", 1)[0]});
+                                                         button_selector: "." + selected.container.className.split(" ", 1)[0]});
                 }
             };
             var backside_element = backside.get_element();

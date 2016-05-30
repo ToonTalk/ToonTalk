@@ -2572,6 +2572,12 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.check_radio_button = function (button_elements) {
+            var $table = $(button_elements.button).closest(".ui-buttonset");
+            if ($table.length > 0) {
+                // un-highlight all before setting one
+                $table.find(".ui-state-active").removeClass("ui-state-active")
+                                               .prop("checked", false);
+            };
             $(button_elements.button).prop("checked", true);
             $(button_elements.label).addClass('ui-state-active');
         };
@@ -2854,13 +2860,13 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.selected_radio_button = function () {
-            var i, selected;
+            var i;
             for (i = 0; i < arguments.length; i++) {
-                if (arguments[i].checked) {
+                if ($(arguments[i].label).is(".ui-state-focus")) {
                     return arguments[i];
                 }
             }
-            return selected;
+            return;
         };
         
         utilities.create_image = function (url, class_name) {
