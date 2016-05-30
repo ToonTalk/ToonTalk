@@ -163,6 +163,8 @@ window.TOONTALK.bird = (function (TT) {
                                 parent.get_widget().rerender();
                             }
                         }
+                        // note that if the bird left a container unwatched
+                        // and now is watched it doesn't know where to go and will end up on the on the top level
                         if (restore_contents) {
                             // if bird was inside something go back where it was
                             top_level_widget.remove_backside_widget(this, true);
@@ -858,6 +860,28 @@ window.TOONTALK.nest = (function (TT) {
             if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                 console.log(this.to_debug_string() + " added " + widget_side.to_debug_string() + " nest now contains " + contents.length + " widgets.");
             }
+            if (widget_side.is_backside()) {
+                widget_side.set_parent_of_backside(this);
+            } else {
+                widget_side.set_parent_of_frontside(this);
+            }
+            if (nest_copies && !ignore_copies) {
+                if (delivery_bird) {
+                    nest_copies.forEach(function (nest_copy) {
+                        if (!nest_copy.has_ancestor(widget_side.get_widget())) {
+                            // ignore if nest_copy is inside message
+                            nest_copy.animate_bird_delivery(TT.UTILITIES.copy_side(widget_side), delivery_bird, undefined, event, robot);
+                        }
+                    });                    
+                } else {
+                    nest_copies.forEach(function (nest_copy) {
+                        if (!nest_copy.has_ancestor(widget_side.get_widget())) {
+                            // ignore if nest_copy is inside message
+                            nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side, false, true), event, robot);
+                        }
+                    });
+                }
+            }
             if (stack_size === 1) {
                 robot_removed_contents_since_empty = false;
                 if (non_empty_listeners.length > 0) {
@@ -880,28 +904,6 @@ window.TOONTALK.nest = (function (TT) {
                 // is under the top widget
                 widget_side.hide();
                 widget_side.set_visible(false);
-            }
-            if (widget_side.is_backside()) {
-                widget_side.set_parent_of_backside(this);
-            } else {
-                widget_side.set_parent_of_frontside(this);
-            }
-            if (nest_copies && !ignore_copies) {
-                if (delivery_bird) {
-                    nest_copies.forEach(function (nest_copy) {
-                        if (!nest_copy.has_ancestor(widget_side.get_widget())) {
-                            // ignore if nest_copy is inside message
-                            nest_copy.animate_bird_delivery(TT.UTILITIES.copy_side(widget_side), delivery_bird, undefined, event, robot);
-                        }
-                    });                    
-                } else {
-                    nest_copies.forEach(function (nest_copy) {
-                        if (!nest_copy.has_ancestor(widget_side.get_widget())) {
-                            // ignore if nest_copy is inside message
-                            nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side, false, true), event, robot);
-                        }
-                    });
-                }
             }
             this.rerender();
         };

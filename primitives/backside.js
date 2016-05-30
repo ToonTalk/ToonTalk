@@ -772,7 +772,8 @@ window.TOONTALK.backside =
                     $(backside_element).find().show();      
                 }
                 // look for new backside widgets that need to be added to DOM tree
-                this.get_widget().get_backside_widgets().forEach(function (widget) {
+                this.get_widget().get_backside_widgets().forEach(
+                        function (widget) {
                             var element;
                             if (widget.get_frontside()) {
                                 // is not new
@@ -784,7 +785,7 @@ window.TOONTALK.backside =
                                                   top:  bounding_box.height*Math.random()});
                             backside_element.appendChild(element);
                             widget.update_display();
-                });
+                       });
                 backside.display_updated();
             };
             backside.display_updated = function () {

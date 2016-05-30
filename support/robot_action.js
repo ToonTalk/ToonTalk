@@ -15,6 +15,7 @@ window.TOONTALK.robot_action =
             return true;
          },
          "pick up": function (widget, robot) {
+             widget.set_parent(undefined);
              robot.set_thing_in_hand(widget);
              return true;
          },
