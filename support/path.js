@@ -392,7 +392,7 @@ window.TOONTALK.path =
                         var back = top_level_condition ? "work area" : "back of what";
                         var string = TT.UTILITIES.add_a_or_an(type_name || "thing") + 
                                      " on the " + back + " I'm working on";
-                        if (this.removing_widget && !top_level_condition) {
+                        if (this.removing_widget && (!top_level_condition || type_name === 'nest')) {
                             return "what is on " + string;
                         }
                         return string;
