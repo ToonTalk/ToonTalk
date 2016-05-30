@@ -4521,6 +4521,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         if (last_comma >= 0) {
             return output.substring(0, last_comma) + " and" + output.substring(last_comma+1);
         }
+        if (output[output.length-1] === ",") {
+            // remove final comma
+            output = output.substring(0, output.length-1);
+        }
         return output;
     };
     utilities.test_number_to_words = function (n) {
