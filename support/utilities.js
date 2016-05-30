@@ -2310,7 +2310,14 @@ window.TOONTALK.UTILITIES =
             if (text.length > maximum_length) {
                 segments = break_into_short_segments(text);
                 segments.forEach(function (segment, index) {
-                    utilities.speak(segment, index === segments.length-1 ? when_finished : undefined, volume, pitch, rate, voice_number)
+                    var new_when_finished;
+                    if (index === segments.length-1) {
+                        new_when_finished = when_finished;
+                    } else if (index === 0) {
+                        // add a dummy callback that will cause a warning if it takes too long
+                        new_when_finished = function () {};
+                    }
+                    utilities.speak(segment, new_when_finished, volume, pitch, rate, voice_number)
                 });
                 return;
             }
@@ -2342,7 +2349,16 @@ window.TOONTALK.UTILITIES =
                 speech_utterance.onend = function () {
                     speech_utterances.splice(speech_utterance_index, 1);
                     when_finished();
+                    speech_utterance.onend = undefined;
                 };
+                setTimeout(function () {
+                               if (speech_utterance.onend) {
+                                   // still hasn't run
+                                   utilities.display_message("Browser did not begin speaking even after 20 seconds. Continuing without waiting.");
+                                   speech_utterance.onend();
+                               }
+                           },
+                           20000);
             }
             window.speechSynthesis.speak(speech_utterance);
         };

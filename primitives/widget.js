@@ -1596,6 +1596,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 if (!window.speechSynthesis) {
                     // ignore this
+                    TT.UTILITIES.display_message("This browser doesn't support speech output. Try another browser such as Chrome.");
                     return true;
                 }
                 widget = widget.get_widget(); // either side is fine
