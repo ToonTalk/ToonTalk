@@ -33,6 +33,10 @@ window.TOONTALK.UTILITIES =
     var muted_audio_objects = [];
     var audio_objects_playing = [];
     var browser_is_internet_explorer;
+    // need to prevent utterances from being prematurely garbage collected
+    // see https://bugs.chromium.org/p/chromium/issues/detail?id=509488
+    // so they are added to this array until they are finished speaking
+    var speech_utterances = []; 
     var observer = new MutationObserver(function (mutations) {
                                             mutations.forEach(function(mutation) {
                                                                   var i, added_node;
@@ -2292,7 +2296,7 @@ window.TOONTALK.UTILITIES =
                 }
                 return segments;
             };
-            var language_code, segments;
+            var language_code, segments, speech_utterance_index;
             if (voices.length === 0) {
                 // not yet loaded -- see https://bugs.chromium.org/p/chromium/issues/detail?id=334847
                 window.speechSynthesis.onvoiceschanged = function () {
@@ -2310,6 +2314,7 @@ window.TOONTALK.UTILITIES =
                 });
                 return;
             }
+            speech_utterance_index = speech_utterances.push(speech_utterance)-1;
             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
             speech_utterance.volume = volume === undefined ? Math.min(1, 3*TT.volume) : volume;
             speech_utterance.pitch  = pitch  === undefined ? 1.2 : pitch; // higher value to sound more like a child -- should really be parameter
@@ -2334,7 +2339,10 @@ window.TOONTALK.UTILITIES =
             });
             // if language_code's format is name-country and nothing found could try again with just the language name
             if (when_finished) {
-                speech_utterance.onend = when_finished;
+                speech_utterance.onend = function () {
+                    speech_utterances.splice(speech_utterance_index, 1);
+                    when_finished();
+                };
             }
             window.speechSynthesis.speak(speech_utterance);
         };
