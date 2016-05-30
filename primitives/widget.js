@@ -1598,10 +1598,6 @@ window.TOONTALK.widget = (function (TT) {
                     // ignore this
                     return true;
                 }
-                when_finished = function (event) {
-                    var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
-                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
-                };
                 widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text(true) : widget.toString();
                 if (TT.TRANSLATION_ENABLED) {
@@ -1609,9 +1605,17 @@ window.TOONTALK.widget = (function (TT) {
                     // but the text of a widget may not be
                     TT.UTILITIES.translate(text,
                                            function (translated_text) {
+                                               when_finished = function (event) {
+                                                   var response = TT.element.create(translated_text, [], "a response to speaking '" + text + "'");
+                                                   functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                                               };
                                                TT.UTILITIES.speak(translated_text, when_finished, volume, pitch, rate, voice_number);
                                            });
                 } else {
+                    when_finished = function (event) {
+                        var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
+                        functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                    };
                     TT.UTILITIES.speak(text, when_finished, volume, pitch, rate, voice_number);
                 }
             };
