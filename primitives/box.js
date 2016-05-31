@@ -588,9 +588,9 @@ window.TOONTALK.box = (function (TT) {
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = $(containing_element).width() || this.saved_width || TT.box.get_default_width();
+                box_width = TT.UTILITIES.element_width(containing_element)  || this.saved_width  || TT.box.get_default_width();
             }
-            box_height = $(containing_element).height() || this.saved_height || TT.box.get_default_height();
+            box_height    = TT.UTILITIES.element_height(containing_element) || this.saved_height || TT.box.get_default_height();
             if (horizontal) {
                 if (size === 0) {
                     hole_width = 0;

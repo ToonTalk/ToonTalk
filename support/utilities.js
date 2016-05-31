@@ -4573,6 +4573,26 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         return {left: Math.random()*(bounding_rectangle.width -margin),
                  top: Math.random()*(bounding_rectangle.height-margin)};
     };
+    utilities.element_width = function (element) {
+        var $element = $(element);
+        if ($element.is(".toontalk-conditions-contents")) {
+            // update if toontalk-conditions-contents CSS changes
+            return 240;
+        }
+        if (!$element.is(".toontalk-not-observable")) {
+            return element.getBoundingClientRect().width;
+        }
+    };
+    utilities.element_height = function (element) {
+        var $element = $(element);
+        if ($element.is(".toontalk-conditions-contents")) {
+            // update if toontalk-conditions-contents CSS changes
+            return 60;
+        }
+        if (!$element.is(".toontalk-not-observable")) {
+            return element.getBoundingClientRect().height;
+        }
+    };
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
 // utilities.to_words = function (n) {
