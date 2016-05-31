@@ -125,9 +125,10 @@ window.TOONTALK.box = (function (TT) {
             }
         };
         new_box.set_contents = function (new_contents) {
-            new_contents.forEach(function (value, index) {
-                holes[index].set_contents(value);
-            });
+            TT.UTILITIES.for_each_batch(new_contents,
+                                        function (value, index) {
+                                            holes[index].set_contents(value);
+                                        });
         };
         new_box.get_size = function () {
             return size;

@@ -542,45 +542,47 @@ window.TOONTALK.UTILITIES =
                }
                // need to copy the array because the function in the forEach updates the list
                backside_widgets = source_widget_side.get_widget().get_backside_widgets().slice();
-               backside_widgets.forEach(function (backside_widget_side, index) {
-                   var widget = backside_widget_side.get_widget();
-                   var json_view, element_of_backside_widget, left_offset, top_offset, width, height, position;
-                   source_widget_side.remove_backside_widget(backside_widget_side);
-                   if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
-                       json_view = shared_widgets[backside_widgets_json[index].widget.shared_widget_index].view;
-                   } else {
-                       json_view = backside_widgets_json[index].widget.view;
-                   }
-                   element_of_backside_widget = backside_widget_side.get_element(true);
-                   if (backside_widget_side.is_backside()) {                
-                       left_offset = json_view.backside_left;
-                       top_offset  = json_view.backside_top;
-                       width       = json_view.backside_width;
-                       height      = json_view.backside_height;
-                   } else {
-                       left_offset = json_view.frontside_left;
-                       top_offset  = json_view.frontside_top;
-                       width       = json_view.frontside_width;
-                       height      = json_view.frontside_height;
-                   }
-                   target_widget_side.add_backside_widget(backside_widget_side);
-                   top_level_element.appendChild(element_of_backside_widget);
-                   position = $(element_of_backside_widget).position();
-                   css = {left: position.left+left_offset,
-                          top:  position.top +top_offset,
-                          width:  width,
-                          height: height};
-                   utilities.constrain_css_to_fit_inside(top_level_element, css);
-                   utilities.set_css(element_of_backside_widget, css);
-                   if (source_widget_side.set_location_attributes) {
-                       // e.g. an element needs to know its position attributes
-                       widget.set_location_attributes(css.left, css.top);
-                   }
-                   if (backside_widget_side.is_backside()) {
-                       widget.backside_geometry = json_view.backside_geometry;
-                       widget.apply_backside_geometry();
-                   }
-               }.bind(this));
+               TT.UTILITIES.for_each_batch(
+                   backside_widgets,
+                   function (backside_widget_side, index) {
+                       var widget = backside_widget_side.get_widget();
+                       var json_view, element_of_backside_widget, left_offset, top_offset, width, height, position;
+                       source_widget_side.remove_backside_widget(backside_widget_side);
+                       if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
+                           json_view = shared_widgets[backside_widgets_json[index].widget.shared_widget_index].view;
+                       } else {
+                           json_view = backside_widgets_json[index].widget.view;
+                       }
+                       element_of_backside_widget = backside_widget_side.get_element(true);
+                       if (backside_widget_side.is_backside()) {                
+                           left_offset = json_view.backside_left;
+                           top_offset  = json_view.backside_top;
+                           width       = json_view.backside_width;
+                           height      = json_view.backside_height;
+                       } else {
+                           left_offset = json_view.frontside_left;
+                           top_offset  = json_view.frontside_top;
+                           width       = json_view.frontside_width;
+                           height      = json_view.frontside_height;
+                       }
+                       target_widget_side.add_backside_widget(backside_widget_side);
+                       top_level_element.appendChild(element_of_backside_widget);
+                       position = $(element_of_backside_widget).position();
+                       css = {left: position.left+left_offset,
+                              top:  position.top +top_offset,
+                              width:  width,
+                              height: height};
+                       utilities.constrain_css_to_fit_inside(top_level_element, css);
+                       utilities.set_css(element_of_backside_widget, css);
+                       if (source_widget_side.set_location_attributes) {
+                           // e.g. an element needs to know its position attributes
+                           widget.set_location_attributes(css.left, css.top);
+                       }
+                       if (backside_widget_side.is_backside()) {
+                           widget.backside_geometry = json_view.backside_geometry;
+                           widget.apply_backside_geometry();
+                       }
+                   }.bind(this));
                return;
             }
             if (!target_widget_side) {
@@ -4049,7 +4051,7 @@ window.TOONTALK.UTILITIES =
            $(".toontalk-side").each(function (index, element) {
                                         var widget = utilities.widget_side_of_element(element);
                                         if (widget) {
-                                            widget.rerender();
+                                            widget.update_display(true);
                                         }
                                     });
        };
@@ -4546,6 +4548,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         // if the list is long and much needs to be done to each element then everything can freeze for a while
         // this way we yield to other processes
         var i, stop_index;
+        if (array.length === 0) {
+            return;
+        }
         if (start_index === undefined) {
             start_index = 0;
         }
