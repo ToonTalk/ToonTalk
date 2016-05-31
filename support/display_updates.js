@@ -65,7 +65,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                                         function (pending_update) {
                                             var element = pending_update.get_element && pending_update.get_element();
                                             var $parent_side_element, z_index, parent_z_index, backside;
-                                            if (!pending_update.visible() && !$(element).is(".toontalk-top-level-resource")) {
+                                            if (!pending_update.visible() && pending_update.get_parent() && !$(element).is(".toontalk-top-level-resource")) {
                                                 // became invisible after being queued
                                                 return;
                                             }

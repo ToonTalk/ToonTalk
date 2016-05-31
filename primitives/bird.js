@@ -271,9 +271,10 @@ window.TOONTALK.bird = (function (TT) {
                         parent = message_side.get_parent_of_frontside();
                         if (parent && !parent.is_backside()) {
                             parent.rerender();
-                        } else {
-                            message_side.set_visible(true);
-                            message_side.render();
+                            // don't understand why parentless widgets should be made visible
+//                         } else {
+//                             message_side.set_visible(true);
+//                             message_side.render();
                         }
                     } else {
                         $(this.element_to_display_when_flying).remove();
