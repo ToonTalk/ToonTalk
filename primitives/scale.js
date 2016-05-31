@@ -315,7 +315,7 @@ window.TOONTALK.scale = (function (TT) {
                }
             }
         };
-        // equals??
+        // equals needed??
         new_scale.match = function (other) {
             if (other.match_with_scale) {
                 return other.match_with_scale(this);
@@ -340,7 +340,48 @@ window.TOONTALK.scale = (function (TT) {
                 scale_pattern.last_match = this;
                 return scale_pattern;
             }
-            return this.match_with_this_box(scale_pattern);
+            return this.match_with_this_scale(scale_pattern);
+        };
+        new_scale.match_with_this_scale = function (pattern_box) {
+            // much like box.match_with_this_box but for different type and size is always 2
+            // typically only nests are waiting but a bird busy delivering before returning to a hole also waits
+            var waiting_widgets = [];
+            var i, my_hole, pattern_hole, hole_match, contents_temporarily_removed;
+            for (i = 0; i < 2; i++) {
+                pattern_hole = pattern_box.get_hole_contents(i);
+                if (pattern_hole) {
+                    my_hole = this.get_hole_contents(i);
+                    if (my_hole) {
+                        hole_match = TT.UTILITIES.match(pattern_hole, my_hole);
+                        if (hole_match.is_widget) {
+                            // sub-match failed
+                            return hole_match;
+                        }
+                        if (hole_match !== 'matched') {
+                            // suspended on a nest so combine the suspended nests
+                            if (waiting_widgets.length === 0) {
+                            waiting_widgets = hole_match;
+                            } else {
+                            waiting_widgets = waiting_widgets.concat(hole_match);
+                            }
+                        }
+                    } else {
+                        // first check if contents temporarily missing (e.g. a bird busy delivering)
+                        contents_temporarily_removed = this.get_contents_temporarily_removed(i);
+                        if (contents_temporarily_removed) {
+                            waiting_widgets.push(contents_temporarily_removed);
+                        } else {
+                            // expected something -- not an empty hole
+                            pattern_box.last_match = this;
+                            return pattern_box; // or should this be pattern_hole to provide more tragetted feedback?
+                        }
+                    }
+                }
+            }
+            if (waiting_widgets.length > 0) {
+                return waiting_widgets;
+            }
+            return 'matched';
         };
         new_scale.match_with_this_box = function (other) {
             // need to override the default box match box code
