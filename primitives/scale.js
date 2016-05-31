@@ -342,6 +342,11 @@ window.TOONTALK.scale = (function (TT) {
             }
             return this.match_with_this_box(scale_pattern);
         };
+        new_scale.match_with_this_box = function (other) {
+            // need to override the default box match box code
+            other.last_match = this;
+            return other;
+        };
         new_scale.compare_with = function (other) {
             if (other.compare_with_scale) {
                 return -1*other.compare_with_scale(this);
