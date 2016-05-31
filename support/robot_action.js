@@ -118,19 +118,21 @@ window.TOONTALK.robot_action =
              return true;
          },
          "add to the top-level backside": function (widget, robot, additional_info) {
-             var context_frontside_position, widget_frontside_element, top_level_element;
+             var context, widget_frontside_element, top_level_widget, top_level_element;
              if (!robot.visible()) {
                  // the condition is because this code is shared by the watched version and it has already done this
-                 // could add an extra argument that indicates that it is call from the watched version
+                 // could add an extra argument that indicates that it is called from the watched version
+                 top_level_widget = robot.top_level_widget()
+                 top_level_widget.add_backside_widget(widget);
+                 context = robot.get_context();
+                 if (!context.visible()) {
+                     return;
+                 }
+                 top_level_element = top_level_widget.get_backside_element();
                  widget_frontside_element = widget.get_frontside_element(true);
-                 context_frontside_position = $(robot.get_context().get_frontside_element()).position();
-                 // need to test the following rewrite:
-                 top_level_element = $(robot.get_context().get_frontside_element()).closest(".toontalk-top-level-backside").get(0) ||
-                                     $(widget_frontside_element).closest(".toontalk-top-level-backside").get(0);
-                 $(widget_frontside_element).css({left: context_frontside_position.left,
-                                                  top:  context_frontside_position.top});
+                 $(widget_frontside_element).css({left: Math.random()*$(top_level_element).width(),
+                                                   top: Math.random()*$(top_level_element).height()});
                  top_level_element.appendChild(widget_frontside_element);
-                 top_level_element.toontalk_widget_side.get_widget().add_backside_widget(widget);
                  widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
              }
              return true;
