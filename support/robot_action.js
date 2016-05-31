@@ -148,16 +148,22 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
-         "start training": function (trained_robot, robot, additional_info) {
-             trained_robot.training_started(robot);
+         "start training": function (robot_to_be_trained, robot, additional_info) {
+             if (!additional_info || !additional_info.running_watched) {
+                 robot_to_be_trained.initialize_backside_conditions();
+                 robot_to_be_trained.get_body().reset_steps();
+                 robot.robot_started_training(robot_to_be_trained);
+             }
+             robot_to_be_trained.training_started(robot);
              return true;
          },
-         "stop training": function (trained_robot, robot, additional_info) {
-             trained_robot.training_finished();
+         "stop training": function (robot_to_be_trained, robot, additional_info) {
+             robot_to_be_trained.training_finished();
              return true;
          },
          "train": function (robot_in_training, robot, additional_info) {
              robot_in_training.add_step(additional_info.step);
+             return true;
          },
          "open the backside": function () {
              // no need to do this if unwatched
@@ -602,26 +608,26 @@ window.TOONTALK.robot_action =
         robot_to_train_frontside_element.toontalk_return_to = $(robot_to_train_frontside_element).offset();
         robot.run_next_step(true);
     };
-    var stop_training_animation = function (trained_robot, robot, continuation, additional_info) {
-        var trained_robot_frontside_element = trained_robot.get_frontside_element();
+    var stop_training_animation = function (robot_to_be_trained, robot, continuation, additional_info) {
+        var robot_to_be_trained_frontside_element = robot_to_be_trained.get_frontside_element();
         var new_continuation = function () {
             var robot_returned_continuation = function () {
-                trained_robot_frontside_element.toontalk_return_to = undefined;
-                trained_robot.get_backside().change_label_and_title_of_train_button(false);
-                $(trained_robot_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
-                trained_robot_frontside_element.toontalk_followed_by = undefined;
+                robot_to_be_trained_frontside_element.toontalk_return_to = undefined;
+                robot_to_be_trained.get_backside().change_label_and_title_of_train_button(false);
+                $(robot_to_be_trained_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
+                robot_to_be_trained_frontside_element.toontalk_followed_by = undefined;
                 setTimeout(continuation, robot.transform_step_duration(1500));                      
             };
-            if (trained_robot_frontside_element.toontalk_return_to) {
-                TT.UTILITIES.animate_to_absolute_position(trained_robot_frontside_element,
-                                                          trained_robot_frontside_element.toontalk_return_to,
+            if (robot_to_be_trained_frontside_element.toontalk_return_to) {
+                TT.UTILITIES.animate_to_absolute_position(robot_to_be_trained_frontside_element,
+                                                          robot_to_be_trained_frontside_element.toontalk_return_to,
                                                           robot_returned_continuation,
                                                           robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
             } else {
                 robot_returned_continuation();
             }
          };
-         button_use_animation(trained_robot, robot, new_continuation, ".toontalk-train-backside-button", additional_info, robot.transform_step_duration(1000));
+         button_use_animation(robot_to_be_trained, robot, new_continuation, ".toontalk-train-backside-button", additional_info, robot.transform_step_duration(1000));
     };
     var train_another_animation = function (robot_being_trained, robot, continuation, additional_info) {
         var new_continuation = function () {
