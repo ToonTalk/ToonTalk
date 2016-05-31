@@ -181,8 +181,13 @@ window.TOONTALK.robot_action =
              // old name of this action
              return true;
          },
-         "click the button of": function () {
+         "click the button of": function (widget, robot, additional_info) {
              // no need to do this if unwatched
+             // TODO: a more principled way of handling green flag clicking
+             // TODO: support stop sign too
+             if (additional_info.button_selector === ".toontalk-green-flag") {
+                widget.set_running(true);
+             }
              return true;
          }
     };
