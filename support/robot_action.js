@@ -130,8 +130,7 @@ window.TOONTALK.robot_action =
                  }
                  top_level_element = top_level_widget.get_backside_element();
                  widget_frontside_element = widget.get_frontside_element(true);
-                 $(widget_frontside_element).css({left: Math.random()*$(top_level_element).width(),
-                                                   top: Math.random()*$(top_level_element).height()});
+                 $(widget_frontside_element).css(TT.UTILITIES.random_location_inside(top_level_element, 50));
                  top_level_element.appendChild(widget_frontside_element);
                  widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
              }
