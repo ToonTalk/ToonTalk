@@ -132,8 +132,8 @@ window.TOONTALK.scale = (function (TT) {
             var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ? 
                                     frontside_element : 
                                     $parent.get(0);
-            var scale_width  = $(container_element).width();
-            var scale_height = $(container_element).height();
+            var scale_width  = $(container_element).width()  || $frontside_element.width();
+            var scale_height = $(container_element).height() || $frontside_element.height();
             var update_hole = function (hole_element, hole, index) {
                 var contents = hole.get_contents();
                 var content_element = (contents || hole).get_element(true);
@@ -219,15 +219,22 @@ window.TOONTALK.scale = (function (TT) {
             } else {
                 this.get_holes().forEach(function (hole, index) {
                         var hole_element = hole.get_element();
+                        var contents = hole.get_contents();
                         if (index === 0) {
                             $(hole_element).addClass("toontalk-left_scale  toontalk-scale-half");
                         } else {
                             $(hole_element).addClass("toontalk-right_scale toontalk-scale-half");
                         }
-//                      $(hole_element).removeClass("toontalk-box-hole");
-                        update_hole(hole_element, hole, index);
-                        frontside_element.appendChild(hole_element);                       
-                    });
+                        frontside_element.appendChild(hole_element);
+                        hole.update_display();
+     
+                });
+                // now that the "pan" widget elements have been created update display again
+                setTimeout(function () {
+                                this.render();
+                           }.bind(this),
+                           // not sure why a delay is needed but otherwise covered nests on scales display their name on top of their contents
+                           100);
             }
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             if (TT.debugging) {
