@@ -348,13 +348,13 @@ window.TOONTALK.path =
                              }
                        },
                        toString: function (to_string_info) {
-                        var string = ((to_string_info && to_string_info.robot && to_string_info.robot.get_backside_conditions()) ? to_string_info.robot.get_backside_conditions()[type_name] :
-                                                                                 TT.UTILITIES.add_a_or_an(type_name)) + 
-                                     " on the back of what I'm working on";
-                        if (this.removing_widget) {
-                            return "what is on " + string;
-                        }
-                        return string;
+                           var string = ((to_string_info && to_string_info.robot && to_string_info.robot.get_backside_conditions()) ? to_string_info.robot.get_backside_conditions()[type_name] :
+                                                                                    TT.UTILITIES.add_a_or_an(type_name)) + 
+                                        " on the back of what I'm working on";
+                           if (this.removing_widget) {
+                               return "what is on " + string;
+                           }
+                           return string;
                     },
                     get_json: function (json_history, callback, start_time) {
                             callback({type: "path.to_backside_widget_of_context",
@@ -368,7 +368,18 @@ window.TOONTALK.path =
             // type_name is only used to generate better robot titles
             return {dereference_path: function (robot) {
                         var referenced = robot.get_backside_matched_widgets()[backside_index];
+                        var container;
                         if (referenced) {
+                            if (this.removing_widget) {
+                                container = referenced.get_parent_of_frontside();
+                                if (container && container.is_hole()) {
+                                    container = container.get_parent_of_frontside();
+                                }
+                                if (container && container.removed_from_container && type_name !== 'nest') {
+                                    // taking someting off the nest not removing the nest itself
+                                    robot.remove_from_container(referenced, container);
+                                }
+                            }
                             return TT.path.continue_dereferencing_path(this, referenced, robot);
                         }
                         // else signal an error?
@@ -378,10 +389,11 @@ window.TOONTALK.path =
                     },
                     toString: function (to_string_info) {
                         var conditions =  robot.get_frontside_conditions();
-                        var back = conditions && conditions.is_top_level() ? "work area" : "back of what";
+                        var top_level_condition = conditions && conditions.is_top_level();
+                        var back = top_level_condition ? "work area" : "back of what";
                         var string = TT.UTILITIES.add_a_or_an(type_name || "thing") + 
                                      " on the " + back + " I'm working on";
-                        if (this.removing_widget) {
+                        if (this.removing_widget && (!top_level_condition || type_name === 'nest')) {
                             return "what is on " + string;
                         }
                         return string;

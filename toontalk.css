@@ -1367,8 +1367,8 @@ body {
 	background-image: url("images/robot.png");
 	background-repeat: no-repeat;
 	background-size: contain;
-	width:  66px;
-	height: 110px;
+	width: 73px;
+	height: 101px;
 	text-align: center;
 }
 .toontalk-robot::after {
@@ -1793,6 +1793,7 @@ padding-bottom:  8%;}
 }
 .toontalk-conditions-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
+/* if dimensions change then change utilities.element_width and utilities.element_height */
 	width: 240px;
 	height: 60px;
 	border: 1px black solid;
@@ -2963,8 +2964,8 @@ background-image: url("images/dusty-morph.png");
 	opacity: .3;
 }
 .toontalk-robot-waiting {
-    width:  103px;
-    height: 139px;
+	width: 73px;
+	height: 101px;
     background-image: url("images/robot-waiting.png");
 	background-size: auto;
 	-webkit-animation: robot-waiting 1.5s steps(12) infinite;
@@ -2975,27 +2976,27 @@ background-image: url("images/dusty-morph.png");
 }
 @-webkit-keyframes robot-waiting {
    from { background-position:    0px; }
-     to { background-position: -1238px; }
+     to { background-position: -900px; }
 }
 
 @-moz-keyframes robot-waiting {
    from { background-position:    0px; }
-     to { background-position: -1238px; }
+     to { background-position: -900px; }
 }
 
 @-ms-keyframes robot-waiting {
    from { background-position:    0px; }
-     to { background-position: -1238px; }
+     to { background-position: -900px; }
 }
 
 @-o-keyframes robot-waiting {
    from { background-position:    0px; }
-     to { background-position: -1238px; }
+     to { background-position: -900px; }
 }
 
 @keyframes robot-waiting {
    from { background-position:    0px; }
-     to { background-position: -1238px; }
+     to { background-position: -900px; }
 }
 .toontalk-backside-of-scale {
 	background: linear-gradient(to bottom, rgb(239, 210, 248), rgb(163, 121, 193));

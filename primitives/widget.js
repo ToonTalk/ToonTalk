@@ -172,8 +172,8 @@ window.TOONTALK.widget = (function (TT) {
                    return TT.UTILITIES.get_element_height(widget.get_frontside_element());
                }
             }
-            if ((TT.debugging  || TT.logging) && !widget.to_debug_string) {
-                widget.to_debug_string = function () {
+            if ((TT.debugging || TT.logging) && !widget.to_debug_string) {
+                widget.to_debug_string = function (max_length) {
                     var parent = this.get_parent_widget_of_frontside();
                     var id = this._debug_id;
                     var description = this.get_description();
@@ -193,7 +193,7 @@ window.TOONTALK.widget = (function (TT) {
                     if (description) {
                        description += " "; // space before next item
                     }
-                    return this.toString({plain_text: true}) + " (" + description + ((this.get_name && (this.get_name() + " ")) || "") + id + ")";
+                    return (this.toString({plain_text: true}) + " (" + description + ((this.get_name && (this.get_name() + " ")) || "") + id + ")").substring(0, max_length);
                 };
             }
             widget.is_top_level = return_false;
@@ -258,25 +258,25 @@ window.TOONTALK.widget = (function (TT) {
                     var frontside_element, css;
                     if (this.saved_width > 0) {
                        frontside_element = this.get_frontside_element(true);
-                       if (this.use_scaling_transform) {
-                           this.use_scaling_transform({width:  this.saved_width,
-                                                       height: this.saved_height});  
-                       } else if (!this.ok_to_set_dimensions()) {
+                       if (!this.ok_to_set_dimensions()) {
                            css = {width:  '',
                                   height: ''};
                            // remove transforms as well
                            TT.UTILITIES.set_css_transform(css, '');
-                           TT.UTILITIES.set_css(frontside_element, css);                          
-                        } else if (this.set_size_attributes) {
-                            // e.g. element widgets need to update their attributes
-                            this.set_size_attributes(this.saved_width, this.saved_height);
-                        } else {
-                            TT.UTILITIES.set_css(frontside_element,
-                                                 {width:  this.saved_width,
-                                                  height: this.saved_height});                                 
-                        }
-                        this.saved_width =  undefined;
-                        this.saved_height = undefined;
+                           TT.UTILITIES.set_css(frontside_element, css);
+                       } else if (this.use_scaling_transform) {
+                           this.use_scaling_transform({width:  this.saved_width,
+                                                       height: this.saved_height});                       
+                       } else if (this.set_size_attributes) {
+                           // e.g. element widgets need to update their attributes
+                           this.set_size_attributes(this.saved_width, this.saved_height);
+                       } else {
+                           TT.UTILITIES.set_css(frontside_element,
+                                                {width:  this.saved_width,
+                                                 height: this.saved_height});                                 
+                       }
+                       this.saved_width =  undefined;
+                       this.saved_height = undefined;
                     }
                 };
             }
@@ -399,45 +399,46 @@ window.TOONTALK.widget = (function (TT) {
                     if (this.get_backside() && !unchanged_value) {
                         this.get_backside().run_status_changed(running);
                     }
-                    backside_widgets.forEach(function (backside_widget_side) {
-                        if (!backside_widget_side) {
-                            return;
-                        }
-                        backside_widget = backside_widget_side.get_widget();
-                        if (backside_widget_side.is_backside()) {
-                            // make sure that the frontside isn't also running
-                            if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
-                                return;
-                            }
-                            // if not a primary backside (e.g. from a sensor) then ignore it
-                            if (!backside_widget_side.is_primary_backside()) {
-                                return;
-                            }
-                        }
-                        if (backside_widget.is_robot() && !backside_widget.being_trained && !backside_widget.get_body().is_empty()) {
-                            // could this set_stopped stuff be combined with set_running?
-                            if (running) {
-                                backside_widget.set_stopped(false);
-                                // no need to create backside to run the robot but the robot needs to know if the backside of the widget is running
-                                // e.g. to act like an "anima-gadget" if is a backside on a backside
-                                backside_widget.run(widget, is_backside, top_level_context);
-                                backside_widget.set_ok_to_run(true);
-                            } else {
-                                backside_widget.set_stopped(true);
-                                backside_widget.set_running(false);
-                            }
-                        } else if (backside_widget.set_running) {
-                            if (!top_level_context && backside_widget_side.is_backside() && widget.get_type_name() !== "top-level") {
-                                // a robot is on the backside of a widget that is on the backside of another
-                                // then its context is the containing widget
-                                backside_widget.set_running(new_value, widget, true);
-                            } else {
-                                // if frontside then its context is the widget of the frontside (i.e. backside_widget)
-                                backside_widget.set_running(new_value);
-                            }
-                        }
-                        backside_widget.rerender();
-                    }.bind(this));
+                    TT.UTILITIES.for_each_batch(backside_widgets,
+                                                function (backside_widget_side) {
+                                                        if (!backside_widget_side) {
+                                                            return;
+                                                        }
+                                                        backside_widget = backside_widget_side.get_widget();
+                                                        if (backside_widget_side.is_backside()) {
+                                                            // make sure that the frontside isn't also running
+                                                            if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
+                                                                return;
+                                                            }
+                                                            // if not a primary backside (e.g. from a sensor) then ignore it
+                                                            if (!backside_widget_side.is_primary_backside()) {
+                                                                return;
+                                                            }
+                                                        }
+                                                        if (backside_widget.is_robot() && !backside_widget.being_trained && !backside_widget.get_body().is_empty()) {
+                                                            // could this set_stopped stuff be combined with set_running?
+                                                            if (running) {
+                                                                backside_widget.set_stopped(false);
+                                                                // no need to create backside to run the robot but the robot needs to know if the backside of the widget is running
+                                                                // e.g. to act like an "anima-gadget" if is a backside on a backside
+                                                                backside_widget.run(widget, is_backside, top_level_context);
+                                                                backside_widget.set_ok_to_run(true);
+                                                            } else {
+                                                                backside_widget.set_stopped(true);
+                                                                backside_widget.set_running(false);
+                                                            }
+                                                        } else if (backside_widget.set_running) {
+                                                            if (!top_level_context && backside_widget_side.is_backside() && widget.get_type_name() !== "top-level") {
+                                                                // a robot is on the backside of a widget that is on the backside of another
+                                                                // then its context is the containing widget
+                                                                backside_widget.set_running(new_value, widget, true);
+                                                            } else {
+                                                                // if frontside then its context is the widget of the frontside (i.e. backside_widget)
+                                                                backside_widget.set_running(new_value);
+                                                            }
+                                                        }
+                                                        backside_widget.rerender();
+                                                    }.bind(this));
                     if (this.walk_children) {
                         this.walk_children(function (child) {
                                 if (child.set_running) {
@@ -533,7 +534,7 @@ window.TOONTALK.widget = (function (TT) {
                     var target_absolute_position = $(target_element).offset();
                     var frontside_element = this.get_frontside_element();
                     var target_is_backside = $(target_element).is(".toontalk-backside");
-                    if (!target_element || !TT.UTILITIES.visible_element(target_element)) {
+                    if (!target_element || !TT.UTILITIES.visible_element(target_element) || speed === 0) {
                         // don't know where to go so just start doing the next thing
                         if (continuation) {
                             continuation();
@@ -1081,7 +1082,6 @@ window.TOONTALK.widget = (function (TT) {
                     // TODO: callers no longer need check if each element is defined since add_backside_widget checks now
                     return backside_widgets;
                 };
-
                 widget.add_backside_widget = function (widget_side) {
                     var backside;
                     if (!widget_side) {
@@ -1121,18 +1121,17 @@ window.TOONTALK.widget = (function (TT) {
      //                 widget.set_running(true);
      //             }
                 };
-
                 widget.remove_all_backside_widgets = function () {
                     // this is used to clear a top-level widget before loading new contents
                     if (!backside_widgets) {
                         return;
                     }
                     // slice() is to copy the array since calls to remove() may alter the array
-                    backside_widgets.slice().forEach(function (backside_widget) {
-                            backside_widget.remove();
-                    });
+                    TT.UTILITIES.for_each_batch(backside_widgets.slice(),
+                                                function (backside_widget) {
+                                                    backside_widget.remove();
+                                                });
                 };
-
                 widget.remove_backside_widget = function (widget_side, ignore_if_not_on_backside) {
                     var widget_index = backside_widgets.indexOf(widget_side);
                     var parent_of_backside, parent_of_frontside;
@@ -1174,19 +1173,20 @@ window.TOONTALK.widget = (function (TT) {
                             // store this for when backside is created 
                             this.backside_widgets_json_views = json_views;
                         }
-                        backside_widgets.forEach(function (backside_widget) {
-                            if (!backside_widget) {
-                                return;
-                            }
-                            if (backside_widget.is_backside()) {
-                                backside_widget.set_parent_of_backside(this, true);
-                            } else {
-                                backside_widget.set_parent_of_frontside(this, true);
-                            }
-                            if (backside_visible) {
-                                backside_widget.set_visible(backside_visible);
-                            }
-                        }.bind(this)); 
+                        TT.UTILITIES.for_each_batch(backside_widgets,
+                                                    function (backside_widget) {
+                                                        if (!backside_widget) {
+                                                            return;
+                                                        }
+                                                        if (backside_widget.is_backside()) {
+                                                            backside_widget.set_parent_of_backside(this, true);
+                                                        } else {
+                                                            backside_widget.set_parent_of_frontside(this, true);
+                                                        }
+                                                        if (backside_visible) {
+                                                            backside_widget.set_visible(backside_visible);
+                                                        }
+                                                    }.bind(this)); 
                     }
                 };
         },
@@ -1306,7 +1306,7 @@ window.TOONTALK.widget = (function (TT) {
             var frontside
             if (document.hidden) {
                 // e.g. window is minimised
-                return;
+                return false;
             }
             frontside = this.get_frontside();
             if (!frontside) {
@@ -1596,12 +1596,9 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 if (!window.speechSynthesis) {
                     // ignore this
+                    TT.UTILITIES.display_message("This browser doesn't support speech output. Try another browser such as Chrome.");
                     return true;
                 }
-                when_finished = function (event) {
-                    var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
-                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
-                };
                 widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text(true) : widget.toString();
                 if (TT.TRANSLATION_ENABLED) {
@@ -1609,9 +1606,17 @@ window.TOONTALK.widget = (function (TT) {
                     // but the text of a widget may not be
                     TT.UTILITIES.translate(text,
                                            function (translated_text) {
+                                               when_finished = function (event) {
+                                                   var response = TT.element.create(translated_text, [], "a response to speaking '" + text + "'");
+                                                   functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                                               };
                                                TT.UTILITIES.speak(translated_text, when_finished, volume, pitch, rate, voice_number);
                                            });
                 } else {
+                    when_finished = function (event) {
+                        var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
+                        functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                    };
                     TT.UTILITIES.speak(text, when_finished, volume, pitch, rate, voice_number);
                 }
             };
@@ -1735,11 +1740,10 @@ window.TOONTALK.widget = (function (TT) {
             };
             top_level_widget.update_display = function () {
                 if (this.get_backside_widgets()) {
-                    this.get_backside_widgets().forEach(function (widget_side) {
-                        if (widget_side && widget_side.visible()) {
-                            widget_side.render();
-                        }    
-                    });
+                    TT.UTILITIES.for_each_batch(this.get_backside_widgets().filter(function (widget_side) { return widget_side && widget_side.visible();}),
+                                                function (widget_side) {        
+                                                    widget_side.render();
+                                                });
                 }
             };
             top_level_widget.copy = function () {
@@ -1748,9 +1752,8 @@ window.TOONTALK.widget = (function (TT) {
                 return this;
             };
             top_level_widget.visible = function () {
-                // might want to be able to make top-level backsides invisible 
-                // for a while to run faster
-                return true;
+                // visible only if tab/window is
+                return !document.hidden;
             };
             top_level_widget.get_parent_of_frontside = function () {
                 return undefined;
@@ -1768,9 +1771,9 @@ window.TOONTALK.widget = (function (TT) {
                 return this;
             };
             if (TT.debugging || TT.logging) {
-                top_level_widget.to_debug_string = function () {
+                top_level_widget.to_debug_string = function (max_length) {
                     var location = $(this.get_backside_element()).offset();
-                    return "top-level widget at " + Math.round(location.left) + ", " + Math.round(location.top);
+                    return ("top-level widget at " + Math.round(location.left) + ", " + Math.round(location.top)).substring(0, max_length);
                 };
             }
             top_level_widget.add_sides_functionality(top_level_widget);

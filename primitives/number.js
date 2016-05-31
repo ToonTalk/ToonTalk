@@ -470,7 +470,7 @@ window.TOONTALK.number = (function () {
             font_height, font_width, max_decimal_places, new_HTML, backside, 
             size_unconstrained_by_container, no_borders, parent_widget, child_element;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
-            console.log("Updating display of " + this.to_debug_string());
+            console.log("Updating display of " + this.to_debug_string(50));
         }
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
@@ -1196,14 +1196,14 @@ window.TOONTALK.number_backside =
                                                                   "Type here to edit the denominator",
                                                                   undefined, // maybe add drop handler here
                                                                   "number");
-            var decimal_format = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal number", "Display number as a decimal.", true);
+            var decimal_format      = TT.UTILITIES.create_radio_button("number_format", "decimal", "toontalk-decimal-radio-button", "Decimal number", "Display number as a decimal.", true);
             var mixed_number_format = TT.UTILITIES.create_radio_button("number_format", "proper_fraction", "toontalk-proper-fraction-radio-button", "Mixed number", "Display number as an integer part and a proper fraction.", true);
-            var improper_format =TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.", true);
-            var scientific_format =TT.UTILITIES.create_radio_button("number_format", "scientific_notation", "toontalk-scientific-notation-radio-button", "Scientific notation", "Display number as a decimal between 1 and 10 multiplied by ten to some power.", true);
-            var plus = TT.UTILITIES.create_radio_button("operator", "+", "toontalk-plus-radio-button", "+", "Add me to what I'm dropped on.", true); // no need for &plus;
-            var minus = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.", true);
+            var improper_format     = TT.UTILITIES.create_radio_button("number_format", "improper_fraction", "toontalk-improper-fraction-radio-button", "Improper fraction", "Display number as a simple fraction.", true);
+            var scientific_format   = TT.UTILITIES.create_radio_button("number_format", "scientific_notation", "toontalk-scientific-notation-radio-button", "Scientific notation", "Display number as a decimal between 1 and 10 multiplied by ten to some power.", true);
+            var plus     = TT.UTILITIES.create_radio_button("operator", "+", "toontalk-plus-radio-button", "+", "Add me to what I'm dropped on.", true); // no need for &plus;
+            var minus    = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.", true);
             var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.", true);
-            var divide = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-divide-radio-button", "&divide;", "I will divide what I'm dropped on.", true);
+            var divide   = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-divide-radio-button", "&divide;", "I will divide what I'm dropped on.", true);
             var set = TT.UTILITIES.create_radio_button("operator", "=", "toontalk-set-equal-radio-button", "&equals;", "Set what I'm dropped on to my value.", true);
 //          var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.", true);
             var update_value = function (event) {
@@ -1293,28 +1293,28 @@ window.TOONTALK.number_backside =
                 number.rerender();
             };
             var update_format = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(decimal_format.button, mixed_number_format.button, improper_format.button, scientific_format.button);
-                var format = selected_button.value;
+                var selected = TT.UTILITIES.selected_radio_button(decimal_format, mixed_number_format, improper_format, scientific_format);
+                var format = selected.button.value;
                 number.set_format(format, true);
                 if (number.robot_in_training()) {
                     number.robot_in_training().edited(number, {setter_name: "set_format",
                                                                argument_1: format,
                                                                toString: "by changing the format to " + format + " of the number",
                                                                // just use the first className to find this button later
-                                                               button_selector: "." + selected_button.className.split(" ", 1)[0]});
+                                                               button_selector: "." + selected.container.className.split(" ", 1)[0]});
                 }
                 number.rerender();
             };
             var update_operator = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(plus.button, minus.button, multiply.button, divide.button, set.button);
-                var operator = selected_button.value;
+                var selected = TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, set);
+                var operator = selected.button.value;
                 number.set_operator(operator, true);
                 if (number.robot_in_training()) {
                     number.robot_in_training().edited(number, {setter_name: "set_operator",
                                                                argument_1: operator,
                                                                toString: "by changing the operator to " + operator + " of the number",
                                                                // just use the first className to find this button later
-                                                               button_selector: "." + selected_button.className.split(" ", 1)[0]});
+                                                               button_selector: "." + selected.container.className.split(" ", 1)[0]});
                 }
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
@@ -1323,6 +1323,33 @@ window.TOONTALK.number_backside =
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display.bind(backside);
             var generic_add_advanced_settings = backside.add_advanced_settings;
+            var button_for_format = function () {
+                switch (number.get_format()) {
+                case "decimal":
+                return decimal_format;
+                case "improper_fraction":
+                return improper_format;
+                case "mixed_number":
+                case "proper_fraction": // older name
+                return mixed_number_format;
+                case "scientific_notation":
+                return scientific_format;
+                }
+            };
+            var button_for_operator = function () {
+                switch (number.get_operator()) {
+                case "+":
+                return plus;
+                case "-":
+                return minus;
+                case "*":
+                return multiply;
+                case "/":
+                return divide;
+                case "=":
+                return set;
+                }
+            };
             slash.innerHTML = "/";
             $(slash).addClass("ui-widget"); // to look nice
             numerator_input.button.addEventListener('change',   update_value);
@@ -1341,46 +1368,18 @@ window.TOONTALK.number_backside =
             mixed_number_format.button.addEventListener('change', update_format);
             improper_format.button    .addEventListener('change', update_format);
             scientific_format.button  .addEventListener('change', update_format);
-            switch (number.get_format()) {
-                case "decimal":
-                TT.UTILITIES.check_radio_button(decimal_format);
-                break;
-                case "improper_fraction":
-                TT.UTILITIES.check_radio_button(improper_format);
-                break;
-                case "mixed_number":
-                case "proper_fraction": // older name
-                TT.UTILITIES.check_radio_button(mixed_number_format);
-                break;
-                case "scientific_notation":
-                TT.UTILITIES.check_radio_button(scientific_format);
-                break;
-            }
-            switch (number.get_operator()) {
-                case "+":
-                TT.UTILITIES.check_radio_button(plus);
-                break;
-                case "-":
-                TT.UTILITIES.check_radio_button(minus);
-                break;
-                case "*":
-                TT.UTILITIES.check_radio_button(multiply);
-                break;
-                case "/":
-                TT.UTILITIES.check_radio_button(divide);
-                break;
-                case "=":
-                TT.UTILITIES.check_radio_button(set);
-                break;
-            }
+            TT.UTILITIES.check_radio_button(button_for_format());
+            TT.UTILITIES.check_radio_button(button_for_operator());
             plus.button    .addEventListener('change', update_operator);
             minus.button   .addEventListener('change', update_operator);
             multiply.button.addEventListener('change', update_operator);
             divide.button  .addEventListener('change', update_operator);
             set.button     .addEventListener('change', update_operator);
             backside.update_display = function () {
-                $(numerator_input.button).val(number.numerator_string());
-                $(denominator_input.button).val(number.denominator_string());
+                $(numerator_input.button)  .val(number.numerator_string());
+                $(denominator_input.button).val(number.denominator_string());          
+                TT.UTILITIES.check_radio_button(button_for_format());
+                TT.UTILITIES.check_radio_button(button_for_operator());
                 generic_backside_update();
             };
             backside.add_advanced_settings = function () {

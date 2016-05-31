@@ -39,7 +39,7 @@ window.TOONTALK.robot = (function (TT) {
         // frontside_conditions is a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions is a list of required widgets on the backside
         // body holds the actions the robot does when it runs
-        // if watched_speed is undefined then runs at original speed
+        // if watched_speed is 0 then runs at original speed
         // otherwise is a positive number which is the multiplier of the normal default speed for each step
         var new_robot = Object.create(robot);
         // grab the default definition of remove_backside_widget so can use it while overriding it
@@ -398,7 +398,7 @@ window.TOONTALK.robot = (function (TT) {
                     return;
                 }
                 if (TT.logging && TT.logging.indexOf("thing_in_hand") >= 0) {
-                    console.log(this.to_debug_string() + " now has in his hand " + (new_value ? new_value.to_debug_string() : "nothing"));
+                    console.log(this.to_debug_string(50) + " now has in his hand " + (new_value ? new_value.to_debug_string(50) : "nothing"));
                 }
             }
             if (new_value && !new_value.location_constrained_by_container()) {
@@ -534,10 +534,10 @@ window.TOONTALK.robot = (function (TT) {
             }
         };      
         if (TT.debugging || TT.logging) {
-            new_robot.to_debug_string = function () {
+            new_robot.to_debug_string = function (max_length) {
                 var frontside_conditions = this.get_frontside_conditions();
-                return "Robot (" + (this.get_description() || "") + " " + this.get_name() + ") runs if working on " + 
-                       (frontside_conditions ? TT.UTILITIES.add_a_or_an(frontside_conditions.toString()) : "anything");
+                return ("Robot (" + (this.get_description() || "") + " " + this.get_name() + ") runs if working on " + 
+                        (frontside_conditions ? TT.UTILITIES.add_a_or_an(frontside_conditions.toString()) : "anything")).substring(0, max_length);;
             };
         }
         if (next_robot) {
@@ -664,8 +664,9 @@ window.TOONTALK.robot = (function (TT) {
                     backside_conditions.some(function (condition) {
                         // check that a widget on the back matches this condition
                         var sub_match_status, best_sub_match_status;
-                        if (condition.matching_widget && condition.matching_widget.get_parent_widget_of_frontside()) {
-                            // try the last widget (if not recently removed) first to see if it matches since corresponding widget rarely changes
+                        if (condition.matching_widget && 
+                            condition.matching_widget.get_parent === context) {
+                            // try the last widget (if still a backside widget) first to see if it matches since corresponding widget rarely changes
                             sub_match_status = TT.UTILITIES.match(condition, condition.matching_widget);
                             if (sub_match_status === 'matched') {
                                 backside_matched_widgets.push(condition.matching_widget);
@@ -700,9 +701,10 @@ window.TOONTALK.robot = (function (TT) {
                                             // only set to failure if not a suspension (or match)
                                             best_sub_match_status = sub_match_status;
                                         }
-                                    } else {
-                                        best_sub_match_status = condition;
                                     }
+                                }
+                                if (best_sub_match_status === undefined) {
+                                    best_sub_match_status = condition;
                                 }
                             }.bind(this));
                         }
@@ -1035,6 +1037,8 @@ window.TOONTALK.robot = (function (TT) {
                 // the following will ignore this due to the last argument being true
                 container.removed_from_container(part_side, undefined, index, true);
         };
+        // if part_side is a covered nest then its contents are removed not the nest itself
+        part_side = part_side.dereference();
         if (this.animate_consequences_of_actions()) {
             // if animating then delay removing it
             // otherwise hole empties before the robot gets there
@@ -1268,8 +1272,10 @@ window.TOONTALK.robot = (function (TT) {
                 robot_description = "I'm not running because the " + this.match_status.toString({role: "match_status"}) + 
                                    " (highlighted in red on my backside) that I'm expecting doesn't match " + mismatch_description + ". Perhaps editing my conditions will help.\n" + 
                                    robot_description;
-            } else if (this.match_status !== 'matched') {
-                robot_description = "I'm waiting for something to be delivered to the nest that matches " + TT.UTILITIES.add_a_or_an(this.match_status[0][1].toString()) +
+            } else if (this.match_status !== 'matched') {              
+                robot_description = "I'm waiting for something to be delivered to the nest that matches " +  
+                                    ((this.match_status[0][1]) ? TT.UTILITIES.add_a_or_an(this.match_status[0][1].toString()) : 
+                                                                 TT.UTILITIES.add_a_or_an(this.match_status[0].toString())) +
                                     " in my conditions (highlighted in yellow on my backside).\n" + robot_description;
             }
         }
@@ -1624,10 +1630,11 @@ window.TOONTALK.robot_backside =
                                                                "When finished start again",
                                                                run_once_title(robot.get_run_once()));
             var speed_names  = ["normal", "original", "double", "half", "very fast", "very slow"];
-            var speed_values = [ 1,        undefined,  2,       .5,      10,         .25];
+            var speed_values = [ 1,        0,          2,       .5,      10,         .25];
+            // 0 used to be undefined and the default -- means follow original timing if available
             var speed_value_to_name = function (value) {
                 // default is normal (index 0)
-                var index = value ? speed_values.indexOf(value) : 0;
+                var index = value !== undefined ? speed_values.indexOf(value) : 0;
                 return speed_names[index];
             };
             var speed_name_to_value = function (name) {
@@ -1753,6 +1760,8 @@ window.TOONTALK.robot_backside =
                     if (training) {
                         robot.initialize_backside_conditions();
                         robot.get_body().reset_steps();
+                        // first occurence of robot is where to find top_level_widget
+                        // second is the robot being trained
                         robot.robot_started_training(robot);
                         robot.training_started();
                     } else {

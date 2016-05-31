@@ -14,7 +14,11 @@ window.TOONTALK.robot_action =
             robot.add_newly_created_widget(widget.copy());
             return true;
          },
-         "pick up": function (widget, robot) {
+         "pick up": function (widget, robot, additional_info) {
+             if (!additional_info || !additional_info.running_watched) {
+                 // don't set this if running watched since animated version takes care of this
+                 widget.set_parent(undefined);
+             }
              robot.set_thing_in_hand(widget);
              return true;
          },
@@ -44,10 +48,8 @@ window.TOONTALK.robot_action =
                          robot.add_newly_created_widget_if_new(thing_in_hand);
                          if (thing_in_hand.robot_waiting_before_next_step === robot) {
                              // NOTE thing_in_hand needs to call robot.run_next_step();
-//                              console.log("Expecting " + thing_in_hand + " to run_next_step");
                              if (!additional_info || !additional_info.running_watched) {
                                  thing_in_hand.robot_waiting_before_next_step = undefined;
-//                                  console.log("robot_waiting_before_next_step reset for " + thing_in_hand + " in drop it on -- returning false");
                              }
                              return false;
                          }
@@ -74,7 +76,7 @@ window.TOONTALK.robot_action =
                  }
                  TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but has nothing in its hand.");
              } else {
-                TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but doesn't know where to drop what its holding");
+                 TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but doesn't know where to drop what its holding");
              }   
          },
          "remove": function (widget, robot) {
@@ -117,19 +119,19 @@ window.TOONTALK.robot_action =
              return true;
          },
          "add to the top-level backside": function (widget, robot, additional_info) {
-             var context_frontside_position, widget_frontside_element, top_level_element;
-             if (!robot.visible()) {
-                 // the condition is because this code is shared by the watched version and it has already done this
-                 // could add an extra argument that indicates that it is call from the watched version
+             var context, widget_frontside_element, top_level_widget, top_level_element;
+             if (!additional_info || !additional_info.running_watched) {
+                 // don't do this if the watched version has already done this
+                 top_level_widget = robot.top_level_widget()
+                 top_level_widget.add_backside_widget(widget);
+                 context = robot.get_context();
+                 if (!context.visible()) {
+                     return;
+                 }
+                 top_level_element = top_level_widget.get_backside_element();
                  widget_frontside_element = widget.get_frontside_element(true);
-                 context_frontside_position = $(robot.get_context().get_frontside_element()).position();
-                 // need to test the following rewrite:
-                 top_level_element = $(robot.get_context().get_frontside_element()).closest(".toontalk-top-level-backside").get(0) ||
-                                     $(widget_frontside_element).closest(".toontalk-top-level-backside").get(0);
-                 $(widget_frontside_element).css({left: context_frontside_position.left,
-                                                  top:  context_frontside_position.top});
+                 $(widget_frontside_element).css(TT.UTILITIES.random_location_inside(top_level_element, 50));
                  top_level_element.appendChild(widget_frontside_element);
-                 top_level_element.toontalk_widget_side.get_widget().add_backside_widget(widget);
                  widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
              }
              return true;
@@ -146,16 +148,22 @@ window.TOONTALK.robot_action =
              }
              return true;
          },
-         "start training": function (trained_robot, robot, additional_info) {
-             trained_robot.training_started(robot);
+         "start training": function (robot_to_be_trained, robot, additional_info) {
+             if (!additional_info || !additional_info.running_watched) {
+                 robot_to_be_trained.initialize_backside_conditions();
+                 robot_to_be_trained.get_body().reset_steps();
+                 robot.robot_started_training(robot_to_be_trained);
+             }
+             robot_to_be_trained.training_started(robot);
              return true;
          },
-         "stop training": function (trained_robot, robot, additional_info) {
-             trained_robot.training_finished();
+         "stop training": function (robot_to_be_trained, robot, additional_info) {
+             robot_to_be_trained.training_finished();
              return true;
          },
          "train": function (robot_in_training, robot, additional_info) {
              robot_in_training.add_step(additional_info.step);
+             return true;
          },
          "open the backside": function () {
              // no need to do this if unwatched
@@ -173,8 +181,13 @@ window.TOONTALK.robot_action =
              // old name of this action
              return true;
          },
-         "click the button of": function () {
+         "click the button of": function (widget, robot, additional_info) {
              // no need to do this if unwatched
+             // TODO: a more principled way of handling green flag clicking
+             // TODO: support stop sign too
+             if (additional_info.button_selector === ".toontalk-green-flag") {
+                widget.set_running(true);
+             }
              return true;
          }
     };
@@ -191,7 +204,7 @@ window.TOONTALK.robot_action =
                     robot.update_display();
                 }
             }
-            robot.run_next_step();
+            robot.run_next_step(true);
         };
         move_robot_animation(widget, robot, new_continuation, additional_info);
     };
@@ -222,6 +235,7 @@ window.TOONTALK.robot_action =
         if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible()) {
             // is running in a context where the source of this widget isn't available
             // e.g. published page or test file without standard resource widgets
+            // or robot was hidden while running
             continuation();
             return;
         }
@@ -299,7 +313,7 @@ window.TOONTALK.robot_action =
                 // and if dropped soon its location is known
                 robot.update_display();
             }
-            robot.run_next_step();
+            robot.run_next_step(true);
         };
         if (TT.debugging && widget_side.get_type_name() === 'empty hole') {
             TT.UTILITIES.report_internal_error("Robot trying to pick up an empty hole.");
@@ -349,7 +363,7 @@ window.TOONTALK.robot_action =
                 thing_in_hand.restore_dimensions();
             }
             if (thing_in_hand.robot_waiting_before_next_step !== robot) {
-                robot.run_next_step();
+                robot.run_next_step(true);
             }
         };
         if (target.is_backside() && !TT.UTILITIES.visible_element(target.get_element())) {
@@ -387,7 +401,7 @@ window.TOONTALK.robot_action =
                 parent.render();
             }
             robot.set_thing_in_hand(undefined);
-            robot.run_next_step();
+            robot.run_next_step(true);
         }
         find_text_area = function () {
             // will be called once the backside exists
@@ -440,7 +454,7 @@ window.TOONTALK.robot_action =
 //                                    }
 //                                });         
 //                            }
-                           robot.run_next_step();
+                           robot.run_next_step(true);
                       },
                       delay);
         };
@@ -452,7 +466,10 @@ window.TOONTALK.robot_action =
                 backside.set_advanced_settings_showing(true, backside.get_element());
             }
             // robots move at 1/4 pixel per millisecond for clarity
-            robot.animate_to_element(button_element, new_continuation, robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2), 0, 0, true);
+            robot.animate_to_element(button_element, 
+                                     new_continuation, 
+                                     robot.transform_animation_speed(TT.UTILITIES.default_animation_speed/2),
+                                     0, 0, true);
         }
         if (!button_visible && widget.open_backside && robot.animate_consequences_of_actions()) {
             if (widget.open_backside(animation_continuation)) {
@@ -481,12 +498,12 @@ window.TOONTALK.robot_action =
             robot.carrying_tool = undefined;
             robot.update_display(); // to stop displaying tool
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
         };
         var speed, where, top_level_element;
         if (!robot.animate_consequences_of_actions()) {
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
             return;
         }
         robot.carrying_tool = tool_held_by_robot_css_class;
@@ -546,7 +563,7 @@ window.TOONTALK.robot_action =
         if (!frontside_element) {
             // was hidden while running
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
             return;
         }
         new_continuation = function () {
@@ -565,7 +582,7 @@ window.TOONTALK.robot_action =
                            frontside_element.style.transitionDuration = '';
                            continuation();
                            widget.render();
-                           robot.run_next_step();
+                           robot.run_next_step(true);
                        },
                        duration);
         }
@@ -579,7 +596,7 @@ window.TOONTALK.robot_action =
             button_use_animation(source_widget, robot, continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(3000));
         } else {
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
         }      
     };
     var start_training_animation = function (robot_to_train, robot, continuation) {
@@ -594,33 +611,33 @@ window.TOONTALK.robot_action =
                                                                  left_offset: 30,
                                                                  top_offset: -20};
         robot_to_train_frontside_element.toontalk_return_to = $(robot_to_train_frontside_element).offset();
-        robot.run_next_step();
+        robot.run_next_step(true);
     };
-    var stop_training_animation = function (trained_robot, robot, continuation, additional_info) {
-        var trained_robot_frontside_element = trained_robot.get_frontside_element();
+    var stop_training_animation = function (robot_to_be_trained, robot, continuation, additional_info) {
+        var robot_to_be_trained_frontside_element = robot_to_be_trained.get_frontside_element();
         var new_continuation = function () {
             var robot_returned_continuation = function () {
-                trained_robot_frontside_element.toontalk_return_to = undefined;
-                trained_robot.get_backside().change_label_and_title_of_train_button(false);
-                $(trained_robot_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
-                trained_robot_frontside_element.toontalk_followed_by = undefined;
+                robot_to_be_trained_frontside_element.toontalk_return_to = undefined;
+                robot_to_be_trained.get_backside().change_label_and_title_of_train_button(false);
+                $(robot_to_be_trained_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
+                robot_to_be_trained_frontside_element.toontalk_followed_by = undefined;
                 setTimeout(continuation, robot.transform_step_duration(1500));                      
             };
-            if (trained_robot_frontside_element.toontalk_return_to) {
-                TT.UTILITIES.animate_to_absolute_position(trained_robot_frontside_element,
-                                                          trained_robot_frontside_element.toontalk_return_to,
+            if (robot_to_be_trained_frontside_element.toontalk_return_to) {
+                TT.UTILITIES.animate_to_absolute_position(robot_to_be_trained_frontside_element,
+                                                          robot_to_be_trained_frontside_element.toontalk_return_to,
                                                           robot_returned_continuation,
                                                           robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
             } else {
                 robot_returned_continuation();
             }
          };
-         button_use_animation(trained_robot, robot, new_continuation, ".toontalk-train-backside-button", additional_info, robot.transform_step_duration(1000));
+         button_use_animation(robot_to_be_trained, robot, new_continuation, ".toontalk-train-backside-button", additional_info, robot.transform_step_duration(1000));
     };
     var train_another_animation = function (robot_being_trained, robot, continuation, additional_info) {
         var new_continuation = function () {
             continuation();
-            robot.run_next_step();
+            robot.run_next_step(true);
         };
         var watched_step = additional_info.step.run_watched;
         if (!watched_step) {
@@ -634,7 +651,7 @@ window.TOONTALK.robot_action =
     var open_backside_animation = function (widget, robot, continuation) {
         widget.open_backside(function () {
                                  continuation();
-                                 robot.run_next_step();
+                                 robot.run_next_step(true);
                              });
         close_backside_when_finished(widget, robot);
     };
@@ -652,7 +669,7 @@ window.TOONTALK.robot_action =
         setTimeout(function () {
                        $(widget.get_backside_element()).children(".toontalk-close-button").click();
                        continuation();
-                       robot.run_next_step();
+                       robot.run_next_step(true);
                    },
                    delay);     
     };
@@ -686,7 +703,7 @@ window.TOONTALK.robot_action =
          "add to the top-level backside": function (widget, robot, continuation) {
               // do nothing -- this action is only needed if unwatched
               continuation();
-              robot.run_next_step();
+              robot.run_next_step(true);
          },
          "add a new widget to the work space": animate_widget_creation,
          "start training":                     start_training_animation,
@@ -737,19 +754,23 @@ window.TOONTALK.robot_action =
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {
                     if (referenced.wait_until_this_nest_receives_something) { 
                         console.log("   wait_until_this_nest_receives_something " + 
-                                    referenced.wait_until_this_nest_receives_something.to_debug_string() + 
+                                    referenced.wait_until_this_nest_receives_something.to_debug_string(50) + 
                                     "(" + TT.path.toString(path) + 
-                                    ") by unwatched " + robot.to_debug_string());
+                                    ") by unwatched " + robot.to_debug_string(50));
                     } else {
-                        console.log("   " + referenced.to_debug_string() + " (" + TT.path.toString(path) + " " + referenced.to_debug_string() + 
-                                    " by unwatched " + robot.to_debug_string());
+                        console.log("   " + referenced.to_debug_string(50) + " (" + TT.path.toString(path) + ")" + 
+                                    " by unwatched " + robot.to_debug_string(50));
                     }
                 }
                 if (referenced.wait_until_this_nest_receives_something) {         
                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(
                         function () {
-                            this.run_unwatched(robot);
-                                    }.bind(this),
+                            if (robot.visible()) {
+                                this.run_watched(robot);
+                            } else {
+                                this.run_unwatched(robot);
+                            }
+                        }.bind(this),
                         robot);
                     return;
                 }
@@ -776,8 +797,8 @@ window.TOONTALK.robot_action =
                     return;
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {
-                    console.log("   " + referenced + " (" + TT.path.toString(path) + " " +  (referenced.to_debug_string ? referenced.to_debug_string() : referenced) + 
-                                " by watched " + robot.to_debug_string() + (robot.animate_consequences_of_actions() ? "" : " finishing instantly"));
+                    console.log("   " + referenced + " (" + TT.path.toString(path) + " " +  (referenced.to_debug_string ? referenced.to_debug_string(50) : referenced) + 
+                                " by watched " + robot.to_debug_string(50) + (robot.animate_consequences_of_actions() ? "" : " finishing instantly"));
                 }
                 if (referenced.wait_until_this_nest_receives_something) {
                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(

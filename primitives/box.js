@@ -125,9 +125,10 @@ window.TOONTALK.box = (function (TT) {
             }
         };
         new_box.set_contents = function (new_contents) {
-            new_contents.forEach(function (value, index) {
-                holes[index].set_contents(value);
-            });
+            TT.UTILITIES.for_each_batch(new_contents,
+                                        function (value, index) {
+                                            holes[index].set_contents(value);
+                                        });
         };
         new_box.get_size = function () {
             return size;
@@ -519,8 +520,9 @@ window.TOONTALK.box = (function (TT) {
                     }
                 }
             }
-            if (hole_element !== content_element) {
+            if (hole_element !== content_element && contents.get_parent() === hole) {
                 // not an empty hole
+                // checked if contents still in hole since this was delayed and things may have changed
                 // save dimensions first?
                 update_css_of_hole_contents(contents, content_element, new_width, new_height);
                 hole_element.appendChild(content_element);
@@ -586,9 +588,9 @@ window.TOONTALK.box = (function (TT) {
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = $(containing_element).width() || this.saved_width || TT.box.get_default_width();
+                box_width = TT.UTILITIES.element_width(containing_element)  || this.saved_width  || TT.box.get_default_width();
             }
-            box_height = $(containing_element).height() || this.saved_height || TT.box.get_default_height();
+            box_height    = TT.UTILITIES.element_height(containing_element) || this.saved_height || TT.box.get_default_height();
             if (horizontal) {
                 if (size === 0) {
                     hole_width = 0;
@@ -944,8 +946,8 @@ window.TOONTALK.box_backside =
                 }
             };
             var update_orientation = function () {
-                var selected_button = TT.UTILITIES.selected_radio_button(horizontal.button, vertical.button);
-                var orientation = selected_button.value;
+                var selected = TT.UTILITIES.selected_radio_button(horizontal, vertical);
+                var orientation = selected.button.value;
                 var is_horizontal = (orientation === "horizontal");
                 box.set_horizontal(is_horizontal, true);
                 if (box.robot_in_training()) {
@@ -953,7 +955,7 @@ window.TOONTALK.box_backside =
                                                          argument_1: is_horizontal,
                                                          toString: "by changing the orientation to " + orientation + " of the box",
                                                          // just use the first className to find this button later
-                                                         button_selector: "." + selected_button.className.split(" ", 1)[0]});
+                                                         button_selector: "." + selected.container.className.split(" ", 1)[0]});
                 }
             };
             var backside_element = backside.get_element();
@@ -1330,11 +1332,11 @@ window.TOONTALK.box_hole =
             TT.widget.has_parent(hole);
             TT.widget.has_listeners(hole);
             if (TT.debugging || TT.logging) {
-                hole.to_debug_string = function () {
-                    var info =  "the " + TT.UTILITIES.ordinal(index) + " hole of the " +
-                                (this.get_parent_of_frontside() ? this.get_parent_of_frontside().to_debug_string() : "not-yet-defined box");
+                hole.to_debug_string = function (max_length) {
+                    var info =  ("the " + TT.UTILITIES.ordinal(index) + " hole of the " +
+                                 (this.get_parent_of_frontside() ? this.get_parent_of_frontside().to_debug_string() : "not-yet-defined box")).substring(0, max_length);
                     if (contents) {
-                        return info + " which contains " + contents.to_debug_string();
+                        return info + " which contains " + contents.to_debug_string(max_length);
                     }
                     return info + " which is empty";
                 };

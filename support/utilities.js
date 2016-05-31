@@ -32,6 +32,11 @@ window.TOONTALK.UTILITIES =
     var div_close  = "</div>";
     var muted_audio_objects = [];
     var audio_objects_playing = [];
+    var browser_is_internet_explorer;
+    // need to prevent utterances from being prematurely garbage collected
+    // see https://bugs.chromium.org/p/chromium/issues/detail?id=509488
+    // so they are added to this array until they are finished speaking
+    var speech_utterances = []; 
     var observer = new MutationObserver(function (mutations) {
                                             mutations.forEach(function(mutation) {
                                                                   var i, added_node;
@@ -58,7 +63,7 @@ window.TOONTALK.UTILITIES =
                                                                                       // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
                                                                                       // When stepping through the code it works fine so must be some kind of timing dependent problem
                                                                                       element.toontalk_attached_callback();
-                                                                                      element.toontalk_attached_callback = undefined;;
+                                                                                      element.toontalk_attached_callback = undefined;
                                                                                   }
                                                                               });
                                                                           });
@@ -537,45 +542,47 @@ window.TOONTALK.UTILITIES =
                }
                // need to copy the array because the function in the forEach updates the list
                backside_widgets = source_widget_side.get_widget().get_backside_widgets().slice();
-               backside_widgets.forEach(function (backside_widget_side, index) {
-                   var widget = backside_widget_side.get_widget();
-                   var json_view, element_of_backside_widget, left_offset, top_offset, width, height, position;
-                   source_widget_side.remove_backside_widget(backside_widget_side);
-                   if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
-                       json_view = shared_widgets[backside_widgets_json[index].widget.shared_widget_index].view;
-                   } else {
-                       json_view = backside_widgets_json[index].widget.view;
-                   }
-                   element_of_backside_widget = backside_widget_side.get_element(true);
-                   if (backside_widget_side.is_backside()) {                
-                       left_offset = json_view.backside_left;
-                       top_offset  = json_view.backside_top;
-                       width       = json_view.backside_width;
-                       height      = json_view.backside_height;
-                   } else {
-                       left_offset = json_view.frontside_left;
-                       top_offset  = json_view.frontside_top;
-                       width       = json_view.frontside_width;
-                       height      = json_view.frontside_height;
-                   }
-                   target_widget_side.add_backside_widget(backside_widget_side);
-                   top_level_element.appendChild(element_of_backside_widget);
-                   position = $(element_of_backside_widget).position();
-                   css = {left: position.left+left_offset,
-                          top:  position.top +top_offset,
-                          width:  width,
-                          height: height};
-                   utilities.constrain_css_to_fit_inside(top_level_element, css);
-                   utilities.set_css(element_of_backside_widget, css);
-                   if (source_widget_side.set_location_attributes) {
-                       // e.g. an element needs to know its position attributes
-                       widget.set_location_attributes(css.left, css.top);
-                   }
-                   if (backside_widget_side.is_backside()) {
-                       widget.backside_geometry = json_view.backside_geometry;
-                       widget.apply_backside_geometry();
-                   }
-               }.bind(this));
+               TT.UTILITIES.for_each_batch(
+                   backside_widgets,
+                   function (backside_widget_side, index) {
+                       var widget = backside_widget_side.get_widget();
+                       var json_view, element_of_backside_widget, left_offset, top_offset, width, height, position;
+                       source_widget_side.remove_backside_widget(backside_widget_side);
+                       if (backside_widgets_json[index].widget.shared_widget_index >= 0) {
+                           json_view = shared_widgets[backside_widgets_json[index].widget.shared_widget_index].view;
+                       } else {
+                           json_view = backside_widgets_json[index].widget.view;
+                       }
+                       element_of_backside_widget = backside_widget_side.get_element(true);
+                       if (backside_widget_side.is_backside()) {                
+                           left_offset = json_view.backside_left;
+                           top_offset  = json_view.backside_top;
+                           width       = json_view.backside_width;
+                           height      = json_view.backside_height;
+                       } else {
+                           left_offset = json_view.frontside_left;
+                           top_offset  = json_view.frontside_top;
+                           width       = json_view.frontside_width;
+                           height      = json_view.frontside_height;
+                       }
+                       target_widget_side.add_backside_widget(backside_widget_side);
+                       top_level_element.appendChild(element_of_backside_widget);
+                       position = $(element_of_backside_widget).position();
+                       css = {left: position.left+left_offset,
+                              top:  position.top +top_offset,
+                              width:  width,
+                              height: height};
+                       utilities.constrain_css_to_fit_inside(top_level_element, css);
+                       utilities.set_css(element_of_backside_widget, css);
+                       if (source_widget_side.set_location_attributes) {
+                           // e.g. an element needs to know its position attributes
+                           widget.set_location_attributes(css.left, css.top);
+                       }
+                       if (backside_widget_side.is_backside()) {
+                           widget.backside_geometry = json_view.backside_geometry;
+                           widget.apply_backside_geometry();
+                       }
+                   }.bind(this));
                return;
             }
             if (!target_widget_side) {
@@ -1921,7 +1928,8 @@ window.TOONTALK.UTILITIES =
                 var distance;
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               (widget.matching_resource && widget.matching_resource(owner)) ||
-                              (widget.match(owner) === 'matched'))) {
+                              // check type name equality since don't want class and sub-class to match (e.g. nest and sensor nest)
+                              ((widget.get_type_name() === owner.get_type_name()) && widget.match(owner) === 'matched'))) {
                     if (widget.is_hole() ||
                         owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
                         // TODO: make sure the backside widgets are equivalent...
@@ -1981,7 +1989,9 @@ window.TOONTALK.UTILITIES =
             } else {
                 left = utilities.adjust_left_if_scaled(left, element);
             }
-            return 100*($(parent_element).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width  + "%";
+            return Math.max(0, 
+                            Math.min(100, 
+                                     100*($(parent_element).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width)) + "%";
         };
 
         utilities.top_as_percent = function (top, element, parent_element) {
@@ -1999,7 +2009,9 @@ window.TOONTALK.UTILITIES =
             } else {
                 top = utilities.adjust_top_if_scaled(top, element);
             }
-            return 100*($(parent_element).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height + "%";
+            return Math.max(0,
+                            Math.min(100,
+                                     100*($(parent_element).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height)) + "%";
         };
 
         utilities.adjust_left_if_scaled = function (left, element) {
@@ -2287,7 +2299,7 @@ window.TOONTALK.UTILITIES =
                 }
                 return segments;
             };
-            var language_code, segments;
+            var language_code, segments, speech_utterance_index;
             if (voices.length === 0) {
                 // not yet loaded -- see https://bugs.chromium.org/p/chromium/issues/detail?id=334847
                 window.speechSynthesis.onvoiceschanged = function () {
@@ -2301,10 +2313,18 @@ window.TOONTALK.UTILITIES =
             if (text.length > maximum_length) {
                 segments = break_into_short_segments(text);
                 segments.forEach(function (segment, index) {
-                    utilities.speak(segment, index === segments.length-1 ? when_finished : undefined, volume, pitch, rate, voice_number)
+                    var new_when_finished;
+                    if (index === segments.length-1) {
+                        new_when_finished = when_finished;
+                    } else if (index === 0) {
+                        // add a dummy callback that will cause a warning if it takes too long
+                        new_when_finished = function () {};
+                    }
+                    utilities.speak(segment, new_when_finished, volume, pitch, rate, voice_number)
                 });
                 return;
             }
+            speech_utterance_index = speech_utterances.push(speech_utterance)-1;
             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
             speech_utterance.volume = volume === undefined ? Math.min(1, 3*TT.volume) : volume;
             speech_utterance.pitch  = pitch  === undefined ? 1.2 : pitch; // higher value to sound more like a child -- should really be parameter
@@ -2329,7 +2349,19 @@ window.TOONTALK.UTILITIES =
             });
             // if language_code's format is name-country and nothing found could try again with just the language name
             if (when_finished) {
-                speech_utterance.onend = when_finished;
+                speech_utterance.onend = function () {
+                    speech_utterances.splice(speech_utterance_index, 1);
+                    when_finished();
+                    speech_utterance.onend = undefined;
+                };
+                setTimeout(function () {
+                               if (speech_utterance.onend) {
+                                   // still hasn't run
+                                   utilities.display_message("Browser did not begin speaking after waiting 20 seconds. Continuing as if speech occurred.");
+                                   speech_utterance.onend();
+                               }
+                           },
+                           20000);
             }
             window.speechSynthesis.speak(speech_utterance);
         };
@@ -2402,6 +2434,9 @@ window.TOONTALK.UTILITIES =
             }
             // replaced add_one_shot_event_handler with time outs because transition end can be triggered by changes in the frontside_element
             // e.g. when a robot is holding a tool
+            if (document.hidden) {
+                duration = 0;
+            }
             if (more_animation_follows) {
                setTimeout(continuation, duration);
             } else {
@@ -2540,6 +2575,12 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.check_radio_button = function (button_elements) {
+            var $table = $(button_elements.button).closest(".ui-buttonset");
+            if ($table.length > 0) {
+                // un-highlight all before setting one
+                $table.find(".ui-state-active").removeClass("ui-state-active")
+                                               .prop("checked", false);
+            };
             $(button_elements.button).prop("checked", true);
             $(button_elements.label).addClass('ui-state-active');
         };
@@ -2637,7 +2678,7 @@ window.TOONTALK.UTILITIES =
                     button: text_input};
         };
         
-        utilities.create_text_area = function (value, class_name, label, title, drop_handler, type) {
+        utilities.create_text_area = function (value, class_name, label, title, drop_handler, type, place_label_above) {
             var text_area = document.createElement("textarea");
             var label_element, container, new_drop_handler;
             text_area.className = class_name;
@@ -2654,7 +2695,11 @@ window.TOONTALK.UTILITIES =
             label_element.innerHTML = label;
             text_area.id = utilities.generate_unique_id();
             label_element.htmlFor = text_area.id;
-            container = utilities.create_horizontal_table(label_element, text_area);
+            if (place_label_above) {
+                container = utilities.create_vertical_table(  label_element, text_area);
+            } else {
+                container = utilities.create_horizontal_table(label_element, text_area);
+            }
             $(text_area).button()
                         .addClass("toontalk-text-area")
                         .css({"background": "white"}); // somehow JQuery gives a background color despite toontalk-text-area's CSS
@@ -2818,13 +2863,13 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.selected_radio_button = function () {
-            var i, selected;
+            var i;
             for (i = 0; i < arguments.length; i++) {
-                if (arguments[i].checked) {
+                if ($(arguments[i].label).is(".ui-state-focus")) {
                     return arguments[i];
                 }
             }
-            return selected;
+            return;
         };
         
         utilities.create_image = function (url, class_name) {
@@ -3021,9 +3066,14 @@ window.TOONTALK.UTILITIES =
             return first_part + " ... " + string.substring(string.length-(maximum_length-first_part.length));
         };
 
-        utilities.backup_all_top_level_widgets = function (immediately) {
+        utilities.each_top_level_widget = function (callback) {
             $(".toontalk-top-level-backside").each(function (index, element) {
-                var top_level_widget = utilities.widget_side_of_element(element).get_widget();
+                callback(utilities.widget_side_of_element(element).get_widget());
+            });
+        };
+
+        utilities.backup_all_top_level_widgets = function (immediately) {
+            utilities.each_top_level_widget(function (top_level_widget) {
                 top_level_widget.save(immediately);
             });
         };
@@ -3302,6 +3352,7 @@ window.TOONTALK.UTILITIES =
                                }
                 }); 
             }
+            // toontalk-not-observable still needs to be rendered since how else could its dimensions be comput4ed
             $(element).addClass("toontalk-not-observable");
             document.body.appendChild(element);
             if (recompute) {
@@ -3525,9 +3576,11 @@ window.TOONTALK.UTILITIES =
             return window.navigator.userAgent.indexOf(type) >= 0;
         };
 
+        browser_is_internet_explorer = utilities.is_browser_of_type("MSIE") || // before version 11
+                                       utilities.is_browser_of_type("Trident");
+
         utilities.is_internet_explorer = function () {
-            return utilities.is_browser_of_type("MSIE") || // before version 11
-                   utilities.is_browser_of_type("Trident");
+            return browser_is_internet_explorer;
         };
 
         utilities.add_position = function (position_1, position_2) {
@@ -3998,7 +4051,7 @@ window.TOONTALK.UTILITIES =
            $(".toontalk-side").each(function (index, element) {
                                         var widget = utilities.widget_side_of_element(element);
                                         if (widget) {
-                                            widget.rerender();
+                                            widget.update_display(true);
                                         }
                                     });
        };
@@ -4063,6 +4116,7 @@ window.TOONTALK.UTILITIES =
                callback = function () {
                               old_callback();
                               new_callback();
+                              $(element).removeClass("toontalk-has-attached-callback");
                               element.toontalk_attached_callback = undefined;
                           };
            } else {
@@ -4476,6 +4530,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         if (last_comma >= 0) {
             return output.substring(0, last_comma) + " and" + output.substring(last_comma+1);
         }
+        if (output[output.length-1] === ",") {
+            // remove final comma
+            output = output.substring(0, output.length-1);
+        }
         return output;
     };
     utilities.test_number_to_words = function (n) {
@@ -4483,6 +4541,56 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         for (i = 0; i < n; i++) {
             x = Math.round(1000000000*Math.random());
             console.log(x + " = " + utilities.number_to_words(x.toString()));
+        }
+    };
+    utilities.for_each_batch = function (array, callback, chunk_size, start_index) {
+        // same as forEach except yields every chunk_size elements
+        // if the list is long and much needs to be done to each element then everything can freeze for a while
+        // this way we yield to other processes
+        var i, stop_index;
+        if (array.length === 0) {
+            return;
+        }
+        if (start_index === undefined) {
+            start_index = 0;
+        }
+        if (!chunk_size) {
+            chunk_size = 100;
+        }
+        stop_index = Math.min(array.length, start_index+chunk_size);
+        for (i = start_index; i < stop_index; i++) {
+            callback(array[i], i);
+        }
+        if (stop_index < array.length) {
+            utilities.set_timeout(function () {
+                utilities.for_each_batch(array, callback, chunk_size, stop_index);
+            });
+        }
+    };
+    utilities.random_location_inside = function (element, margin) {
+        // returns a random location within element leaving margin on the right and bottom
+        var bounding_rectangle = element.getBoundingClientRect();
+        return {left: Math.random()*(bounding_rectangle.width -margin),
+                 top: Math.random()*(bounding_rectangle.height-margin)};
+    };
+    utilities.element_width = function (element) {
+        var $element = $(element);
+        if ($element.is(".toontalk-conditions-contents")) {
+            // update if toontalk-conditions-contents CSS changes
+            return 240;
+        }
+        if (!$element.is(".toontalk-not-observable")) {
+            return element.getBoundingClientRect().width;
+        }
+    };
+    utilities.element_height = function (element) {
+        var $element = $(element);
+        if ($element.is(".toontalk-conditions-contents")) {
+            // update if toontalk-conditions-contents CSS changes
+            return 60;
+        }
+        if (!$element.is(".toontalk-not-observable")) {
+            return element.getBoundingClientRect().height;
         }
     };
 // for comparison with the above (which handles much bigger numbers than this)
@@ -4639,7 +4747,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 if (document.hidden) {
                     utilities.mute_audio_objects_playing();
                 } else {
-                    // make sure all widgets are redisplayed
+//                     // make sure all widgets are redisplayed
+//                     // first add to DOM element of any widgets that have been created but never rendered
+//                     utilities.each_top_level_widget(function (top_level_widget) {
+//                         top_level_widget.update_display();
+//                     });
                     utilities.rerender_all();
                     utilities.restore_audio_volumes();
                 }

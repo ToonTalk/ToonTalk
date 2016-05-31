@@ -71,7 +71,8 @@ window.TOONTALK.actions =
                 }
                 newly_created_widgets.push(new_widget);
                 if (TT.logging && TT.logging.indexOf("newly-created") >= 0) {
-                    console.log("Added " + new_widget.to_debug_string() + " to list of newly_created_widgets. Length is " + newly_created_widgets.length);
+                    console.log("Added " + new_widget.to_debug_string(50) + 
+                                 " to list of newly_created_widgets. Length is " + newly_created_widgets.length);
                 }
             };
             new_actions.is_newly_created = function (widget) {
@@ -113,21 +114,26 @@ window.TOONTALK.actions =
             var steps = this.get_steps();
             var step;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {           
-                console.log(robot.to_debug_string() + " running unwatched");
+                console.log(robot.to_debug_string(50) + " running unwatched");
             }
             if (!step_number) {
                 // step_number may already be bound if called when a watched robot was hidden while running
                 step_number = 0;
             }
-            robot.run_next_step = function () {
+            robot.run_next_step = function (now_visible) {
                 if (step_number < steps.length) {
                     var step = steps[step_number];
                     step_number++;
                     if (TT.logging && TT.logging.indexOf('event') >= 0) {           
-                        console.log(step + " (unwatched)");
+                        console.log(step + " (unwatched) at " + Date.now() + " by robot " + robot.get_name());
                     }
                     // each step needs to call robot.run_next_step
-                    step.run_unwatched(robot);
+                    if (now_visible) {
+                        robot.run_watched_step_end_listeners();
+                        step.run_watched(robot);
+                    } else {
+                        step.run_unwatched(robot);
+                    }
                 } else {
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
@@ -207,7 +213,7 @@ window.TOONTALK.actions =
             var context_backside = robot.get_context().get_backside();
             var $home_element, backside_rectangle;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {           
-                console.log(robot.to_debug_string() + " running watched");
+                console.log(robot.to_debug_string(50) + " running watched");
             }
             previous_robot = robot.get_previous_robot();
             if (previous_robot) {

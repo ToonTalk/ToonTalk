@@ -195,11 +195,12 @@ window.TOONTALK.vacuum = (function (TT) {
                         TT.sounds.vacuum_suck.play();
                         TT.sounds.bird_fly.pause(); // just in case
                     }
-                    backside_widgets.forEach(function (widget_side) {
-                                                 if (widget_side && widget !== widget.robot_in_training()) {
-                                                     remove_widget(widget_side);
-                                                 }
-                                             });
+                    TT.UTILITIES.for_each_batch(backside_widgets,
+                                                function (widget_side) {
+                                                    if (widget_side && widget !== widget.robot_in_training()) {
+                                                        remove_widget(widget_side);
+                                                    }
+                                                });
                     top_level_backside.set_backside_widgets([]);
                 }
             },
