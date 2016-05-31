@@ -520,8 +520,9 @@ window.TOONTALK.box = (function (TT) {
                     }
                 }
             }
-            if (hole_element !== content_element) {
+            if (hole_element !== content_element && contents.get_parent() === hole) {
                 // not an empty hole
+                // checked if contents still in hole since this was delayed and things may have changed
                 // save dimensions first?
                 update_css_of_hole_contents(contents, content_element, new_width, new_height);
                 hole_element.appendChild(content_element);
