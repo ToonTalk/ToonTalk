@@ -780,6 +780,7 @@ window.TOONTALK.backside =
                                 return;
                             }
                             element = widget.get_element(true);
+                            widget.set_visible(true);
                             TT.UTILITIES.set_css(element,
                                                  {left: bounding_box.width *Math.random(),
                                                   top:  bounding_box.height*Math.random()});
