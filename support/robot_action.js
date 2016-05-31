@@ -14,8 +14,11 @@ window.TOONTALK.robot_action =
             robot.add_newly_created_widget(widget.copy());
             return true;
          },
-         "pick up": function (widget, robot) {
-             widget.set_parent(undefined);
+         "pick up": function (widget, robot, additional_info) {
+             if (!additional_info || !additional_info.running_watched) {
+                 // don't set this if running watched since animated version takes care of this
+                 widget.set_parent(undefined);
+             }
              robot.set_thing_in_hand(widget);
              return true;
          },
