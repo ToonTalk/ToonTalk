@@ -1332,9 +1332,10 @@ window.TOONTALK.nest = (function (TT) {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
             var frontside_element, top_contents, nest_width, nest_height, top_contents_element;
-            frontside_element = frontside.get_element();
-            frontside_element.setAttribute('toontalk_name', this.get_name());
+            frontside_element = frontside.get_element();  
             if (contents.length > 0) {
+                // don't display nest name if covered
+                frontside_element.setAttribute('toontalk_name', "");
                 top_contents = contents[0];
                 if (top_contents.is_backside()) {
                     top_contents_element = top_contents.get_element(true);
@@ -1386,6 +1387,7 @@ window.TOONTALK.nest = (function (TT) {
                     top_contents.set_parent_of_frontside(this);
                 }
             } else {
+                frontside_element.setAttribute('toontalk_name', this.get_name());
                 if (guid) {
                     $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-nest-with-egg"));
                     $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
