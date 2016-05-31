@@ -1926,7 +1926,8 @@ window.TOONTALK.UTILITIES =
                 var distance;
                 if (owner && ((widget.equals && widget.equals(owner)) ||
                               (widget.matching_resource && widget.matching_resource(owner)) ||
-                              (widget.match(owner) === 'matched'))) {
+                              // check type name equality since don't want class and sub-class to match (e.g. nest and sensor nest)
+                              ((widget.get_type_name() === owner.get_type_name()) && widget.match(owner) === 'matched'))) {
                     if (widget.is_hole() ||
                         owner.get_backside_widgets().length === widget.get_backside_widgets().length) {
                         // TODO: make sure the backside widgets are equivalent...
