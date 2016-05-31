@@ -22677,5 +22677,817 @@ top level widget
     "In%202012%2C%20Mathematician%20Ian%20Stewart%20came%20out%20with%20an%20excellent%20and%20deeply%20researched%20book%20titled%20%22In%20Pursuit%20of%20the%20Unknown%3A%2017%20Equations%20That%20Changed%20the%20World.%22"
   ]
 }</div></div>
+<p>Generates names of the powers of 1000</p>
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a work area containing 4 things: a bird, a robot, a box, and a nest.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "semantic": {
+                "type": "function_nest",
+                "function_type": "number",
+                "function_name": "turn into words"
+              },
+              "view": {},
+              "version": 1
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 62.7656,
+            "frontside_top": 266.484,
+            "saved_width": 70,
+            "saved_height": 102
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "backside_conditions": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "bird"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      },
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "1",
+                            "denominator": "1",
+                            "format": "mixed_number",
+                            "erased": true
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {
+                    "saved_width": 240,
+                    "saved_height": 60
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird"
+                  },
+                  "view": {},
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "nest",
+                    "contents": [],
+                    "guid": "in a robot's condition",
+                    "original_nest": {
+                      "semantic": {
+                        "type": "nest",
+                        "contents": [],
+                        "guid": "in a robot's condition",
+                        "serial_number": 1,
+                        "name": "#1"
+                      },
+                      "view": {
+                        "saved_width": 240,
+                        "saved_height": 60
+                      },
+                      "version": 1
+                    },
+                    "serial_number": 1,
+                    "name": "#1"
+                  },
+                  "view": {},
+                  "version": 1
+                }
+              }
+            ],
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "mixed_number"
+                    }
+                  },
+                  "additional_info": {
+                    "time": 2016
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.5122865369340747,
+                    "top_offset_fraction": 0.07630587318087319,
+                    "time": 814
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "open the backside of",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "time": 630
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_numerator",
+                    "argument_1": "1000",
+                    "toString": "by changing the value of the numerator to 1000",
+                    "button_selector": ".toontalk-numerator-input",
+                    "time": 4417
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "click the button of",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "button_selector": ".toontalk-settings-backside-button",
+                    "time": 1278
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_operator",
+                    "argument_1": "*",
+                    "toString": "by changing the operator to * of the number",
+                    "button_selector": ".ui-helper-hidden-accessible",
+                    "time": 2739
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 3568
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "backside_index": 0,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1
+                    }
+                  },
+                  "additional_info": {
+                    "time": 2585
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up a copy of",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "backside_index": 0
+                  },
+                  "additional_info": {
+                    "time": 4578
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "bird",
+                    "backside_index": 1
+                  },
+                  "additional_info": {
+                    "time": 2939
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "nest",
+                    "backside_index": 2,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 3982
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.4686773783446684,
+                    "top_offset_fraction": 0.2433840301577118,
+                    "time": 908
+                  }
+                }
+              ]
+            },
+            "name": "#1"
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 63.2031,
+            "frontside_top": 63.4844,
+            "saved_width": 66,
+            "saved_height": 110
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird",
+                    "nest": {
+                      "shared_widget_index": 0
+                    }
+                  },
+                  "view": {
+                    "saved_width": 70,
+                    "saved_height": 102
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "mixed_number"
+                  },
+                  "view": {
+                    "saved_width": 76,
+                    "saved_height": 55
+                  },
+                  "version": 1
+                }
+              }
+            ],
+            "horizontal": true,
+            "name": ";;",
+            "infinite_stack": true
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 274.125,
+            "frontside_top": 81.3281,
+            "saved_width": 164,
+            "saved_height": 68
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(0, 0, 0, 0)",
+    "backside_width": 1259,
+    "backside_height": 481,
+    "backside_left": 8,
+    "backside_top": 183.1875,
+    "drag_x_offset": 578,
+    "drag_y_offset": 232.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1464016834912",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 217.297,
+        "frontside_top": 284,
+        "saved_width": 116,
+        "saved_height": 98
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<p>Speaking powers of 1000</p>
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a work area containing 6 things: a box, a robot, a nest, a bird, an element, and an element.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird",
+                    "nest": {
+                      "shared_widget_index": 0
+                    }
+                  },
+                  "view": {
+                    "saved_width": 70,
+                    "saved_height": 102
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "mixed_number"
+                  },
+                  "view": {
+                    "saved_width": 76,
+                    "saved_height": 55
+                  },
+                  "version": 1
+                }
+              }
+            ],
+            "horizontal": true,
+            "name": ";;",
+            "infinite_stack": true
+          },
+          "view": {
+            "frontside_width": 951,
+            "frontside_height": 68,
+            "frontside_left": 169.578,
+            "frontside_top": 8.23438,
+            "saved_width": 951,
+            "saved_height": 68
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "backside_conditions": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "bird"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      },
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "1000",
+                            "denominator": "1",
+                            "format": "mixed_number",
+                            "erased": true
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {
+                    "frontside_width": 240,
+                    "frontside_height": 60
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird"
+                  },
+                  "view": {},
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "nest",
+                    "contents": [],
+                    "guid": "in a robot's condition",
+                    "serial_number": 1,
+                    "name": "#1"
+                  },
+                  "view": {
+                    "frontside_width": 240,
+                    "frontside_height": 60
+                  },
+                  "version": 1
+                }
+              }
+            ],
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_resource",
+                    "resource": {
+                      "type": "number",
+                      "operator": "+",
+                      "numerator": "1",
+                      "denominator": "1",
+                      "format": "mixed_number"
+                    }
+                  },
+                  "additional_info": {
+                    "time": 3782
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.4948619936457506,
+                    "top_offset_fraction": 0.30522349272349275,
+                    "time": 847
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "open the backside of",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "time": 333
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_numerator",
+                    "argument_1": "1000",
+                    "toString": "by changing the value of the numerator to 1000",
+                    "button_selector": ".toontalk-numerator-input",
+                    "time": 3033
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "click the button of",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "button_selector": ".toontalk-settings-backside-button",
+                    "time": 1335
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "edit",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0
+                  },
+                  "additional_info": {
+                    "setter_name": "set_operator",
+                    "argument_1": "*",
+                    "toString": "by changing the operator to * of the number",
+                    "button_selector": ".ui-helper-hidden-accessible",
+                    "time": 2009
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "newly_created_widgets_path",
+                    "index": 0,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 1824
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "backside_index": 0,
+                    "next_path": {
+                      "type": "box_path",
+                      "index": 1
+                    }
+                  },
+                  "additional_info": {
+                    "time": 2820
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up a copy of",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "backside_index": 0
+                  },
+                  "additional_info": {
+                    "time": 3144
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "bird",
+                    "backside_index": 1
+                  },
+                  "additional_info": {
+                    "time": 2134
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "nest",
+                    "backside_index": 2,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 5214
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_entire_context",
+                    "is_backside": true
+                  },
+                  "additional_info": {
+                    "left_offset_fraction": 0.1638930777503537,
+                    "top_offset_fraction": 0.45618932014195684,
+                    "time": 1033
+                  }
+                }
+              ]
+            },
+            "name": "#1"
+          },
+          "view": {
+            "frontside_width": 66,
+            "frontside_height": 110,
+            "frontside_left": 633.5,
+            "frontside_top": 317.219,
+            "saved_width": 103,
+            "saved_height": 139
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 0
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "semantic": {
+                "type": "function_nest",
+                "function_type": "number",
+                "function_name": "speak"
+              },
+              "view": {},
+              "version": 1
+            }
+          },
+          "view": {
+            "frontside_width": 70,
+            "frontside_height": 102,
+            "frontside_left": 54.9531,
+            "frontside_top": 226.609,
+            "saved_width": 70,
+            "saved_height": 102
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "one%20million",
+            "attributes": [],
+            "attribute_values": [],
+            "attributes_backsides": [],
+            "children": false,
+            "erased": true,
+            "description": "a response to speaking 'one million'"
+          },
+          "view": {
+            "frontside_width": 1259,
+            "frontside_height": 0,
+            "frontside_left": 202.406,
+            "frontside_top": 211.422,
+            "saved_width": 116,
+            "saved_height": 98
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "one%20billion",
+            "attributes": [],
+            "attribute_values": [],
+            "attributes_backsides": [],
+            "children": false,
+            "erased": true,
+            "description": "a response to speaking 'one billion'"
+          },
+          "view": {
+            "frontside_width": 1259,
+            "frontside_height": 0,
+            "frontside_left": 309.125,
+            "frontside_top": 213.734,
+            "saved_width": 116,
+            "saved_height": 98
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(0, 0, 0, 0)",
+    "backside_width": 1259,
+    "backside_height": 481,
+    "backside_left": 8,
+    "backside_top": 183.1875,
+    "drag_x_offset": 345,
+    "drag_y_offset": 259.8125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1464016834912",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 30.3906,
+        "frontside_top": 60.9063,
+        "saved_width": 116,
+        "saved_height": 98
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+
 </body>
 </html>
