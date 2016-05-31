@@ -1760,6 +1760,8 @@ window.TOONTALK.robot_backside =
                     if (training) {
                         robot.initialize_backside_conditions();
                         robot.get_body().reset_steps();
+                        // first occurence of robot is where to find top_level_widget
+                        // second is the robot being trained
                         robot.robot_started_training(robot);
                         robot.training_started();
                     } else {
