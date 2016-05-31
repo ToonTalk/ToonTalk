@@ -48,10 +48,8 @@ window.TOONTALK.robot_action =
                          robot.add_newly_created_widget_if_new(thing_in_hand);
                          if (thing_in_hand.robot_waiting_before_next_step === robot) {
                              // NOTE thing_in_hand needs to call robot.run_next_step();
-//                              console.log("Expecting " + thing_in_hand + " to run_next_step");
                              if (!additional_info || !additional_info.running_watched) {
                                  thing_in_hand.robot_waiting_before_next_step = undefined;
-//                                  console.log("robot_waiting_before_next_step reset for " + thing_in_hand + " in drop it on -- returning false");
                              }
                              return false;
                          }
@@ -122,9 +120,8 @@ window.TOONTALK.robot_action =
          },
          "add to the top-level backside": function (widget, robot, additional_info) {
              var context, widget_frontside_element, top_level_widget, top_level_element;
-             if (!robot.visible()) {
-                 // the condition is because this code is shared by the watched version and it has already done this
-                 // could add an extra argument that indicates that it is called from the watched version
+             if (!additional_info || !additional_info.running_watched) {
+                 // don't do this if the watched version has already done this
                  top_level_widget = robot.top_level_widget()
                  top_level_widget.add_backside_widget(widget);
                  context = robot.get_context();
