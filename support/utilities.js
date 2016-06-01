@@ -796,7 +796,7 @@ window.TOONTALK.UTILITIES =
     };
     var process_encoded_HTML = function (s, encoded_HTML_function) {
         var cursor = 0;
-        var token_start = encodeURIComponent("<span class='notranslate'>decodeURIComponent");
+        var token_start = encodeURIComponent("<span class='notranslate' translate='no'>decodeURIComponent");
         var token_end   = encodeURIComponent("decodeURIComponent</span>");
         var encoding_token_start = s.indexOf(token_start);
         var decoded = "";
@@ -2367,7 +2367,7 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.encode_HTML_for_title = function (html) {
-            return encodeURIComponent("<span class='notranslate'>decodeURIComponent" + html + "decodeURIComponent</span>"); 
+            return encodeURIComponent("<span class='notranslate' translate='no'>decodeURIComponent" + html + "decodeURIComponent</span>"); 
         };
 
         utilities.remove_encoded_HTML = function (s) {
