@@ -185,7 +185,7 @@ window.TOONTALK.robot_action =
              // no need to do this if unwatched
              // TODO: a more principled way of handling green flag clicking
              // TODO: support stop sign too
-             if (additional_info.button_selector === ".toontalk-green-flag") {
+             if (additional_info.button_selector === ".toontalk-green-flag" && (!additional_info || !additional_info.running_watched)) {
                 widget.set_running(true);
              }
              return true;
