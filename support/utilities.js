@@ -3701,7 +3701,6 @@ window.TOONTALK.UTILITIES =
             return "toontalk-meta-data: " + program_name;
         };
 
-        // simplified version from http://stackoverflow.com/questions/26249133/how-can-i-structure-my-app-to-use-localstorage-when-running-on-a-website-and-ch
         if (chrome && chrome.storage) {
             utilities.store_object = function(key, object, callback) {
                 // need to stringify with special handling of circularity
@@ -3715,8 +3714,8 @@ window.TOONTALK.UTILITIES =
                 chrome.storage.local.set(store, callback);
             };
             utilities.retrieve_object = function (key, callback) {
-                chrome.storage.local.get(key, function (json_string) {
-                                                  callback(json_string[key] && JSON.parse(json_string[key]));
+                chrome.storage.local.get(key, function (stored) {
+                                                  callback(stored[key] && JSON.parse(stored[key]));
                                               });
             };
             utilities.retrieve_string = function (key, callback) {
