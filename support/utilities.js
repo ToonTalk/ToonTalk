@@ -3715,12 +3715,14 @@ window.TOONTALK.UTILITIES =
                 chrome.storage.local.set(store, callback);
             };
             utilities.retrieve_object = function (key, callback) {
-               chrome.storage.local.get(key, function (json_string) {
-                                                 callback(json_string && typeof json_string === 'string' && JSON.parse(json_string));
-                                             });
+                chrome.storage.local.get(key, function (json_string) {
+                                                  callback(json_string[key] && JSON.parse(json_string[key]));
+                                              });
             };
             utilities.retrieve_string = function (key, callback) {
-                chrome.storage.local.get(key, callback);
+                chrome.storage.local.get(key, function (stored) {
+                    callback(stored && stored[key]);
+                });
             };
         } else {
             utilities.store_object = function(key, object, callback) {
@@ -3736,14 +3738,11 @@ window.TOONTALK.UTILITIES =
                 }
             };
             utilities.retrieve_object = function (key, callback) {
-               chrome.storage.local.get(key, function (json_string) {
-                                                 callback(json_string.key && JSON.parse(json_string.key));
-                                             });
+               var json_string = window.localStorage.getItem(key);
+               callback(json_string && JSON.parse(json_string));
             };
             utilities.retrieve_string = function (key, callback) {
-                chrome.storage.local.get(key, function (stored) {
-                                                  callback(stored.key);
-                                              });
+                callback(window.localStorage.getItem(key));
             };
         }
 
