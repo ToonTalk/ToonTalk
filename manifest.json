@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "ToonTalk",
+  "version": "0.1",
+  "minimum_chrome_version": "23",
+  "icons": {
+    "16": "favicon.ico"
+  },
+  "permissions": [
+    "storage",
+    "fullscreen"
+  ],
+  "app": {
+    "background": {
+      "scripts": ["chrome-app.js"]
+    }
+  }
+}

@@ -1896,28 +1896,31 @@ window.TOONTALK.widget = (function (TT) {
                 var program_name = this.get_setting('program_name');
                 var key =           TT.UTILITIES.local_storage_program_key(program_name);
                 var meta_data_key = TT.UTILITIES.local_storage_program_meta_data_key(program_name);
-                var all_program_names, meta_data, message, json_string;
+                var meta_data_callback = function (meta_data) {
+                    json_string = JSON.stringify(json, TT.UTILITIES.clean_json);
+                    if (!meta_data) {
+                        meta_data = {created: time_stamp};
+                    }
+                    meta_data.last_modified = time_stamp;
+                    meta_data.file_size = json_string.length;
+                    TT.UTILITIES.store_object(meta_data_key, meta_data);
+                    // not using store_object since need to get the string length for the meta data
+                    TT.UTILITIES.store_string(key, json_string);
+                    TT.UTILITIES.store_string("toontalk-last-key", key);
+                    TT.UTILITIES.get_all_locally_stored_program_names(function (all_program_names) {
+                        if (all_program_names.indexOf(program_name) < 0) {
+                            all_program_names.push(program_name);
+                            TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
+                        }  
+                    });
+                    
+                };
+                var json_string, all_program_names, meta_data, message;
                 if (!time_stamp) {
                     time_stamp = Date.now();
                 }
                 try {
-                    meta_data = window.localStorage.getItem(meta_data_key);
-                    if (meta_data) {
-                        meta_data = JSON.parse(meta_data);
-                    } else {
-                        meta_data = {created: time_stamp};
-                    }
-                    meta_data.last_modified = time_stamp;
-                    json_string = JSON.stringify(json, TT.UTILITIES.clean_json);
-                    meta_data.file_size = json_string.length;
-                    window.localStorage.setItem(meta_data_key, JSON.stringify(meta_data));
-                    window.localStorage.setItem(key, json_string);
-                    window.localStorage.setItem("toontalk-last-key", key);
-                    all_program_names = TT.UTILITIES.get_all_locally_stored_program_names();
-                    if (all_program_names.indexOf(program_name) < 0) {
-                        all_program_names.push(program_name);
-                        TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
-                    }
+                    TT.UTILITIES.retrieve_object(meta_data_key, meta_data_callback);
                 } catch (error) {
                     if (json_string) {
                         message = "Failed to save state to local storage since it requires " + json_string.length + " bytes. Error message is " + error;
@@ -1963,13 +1966,13 @@ window.TOONTALK.widget = (function (TT) {
                      if (google_file) {
                          TT.google_drive.download_file(google_file, download_callback);
                      } else {
-                         download_callback(window.localStorage.getItem(key));
+                         TT.UTILITIES.retrieve_string(key, download_callback);
                      }
                 };
                 if (google_drive_first && TT.google_drive && TT.google_drive.get_status() === 'Ready') {
                     TT.google_drive.get_toontalk_program_file(file_name, callback);
                 } else {
-                    download_callback(window.localStorage.getItem(key));
+                    TT.UTILITIES.retrieve_string(key, download_callback);
                 }
             };
             top_level_widget.walk_children = function () {

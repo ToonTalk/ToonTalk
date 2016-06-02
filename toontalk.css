@@ -1337,8 +1337,10 @@ which is current ui-widget or font-family: Segoe UI,Arial,sans-serif; */
 body {
     font-family: "Tahoma", "Trebuchet MS";
     font-size: 1.1em;
+/*  Needed for Chrome app, see - http://stackoverflow.com/questions/21641641/mobile-chrome-app-not-able-to-scroll/21710397#21710397 */
+    overflow-y: visible;
 }
- 
+
 .toontalk-top-level-resource {
 	 /* position: relative; */
 	 /* display:  inline-block; */

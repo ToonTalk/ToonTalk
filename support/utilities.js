@@ -1702,7 +1702,7 @@ window.TOONTALK.UTILITIES =
                 function (index, element) {
                     var json_string = element.textContent;
                     var json, widget, frontside_element, backside_element, backside,
-                        stored_json_string, message, toontalk_last_key;
+                        message, toontalk_last_key, key_callback;
                     if (!json_string) {
                         return;
                     }
@@ -1714,10 +1714,17 @@ window.TOONTALK.UTILITIES =
                             if (!TT.reset) {
                                 if (json.load_most_recent_program) {
                                     try {
-                                         toontalk_last_key = window.localStorage.getItem('toontalk-last-key');
-                                         if (toontalk_last_key) {
-                                             stored_json_string = window.localStorage.getItem(toontalk_last_key);
-                                         }
+                                         key_callback = function (toontalk_last_key) {    
+                                             if (toontalk_last_key) {
+                                                 utilities.retrieve_object(toontalk_last_key, function (json) {
+                                                    if (json) {
+                                                        // create the top-level widget with the additional info stored here:
+                                                        widget = utilities.create_from_json(json);
+                                                    }
+                                                 });
+                                             }
+                                         };
+                                         utilities.retrieve_string('toontalk-last-key', key_callback);
                                     } catch (error) {
                                         message = "Error reading previous state. Error message is " + error;
                                         if (utilities.is_internet_explorer()) {
@@ -1727,11 +1734,6 @@ window.TOONTALK.UTILITIES =
                                             utilities.display_message(message);
                                         }
                                     }
-                                }
-                                if (stored_json_string) {
-                                    json = JSON.parse(stored_json_string);
-                                    // create the top-level widget with the additional info stored here:
-                                    widget = utilities.create_from_json(json);
                                 }
                             }
                         }
@@ -2971,28 +2973,38 @@ window.TOONTALK.UTILITIES =
             $(table).addClass("toontalk-file-table");
         };
 
-        utilities.get_local_files_data = function () {
-            var all_program_names = utilities.get_all_locally_stored_program_names();
-            return all_program_names.map(function (program_name) {
-                var meta_data = utilities.get_local_storage_meta_data(program_name);
-                if (meta_data) {
-                    return {title: program_name,
-                            modifiedDate: meta_data.last_modified,
-                            createdDate:  meta_data.created,
-                            fileSize:     meta_data.file_size
-                            };
-                }
-                                        });
+        utilities.get_local_files_data = function (callback) {
+            utilities.get_all_locally_stored_program_names(function (all_program_names) {
+                var meta_data_of_each_program = [];
+                var get_meta_data_of_program = function (index) {
+                    var program_name = all_program_names[index];
+                    utilities.get_local_storage_meta_data(program_name, 
+                                                          function (meta_data) {
+                                                              if (meta_data) {
+                                                                  meta_data_of_each_program.push({title: program_name,
+                                                                                                  modifiedDate: meta_data.last_modified,
+                                                                                                  createdDate:  meta_data.created,
+                                                                                                  fileSize:     meta_data.file_size});
+                                                               }
+                                                               if (index < all_program_names.length) {
+                                                                   get_meta_data_of_program(index+1);
+                                                               } else {
+                                                                   callback(meta_data_of_each_program);
+                                                               }});
+                };
+                get_meta_data_of_program(0);                                         
+            });   
         };
 
-        utilities.create_local_files_table = function () {
-            var data = utilities.get_local_files_data();
-            var table = utilities.create_file_data_table();
-            utilities.when_attached(table, 
-                                    function () {
-                                        utilities.become_file_data_table(table, data, false, "toontalk-file-load-button toontalk-file-load-button-without-click-handler");
+        utilities.create_local_files_table = function (callback) {
+            utilities.get_local_files_data(function (data) {
+                var table = utilities.create_file_data_table();
+                utilities.when_attached(table, 
+                                        function () {
+                                            utilities.become_file_data_table(table, data, false, "toontalk-file-load-button toontalk-file-load-button-without-click-handler");
+                                        });
+                callback(table);
             });
-            return table;
         };
         
         utilities.get_$dragee = function () {
@@ -3658,29 +3670,26 @@ window.TOONTALK.UTILITIES =
             return Object.keys(object)[0];
         };
 
-        utilities.get_all_locally_stored_program_names = function () {
-            var all_program_names_json_string = window.localStorage.getItem('toontalk-all-program-names');
-            if (all_program_names_json_string) {
-                return JSON.parse(all_program_names_json_string);
-            } else {
-                return [];
-            }
+        utilities.get_all_locally_stored_program_names = function (callback) {
+            utilities.retrieve_object('toontalk-all-program-names', function (all_program_names_json) {
+                if (all_program_names_json) {
+                    callback(all_program_names_json);
+                } else {
+                    return callback([]);
+                }
+            });   
         };
 
         utilities.set_all_locally_stored_program_names = function (new_value) {
-            window.localStorage.setItem('toontalk-all-program-names', JSON.stringify(new_value));   
+            utilities.store_object('toontalk-all-program-names', new_value, function () {});  
         };
 
-        utilities.get_local_storage_meta_data = function (program_name) {
+        utilities.get_local_storage_meta_data = function (program_name, callback) {
             var meta_data_key = utilities.local_storage_program_meta_data_key(program_name);
-            var meta_data;
             try {
-                meta_data = window.localStorage.getItem(meta_data_key);
-                if (meta_data) {
-                    return JSON.parse(meta_data);
-                }
+                utilities.retrieve_object(meta_data_key, callback);
             } catch (e) {
-                // return nothing
+                callback();
             }
         };
 
@@ -3691,6 +3700,52 @@ window.TOONTALK.UTILITIES =
         utilities.local_storage_program_meta_data_key = function (program_name) {
             return "toontalk-meta-data: " + program_name;
         };
+
+        // simplified version from http://stackoverflow.com/questions/26249133/how-can-i-structure-my-app-to-use-localstorage-when-running-on-a-website-and-ch
+        if (chrome && chrome.storage) {
+            utilities.store_object = function(key, object, callback) {
+                // need to stringify with special handling of circularity
+                var store = {};
+                store[key] = JSON.stringify(object, utilities.clean_json);
+                chrome.storage.local.set(store, callback);
+            };
+            utilities.store_string = function(key, string, callback) {
+                var store = {};
+                store[key] = string;
+                chrome.storage.local.set(store, callback);
+            };
+            utilities.retrieve_object = function (key, callback) {
+               chrome.storage.local.get(key, function (json_string) {
+                                                 callback(json_string && typeof json_string === 'string' && JSON.parse(json_string));
+                                             });
+            };
+            utilities.retrieve_string = function (key, callback) {
+                chrome.storage.local.get(key, callback);
+            };
+        } else {
+            utilities.store_object = function(key, object, callback) {
+                window.localStorage.setItem(key, JSON.stringify(object, utilities.clean_json));
+                if (callback) {
+                    callback();
+                }
+            };
+            utilities.store_string = function(key, string, callback) {
+                window.localStorage.setItem(key, string);
+                if (callback) {
+                    callback();
+                }
+            };
+            utilities.retrieve_object = function (key, callback) {
+               chrome.storage.local.get(key, function (json_string) {
+                                                 callback(json_string.key && JSON.parse(json_string.key));
+                                             });
+            };
+            utilities.retrieve_string = function (key, callback) {
+                chrome.storage.local.get(key, function (stored) {
+                                                  callback(stored.key);
+                                              });
+            };
+        }
 
         utilities.enable_editor = function (editor_window, url, file_id, widgets_json) {
             // widgets_json can be undefined
