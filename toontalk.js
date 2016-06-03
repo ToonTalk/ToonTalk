@@ -50,7 +50,8 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
                    USABILITY_DRAG_OFFSET: {x: 0,
                                            y: 0},
                    // following needed since window.navigator.onLine was true even after disconnecting from the net
-                   RUNNING_LOCALLY: this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0
+                   RUNNING_LOCALLY: this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0,
+                   CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
                   };
 
 var debugging = get_parameter('debugging', '0') !== '0';

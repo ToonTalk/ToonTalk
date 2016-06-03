@@ -3719,7 +3719,7 @@ window.TOONTALK.UTILITIES =
             return "toontalk-meta-data: " + program_name;
         };
 
-        if (chrome && chrome.storage) {
+        if (TT.CHROME_APP) {
             utilities.store_object = function(key, object, callback) {
                 // need to stringify with special handling of circularity
                 var store = {};
@@ -4749,6 +4749,18 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                            "Click to visit see what has changed recently.",
                            {"background": "cyan"});
             };
+            var unload_listener = function (event) {
+                try {
+                    window.speechSynthesis.cancel();
+                } catch (e) {
+                    // ignore error    
+                }
+                try {
+                    utilities.backup_all_top_level_widgets(true);
+                } catch (error) {
+                    TT.UTILITIES.report_internal_error(error);
+                }
+            };
             var document_click, translation_div, translation_element, $saved_selection;
             if (toontalk_initialized) {
                 return;
@@ -4793,18 +4805,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.DEFAULT_QUEUE = window.TOONTALK.queue.create();
             // might want two queues: so new entries end up in the 'next queue'
             TT.DEFAULT_QUEUE.start();
-            window.addEventListener('beforeunload', function (event) {
-                try {
-                    window.speechSynthesis.cancel();
-                } catch (e) {
-                    // ignore error    
-                }
-                try {
-                    utilities.backup_all_top_level_widgets(true);
-                } catch (error) {
-                    TT.UTILITIES.report_internal_error(error);
-                }
-            });
+            if (TT.CHROME_APP) {
+                chrome.runtime.onSuspend.addListener(unload_listener);
+            } else {
+                window.addEventListener('beforeunload', unload_listener);
+            }
             TT.TRANSLATION_ENABLED = utilities.get_current_url_boolean_parameter("translate", false);
             if (TT.TRANSLATION_ENABLED) {
                 $("a").each(function (index, element) {
@@ -4852,9 +4857,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                })(window,document,'script', chrome ? TOONTALK.TOONTALK_URL + 'libraries/analytics.js' : 'https://www.google-analytics.com/analytics.js','ga');
+                })(window,document,'script', (TT.CHROME_APP ? TOONTALK.TOONTALK_URL + 'libraries/analytics.js' : 'https://www.google-analytics.com/analytics.js'),'ga');
                 ga('create', 'UA-57964541-1', 'auto');
-                if (chrome) {
+                if (TT.CHROME_APP) {
                     // for running as Chrome App see - https://davidsimpson.me/2014/05/27/add-googles-universal-analytics-tracking-chrome-extension/
                     ga('set', 'checkProtocolTask', function(){}); // Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
                     ga('require', 'displayfeatures');
