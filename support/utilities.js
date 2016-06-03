@@ -4718,6 +4718,37 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                                                     }
                                                                 });
                                                             });
+            var add_help_buttons = function () {
+                var add_button = function (id, url, label, title, css) {
+                    var element = document.getElementById(id);
+                    var click_handler = function (event) {
+                                            utilities.add_iframe_popup(url);
+                                        };
+                    var button;
+                    if (element) {
+                        button = utilities.create_button(label, "toontalk-manual-button", title, click_handler);
+                        if (css) {
+                            $(button).css(css);
+                        }
+                        element.appendChild(button);
+                    }
+                }
+                add_button("toontalk-manual-button",
+                           "docs/manual/index.html?reset=1",
+                           "Learn about ToonTalk",
+                           "Click to visit the page that introduces everything.",
+                           {"background": "yellow"});
+                add_button("toontalk-manual-tour",
+                           "docs/tours/tour1.html?reset=1",
+                           "Watch a tour of ToonTalk",
+                           "Click to visit a page that replays a tour.",
+                           {"background": "pink"});
+                add_button("toontalk-manual-whats-new",
+                           "docs/manual/whats-new.html?reset=1",
+                           "What's new?",
+                           "Click to visit see what has changed recently.",
+                           {"background": "cyan"});
+            };
             var document_click, translation_div, translation_element, $saved_selection;
             if (toontalk_initialized) {
                 return;
@@ -4806,6 +4837,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 TT.vacuum.create();
             }
             utilities.add_test_all_button();
+            add_help_buttons();
             // compute the default dimensions of robots, birds, nests, and scales (not really needed for scales and causes a bug in test-programs.html)
             discover_default_dimensions('toontalk-robot',       TT.robot);
             discover_default_dimensions('toontalk-empty-nest',  TT.nest);

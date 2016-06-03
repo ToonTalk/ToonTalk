@@ -199,7 +199,7 @@
 	cursor: pointer;
 	vertical-align: middle;
 	text-align: center;
-	overflow: visible;/* removes extra width in IE */
+	overflow: visible; /* removes extra width in IE */
 }
 .ui-button,
 .ui-button:link,
@@ -1338,7 +1338,7 @@ body {
     font-family: "Tahoma", "Trebuchet MS";
     font-size: 1.1em;
 /*  Needed for Chrome app, see - http://stackoverflow.com/questions/21641641/mobile-chrome-app-not-able-to-scroll/21710397#21710397 */
-    overflow-y: visible;
+    overflow-y: scroll;
 }
 
 .toontalk-top-level-resource {
@@ -2059,6 +2059,7 @@ table.toontalk-documentation-table {
 	background-color:  white;
 	border-width: 6px;
 	border-color: gray;
+	overflow-y: scroll;
 }
 .toontalk-close-popup-frame-button {
 	cursor: pointer;
