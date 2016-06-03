@@ -5,18 +5,17 @@
  * @see http://developer.chrome.com/apps/app.window.html
  */
 chrome.app.runtime.onLaunched.addListener(function() {
-  // Center window on screen.
   var screenWidth = screen.availWidth;
   var screenHeight = screen.availHeight;
 
   chrome.app.window.create('index.html?debugging=1', {
     id: "ToonTalkID",
-    state: "fullscreen"
-//    outerBounds: {
-//      width: screenWidth,
-//      height: screenHeight,
-//      left: 0,
-//      top: 0
-//    }
+//     state: "fullscreen"
+   outerBounds: {
+     width: screenWidth,
+     height: screenHeight,
+     left: 0,
+     top: 0
+   }
   });
 });
