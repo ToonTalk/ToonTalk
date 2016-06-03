@@ -2049,7 +2049,7 @@ table.toontalk-documentation-table {
 .toontalk-attribute-help-button {
 	background: #9D59DD;
 }
-.toontalk-help-frame {
+.toontalk-popup-frame {
 	position: absolute;
 	z-index: 999999999;
 	width:  96%;
@@ -2060,7 +2060,7 @@ table.toontalk-documentation-table {
 	border-width: 6px;
 	border-color: gray;
 }
-.toontalk-close-help-frame-button {
+.toontalk-close-popup-frame-button {
 	cursor: pointer;
 	position: absolute;
 	top:   0px;

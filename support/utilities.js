@@ -2929,6 +2929,24 @@ window.TOONTALK.UTILITIES =
             return tabs;
         };
 
+        utilities.add_iframe_popup = function (url) {
+            var frame = document.createElement("iframe");
+            var close_button = document.createElement('div');
+            $(close_button).addClass("toontalk-close-popup-frame-button")
+                           .button();
+            close_button.addEventListener('click',
+                                          function (event) {
+                                              $(frame).remove();
+                                              $(close_button).remove();
+                                              event.stopPropagation();
+                                          });
+            close_button.innerHTML = "Return to ToonTalk";   
+            $(frame).addClass("toontalk-popup-frame");
+            frame.src = url;
+            document.body.appendChild(close_button);
+            document.body.appendChild(frame);
+        };
+
         utilities.create_file_data_table = function (extra_classes) {
             var $table = $('<table cellpadding="0" cellspacing="0" border="0"></table>');
             if (extra_classes) {

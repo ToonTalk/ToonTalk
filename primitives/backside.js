@@ -53,9 +53,6 @@ window.TOONTALK.backside =
             var green_flag_element = document.createElement('div');
             var stop_sign_element  = document.createElement('div');
             var help_URL = widget.get_help_URL && widget.get_help_URL();
-            var erased, parent, parent_is_backside, settings_button, visible,
-                original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
-                close_button, backside_widgets, help_button, help_frame, close_help_button;
             var update_flag_and_stop_sign_classes = function (running) {
                 if (running) {
                     $(green_flag_element).addClass   ("toontalk-green-flag-active toontalk-button")
@@ -128,11 +125,7 @@ window.TOONTALK.backside =
             var help_button_clicked = function (event) {
                                           if (relative_URL) {
                                               // is a relative path so no problem with iframes
-                                              help_frame = document.createElement("iframe");
-                                              $(help_frame).addClass("toontalk-help-frame");
-                                              help_frame.src = help_URL;
-                                              document.body.appendChild(close_help_button);
-                                              document.body.appendChild(help_frame);
+                                              TT.UTILITIES.add_iframe_popup(help_URL);
                                               event.stopPropagation();
                                           } else {
                                               // need to work around:
@@ -141,7 +134,10 @@ window.TOONTALK.backside =
                                               help_button.target = '_blank';
                                           }
                                       };
-            var close_title, close_handler, description_text_area, name_text_input, relative_URL, widget_HTML;
+            var erased, parent, parent_is_backside, settings_button, visible,
+                original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
+                close_button, help_button, backside_widgets,
+                close_title, close_handler, description_text_area, name_text_input, relative_URL, widget_HTML;
             if (TT.TRANSLATION_ENABLED && help_URL) {
                 help_URL = TT.UTILITIES.add_URL_parameter(help_URL, "translate", "1");
             }
@@ -235,16 +231,6 @@ window.TOONTALK.backside =
                 help_button.innerHTML = 'i'; // like tourist info -- alternatively could use a question mark
                 help_button.translate = false; // should not be translated
                 TT.UTILITIES.give_tooltip(help_button, "Click to learn more about " + widget.get_type_name(true, true) + ".");
-                close_help_button = document.createElement('div');
-                $(close_help_button).addClass("toontalk-close-help-frame-button")
-                                    .button();
-                close_help_button.addEventListener('click',
-                                                   function (event) {
-                                                       $(help_frame).remove();
-                                                       $(close_help_button).remove();
-                                                       event.stopPropagation();
-                                                   });
-                close_help_button.innerHTML = "Return to ToonTalk";
                 backside_element.appendChild(help_button);
             };        
             if (description_label) {
