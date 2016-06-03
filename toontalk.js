@@ -48,7 +48,9 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
                    // can't see through your finger so offset dragee
                    // here so people can easily customise this (diffrent devices, fingers, etc.)
                    USABILITY_DRAG_OFFSET: {x: 0,
-                                           y: 0}
+                                           y: 0},
+                   // following needed since window.navigator.onLine was true even after disconnecting from the net
+                   RUNNING_LOCALLY: this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0
                   };
 
 var debugging = get_parameter('debugging', '0') !== '0';
@@ -151,7 +153,9 @@ var loadFile = function (index, offline) {
                                             }
                                         };
                    if (file_name.indexOf("http") >= 0) {
-                       if (!offline) { // window.navigator.onLine was true even after disconnecting from the net
+                       if (!offline && !chrome) { 
+                           // Chrome App complains:
+                           // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' because it violates the following Content Security Policy directive: ...
                            script.src = file_name;
                        } else if (local_replacements[file_name]) {
                            script.src = path_prefix + local_replacements[file_name];
@@ -208,6 +212,6 @@ if (published_page) {
     add_css("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css");
 }
 
-loadFile(0, this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0);
+loadFile(0, TOONTALK.RUNNING_LOCALLY);
 
 }());
