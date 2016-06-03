@@ -1338,7 +1338,11 @@ body {
     font-family: "Tahoma", "Trebuchet MS";
     font-size: 1.1em;
 /*  Needed for Chrome app, see - http://stackoverflow.com/questions/21641641/mobile-chrome-app-not-able-to-scroll/21710397#21710397 */
-    overflow-y: scroll;
+    overflow-y: visible;
+}
+
+html {
+	overflow-y: visible;
 }
 
 .toontalk-top-level-resource {
@@ -2059,7 +2063,7 @@ table.toontalk-documentation-table {
 	background-color:  white;
 	border-width: 6px;
 	border-color: gray;
-	overflow-y: scroll;
+	overflow-y: visible;
 }
 .toontalk-close-popup-frame-button {
 	cursor: pointer;
