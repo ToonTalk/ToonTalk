@@ -45,6 +45,9 @@ window.TOONTALK.bird = (function (TT) {
                 }
             }
         });
+        // long menus need scroll bars
+        $(select_menu.menu).selectmenu("menuWidget")
+                           .addClass( "toontalk-select-menu");
         backside_element.insertBefore(select_menu.container, backside_element.firstChild);
     };
     

@@ -3126,6 +3126,10 @@ background-image: url("images/dusty-morph.png");
 	text-decoration: none;
 }
 
+.toontalk-select-menu { 
+	height: 200px; 
+}
+
 /* .toontalk-select-function {
 	position: relative;
 } */
