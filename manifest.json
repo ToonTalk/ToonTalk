@@ -2,13 +2,11 @@
   "manifest_version": 2,
   "name": "ToonTalk",
   "version": "0.1",
-  "minimum_chrome_version": "23",
   "icons": {
-    "16": "favicon.ico"
+    "16": "marty-icon.png"
   },
   "permissions": [
-    "storage",
-    "fullscreen"
+    "storage"
   ],
   "app": {
     "background": {
