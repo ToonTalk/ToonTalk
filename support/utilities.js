@@ -4680,6 +4680,36 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             return element.getBoundingClientRect().height;
         }
     };
+    utilities.resizable_and_scalable = function (element, original_width, original_height, resize_callback) {
+        var width_at_resize_start, height_at_resize_start, x_scale_factor, y_scale_factor;
+        $(element).resizable(
+                {start: function () {
+                    width_at_resize_start  = TT.UTILITIES.get_element_width (element);
+                    height_at_resize_start = TT.UTILITIES.get_element_height(element);
+                    if (!original_width) {
+                        original_width  = width_at_resize_start;
+                    }
+                    if (!original_height) {
+                        original_height = height_at_resize_start;
+                    }
+                },
+                resize: function (event, ui) {
+                    var current_width  = ui.size.width; 
+                    var current_height = ui.size.height;
+                    if ($(element).is(".toontalk-top-level-backside")) {
+                        // top-level backside is not scaled
+                        return;
+                    }
+                    x_scale_factor = current_width  / width_at_resize_start;
+                    y_scale_factor = current_height / height_at_resize_start;
+                    width_at_resize_start  = current_width;
+                    height_at_resize_start = current_height;
+                    if (resize_callback) {
+                        resize_callback(x_scale_factor, y_scale_factor);
+                    }
+                },
+                handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
+    };
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
 // utilities.to_words = function (n) {

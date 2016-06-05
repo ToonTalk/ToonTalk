@@ -137,7 +137,7 @@ window.TOONTALK.backside =
                                           }
                                       };
             var erased, parent, parent_is_backside, settings_button, visible,
-                original_width, original_height, original_x_scale, original_y_scale, width_at_resize_start, height_at_resize_start, 
+                original_width, original_height, original_x_scale, original_y_scale, 
                 close_button, help_button, backside_widgets,
                 close_title, close_handler, description_text_area, name_text_input, relative_URL, widget_HTML;
             if (TT.TRANSLATION_ENABLED && help_URL) {
@@ -580,8 +580,12 @@ window.TOONTALK.backside =
             backside.set_dimensions = function (dimensions) {
                 x_scale = dimensions.x_scale;
                 y_scale = dimensions.y_scale;
-                original_width  = dimensions.original_width;
-                original_height = dimensions.original_height;
+                if (dimensions.original_width) {
+                    original_width  = dimensions.original_width;
+                }
+                if (dimensions.original_height) {
+                    original_height = dimensions.original_height;
+                }
             };
             backside.scale_to_fit = function (this_element, other_element) {
                 // if CSS of toontalk-backside changes then change the following numbers
@@ -703,34 +707,14 @@ window.TOONTALK.backside =
             }
             backside_element.toontalk_widget_side = backside;
             TT.UTILITIES.drag_and_drop(backside_element);
-            $backside_element.resizable(
-                {start: function () {
-                    width_at_resize_start  = TT.UTILITIES.get_element_width (backside_element);
-                    height_at_resize_start = TT.UTILITIES.get_element_height(backside_element);
-                    if (!original_width) {
-                        original_width  = width_at_resize_start;
-                    }
-                    if (!original_height) {
-                        original_height = height_at_resize_start;
-                    }
-                },
-                resize: function (event, ui) {
-                    var current_width  = ui.size.width; 
-                    var current_height = ui.size.height;
-                    if ($backside_element.is(".toontalk-top-level-backside")) {
-                        // top-level backside is not scaled
-                        return;
-                    }
-//                  console.log({x_scale_change: current_width / width_at_resize_start,
-//                               y_scale_change: current_height / height_at_resize_start});
-                    x_scale *= current_width  / width_at_resize_start;
-                    y_scale *= current_height / height_at_resize_start;
-                    width_at_resize_start  = current_width;
-                    height_at_resize_start = current_height;
-//                     console.log(current_width + "x" + current_height + " and scale is " + x_scale + "x" + y_scale);
-                    backside.render_current_scale();
-                },
-                handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
+            TT.UTILITIES.resizable_and_scalable(backside_element,
+                                                original_width,
+                                                original_height,
+                                                function (x_scale_factor, y_scale_factor) {
+                                                    backside.set_dimensions({x_scale: x_scale*x_scale_factor,
+                                                                             y_scale: y_scale*y_scale_factor});
+                                                    backside.render_current_scale();
+                                                });
             backside_element.addEventListener("mouseenter", function (event) {
                 var frontside = widget.get_frontside();
                 var parent_of_backside = widget.get_parent_of_backside();
