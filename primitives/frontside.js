@@ -31,10 +31,6 @@ window.TOONTALK.frontside =
                 if ($frontside_element.is(".toontalk-top-level-resource") && !event.altKey) {
                     // can open top-level resources with Alt key
                     widget.set_running(!widget.get_running());
-//                 } else if (widget.get_running() && !widget.robot_in_training()) {
-//                     if (TT.debugging) {
-//                         TT.UTILITIES.display_message("Clicks on running widgets are ignored. If you wish to see its backside then stop it and click again.");
-//                     }
                 } else {
                     if (TT.open_backside_only_if_alt_key && !event.altKey) {
                         // URL parameter used to restrict opening backside -- useful for puzzle construction

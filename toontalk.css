@@ -1337,11 +1337,10 @@ which is current ui-widget or font-family: Segoe UI,Arial,sans-serif; */
 body {
     font-family: "Tahoma", "Trebuchet MS";
     font-size: 1.1em;
-/*  Needed for Chrome app, see - http://stackoverflow.com/questions/21641641/mobile-chrome-app-not-able-to-scroll/21710397#21710397 */
-    overflow-y: visible;
 }
 
 html {
+	/*  Needed for Chrome app, see - http://stackoverflow.com/questions/21641641/mobile-chrome-app-not-able-to-scroll/21710397#21710397 */
 	overflow-y: visible;
 }
 
@@ -1495,6 +1494,14 @@ html {
 	display: inline;
 	background-color: yellow;
 	font-size: 24px;
+}
+.toontalk-local-alert {
+	position: absolute;
+	top: -50px;
+	background-color: darkgreen;
+	color: lightyellow;
+	border-radius: 8px;
+	padding: 8px;
 }
 .toontalk-frontside {
     position: absolute;
@@ -1706,7 +1713,6 @@ html {
     -moz-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
 	-webkit-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
     -o-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
-    
 	border-image: url("images/number-border-half-size.png") 16 16 round repeat;
 }
 .toontalk-number-quarter-size-border {

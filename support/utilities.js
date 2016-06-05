@@ -3510,12 +3510,26 @@ window.TOONTALK.UTILITIES =
             }
         };
 
-        utilities.display_message = function (message) {
+        utilities.display_message = function (message, element, second_choice_element) {
+            // if a backside containing element isn't found then try second_choice_element
             var alert_element = utilities.create_alert_element(message);
+            var $backside;
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             console.log(message);
             console.trace();
-            document.body.insertBefore(alert_element, document.body.firstChild);
+            if (element || second_choice_element) {
+                $backside = $(element).closest(".toontalk-backside");
+                if ($backside.length === 0) {
+                    $backside = $(second_choice_element).closest(".toontalk-backside");
+                }
+                if ($backside.length > 0) {
+                    $(alert_element).addClass("toontalk-local-alert");
+                    $backside.append(alert_element);
+                }
+            } 
+            if (!element || $backside.length === 0) {
+                document.body.insertBefore(alert_element, document.body.firstChild);
+            }
             if (TT.speak) {
                 window.speechSynthesis.cancel(); // stop any ongoing speech
                 utilities.speak(message);
