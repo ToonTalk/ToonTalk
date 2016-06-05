@@ -708,13 +708,13 @@ window.TOONTALK.backside =
             backside_element.toontalk_widget_side = backside;
             TT.UTILITIES.drag_and_drop(backside_element);
             TT.UTILITIES.resizable_and_scalable(backside_element,
-                                                original_width,
-                                                original_height,
-                                                function (x_scale_factor, y_scale_factor) {
-                                                    backside.set_dimensions({x_scale: x_scale*x_scale_factor,
-                                                                             y_scale: y_scale*y_scale_factor});
+                                                function (x_scale, y_scale) {
+                                                    backside.set_dimensions({x_scale: x_scale,
+                                                                             y_scale: y_scale});
                                                     backside.render_current_scale();
-                                                });
+                                                },
+                                                original_width,
+                                                original_height);
             backside_element.addEventListener("mouseenter", function (event) {
                 var frontside = widget.get_frontside();
                 var parent_of_backside = widget.get_parent_of_backside();

@@ -1845,6 +1845,7 @@ padding-bottom:  8%;}
 .toontalk-resource-table {
 	padding: 4px;
 	text-align: center;
+	transform-origin: left top 0px;
 }
 table.toontalk-documentation-table {
 }

@@ -4680,33 +4680,29 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             return element.getBoundingClientRect().height;
         }
     };
-    utilities.resizable_and_scalable = function (element, original_width, original_height, resize_callback) {
-        var width_at_resize_start, height_at_resize_start, x_scale_factor, y_scale_factor;
+    utilities.resizable_and_scalable = function (element, resize_callback) {
+        var x_scale = 1;
+        var y_scale = 1;
+        var previous_bounding_box;
+        if ($(element).is(".toontalk-top-level-backside")) {
+            // top-level backside is not scaled
+           return;
+        }
         $(element).resizable(
-                {start: function () {
-                    width_at_resize_start  = TT.UTILITIES.get_element_width (element);
-                    height_at_resize_start = TT.UTILITIES.get_element_height(element);
-                    if (!original_width) {
-                        original_width  = width_at_resize_start;
-                    }
-                    if (!original_height) {
-                        original_height = height_at_resize_start;
-                    }
+                {start: function (event, ui) {
+                     previous_bounding_box = {width:  ui.size.width,
+                                              height: ui.size.height};
                 },
                 resize: function (event, ui) {
-                    var current_width  = ui.size.width; 
-                    var current_height = ui.size.height;
-                    if ($(element).is(".toontalk-top-level-backside")) {
-                        // top-level backside is not scaled
-                        return;
-                    }
-                    x_scale_factor = current_width  / width_at_resize_start;
-                    y_scale_factor = current_height / height_at_resize_start;
-                    width_at_resize_start  = current_width;
-                    height_at_resize_start = current_height;
-                    if (resize_callback) {
-                        resize_callback(x_scale_factor, y_scale_factor);
-                    }
+                    var bounding_box = {width:  ui.size.width,
+                                        height: ui.size.height};
+                    x_scale *= bounding_box.width  / previous_bounding_box.width;
+                    y_scale *= bounding_box.height / previous_bounding_box.height;
+                    resize_callback(x_scale, y_scale);
+//                     console.log("bounding_box: " + bounding_box.width + "x" + bounding_box.height 
+//                               + " previous_bounding_box: " + previous_bounding_box.width + "x" + previous_bounding_box.height
+//                               + " x_scale: " + x_scale + " y_scale: " + y_scale);
+                    previous_bounding_box = bounding_box;
                 },
                 handles: "n,e,s,w,se,ne,sw,nw"});
     };
@@ -4896,6 +4892,13 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // all titles should use custom tool tips (e.g. those in documentation pages)
             $("[title]").each(function (index, element) {
                                   utilities.use_custom_tooltip(element);
+            });
+            $(".toontalk-resource-table").each(function (index, element) {
+                utilities.resizable_and_scalable(element, function (x_scale, y_scale) {
+                    var css = {};
+                    utilities.set_css_transform(css, "scale(" + x_scale + ", " + y_scale + ")");
+                    $(element).css(css);
+                });
             });
             if (!TOONTALK.RUNNING_LOCALLY) {
                 // for Google Analytics -- moved here since inline code not allowed by Chrome Apps
