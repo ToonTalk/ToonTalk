@@ -4708,7 +4708,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         resize_callback(x_scale_factor, y_scale_factor);
                     }
                 },
-                handles: "e,s,se"}); // was "n,e,s,w,se,ne,sw,nw" but interfered with buttons
+                handles: "n,e,s,w,se,ne,sw,nw"});
     };
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
