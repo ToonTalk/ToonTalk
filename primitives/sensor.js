@@ -243,7 +243,7 @@ window.TOONTALK.sensor = (function (TT) {
                 return "a sensor for this document.";
             }
         };
-        widget_can_run = new_senor.can_run;
+        widget_can_run = new_sensor.can_run;
         new_sensor.can_run = function (robots_only) {
             // can run in the sense of becoming active
             return !robots_only || widget_can_run.call(this, robots_only);
@@ -315,6 +315,7 @@ window.TOONTALK.sensor = (function (TT) {
                 previous_contents.forEach(function (side) {
                     style_contents(side.get_widget(), sensor);
                 });
+                sensor.rerender();
             },
             500);
         }
