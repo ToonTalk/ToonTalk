@@ -3513,6 +3513,9 @@ window.TOONTALK.UTILITIES =
         utilities.display_message = function (message, element, second_choice_element) {
             // if a backside containing element isn't found then try second_choice_element
             var alert_element = utilities.create_alert_element(message);
+            var remove_handler = function () {
+                                     $(alert_element).remove();
+                                 };
             var $backside;
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             console.log(message);
@@ -3534,9 +3537,8 @@ window.TOONTALK.UTILITIES =
                 window.speechSynthesis.cancel(); // stop any ongoing speech
                 utilities.speak(message);
             }
-            setTimeout(function () {
-                           $(alert_element).remove();
-                       },
+            alert_element.addEventListener('click', remove_handler);
+            setTimeout(remove_handler,
                        Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100)));
         };
 

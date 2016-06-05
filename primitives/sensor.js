@@ -277,7 +277,7 @@ window.TOONTALK.sensor = (function (TT) {
                                  return event.detail[attribute];
                              }
                              value = "No such attribute for " + new_sensor;
-                             TT.UTILITIES.display_message(value, new_sensor.get_backside_element(), new_sensor.get_frontside_element());
+                             new_sensor.display_message(value, true);
                          }
                     }
                     return value;

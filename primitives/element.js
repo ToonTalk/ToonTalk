@@ -2213,7 +2213,7 @@ window.TOONTALK.element.function =
         function (message, event, robot) {
             var go_to_URL = function (element_url) {
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
-                    TT.UTILITIES.display_message("Robot trained to replace current URL.");
+                    robot.display_message("Robot trained to replace current URL.");
                 } else {
                     window.location.assign(element_url.get_text());
                 }

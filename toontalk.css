@@ -1494,12 +1494,13 @@ html {
 	display: inline;
 	background-color: yellow;
 	font-size: 24px;
+	font-weight: bold;
 }
 .toontalk-local-alert {
 	position: absolute;
-	top: -50px;
-	background-color: darkgreen;
-	color: lightyellow;
+	top: -60px;
+	background-color: orange;
+	color: black;
 	border-radius: 8px;
 	padding: 8px;
 }

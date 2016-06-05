@@ -6,28 +6,28 @@
 
 window.TOONTALK.create_function_table = 
 (function (TT) {
-    "use strict";
-    return function () {
+  "use strict";
+  return function () {
     var function_table = {};
     return {
     check_message: function (message) {
         var box_size, bird;
         if (!message.is_box()) {
-            TT.UTILITIES.display_message("Function birds can only respond to boxes. One was given " + TT.UTILITIES.add_a_or_an(message.get_type_name()));
+           message.display_message("Function birds can only respond to boxes. One was given " + TT.UTILITIES.add_a_or_an(message.get_type_name()));
             return;
         }
         box_size = message.get_size();
         if (box_size < 1) {
-            TT.UTILITIES.display_message("Function birds can only respond to boxes with holes.");
+            message.display_message("Function birds can only respond to boxes with holes.");
             return;
         }
         bird = message.get_hole_contents(0);
         if (!bird) {
-            TT.UTILITIES.display_message("Function birds can only respond to boxes with something in the first hole.");
+            message.display_message("Function birds can only respond to boxes with something in the first hole.");
             return;
         }
         if (!bird.is_bird()) {
-            TT.UTILITIES.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name() + "."));
+            message.display_message("Function birds can only respond to boxes with a bird in the first hole. The first hole contains " + TT.UTILITIES.add_a_or_an(bird.get_type_name() + "."));
             return;
         }
         return {box_size: box_size,
@@ -65,8 +65,8 @@ window.TOONTALK.create_function_table =
             return true;
         }
         if (!widget) {
-            TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " + 
-                                          TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
+            TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " 
+                                          + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
             return false;
         }
         if (widget.dereference().is_of_type(type)) {
@@ -76,9 +76,9 @@ window.TOONTALK.create_function_table =
             // throw empty nest so can suspend this until nest is covered
             throw {wait_for_nest_to_receive_something: widget};
         }
-        TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " + 
-                                     TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + 
-                                     " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
+        widget.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
+                               + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index)
+                               + " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
         return false;
     },
     number_check: function (widget, function_name, index) {
@@ -116,7 +116,8 @@ window.TOONTALK.create_function_table =
         var compute_response = function (bird, box_size) {
             var next_widget, index, args, is_number_or_nest, any_approximate_arguments, response;
             if (box_size < minimum_arity+1) { // one for the bird
-                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with at least " + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
+                message.display_message("Birds for the " + function_name + " function can only respond to boxes with at least "
+                                        + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
                 return;
             }
             args = [];
@@ -148,7 +149,7 @@ window.TOONTALK.create_function_table =
         var compute_response = function (bird, box_size) {
             var next_widget, index, args, type;
             if (arity >= 0 && box_size != arity+1) { // one for the bird
-                TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
+                message.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
                 return;
             }
             args = [];

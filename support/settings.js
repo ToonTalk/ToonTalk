@@ -101,7 +101,7 @@ window.TOONTALK.SETTINGS =
     };
     var close_settings = function (widget) {
         $(".toontalk-settings-panel").remove();
-        TT.UTILITIES.display_message("Your program was copied and the new copy's name is '" + widget.get_setting('program_name') + "'.");
+        widget.display_message("Your program was copied and the new copy's name is '" + widget.get_setting('program_name') + "'.");
     };
     var add_click_listeners = function (widget, table, in_the_cloud, settings_panel) {
         var program_click_handler = function (event) {
@@ -172,7 +172,7 @@ window.TOONTALK.SETTINGS =
                                                           "toontalk-publish-button", 
                                                           "Click to publish your program by generating a Google Drive URL.", 
                                                           function () {
-                                                              TT.UTILITIES.display_message("Creating your web page...");
+                                                              widget.display_message("Creating your web page...");
                                                               widget.publish(display_published, as_workspace.button.checked);
                                                           });
           var as_workspace  = TT.UTILITIES.create_check_box(widget.get_setting('publish_as_workspace'), 
@@ -183,7 +183,7 @@ window.TOONTALK.SETTINGS =
               // currently extra_info is the JSON of the current widgets if previously published
               var link_to_publication = create_connection_to_google_file(google_file, "Published: ", extra_info);
               var $row = $(program_name.container).children("tr");
-              TT.UTILITIES.display_message("Your web page is ready for you to edit. Just click on the link.");
+              widget.display_message("Your web page is ready for you to edit. Just click on the link.");
               if ($row.length > 0) {
                   $row.get(0).appendChild(TT.UTILITIES.create_table_entry(link_to_publication));
               }

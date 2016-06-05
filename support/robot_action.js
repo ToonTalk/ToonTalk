@@ -94,7 +94,7 @@ window.TOONTALK.robot_action =
          },
          "change whether erased": function (widget, robot, additional_info) {
              if (!widget.set_erased) {
-                 TT.UTILITIES.display_message("Robot is unable to erase " + widget);
+                 widget.display_message("Robot is unable to erase " + widget);
                  return;
              }
              widget.set_erased(!widget.get_erased());

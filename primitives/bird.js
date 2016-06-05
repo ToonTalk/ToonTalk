@@ -65,7 +65,7 @@ window.TOONTALK.bird = (function (TT) {
             var frontside_element, fly_continuation, run_next_step_continuation, add_to_nest_contents_directly;
             if (nest) {
                 if (nest.has_ancestor(message_side)) {
-                    TT.UTILITIES.display_message("Bird can't take its nest to its nest!");
+                    message_side.display_message("Bird can't take its nest to its nest!");
                     return false;
                 }
                 if ((nest.visible() || this.visible() || nest.any_nest_copies_visible()) &&
@@ -1034,7 +1034,7 @@ window.TOONTALK.nest = (function (TT) {
             if (contents) {
                 return contents[0].dereference_path(path, robot);
             }
-            TT.UTILITIES.display_message("Robot expected to find a nest something that it could get " + TT.path.toString(path) + ". But the nest is empty.");
+            robot.display_message("Robot expected to find something on a nest that it could get " + TT.path.toString(path) + ". But the nest is empty.");
             return this;
         };
         new_nest.dereference_contents = function (path_to_nest, robot) {

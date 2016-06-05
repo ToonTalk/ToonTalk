@@ -1357,11 +1357,11 @@ window.TOONTALK.box.function =
             var get_hole_contents = function (number, box) {
                 var n = Math.round(number.to_float());
                 if (n < 1) {
-                    TT.UTILITIES.display_message("The box hole function bird cannot accept " + number + ". She only accepts positive numbers.");
+                    message.display_message("The box hole function bird cannot accept " + number + ". She only accepts positive numbers.");
                     return;
                 }
                 if (n > box.get_size()) {
-                    TT.UTILITIES.display_message("The box hole function bird cannot accept " + number + ". The box only has " + box.get_size() + " holes.");
+                    message.display_message("The box hole function bird cannot accept " + number + ". The box only has " + box.get_size() + " holes.");
                     return;
                 };
                 return box.get_hole_contents(n-1);
@@ -1388,7 +1388,7 @@ window.TOONTALK.box.function =
             var set_hole_contents = function (number, box, new_contents) {
                 var n = Math.round(number.to_float());
                 if (n < 1) {
-                    TT.UTILITIES.display_message("The fill hole function bird cannot accept " + number + ". She only accepts positive numbers.");
+                    message.display_message("The fill hole function bird cannot accept " + number + ". She only accepts positive numbers.");
                     return;
                 }
                 if (n > box.get_size()) {
@@ -1422,11 +1422,11 @@ window.TOONTALK.box.function =
                     return TT.box.create(2, false, [box, box2]);
                 };
                 if (n < 0) {
-                    TT.UTILITIES.display_message("The box split function bird cannot accept " + number + ". She only accepts zero or positive numbers.");
+                    message.display_message("The box split function bird cannot accept " + number + ". She only accepts zero or positive numbers.");
                     return;
                 }
                 if (n > box_size) {
-                    TT.UTILITIES.display_message("The box split function bird cannot accept " + number + ". The box only has " + box_size + " holes.");
+                    message.display_message("The box split function bird cannot accept " + number + ". The box only has " + box_size + " holes.");
                     return;
                 }
                 return box_of_boxes();

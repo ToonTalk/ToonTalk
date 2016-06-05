@@ -1585,6 +1585,14 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
 
+        display_message: function (message, display_on_backside_if_possible) {
+            if (display_on_backside_if_possible) {
+                TT.UTILITIES.display_message(message, this.get_backside_element(), this.get_frontside_element());
+            } else {
+               TT.UTILITIES.display_message(message, this.get_frontside_element());
+            }
+        },
+
         // defined here in order to share between element and number functions
         get_speak_function: function (functions) {
             return function (message, event, robot) {
@@ -1596,7 +1604,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 if (!window.speechSynthesis) {
                     // ignore this
-                    TT.UTILITIES.display_message("This browser doesn't support speech output. Try another browser such as Chrome.");
+                    widget.display_message("This browser doesn't support speech output. Try another browser such as Chrome.");
                     return true;
                 }
                 widget = widget.get_widget(); // either side is fine
@@ -1649,7 +1657,7 @@ window.TOONTALK.widget = (function (TT) {
             return true;
         }},
         get_description_function: function (functions) {
-            return function (message, event, robot) {
+          return function (message, event, robot) {
             var describe = function (widget) {
                 var text, speech_utterance, respond;
                 if (!widget) {
@@ -1678,7 +1686,7 @@ window.TOONTALK.widget = (function (TT) {
                 return;
             }
             if (box_size_and_bird.size < 2) {
-                TT.UTILITIES.display_message("Description birds need a box with two holes containing a bird and a widget.");
+                message.display_message("Description birds need a box with two holes containing a bird and a widget.");
                 return;
             }
             describe(message.get_hole_contents(1));
