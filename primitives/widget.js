@@ -588,7 +588,7 @@ window.TOONTALK.widget = (function (TT) {
                             title = "Drag me to a work area.";
                         }   
                     } else if (!backside || !backside.get_element() || !TT.UTILITIES.visible_element(backside.get_element())) {
-                        if (this.can_run && this.can_run()) {
+                        if (this.can_run && this.can_run(true)) {
                             if (this.get_running()) {
                                 title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign " +
                                         TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") +

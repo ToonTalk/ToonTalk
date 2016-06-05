@@ -84,6 +84,7 @@ window.TOONTALK.sensor = (function (TT) {
                 new_sensor.add_to_contents(value_widget);
             }
         }.bind(this);
+        var widget_can_run;
         new_sensor.is_sensor = function () {
             return true;
         };
@@ -242,9 +243,10 @@ window.TOONTALK.sensor = (function (TT) {
                 return "a sensor for this document.";
             }
         };
-        new_sensor.can_run = function () {
+        widget_can_run = new_senor.can_run;
+        new_sensor.can_run = function (robots_only) {
             // can run in the sense of becoming active
-            return true;
+            return !robots_only || widget_can_run.call(this, robots_only);
         };
         attribute_values = function (event) {
             return new_sensor.get_attributes().map(
@@ -274,8 +276,8 @@ window.TOONTALK.sensor = (function (TT) {
                              } else if (event.detail && event.detail[attribute] !== undefined) {
                                  return event.detail[attribute];
                              }
-                             value = "No " + attribute + " in event " + event + " of sensor " + sensor;
-                             TT.UTILITIES.display_message(value);
+                             value = "No such attribute for " + new_sensor;
+                             TT.UTILITIES.display_message(value, new_sensor.get_backside_element(), new_sensor.get_frontside_element());
                          }
                     }
                     return value;
