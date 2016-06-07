@@ -3759,6 +3759,9 @@ window.TOONTALK.UTILITIES =
                 }
                 store[key] = JSON.stringify(object, utilities.clean_json);
                 chrome.storage.local.set(store, callback);
+                if (chrome.runtime.lastError) {
+                    console.error(chrome.runtime.lastError + " caused by set " + key);
+                }
             };
             utilities.store_string = function(key, string, callback) {
                 var store = {};
@@ -3767,6 +3770,9 @@ window.TOONTALK.UTILITIES =
                 }
                 store[key] = string;
                 chrome.storage.local.set(store, callback);
+                if (TT.logging && TT.logging.indexOf('store') >= 0) {
+                    console.log("Storing string " + string.substring(0, 100) + "... with key " + key);
+                }
             };
             utilities.retrieve_object = function (key, callback) {
                 chrome.storage.local.get(key,
@@ -3801,14 +3807,8 @@ window.TOONTALK.UTILITIES =
                 if (callback) {
                     callback();
                 }
-                if (chrome.runtime.lastError) {
-                    console.error(chrome.runtime.lastError + " caused by setItem " + key);
-                }
             };
             utilities.store_string = function(key, string, callback) {
-                if (TT.logging && TT.logging.indexOf('store') >= 0) {
-                    console.log("Storing string " + string.substring(0, 100) + "... with key " + key);
-                }
                 window.localStorage.setItem(key, string);
                 if (callback) {
                     callback();
