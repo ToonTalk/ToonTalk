@@ -3769,20 +3769,28 @@ window.TOONTALK.UTILITIES =
                 chrome.storage.local.set(store, callback);
             };
             utilities.retrieve_object = function (key, callback) {
-                chrome.storage.local.get(key, function (stored) {
-                                                  if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
-                                                      console.log("Retrieved " + (stored[key] && stored[key].substring(0, 100)) + "... with key " + key);
-                                                  }
-                                                  callback(stored[key] && JSON.parse(stored[key]));
-                                              });
+                chrome.storage.local.get(key,
+                                         function (stored) {
+                                              if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                                                  console.log("Retrieved " + (stored[key] && stored[key].substring(0, 100)) + "... with key " + key);
+                                              }
+                                              if (chrome.runtime.lastError) {
+                                                  console.error(chrome.runtime.lastError + " caused by get " + key);
+                                              }
+                                              callback(stored[key] && JSON.parse(stored[key]));
+                                          });
             };
             utilities.retrieve_string = function (key, callback) {
-                chrome.storage.local.get(key, function (stored) {
-                    if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
-                       console.log("Retrieved string " + (stored[key] && stored[key].substring(0, 100)) + "... with key " + key);
-                    }
-                    callback(stored && stored[key]);
-                });
+                chrome.storage.local.get(key, 
+                                         function (stored) {
+                                             if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                                                console.log("Retrieved string " + (stored[key] && stored[key].substring(0, 100)) + "... with key " + key);
+                                             }
+                                             if (chrome.runtime.lastError) {
+                                                 console.error(chrome.runtime.lastError + " caused by get " + key);
+                                             }                    
+                                             callback(stored && stored[key]);
+                                         });
             };
         } else {
             utilities.store_object = function(key, object, callback) {
@@ -3793,6 +3801,9 @@ window.TOONTALK.UTILITIES =
                 if (callback) {
                     callback();
                 }
+                if (chrome.runtime.lastError) {
+                    console.error(chrome.runtime.lastError + " caused by setItem " + key);
+                }
             };
             utilities.store_string = function(key, string, callback) {
                 if (TT.logging && TT.logging.indexOf('store') >= 0) {
@@ -3801,6 +3812,9 @@ window.TOONTALK.UTILITIES =
                 window.localStorage.setItem(key, string);
                 if (callback) {
                     callback();
+                }
+                if (chrome.runtime.lastError) {
+                    console.error(chrome.runtime.lastError + " caused by setItem " + key);
                 }
             };
             utilities.retrieve_object = function (key, callback) {
