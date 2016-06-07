@@ -1166,6 +1166,9 @@ window.TOONTALK.widget = (function (TT) {
                     var backside = this.get_backside();
                     var backside_visible = backside && backside.visible();
                     backside_widgets = new_backside_widgets;
+                    if (TT.logging && TT.logging.indexOf('backside-widgets') >= 0) {
+                        console.log("Set backside widgets " + backside_widgets.length + " widgets of " + (backside_visible ? "visible " : "invisible " ) + this);
+                    } 
                     if (backside_widgets.length > 0) {
                         if (backside) {
                             backside.add_backside_widgets(backside_widgets, json_views);

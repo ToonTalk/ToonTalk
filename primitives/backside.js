@@ -501,6 +501,9 @@ window.TOONTALK.backside =
                 if (backside_widgets.length === 0) {
                     return;
                 }
+                if (TT.logging && TT.logging.indexOf('backside-widgets') >= 0) {
+                    console.log("Adding " + backside_widgets.length + " backside widgets to " + this);
+                }
                 // create a copy of the list since it will be reset by the time the time out runs
                 current_backside_widgets = backside_widgets.slice();
                 // too soon to add these widgets so delay slightly
@@ -533,6 +536,9 @@ window.TOONTALK.backside =
                                         if (!widget_side_element.parentElement) {
                                             // needs to be added to backside element
                                             backside_element.appendChild(widget_side_element);
+                                            if (TT.logging && TT.logging.indexOf('backside-widgets') >= 0) {
+                                               console.log("Widget element added to backside element.");
+                                            }
                                         }
                                         widget_side_element.toontalk_widget_side = backside_widget_side;
                                         if (json_view) {
