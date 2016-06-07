@@ -1457,9 +1457,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            var style = "";
            var first_space;
            if (html.length > 1 && html.charAt(0) === '<') {
-                if (this.get_image_element()) {
+                if (this.get_image_element() ) {
                     // if an image then scale it
-                    style = "style='width: 50px; height: 30px;'";
+                    style = "style='width: 60px; height: 40px;'";
+                } else if (html.indexOf("<img") === 0) {
+                    return "<img width=60 height=40 " + html.substring(4);
                 }
                 if (to_string_info && to_string_info.inside_tool_tip) {
                     style += " class='toontalk-widget-in-tool-tip'";
