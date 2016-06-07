@@ -132,7 +132,8 @@ window.TOONTALK.google_drive =
       },
 
       connection_to_google_drive_possible: function () {
-          return status.indexOf(wrong_origin_message) !== 0;
+          // Chrome apps can use Google Drive but via a different API
+          return status.indexOf(wrong_origin_message) !== 0 && !TT.CHROME_APP;
       },
 
       list_files: function (query, callback) {
