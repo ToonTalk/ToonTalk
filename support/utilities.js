@@ -1697,104 +1697,119 @@ window.TOONTALK.UTILITIES =
             return drop_area;
         };
    
-        utilities.process_json_elements = function () {
-            $(".toontalk-json").each(
-                function (index, element) {
-                    var json_string = element.textContent;
-                    var json, widget, frontside_element, backside_element, backside,
-                        message, toontalk_last_key, key_callback;
-                    if (!json_string) {
-                        return;
-                    }
-                    json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
-                    json = JSON.parse(json_string);
-                    if (json.semantic && json.semantic.type === 'top_level') {
-                        // perhaps local storage will be used instead of the current json
-                        if (!TT.no_local_storage) {
-                            if (!TT.reset) {
-                                if (json.load_most_recent_program) {
-                                    try {
-                                         key_callback = function (toontalk_last_key) {    
-                                             if (toontalk_last_key) {
-                                                 utilities.retrieve_object(toontalk_last_key, function (json) {
-                                                    if (json) {
-                                                        // create the top-level widget with the additional info stored here:
-                                                        widget = utilities.create_from_json(json);
-                                                    }
-                                                 });
-                                             }
-                                         };
-                                         utilities.retrieve_string('toontalk-last-key', key_callback);
-                                    } catch (error) {
-                                        message = "Error reading previous state. Error message is " + error;
-                                        if (utilities.is_internet_explorer()) {
-                                            // TODO: determine what the problem is with IE11 and local storage
-                                            console.error("window.localStorage in IE11 not available with file://...: " + message);
+        utilities.process_json_elements = function ($elements, index) {
+            // because retrieve_object is treated as asychronous need to make each element wait for a response_handler
+            var element, json_string, json, widget, frontside_element, backside_element, backside,
+                message, toontalk_last_key, process_widget_callback, key_callback;
+            if (!$elements) {
+                $elements = $(".toontalk-json");
+                index = 0;
+            }
+            if ($elements.length === 0) {
+                return;
+            }
+            process_widget_callback = function () {
+                if (widget) {
+                    element.textContent = ""; // served its purpose of being parsed as JSON
+                    // may have been been display:none while loading so looks better while loading
+                    $(element).css({display: ''});
+                    if (!widget.get_type_name) {
+                        // isn't a widget. e.g. a tool
+                        element.appendChild(widget.get_element());
+                    } else if (widget.is_top_level()) {
+                        backside = widget.get_backside(true);
+                        backside_element = backside.get_element();
+                        $(element).replaceWith(backside_element);
+                        // use JQuery css directly rather than set_css since that does processing
+                        // of plain text widgets appropriate only for frontside
+                        $(backside_element).css({width:  json.view.backside_width,
+                                                 height: json.view.backside_height,
+                                                 // color may be undefined
+                                                 // do the following in a more general manner
+                                                 // perhaps using additional classes?
+                                                 "background-color": json.view.background_color,
+                                                 "border-width":     json.view.border_width});
+                   } else {
+                       // TODO: determine why both levels have the same class here
+                       $(element).addClass("toontalk-top-level-resource toontalk-top-level-resource-container");
+                       frontside_element = widget.get_frontside_element(true);
+                       if (frontside_element) {
+                           $(frontside_element).addClass("toontalk-top-level-resource")
+                                                .css({position: 'relative', // should this be part of the CSS instead?
+                                                      width:  widget.saved_width,
+                                                      height: widget.saved_height});
+                            element.toontalk_widget_side = widget;
+                            element.appendChild(frontside_element);
+                        }
+                   }
+                   if (widget.set_active) {
+                       // sensor resources shouldn't run -- currently they are only ones support set_active
+                       widget.set_active(false);
+                   }
+                   if (widget.set_visible) {
+                       widget.set_visible(true);
+                   }
+                   // delay until geometry settles down
+                   setTimeout(function () {
+                                  if (widget.update_display) {
+                                      widget.update_display();
+                                  } // otherwise might be a tool
+                                  if (json.semantic.running) {
+                                      widget.set_running(true);
+                                  }
+                              },
+                              1);
+                } else {
+                    utilities.report_internal_error("Could not recreate a widget from this JSON: " + json_string);
+                }
+                if (index < $elements.length-1) {
+                    utilities.process_json_elements($elements, index+1);
+                }
+            };
+            element = $elements.get(index);
+            json_string = element.textContent;
+            if (!json_string) {
+                return;
+            }
+            json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
+            json = JSON.parse(json_string);
+            if (json.semantic && 
+                json.semantic.type === 'top_level' &&
+                !TT.no_local_storage &&
+                !TT.reset &&
+                json.load_most_recent_program) {
+                // perhaps local storage will be used instead of the current json
+               try {
+                    key_callback = function (toontalk_last_key) {    
+                                       if (toontalk_last_key) {
+                                           utilities.retrieve_object(toontalk_last_key,
+                                                                     function (json) {
+                                                                         if (json) {
+                                                                             // create the top-level widget with the additional info stored here:
+                                                                             widget = utilities.create_from_json(json);
+                                                                             process_widget_callback();
+                                                                         }
+                                                                      });
                                         } else {
-                                            utilities.display_message(message);
+                                            widget = utilities.create_from_json(json);
+                                            process_widget_callback();
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!widget) {
-                        widget = utilities.create_from_json(json);
-                    }
-                    if (widget) {
-                        element.textContent = ""; // served its purpose of being parsed as JSON
-                        // may have been been display:none while loading so looks better while loading
-                        $(element).css({display: ''});
-                        if (!widget.get_type_name) {
-                            // isn't a widget. e.g. a tool
-                            element.appendChild(widget.get_element());
-                        } else if (widget.is_top_level()) {              
-                            backside = widget.get_backside(true);
-                            backside_element = backside.get_element();
-                            $(element).replaceWith(backside_element);
-                            // use JQuery css directly rather than set_css since that does processing
-                            // of plain text widgets appropriate only for frontside
-                            $(backside_element).css({width:  json.view.backside_width,
-                                                     height: json.view.backside_height,
-                                                     // color may be undefined
-                                                     // do the following in a more general manner
-                                                     // perhaps using additional classes?
-                                                     "background-color": json.view.background_color,
-                                                     "border-width":     json.view.border_width});
-                        } else {
-                            // TODO: determine why both levels have the same class here
-                            $(element).addClass("toontalk-top-level-resource toontalk-top-level-resource-container");
-                            frontside_element = widget.get_frontside_element(true);
-                            if (frontside_element) {
-                                $(frontside_element).addClass("toontalk-top-level-resource")
-                                                    .css({position: 'relative',
-                                                          width:  widget.saved_width,
-                                                          height: widget.saved_height});
-                                element.toontalk_widget_side = widget;
-                                element.appendChild(frontside_element);
-                            }
-                        }
-                        if (widget.set_active) {
-                            // sensor resources shouldn't run -- currently they are only ones support set_active
-                            widget.set_active(false);
-                        }
-                        if (widget.set_visible) {
-                            widget.set_visible(true);
-                        }
-                        // delay until geometry settles down
-                        setTimeout(function () {
-                                if (widget.update_display) {
-                                    widget.update_display();
-                                } // otherwise might be a tool
-                                if (json.semantic.running) {
-                                    widget.set_running(true);
-                                }
-                            },
-                            1);
+                                        
+                                   };
+                    utilities.retrieve_string('toontalk-last-key', key_callback);
+               } catch (error) {
+                    message = "Error reading previous state. Error message is " + error;
+                    if (utilities.is_internet_explorer()) {
+                        // TODO: determine what the problem is with IE11 and local storage
+                        console.error("window.localStorage in IE11 not available with file://...: " + message);
                     } else {
-                        utilities.report_internal_error("Could not recreate a widget from this JSON: " + json_string);
+                        utilities.display_message(message);
                     }
-                });
+                }
+            } else {
+                widget = utilities.create_from_json(json);
+                process_widget_callback()
+            }
         };
 
         utilities.relative_position_from_absolute_position = function (element, absolute_position) {
@@ -3739,32 +3754,50 @@ window.TOONTALK.UTILITIES =
             utilities.store_object = function(key, object, callback) {
                 // need to stringify with special handling of circularity
                 var store = {};
+                if (TT.logging && TT.logging.indexOf('store') >= 0) {
+                    console.log("Storing " + object + " with key " + key);
+                }
                 store[key] = JSON.stringify(object, utilities.clean_json);
                 chrome.storage.local.set(store, callback);
             };
             utilities.store_string = function(key, string, callback) {
                 var store = {};
+                if (TT.logging && TT.logging.indexOf('store') >= 0) {
+                    console.log("Storing string " + string.substring(0, 100) + "... with key " + key);
+                }
                 store[key] = string;
                 chrome.storage.local.set(store, callback);
             };
             utilities.retrieve_object = function (key, callback) {
                 chrome.storage.local.get(key, function (stored) {
+                                                  if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                                                      console.log("Retrieved " + (stored[key] && stored[key].substring(0, 100)) + "... with key " + key);
+                                                  }
                                                   callback(stored[key] && JSON.parse(stored[key]));
                                               });
             };
             utilities.retrieve_string = function (key, callback) {
                 chrome.storage.local.get(key, function (stored) {
+                    if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                       console.log("Retrieved string " + (stored[key] && stored[key].substring(0, 100)) + "... with key " + key);
+                    }
                     callback(stored && stored[key]);
                 });
             };
         } else {
             utilities.store_object = function(key, object, callback) {
+                if (TT.logging && TT.logging.indexOf('store') >= 0) {
+                    console.log("Storing " + object + " with key " + key);
+                }
                 window.localStorage.setItem(key, JSON.stringify(object, utilities.clean_json));
                 if (callback) {
                     callback();
                 }
             };
             utilities.store_string = function(key, string, callback) {
+                if (TT.logging && TT.logging.indexOf('store') >= 0) {
+                    console.log("Storing string " + string.substring(0, 100) + "... with key " + key);
+                }
                 window.localStorage.setItem(key, string);
                 if (callback) {
                     callback();
@@ -3772,12 +3805,18 @@ window.TOONTALK.UTILITIES =
             };
             utilities.retrieve_object = function (key, callback) {
                var json_string = window.localStorage.getItem(key);
+               if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                   console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
+               }
                callback(json_string && JSON.parse(json_string));
             };
             utilities.retrieve_string = function (key, callback) {
+                if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                    console.log("Retrieved string " + (window.localStorage.getItem(key) && window.localStorage.getItem(key).substring(0, 100)) + "... with key " + key);
+                }
                 callback(window.localStorage.getItem(key));
             };
-        }
+        };
 
         utilities.enable_editor = function (editor_window, url, file_id, widgets_json) {
             // widgets_json can be undefined
