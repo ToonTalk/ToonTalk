@@ -2232,6 +2232,8 @@ window.TOONTALK.UTILITIES =
                               // //width: (340 + 340*(text.length-default_capacity)/default_capacity),
                               ui.tooltip.css({maxWidth: new_width});
                           }
+                          // higher than a select menu which is one elss 9
+                          ui.tooltip.css({"z-index": 99999999});
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
                           // TODO: position it better
@@ -2797,7 +2799,6 @@ window.TOONTALK.UTILITIES =
                 option.innerHTML = item;
                 if (item_titles && item_titles[index]) {
                     utilities.give_tooltip(option, item_titles[index]);
-                    utilities.use_custom_tooltip(option);
                 }
                 select.appendChild(option);
             });
@@ -2805,6 +2806,19 @@ window.TOONTALK.UTILITIES =
                                   open: function () {
                                       // was ending up under the top-level and this backside without explicitly setting the z index
                                       $(".ui-selectmenu-open").css({"z-index": 9999999});
+                                      setTimeout(function () {
+                                         $(".ui-selectmenu-open").find(".ui-menu-item").each(
+                                            function (index, element) {
+                                                var menu_index;
+                                                // tooltips were lost so this restores them
+                                                if (item_titles) {
+                                                    menu_index = items.indexOf(element.textContent);
+                                                    if (menu_index >= 0 && item_titles[menu_index]) {
+                                                        utilities.give_tooltip(element, item_titles[menu_index]);
+                                                    }
+                                                }
+                                         }); 
+                                      });                                                             
                                   }});
             $(label_element).addClass("ui-widget");
             utilities.use_custom_tooltip(select);
