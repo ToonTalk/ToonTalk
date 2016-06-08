@@ -297,7 +297,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, current_pending_css;
+            var frontside_element, current_pending_css, new_dimensions;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -361,7 +361,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                         height: original_height});
                 }
                 if (this.is_plain_text_element()) {
-                    this.plain_text_dimensions();
+                    new_dimensions = this.plain_text_dimensions();
                 }
                 $(frontside_element).css({width: '', height: ''});
                 current_pending_css = pending_css;
@@ -369,6 +369,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                        function (original_parent) {
                                                            var parent = this.get_parent_of_frontside();
                                                            wrap_location(this, current_pending_css);
+                                                           if (new_dimensions) {
+                                                               current_width  = new_dimensions.width;
+                                                               current_height = new_dimensions.height;
+                                                           }
                                                            if (this.ok_to_set_dimensions() || this.location_constrained_by_container()) {
                                                                TT.UTILITIES.scale_element(frontside_element,
                                                                                           current_width,
@@ -663,6 +667,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.plain_text_dimensions = function () {
             // this is to scale the element (and its font) properly
             // TODO: fix this in a principled manner
+            var frontside_element = this.get_frontside_element();
+            var css;
+            if ($(frontside_element).is(".toontalk-conditions-contents") && $(frontside_element.parentElement).is(".toontalk-conditions-container")) {
+                this.saved_width  = $(frontside_element.parentElement).width();
+                this.saved_height = $(frontside_element.parentElement).height();
+                css = {width:  this.saved_width,
+                       height: this.saved_height};
+                $(frontside_element).css(css);
+                return css;
+            } 
             original_width  = 12*this.get_HTML().length;
             original_height = 32;
             this.saved_width  = original_width;
