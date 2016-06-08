@@ -1455,13 +1455,32 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         scale_or_quote_html = function (html) {
            var style = "";
-           var first_space;
+           var replace_attribute = function (attribute_name, html, new_value) {
+               var attribute_index = html.indexOf(attribute_name + "=");
+               var space_index, first_quote_index, second_quote_index;
+               if (attribute_index >= 0) {
+                   first_quote_index = html.indexOf("'", attribute_index);
+                   if (first_quote_index >= 0) {
+                       second_quote_index = html.indexOf("'", first_quote_index+1);
+                   }
+                   if (second_quote_index >= 0) {
+                       return html.substring(0, attribute_index) + attribute_name + "=" + new_value + html.substring(second_quote_index+1);
+                   } 
+               }
+               // no old value so add a new pair
+               space_index = html.indexOf(' ');
+               return html.substring(0, space_index+1) + attribute_name + "=" + new_value + " " + html.substring(space_index+1);
+           };
+           var first_space, iframe_index;
            if (html.length > 1 && html.charAt(0) === '<') {
                 if (this.get_image_element() ) {
                     // if an image then scale it
                     style = "style='width: 60px; height: 40px;'";
-                } else if (html.indexOf("<img") === 0) {
-                    return "<img width=60 height=40 " + html.substring(4);
+                } else if (html.indexOf("<img ") === 0) {
+                    return "<img width='60'' height='40'' " + html.substring(4);
+                } else if (html.indexOf("<iframe ") >= 0) {
+                    iframe_index = html.indexOf("<iframe ");
+                    return replace_attribute('width', replace_attribute('height', html, "'60'"), "'80'");
                 }
                 if (to_string_info && to_string_info.inside_tool_tip) {
                     style += " class='toontalk-widget-in-tool-tip'";

@@ -433,7 +433,7 @@ window.TOONTALK.UTILITIES =
                 } else {
                     utilities.restore_resource($source, source_widget_side);
                 }
-                if (source_widget_side.robot_in_training()) {
+                if (source_widget_side && source_widget_side.robot_in_training()) {
                     // maybe have been copied
                     // or removed from a container (and not 'seen' before)
                     source_widget_side.robot_in_training().add_newly_created_widget_if_new(source_widget_side);
@@ -2234,6 +2234,8 @@ window.TOONTALK.UTILITIES =
                           }
                           // higher than a select menu which is one elss 9
                           ui.tooltip.css({"z-index": 99999999});
+                          // if tooltip is referring to an iframe than remove its drag bar
+                          ui.tooltip.find(".toontalk-iframe-container").removeClass("toontalk-iframe-container");
                           // need to add the arrow here since the replacing of the innerHTML above removed the arrow
                           // when it was added earlier
                           // TODO: position it better
