@@ -4962,13 +4962,15 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             $("[title]").each(function (index, element) {
                                   utilities.use_custom_tooltip(element);
             });
-            $(".toontalk-resource-table").each(function (index, element) {
-                utilities.resizable_and_scalable(element, function (x_scale, y_scale) {
-                    var css = {};
-                    utilities.set_css_transform(css, "scale(" + x_scale + ", " + y_scale + ")");
-                    $(element).css(css);
-                });
-            });
+            // making resource tables scalable was awkward to use and mysteriously caused spurious scroll bars on the entire page
+//             $(".toontalk-resource-table").each(function (index, element) {
+//                 utilities.resizable_and_scalable(element,
+//                                                  function (x_scale, y_scale) {
+//                                                      var css = {};
+//                                                      utilities.set_css_transform(css, "scale(" + x_scale + ", " + y_scale + ")");
+//                                                      $(element).css(css);
+//                                                  });
+//             });
             if (!TOONTALK.RUNNING_LOCALLY) {
                 // for Google Analytics -- moved here since inline code not allowed by Chrome Apps
                 // loading https://www.google-analytics.com/analytics.js causes an error in Chrome App so use local copy

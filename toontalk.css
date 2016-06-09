@@ -1346,7 +1346,6 @@ html {
 
 .toontalk-top-level-resource {
 	 /* position: relative; */
-	 /* display:  inline-block; */
  }
 .toontalk-top-level-resource:hover {
 	cursor: move;
