@@ -1119,7 +1119,7 @@ window.TOONTALK.box_hole =
                 var hole_element;
                 if (contents) {
                     hole_element = this.get_frontside_element();
-                    update_css_of_hole_contents(contents, contents.get_element(), $(hole_element).width(), $(hole_element).height());
+                    update_css_of_hole_contents(contents, contents.get_element(true), $(hole_element).width(), $(hole_element).height());
                 }
             };
             hole.dereference = function () {
