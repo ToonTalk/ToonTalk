@@ -209,7 +209,7 @@ window.TOONTALK.actions =
             // only the first in team is certain to already have its frontside_element attached
             var top_level_widget = robot.get_first_in_team().top_level_widget();
             // TODO: determine if the following should be replaced by top_level_widget.get_backside(true)...
-            var top_level_position = $(frontside_element).closest(".toontalk-top-level-backside").offset();
+            var top_level_position = $(frontside_element).closest(".toontalk-backside-of-top-level").offset();
             var context_backside = robot.get_context().get_backside();
             var $home_element, backside_rectangle;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {           

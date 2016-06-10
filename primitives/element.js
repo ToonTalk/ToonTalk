@@ -1391,7 +1391,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                             }
                             owner = attribute_widget.get_attribute_owner();
                             event.stopPropagation();
-                            top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
+                            top_level_position = $(owner.get_frontside_element()).closest(".toontalk-backside-of-top-level").offset();
                             if (!top_level_position) {
                                 console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
                                 top_level_position = {left: 0, top: 0};

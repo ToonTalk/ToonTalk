@@ -311,11 +311,11 @@ window.TOONTALK.bird = (function (TT) {
             if (!target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_offset = $(target_frontside_element).offset();
-                $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-top-level-backside");   
+                $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-backside-of-top-level");   
             }
             if (!$top_level_backside_element || !$top_level_backside_element.is("*")) {
                 // target (e.g. nest) isn't contributing its top-level backside so use this bird's
-                $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-top-level-backside");
+                $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-backside-of-top-level");
             }
             top_level_backside_element_bounding_box = $top_level_backside_element.offset();
             if (!top_level_backside_element_bounding_box) {
@@ -1214,9 +1214,9 @@ window.TOONTALK.nest = (function (TT) {
                     if (side_of_other.is_backside()) {
                         backside_where_bird_goes = side_of_other;
                     } else {
-                        top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(frontside_element).closest(".toontalk-top-level-backside"));
+                        top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(frontside_element).closest(".toontalk-backside-of-top-level"));
                         if (!top_level_widget_side) {
-                            top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(side_of_other.get_widget().get_frontside_element(true)).closest(".toontalk-top-level-backside"));     
+                            top_level_widget_side = TT.UTILITIES.widget_side_of_jquery($(side_of_other.get_widget().get_frontside_element(true)).closest(".toontalk-backside-of-top-level"));     
                         }
                         if (top_level_widget_side) {
                             if (top_level_widget_side.is_backside()) {

@@ -350,7 +350,7 @@ window.TOONTALK.robot_action =
                 if (robot.animate_consequences_of_actions()) {
                     // need to see it before actions such as Bammer take place
                     if (!TT.UTILITIES.visible_element(thing_in_hand_element)) {
-                        $top_level_element = $(robot.get_frontside_element()).closest(".toontalk-top-level-backside")
+                        $top_level_element = $(robot.get_frontside_element()).closest(".toontalk-backside-of-top-level")
                         if ($top_level_element.length > 0) {
                             $top_level_element.get(0).appendChild(thing_in_hand_element);
                         }

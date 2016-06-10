@@ -355,7 +355,7 @@ window.TOONTALK.UTILITIES =
             // OK to drop on infinite stack since will become a copy
             !(target_widget_side && target_widget_side.get_widget().get_infinite_stack && target_widget_side.get_widget().get_infinite_stack()) &&
             ($source.get(0) === $target.get(0) || jQuery.contains($source.get(0), $target.get(0)))) {
-            if ($source.is(".toontalk-top-level-backside")) {
+            if ($source.is(".toontalk-backside-of-top-level")) {
                 return; // let event propagate since this doesn't make sense
             }
             // not dropping on itself but on the widget underneath
@@ -500,7 +500,7 @@ window.TOONTALK.UTILITIES =
         var $target = $(element).closest(".toontalk-side");
         var $dragee = utilities.get_$dragee();
         if ($target.is("*") &&
-            !$target.is(".toontalk-top-level-backside") && 
+            !$target.is(".toontalk-backside-of-top-level") && 
             !$target.closest(".toontalk-top-level-resource").is("*") &&
             !$target.is(".toontalk-being-dragged") && // is $dragee.get(0) === $target.get(0) a better way to express this?
             !($dragee && has_ancestor_element($target.get(0), $dragee.get(0)))) {
@@ -625,18 +625,18 @@ window.TOONTALK.UTILITIES =
             return; // let event propagate
         } else {
             // before processing drop ensure that dropped item (source_widget) is visible and where dropped
-            top_level_element = $target.closest(".toontalk-top-level-backside").get(0);
+            top_level_element = $target.closest(".toontalk-backside-of-top-level").get(0);
             if (!top_level_element && event.changedTouches) {
                 // i.e. when dragging using touch events
                 element_here = document.elementFromPoint(page_x-window.pageXOffset, page_y-window.pageYOffset);
-                if ($(element_here).is(".toontalk-top-level-backside")) {
+                if ($(element_here).is(".toontalk-backside-of-top-level")) {
                     top_level_element = element_here;
                 } else {
-                    top_level_element = $(element_here).closest(".toontalk-top-level-backside").get(0);
+                    top_level_element = $(element_here).closest(".toontalk-backside-of-top-level").get(0);
                 }
                 if (!top_level_element) {
                     // pick any top level backside
-                    top_level_element = $(".toontalk-top-level-backside").get(0);
+                    top_level_element = $(".toontalk-backside-of-top-level").get(0);
                 }
                 target_widget_side = utilities.widget_side_of_element(top_level_element).get_backside();
             }
@@ -653,7 +653,7 @@ window.TOONTALK.UTILITIES =
             } else if (target_widget_side.widget_side_dropped_on_me && target_widget_side.widget_side_dropped_on_me(source_widget_side, event)) {
             } else {
                 // ignore the current target and replace with the backside it is on
-                new_target = $target.closest(".toontalk-top-level-backside");
+                new_target = $target.closest(".toontalk-backside-of-top-level");
                 if (new_target.length > 0) {
                     target_widget_side = utilities.widget_side_of_jquery(new_target);
                     if (target_widget_side) {
@@ -1841,7 +1841,7 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.set_position_relative_to_top_level_backside = function ($element, absolute_position, stay_inside_parent) {
-            return this.set_position_relative_to_element($element, $element.closest(".toontalk-top-level-backside"), absolute_position, stay_inside_parent);
+            return this.set_position_relative_to_element($element, $element.closest(".toontalk-backside-of-top-level"), absolute_position, stay_inside_parent);
         };
 
         utilities.set_position_relative_to_element = function ($element, $parent_element, absolute_position, stay_inside_parent) {
@@ -3128,7 +3128,7 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.each_top_level_widget = function (callback) {
-            $(".toontalk-top-level-backside").each(function (index, element) {
+            $(".toontalk-backside-of-top-level").each(function (index, element) {
                 callback(utilities.widget_side_of_element(element).get_widget());
             });
         };
@@ -3692,7 +3692,7 @@ window.TOONTALK.UTILITIES =
                 function (event) {
                     if (running) {
                         $(".toontalk-stop-sign").each(function () {
-                            if ($(this).parent().is(".toontalk-top-level-backside")) {
+                            if ($(this).parent().is(".toontalk-backside-of-top-level")) {
                                 $(this).click();
                             }
                         });
@@ -3700,7 +3700,7 @@ window.TOONTALK.UTILITIES =
                         utilities.rerender_all();
                     } else {
                         $(".toontalk-green-flag").each(function () {
-                            if ($(this).parent().is(".toontalk-top-level-backside")) {
+                            if ($(this).parent().is(".toontalk-backside-of-top-level")) {
                                 $(this).click();
                             }
                         });
@@ -4095,7 +4095,7 @@ window.TOONTALK.UTILITIES =
 
        utilities.closest_top_level_backside = function (x, y) {
            var best_so_far, best_distance_so_far;
-           $(".toontalk-top-level-backside").each(function () {
+           $(".toontalk-backside-of-top-level").each(function () {
                var position = $(this).offset();
                var this_distance = (position.left + $(this).width() /2 - x)^2 + 
                                    (position.top  + $(this).height()/2 - x)^2;
@@ -4753,10 +4753,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         var x_scale = 1;
         var y_scale = 1;
         var previous_bounding_box;
-        if ($(element).is(".toontalk-top-level-backside")) {
-            // top-level backside is not scaled
-           return;
-        }
         $(element).resizable(
                 {start: function (event, ui) {
                      previous_bounding_box = {width:  ui.size.width,
@@ -4765,6 +4761,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 resize: function (event, ui) {
                     var bounding_box = {width:  ui.size.width,
                                         height: ui.size.height};
+                    if ($(element).is(".toontalk-backside-of-top-level")) {
+                        // top-level backside is not scaled
+                        return;
+                    }
                     x_scale *= bounding_box.width  / previous_bounding_box.width;
                     y_scale *= bounding_box.height / previous_bounding_box.height;
                     resize_callback(x_scale, y_scale);

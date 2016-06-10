@@ -828,7 +828,7 @@ window.TOONTALK.number = (function () {
              }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
-             $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-top-level-backside");
+             $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-backside-of-top-level");
              // start lower left off screen
              bammer_element.style.left = "-10px";
              bammer_element.style.top = ($top_level_backside_element.height())+"px";

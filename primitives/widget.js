@@ -19,8 +19,9 @@ window.TOONTALK.widget = (function (TT) {
                 
     TT.creators_from_json["top_level"] = function (json) {
         var widget = TT.widget.create_top_level_widget(json.settings);
-        var $backside_element = $(widget.get_backside(true).get_element());
-        $backside_element.addClass("toontalk-top-level-backside");
+        widget.get_backside(true)
+//         var $backside_element = $(widget.get_backside(true).get_element());
+//         $backside_element.addClass("toontalk-top-level-backside");
         return widget;
     };
     
@@ -62,7 +63,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.is_top_level()) {
                     return this;
                 }
-                top_level_widget = TT.UTILITIES.widget_side_of_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
+                top_level_widget = TT.UTILITIES.widget_side_of_jquery($(this.get_frontside_element()).closest(".toontalk-backside-of-top-level"));
                 if (top_level_widget) {
                     top_level_widget = top_level_widget.get_widget();
                     return top_level_widget;
@@ -72,7 +73,7 @@ window.TOONTALK.widget = (function (TT) {
                     top_level_widget = parent.get_widget().top_level_widget();
                     return top_level_widget;
                 }
-                $top_level_backsides = $(".toontalk-top-level-backside");
+                $top_level_backsides = $(".toontalk-backside-of-top-level");
                 if ($top_level_backsides.length > 0) {
                     top_level_widget = TT.UTILITIES.widget_side_of_element(TT.UTILITIES.closest_element($top_level_backsides, 
                                                                                                         $(this.get_frontside_element()).offset()))

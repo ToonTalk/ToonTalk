@@ -91,7 +91,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                                                     parent_z_index = TT.UTILITIES.next_z_index();
                                                     $parent_side_element.css({'z-index': parent_z_index});
                                                 }
-                                                if (!z_index || $parent_side_element.is(".toontalk-top-level-backside")) {
+                                                if (!z_index || $parent_side_element.is(".toontalk-backside-of-top-level")) {
                                                     z_index = TT.UTILITIES.next_z_index();
                                                     $(element).css({'z-index': z_index});
                                                 } else if (z_index >= parent_z_index) {

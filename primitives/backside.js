@@ -812,22 +812,6 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
         
-//         update_run_button_disabled_attribute: function () {
-//             var backside_element = this.get_element();
-//             var $run_button;
-//             if (!backside_element) {
-//                 return;
-//             }
-//             if ($(backside_element).is(".toontalk-top-level-backside")) {
-//                 // has no buttons
-//                 return;
-//             }
-//             $run_button = $(backside_element).find(".toontalk-run-backside-button");
-//             $run_button.button("option", "disabled", !this.get_widget().can_run());
-//             TT.backside.update_run_button($run_button);
-//             return this;
-//         },
-        
         create_infinite_stack_check_box: function (backside, widget) {
             var check_box = TT.UTILITIES.create_check_box(widget.get_infinite_stack(), 
                                                           "toontalk-infinite-stack-check-box",

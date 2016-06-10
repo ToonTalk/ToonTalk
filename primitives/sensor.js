@@ -61,7 +61,7 @@ window.TOONTALK.sensor = (function (TT) {
             values = attribute_values(event);
             attributes = new_sensor.get_attributes();
             visible = new_sensor.visible();
-            $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");        
+            $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-backside-of-top-level");        
             if (values.length === 1) {
                 value_widget = attribute_widget(values[0]);
                 if (typeof value_widget === "undefined") {
