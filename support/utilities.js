@@ -982,6 +982,7 @@ window.TOONTALK.UTILITIES =
                     if (json_view.backside_geometry) {
                         widget_side.backside_geometry = json_view.backside_geometry;                    
                     }
+                    widget_side.json_view = json_view; // needed while loading for at least the width and height
                 }
                 if (json_semantic.backside_widgets) {
                     if (delay_backside_widgets) {
@@ -1722,13 +1723,14 @@ window.TOONTALK.UTILITIES =
                         $(element).replaceWith(backside_element);
                         // use JQuery css directly rather than set_css since that does processing
                         // of plain text widgets appropriate only for frontside
-                        $(backside_element).css({width:  json.view.backside_width,
-                                                 height: json.view.backside_height,
+                        $(backside_element).css({width:  widget.json_view ? widget.json_view.backside_width  : json.view.backside_width,
+                                                 height: widget.json_view ? widget.json_view.backside_height : json.view.backside_height,
                                                  // color may be undefined
                                                  // do the following in a more general manner
                                                  // perhaps using additional classes?
                                                  "background-color": json.view.background_color,
                                                  "border-width":     json.view.border_width});
+                        widget.json_view = undefined; // not needed anymore
                    } else {
                        // TODO: determine why both levels have the same class here
                        $(element).addClass("toontalk-top-level-resource toontalk-top-level-resource-container");
