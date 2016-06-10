@@ -1173,12 +1173,12 @@ window.TOONTALK.backside =
        hide_backside: function (event) {
             var widget, robot_in_training, frontside_element, $backside_element, backside_position, $backside_container,
                 animate_disappearance, parent_of_backside, container_widget;
-            if (!this.visible()) {
+            $backside_element = $(this.get_element());
+            if ($backside_element.length === 0) {
                 return;
             }
             widget = this.get_widget();
             robot_in_training = widget.robot_in_training();
-            $backside_element = $(this.get_element());
             if (robot_in_training && robot_in_training.get_training_context() === widget) {
                // closing the backside of a context while a robot is being trained to work on it
                robot_in_training.hide_backside();
