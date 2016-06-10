@@ -9,6 +9,13 @@
 window.TOONTALK.robot_action = 
 (function (TT) {
     "use strict";
+    var close_backside_of_widget = function (widget, robot, additional_info) {
+        // no need to do this if unwatched
+        if (!additional_info || !additional_info.running_watched) {
+            return true;
+        }
+        widget.get_backside().hide_backside();
+    };
     var unwatched_run_functions =
         {"copy": function (widget, robot) {
             robot.add_newly_created_widget(widget.copy());
@@ -173,14 +180,8 @@ window.TOONTALK.robot_action =
              // no need to do this if unwatched
              return true;
          },
-         "close the backside of": function () {
-             // no need to do this if unwatched
-             return true;
-         },
-         "close the backside": function () {
-             // old name of this action
-             return true;
-         },
+         "close the backside of": close_backside_of_widget,
+         "close the backside":    close_backside_of_widget,
          "click the button of": function (widget, robot, additional_info) {
              // no need to do this if unwatched
              // TODO: a more principled way of handling green flag clicking
