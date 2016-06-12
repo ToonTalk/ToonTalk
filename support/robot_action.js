@@ -10,8 +10,8 @@ window.TOONTALK.robot_action =
 (function (TT) {
     "use strict";
     var close_backside_of_widget = function (widget, robot, additional_info) {
-        // no need to do this if unwatched
-        if (!additional_info || !additional_info.running_watched) {
+        // no need to do this if unwatched or there is no backside
+        if (!additional_info || !additional_info.running_watched || !widget.get_backside()) {
             return true;
         }
         widget.get_backside().hide_backside();
