@@ -1001,7 +1001,9 @@ window.TOONTALK.nest = (function (TT) {
                     $(contents[0].get_element()).show();
                 }
                 // if empty container or new top contents may need to update -- e.g. scales
-                if (!this.get_containing_widget().is_top_level()) {
+                if (this.get_containing_widget().is_top_level()) {
+                    this.render();
+                } else {
                     this.get_containing_widget().render();
                 }
             }
