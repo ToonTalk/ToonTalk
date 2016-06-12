@@ -4270,24 +4270,20 @@ window.TOONTALK.UTILITIES =
        utilities.when_attached = function (element, new_callback, even_if_not_observable) {
            var old_callback = element.toontalk_attached_callback;
            var callback;
-           if (old_callback) {
-               callback = function () {
-                              old_callback();
-                              new_callback();
-                              $(element).removeClass("toontalk-has-attached-callback");
-                              element.toontalk_attached_callback = undefined;
-                          };
-           } else {
-               callback = new_callback;
-           }
            if (jQuery.contains(window.document, element) && !even_if_not_observable) {
                // already attached
-               // be sure element is restored to no callback state
-               element.toontalk_attached_callback = undefined;
-               $(element).removeClass("toontalk-has-attached-callback");
-               callback();
+               // no need to deal with old_callback here since there already is an observer that will deal with that soon if it hasn't already.
+               new_callback();
                return;
            }
+           callback = function () {
+                          if (old_callback) {
+                              old_callback();
+                          }
+                          new_callback();
+                          $(element).removeClass("toontalk-has-attached-callback");
+                          element.toontalk_attached_callback = undefined;
+                      };
            element.toontalk_attached_callback = callback;
            if (even_if_not_observable) {
                element.toontalk_run_even_if_not_observable = true;
