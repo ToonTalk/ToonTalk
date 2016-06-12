@@ -32,6 +32,9 @@ window.TOONTALK.UTILITIES =
     var div_close  = "</div>";
     var muted_audio_objects = [];
     var audio_objects_playing = [];
+    // used when doing something to large arrays to break it up and give other processes a chance to running
+    // also prevents stack overflow for large arrays in get_json_of_array
+    var default_batch_size = 100;
     var browser_is_internet_explorer;
     // need to prevent utterances from being prematurely garbage collected
     // see https://bugs.chromium.org/p/chromium/issues/detail?id=509488
@@ -1067,7 +1070,15 @@ window.TOONTALK.UTILITIES =
             } else if (widget_side.is_widget) {
                 new_callback = function (json, new_start_time) {
                     json_array.push({widget: json});
-                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                    if (index%default_batch_size === 0) {
+                        // every so often let other processes run
+                        // also this way stack size not exceeded for large arrays
+                        utilities.set_timeout(function () {
+                            this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                        }.bind(this));
+                    } else {
+                        this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                    }
                 }.bind(this);
                 utilities.get_json(widget_side, json_history, new_callback, start_time);
             } else {
@@ -4709,7 +4720,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             start_index = 0;
         }
         if (!chunk_size) {
-            chunk_size = 100;
+            chunk_size = default_batch_size;
         }
         stop_index = Math.min(array.length, start_index+chunk_size);
         for (i = start_index; i < stop_index; i++) {
