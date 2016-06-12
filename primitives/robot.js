@@ -356,7 +356,7 @@ window.TOONTALK.robot = (function (TT) {
                                           height: '', // otherwise doesn't animate well
                                           "z-index": TT.UTILITIES.next_z_index()});
                 TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_offset);
-                $top_level_element = $(frontside_element).closest(".toontalk-top-level-backside");
+                $top_level_element = $(frontside_element).closest(".toontalk-backside-of-top-level");
                 if ($top_level_element.length > 0) {
                     $top_level_element.get(0).appendChild(frontside_element);
                 }

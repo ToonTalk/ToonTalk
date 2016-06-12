@@ -19,8 +19,9 @@ window.TOONTALK.widget = (function (TT) {
                 
     TT.creators_from_json["top_level"] = function (json) {
         var widget = TT.widget.create_top_level_widget(json.settings);
-        var $backside_element = $(widget.get_backside(true).get_element());
-        $backside_element.addClass("toontalk-top-level-backside");
+        widget.get_backside(true)
+//         var $backside_element = $(widget.get_backside(true).get_element());
+//         $backside_element.addClass("toontalk-top-level-backside");
         return widget;
     };
     
@@ -62,7 +63,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (this.is_top_level()) {
                     return this;
                 }
-                top_level_widget = TT.UTILITIES.widget_side_of_jquery($(this.get_frontside_element()).closest(".toontalk-top-level-backside"));
+                top_level_widget = TT.UTILITIES.widget_side_of_jquery($(this.get_frontside_element()).closest(".toontalk-backside-of-top-level"));
                 if (top_level_widget) {
                     top_level_widget = top_level_widget.get_widget();
                     return top_level_widget;
@@ -72,7 +73,7 @@ window.TOONTALK.widget = (function (TT) {
                     top_level_widget = parent.get_widget().top_level_widget();
                     return top_level_widget;
                 }
-                $top_level_backsides = $(".toontalk-top-level-backside");
+                $top_level_backsides = $(".toontalk-backside-of-top-level");
                 if ($top_level_backsides.length > 0) {
                     top_level_widget = TT.UTILITIES.widget_side_of_element(TT.UTILITIES.closest_element($top_level_backsides, 
                                                                                                         $(this.get_frontside_element()).offset()))
@@ -588,7 +589,7 @@ window.TOONTALK.widget = (function (TT) {
                             title = "Drag me to a work area.";
                         }   
                     } else if (!backside || !backside.get_element() || !TT.UTILITIES.visible_element(backside.get_element())) {
-                        if (this.can_run && this.can_run()) {
+                        if (this.can_run && this.can_run(true)) {
                             if (this.get_running()) {
                                 title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign " +
                                         TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") +
@@ -1166,6 +1167,9 @@ window.TOONTALK.widget = (function (TT) {
                     var backside = this.get_backside();
                     var backside_visible = backside && backside.visible();
                     backside_widgets = new_backside_widgets;
+                    if (TT.logging && TT.logging.indexOf('backside-widgets') >= 0) {
+                        console.log("Set backside widgets " + backside_widgets.length + " widgets of " + (backside_visible ? "visible " : "invisible " ) + this);
+                    } 
                     if (backside_widgets.length > 0) {
                         if (backside) {
                             backside.add_backside_widgets(backside_widgets, json_views);
@@ -1585,6 +1589,14 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
 
+        display_message: function (message, display_on_backside_if_possible) {
+            if (display_on_backside_if_possible) {
+                TT.UTILITIES.display_message(message, this.get_backside_element(), this.get_frontside_element());
+            } else {
+               TT.UTILITIES.display_message(message, this.get_frontside_element());
+            }
+        },
+
         // defined here in order to share between element and number functions
         get_speak_function: function (functions) {
             return function (message, event, robot) {
@@ -1596,7 +1608,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 if (!window.speechSynthesis) {
                     // ignore this
-                    TT.UTILITIES.display_message("This browser doesn't support speech output. Try another browser such as Chrome.");
+                    widget.display_message("This browser doesn't support speech output. Try another browser such as Chrome.");
                     return true;
                 }
                 widget = widget.get_widget(); // either side is fine
@@ -1649,7 +1661,7 @@ window.TOONTALK.widget = (function (TT) {
             return true;
         }},
         get_description_function: function (functions) {
-            return function (message, event, robot) {
+          return function (message, event, robot) {
             var describe = function (widget) {
                 var text, speech_utterance, respond;
                 if (!widget) {
@@ -1678,7 +1690,7 @@ window.TOONTALK.widget = (function (TT) {
                 return;
             }
             if (box_size_and_bird.size < 2) {
-                TT.UTILITIES.display_message("Description birds need a box with two holes containing a bird and a widget.");
+                message.display_message("Description birds need a box with two holes containing a bird and a widget.");
                 return;
             }
             describe(message.get_hole_contents(1));
@@ -1896,28 +1908,31 @@ window.TOONTALK.widget = (function (TT) {
                 var program_name = this.get_setting('program_name');
                 var key =           TT.UTILITIES.local_storage_program_key(program_name);
                 var meta_data_key = TT.UTILITIES.local_storage_program_meta_data_key(program_name);
-                var all_program_names, meta_data, message, json_string;
+                var meta_data_callback = function (meta_data) {
+                    json_string = JSON.stringify(json, TT.UTILITIES.clean_json);
+                    if (!meta_data) {
+                        meta_data = {created: time_stamp};
+                    }
+                    meta_data.last_modified = time_stamp;
+                    meta_data.file_size = json_string.length;
+                    TT.UTILITIES.store_object(meta_data_key, meta_data);
+                    // not using store_object since need to get the string length for the meta data
+                    TT.UTILITIES.store_string(key, json_string);
+                    TT.UTILITIES.store_string("toontalk-last-key", key);
+                    TT.UTILITIES.get_all_locally_stored_program_names(function (all_program_names) {
+                        if (all_program_names.indexOf(program_name) < 0) {
+                            all_program_names.push(program_name);
+                            TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
+                        }  
+                    });
+                    
+                };
+                var json_string, all_program_names, meta_data, message;
                 if (!time_stamp) {
                     time_stamp = Date.now();
                 }
                 try {
-                    meta_data = window.localStorage.getItem(meta_data_key);
-                    if (meta_data) {
-                        meta_data = JSON.parse(meta_data);
-                    } else {
-                        meta_data = {created: time_stamp};
-                    }
-                    meta_data.last_modified = time_stamp;
-                    json_string = JSON.stringify(json, TT.UTILITIES.clean_json);
-                    meta_data.file_size = json_string.length;
-                    window.localStorage.setItem(meta_data_key, JSON.stringify(meta_data));
-                    window.localStorage.setItem(key, json_string);
-                    window.localStorage.setItem("toontalk-last-key", key);
-                    all_program_names = TT.UTILITIES.get_all_locally_stored_program_names();
-                    if (all_program_names.indexOf(program_name) < 0) {
-                        all_program_names.push(program_name);
-                        TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
-                    }
+                    TT.UTILITIES.retrieve_object(meta_data_key, meta_data_callback);
                 } catch (error) {
                     if (json_string) {
                         message = "Failed to save state to local storage since it requires " + json_string.length + " bytes. Error message is " + error;
@@ -1963,13 +1978,13 @@ window.TOONTALK.widget = (function (TT) {
                      if (google_file) {
                          TT.google_drive.download_file(google_file, download_callback);
                      } else {
-                         download_callback(window.localStorage.getItem(key));
+                         TT.UTILITIES.retrieve_string(key, download_callback);
                      }
                 };
                 if (google_drive_first && TT.google_drive && TT.google_drive.get_status() === 'Ready') {
                     TT.google_drive.get_toontalk_program_file(file_name, callback);
                 } else {
-                    download_callback(window.localStorage.getItem(key));
+                    TT.UTILITIES.retrieve_string(key, download_callback);
                 }
             };
             top_level_widget.walk_children = function () {

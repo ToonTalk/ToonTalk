@@ -297,7 +297,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, current_pending_css;
+            var frontside_element, current_pending_css, new_dimensions;
             if (!pending_css && !transform_css) {
                 return;
             }
@@ -369,6 +369,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                        function (original_parent) {
                                                            var parent = this.get_parent_of_frontside();
                                                            wrap_location(this, current_pending_css);
+                                                           if ($(frontside_element).is(".toontalk-conditions-contents") && $(frontside_element.parentElement).is(".toontalk-conditions-container")) {
+                                                               // use container dimensions if inside a condition container
+                                                               current_width  = $(frontside_element.parentElement).width();
+                                                               current_height = $(frontside_element.parentElement).height();
+                                                           } 
                                                            if (this.ok_to_set_dimensions() || this.location_constrained_by_container()) {
                                                                TT.UTILITIES.scale_element(frontside_element,
                                                                                           current_width,
@@ -1386,7 +1391,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                             }
                             owner = attribute_widget.get_attribute_owner();
                             event.stopPropagation();
-                            top_level_position = $(owner.get_frontside_element()).closest(".toontalk-top-level-backside").offset();
+                            top_level_position = $(owner.get_frontside_element()).closest(".toontalk-backside-of-top-level").offset();
                             if (!top_level_position) {
                                 console.log("Unable to find top-level backside of an element for its position. Perhaps is 'visible' but not attached.");
                                 top_level_position = {left: 0, top: 0};
@@ -1455,11 +1460,32 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         scale_or_quote_html = function (html) {
            var style = "";
-           var first_space;
+           var replace_attribute = function (attribute_name, html, new_value) {
+               var attribute_index = html.indexOf(attribute_name + "=");
+               var space_index, first_quote_index, second_quote_index;
+               if (attribute_index >= 0) {
+                   first_quote_index = html.indexOf("'", attribute_index);
+                   if (first_quote_index >= 0) {
+                       second_quote_index = html.indexOf("'", first_quote_index+1);
+                   }
+                   if (second_quote_index >= 0) {
+                       return html.substring(0, attribute_index) + attribute_name + "=" + new_value + html.substring(second_quote_index+1);
+                   } 
+               }
+               // no old value so add a new pair
+               space_index = html.indexOf(' ');
+               return html.substring(0, space_index+1) + attribute_name + "=" + new_value + " " + html.substring(space_index+1);
+           };
+           var first_space, iframe_index;
            if (html.length > 1 && html.charAt(0) === '<') {
-                if (this.get_image_element()) {
+                if (this.get_image_element() ) {
                     // if an image then scale it
-                    style = "style='width: 50px; height: 30px;'";
+                    style = "style='width: 60px; height: 40px;'";
+                } else if (html.indexOf("<img ") === 0) {
+                    return "<img width='60'' height='40'' " + html.substring(4);
+                } else if (html.indexOf("<iframe ") >= 0) {
+                    iframe_index = html.indexOf("<iframe ");
+                    return replace_attribute('width', replace_attribute('height', html, "'60'"), "'80'");
                 }
                 if (to_string_info && to_string_info.inside_tool_tip) {
                     style += " class='toontalk-widget-in-tool-tip'";
@@ -2213,7 +2239,7 @@ window.TOONTALK.element.function =
         function (message, event, robot) {
             var go_to_URL = function (element_url) {
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
-                    TT.UTILITIES.display_message("Robot trained to replace current URL.");
+                    robot.display_message("Robot trained to replace current URL.");
                 } else {
                     window.location.assign(element_url.get_text());
                 }

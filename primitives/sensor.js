@@ -61,7 +61,7 @@ window.TOONTALK.sensor = (function (TT) {
             values = attribute_values(event);
             attributes = new_sensor.get_attributes();
             visible = new_sensor.visible();
-            $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-top-level-backside");        
+            $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-backside-of-top-level");        
             if (values.length === 1) {
                 value_widget = attribute_widget(values[0]);
                 if (typeof value_widget === "undefined") {
@@ -84,6 +84,7 @@ window.TOONTALK.sensor = (function (TT) {
                 new_sensor.add_to_contents(value_widget);
             }
         }.bind(this);
+        var widget_can_run;
         new_sensor.is_sensor = function () {
             return true;
         };
@@ -242,9 +243,10 @@ window.TOONTALK.sensor = (function (TT) {
                 return "a sensor for this document.";
             }
         };
-        new_sensor.can_run = function () {
+        widget_can_run = new_sensor.can_run;
+        new_sensor.can_run = function (robots_only) {
             // can run in the sense of becoming active
-            return true;
+            return !robots_only || widget_can_run.call(this, robots_only);
         };
         attribute_values = function (event) {
             return new_sensor.get_attributes().map(
@@ -274,8 +276,8 @@ window.TOONTALK.sensor = (function (TT) {
                              } else if (event.detail && event.detail[attribute] !== undefined) {
                                  return event.detail[attribute];
                              }
-                             value = "No " + attribute + " in event " + event + " of sensor " + sensor;
-                             TT.UTILITIES.display_message(value);
+                             value = "No such attribute for " + new_sensor;
+                             new_sensor.display_message(value, true);
                          }
                     }
                     return value;
@@ -313,6 +315,7 @@ window.TOONTALK.sensor = (function (TT) {
                 previous_contents.forEach(function (side) {
                     style_contents(side.get_widget(), sensor);
                 });
+                sensor.rerender();
             },
             500);
         }

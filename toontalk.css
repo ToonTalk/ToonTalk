@@ -199,7 +199,7 @@
 	cursor: pointer;
 	vertical-align: middle;
 	text-align: center;
-	overflow: visible;/* removes extra width in IE */
+	overflow: visible; /* removes extra width in IE */
 }
 .ui-button,
 .ui-button:link,
@@ -1338,10 +1338,14 @@ body {
     font-family: "Tahoma", "Trebuchet MS";
     font-size: 1.1em;
 }
- 
+
+html {
+	/*  Needed for Chrome app, see - http://stackoverflow.com/questions/21641641/mobile-chrome-app-not-able-to-scroll/21710397#21710397 */
+	overflow-y: visible;
+}
+
 .toontalk-top-level-resource {
 	 /* position: relative; */
-	 /* display:  inline-block; */
  }
 .toontalk-top-level-resource:hover {
 	cursor: move;
@@ -1459,7 +1463,7 @@ body {
 	background: linear-gradient(to bottom, rgb(230, 230, 255), rgb(200, 200, 235));
 	width: 480px;
 }
-.toontalk-top-level-backside {
+.toontalk-backside-of-top-level {
     width: 1000px;
 	height: 300px;
     /* background-blend-mode: normal; */
@@ -1489,6 +1493,15 @@ body {
 	display: inline;
 	background-color: yellow;
 	font-size: 24px;
+	font-weight: bold;
+}
+.toontalk-local-alert {
+	position: absolute;
+	top: -60px;
+	background-color: orange;
+	color: black;
+	border-radius: 8px;
+	padding: 8px;
 }
 .toontalk-frontside {
     position: absolute;
@@ -1700,7 +1713,6 @@ body {
     -moz-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
 	-webkit-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
     -o-border-image: url("images/number-border-half-size.png") 16 16 round repeat;
-    
 	border-image: url("images/number-border-half-size.png") 16 16 round repeat;
 }
 .toontalk-number-quarter-size-border {
@@ -1832,6 +1844,7 @@ padding-bottom:  8%;}
 .toontalk-resource-table {
 	padding: 4px;
 	text-align: center;
+	transform-origin: left top 0px;
 }
 table.toontalk-documentation-table {
 }
@@ -2047,7 +2060,7 @@ table.toontalk-documentation-table {
 .toontalk-attribute-help-button {
 	background: #9D59DD;
 }
-.toontalk-help-frame {
+.toontalk-popup-frame {
 	position: absolute;
 	z-index: 999999999;
 	width:  96%;
@@ -2057,8 +2070,9 @@ table.toontalk-documentation-table {
 	background-color:  white;
 	border-width: 6px;
 	border-color: gray;
+	overflow-y: visible;
 }
-.toontalk-close-help-frame-button {
+.toontalk-close-popup-frame-button {
 	cursor: pointer;
 	position: absolute;
 	top:   0px;
@@ -3124,9 +3138,7 @@ background-image: url("images/dusty-morph.png");
 	text-decoration: none;
 }
 
-/* .toontalk-select-function {
-	position: relative;
-} */
-
-*/
+.toontalk-select-menu { 
+	height: 200px; 
+}
 

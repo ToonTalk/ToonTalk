@@ -828,7 +828,7 @@ window.TOONTALK.number = (function () {
              }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
-             $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-top-level-backside");
+             $top_level_backside_element = $(this.get_frontside_element()).closest(".toontalk-backside-of-top-level");
              // start lower left off screen
              bammer_element.style.left = "-10px";
              bammer_element.style.top = ($top_level_backside_element.height())+"px";
@@ -1242,7 +1242,7 @@ window.TOONTALK.number_backside =
                 if (validity.message) {
                     numerator_as_float = parseFloat(numerator);
                     if (isNaN(numerator_as_float)) {
-                        TT.UTILITIES.display_message(validity.message);
+                        number.display_message(validity.message, true);
                         numerator = validity.replacement;
                     } else {
                        // convert to integer and adjust denominator accordingly
@@ -1250,14 +1250,14 @@ window.TOONTALK.number_backside =
                     }
                 }
                 if (denominator === "0") {
-                    TT.UTILITIES.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.");
+                    number.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.", true);
                     denominator = "1";
                 } else {
                     validity = valid_integer(denominator, "denominator");
                     if (validity.message) {
                         denominator_as_float = parseFloat(denominator);
                         if (isNaN(denominator_as_float)) {
-                            TT.UTILITIES.display_message(validity.message);
+                            number.display_message(validity.message, true);
                             denominator = validity.replacement || "1";
                         } else {
                             denominator_as_fraction = bigrat.fromDecimal(denominator_as_float);
@@ -1414,7 +1414,7 @@ window.TOONTALK.number.function =
             return;
         }
         if (box_size_and_bird.size < 2) {
-            TT.UTILITIES.display_message("Delay function birds need a number in the second hole.");
+            Tmessage.display_message("Delay function birds need a number in the second hole.");
             return;
         }
         delay = message.get_hole_contents(1).to_float();
