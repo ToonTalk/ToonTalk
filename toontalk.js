@@ -154,7 +154,7 @@ var loadFile = function (index, offline) {
                                             }
                                         };
                    if (file_name.indexOf("http") >= 0) {
-                       if (!offline && !chrome) { 
+                       if (!offline && !TOONTALK.CHROME_APP) {
                            // Chrome App complains:
                            // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' because it violates the following Content Security Policy directive: ...
                            script.src = file_name;
