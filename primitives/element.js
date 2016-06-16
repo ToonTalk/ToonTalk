@@ -1482,7 +1482,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // if an image then scale it
                     style = "style='width: 60px; height: 40px;'";
                 } else if (html.indexOf("<img ") === 0) {
-                    return "<img width='60'' height='40'' " + html.substring(4);
+                    return "<img width='60' height='40' " + html.substring(4);
                 } else if (html.indexOf("<iframe ") >= 0) {
                     iframe_index = html.indexOf("<iframe ");
                     return replace_attribute('width', replace_attribute('height', html, "'60'"), "'80'");
@@ -1509,7 +1509,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return "";
         }.bind(this);
         children = this.get_children();
-        if (to_string_info && !to_string_info.inside_tool_tip) {
+        if (to_string_info && !to_string_info.inside_tool_tip && to_string_info.role !== "conditions") {
             if (to_string_info.for_json_div) {
                 // don't risk confusing things with a comment that might interfere with the HTML
                return "";
