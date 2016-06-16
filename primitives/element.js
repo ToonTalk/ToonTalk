@@ -78,43 +78,53 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
 
     var wrap_location = function (widget, css) {
-        var parent_of_frontside, left, top, changed, container_width, container_height;
+        var parent_of_frontside, left, top, changed, container_width, container_height, widget_width, widget_height;
         if (css.left || css.top) {
             // elements (like turtles) by default wrap -- TODO: make this configurable
             if (widget.being_dragged) {
                 return;
             }
             parent_of_frontside = widget.get_parent_of_frontside();
+            widget_width  = $(widget.get_element()).width();
+            widget_height = $(widget.get_element()).height();
             if (parent_of_frontside) {
-                if (css.left) {   
-                    // if negative after mod add width -- do another mod in case was positive
-                    // keep it within the bounds of its container
-                    // note that if the container has scaling transforms those are ignored here
+                if (css.left) {
                     container_width = parent_of_frontside.is_element() ? 
                                       parent_of_frontside.get_original_width() :
                                       parent_of_frontside.get_width();
-                    if (container_width > 0) {
-                        left = ((css.left%container_width)+container_width)%container_width;
-                    } else {
-                        left = css.left;
-                    }
-                    if (css.left !== left) {
-                        css.left = left;
-                        changed = true;
+                    if (css.left < widget_width/-2 ||
+                        css.left > container_width+widget_width/2) {
+                        // if center is off the left or the right edge 
+                        // if negative after mod add width -- do another mod in case was positive
+                        // keep it within the bounds of its container
+                        // note that if the container has scaling transforms those are ignored here                   
+                        if (container_width > 0) {
+                            left = ((css.left%container_width)+container_width)%container_width;
+                        } else {
+                            left = css.left;
+                        }
+                        if (css.left !== left) {
+                            css.left = left;
+                            changed = true;
+                        }
                     }
                 }
                 if (css.top) {
                     container_height = parent_of_frontside.is_element() ? 
                                        parent_of_frontside.get_original_height() :
                                        parent_of_frontside.get_height();
-                    if (container_height > 0) {
-                        top = ((css.top%container_height)+container_height)%container_height;
-                    } else {
-                        top = css.top;
-                    }
-                    if (css.top !== top) {
-                        css.top = top;
-                        changed = true;
+                    if (css.top < widget_height/-2 ||
+                        css.top > container_height+widget_height/2) {
+                        // if center if above top or below bottom
+                        if (container_height > 0) {
+                            top = ((css.top%container_height)+container_height)%container_height;
+                        } else {
+                            top = css.top;
+                        }
+                        if (css.top !== top) {
+                            css.top = top;
+                            changed = true;
+                        }
                     }
                 }
                 return changed;

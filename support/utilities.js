@@ -505,6 +505,7 @@ window.TOONTALK.UTILITIES =
     var $toontalk_side_underneath = function (element) {
         var $dragee = utilities.get_$dragee();
         var $target;
+        if ($dragee.is(".toontalk-backside")) {
             // backsides can only be dropped on other backsides, birds, nests, or boxes
             $target = $(element).closest(".toontalk-backside, .toontalk-bird, .toontalk-nest, .toontalk-box");
         } else {
@@ -608,9 +609,9 @@ window.TOONTALK.UTILITIES =
             }
             left = page_x - (target_position.left + (drag_x_offset || 0));
             top  = page_y - (target_position.top  + (drag_y_offset || 0));
-            utilities.set_css($source,
-                              {left: utilities.left_as_percent(left, $source.get(0)),
-                               top:  utilities.top_as_percent (top,  $source.get(0))});
+            css = {left: utilities.left_as_percent(left, $source.get(0)),
+                   top:  utilities.top_as_percent (top,  $source.get(0))};
+            utilities.set_css($source, css);
             if (!source_widget_side.is_backside() && source_widget_side.set_location_attributes) {
                 // e.g. an element needs to know its position attributes
                 source_widget_side.set_location_attributes(left, top);
@@ -656,10 +657,9 @@ window.TOONTALK.UTILITIES =
             }
             top_level_element.appendChild($source.get(0));
             top_level_backside_position = $(top_level_element).offset();
-            utilities.set_css($source,
-                              {left: page_x - (top_level_backside_position.left + drag_x_offset + TT.USABILITY_DRAG_OFFSET.x),
-                               top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)}
-            );
+            css = {left: page_x - (top_level_backside_position.left + drag_x_offset + TT.USABILITY_DRAG_OFFSET.x),
+                   top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)};
+            utilities.set_css($source, css);
             if (source_widget_side.drop_on && source_widget_side.drop_on(target_widget_side, event)) {
             } else if (target_widget_side.widget_side_dropped_on_me && target_widget_side.widget_side_dropped_on_me(source_widget_side, event)) {
             } else {
@@ -672,6 +672,10 @@ window.TOONTALK.UTILITIES =
                     }
                 }
             }
+        }
+        if (TT.logging && TT.logging.indexOf("drop") >= 0) {
+            console.log("Drop of " + source_widget_side._debug_id + " on " + target_widget_side._debug_id);
+            console.log("Left: " + css.left + "; top: " + css.top + "; page_x: " + page_x + "; page_y: " + page_y + "; drag_x_offset: " + drag_x_offset + "; drag_y_offset: " + drag_y_offset)
         }
         utilities.remove_highlight();
     };
@@ -2029,9 +2033,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 left = utilities.adjust_left_if_scaled(left, element);
             }
-            return Math.max(0, 
-                            Math.min(100, 
-                                     100*($(parent_element).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width)) + "%";
+            return 100*($(parent_element).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width + "%";
         };
 
         utilities.top_as_percent = function (top, element, parent_element) {
@@ -2049,9 +2051,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 top = utilities.adjust_top_if_scaled(top, element);
             }
-            return Math.max(0,
-                            Math.min(100,
-                                     100*($(parent_element).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height)) + "%";
+            return 100*($(parent_element).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height + "%";
         };
 
         utilities.adjust_left_if_scaled = function (left, element) {
