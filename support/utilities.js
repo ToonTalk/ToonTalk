@@ -503,8 +503,13 @@ window.TOONTALK.UTILITIES =
         input_element.addEventListener('drop', new_drop_handler);
     };
     var $toontalk_side_underneath = function (element) {
-        var $target = $(element).closest(".toontalk-side");
         var $dragee = utilities.get_$dragee();
+        var $target;
+            // backsides can only be dropped on other backsides, birds, nests, or boxes
+            $target = $(element).closest(".toontalk-backside, .toontalk-bird, .toontalk-nest, .toontalk-box");
+        } else {
+            $target = $(element).closest(".toontalk-side");
+        }
         if ($target.is("*") &&
             !$target.is(".toontalk-backside-of-top-level") && 
             !$target.closest(".toontalk-top-level-resource").is("*") &&
