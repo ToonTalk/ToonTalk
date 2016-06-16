@@ -326,6 +326,9 @@ window.TOONTALK.UTILITIES =
             // dropped a widget on editable text - insert it after that
             insert_widget_in_editable_text(json_object, event);
             return;
+        } else if ($source.is(".toontalk-backside")) {
+            // backsides can only be dropped on other backsides, birds, nests, or boxes
+            $target = $(event.target).closest(".toontalk-backside, .toontalk-bird, .toontalk-nest, .toontalk-box");
         } else {
             // closest includes 'self'
             $target = $(event.target).closest(".toontalk-side");
