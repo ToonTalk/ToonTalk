@@ -1899,7 +1899,7 @@ window.TOONTALK.widget = (function (TT) {
                     return;
                 }
                 save_in_progress = true;
-                TT.UTILITIES.get_json_top_level(this, save_function, 250);
+                TT.UTILITIES.get_json_top_level(this, save_function);
             };
             top_level_widget.publish = function (callback, as_workspace) {
                 TT.publish.publish_widget(this.get_setting('program_name'), this, as_workspace, callback);   

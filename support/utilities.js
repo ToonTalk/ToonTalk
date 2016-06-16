@@ -1070,9 +1070,11 @@ window.TOONTALK.UTILITIES =
             } else if (widget_side.is_widget) {
                 new_callback = function (json, new_start_time) {
                     json_array.push({widget: json});
-                    if (index%default_batch_size === 0) {
+                    if (index%default_batch_size === 0 &&
+                         (!utilities.maximum_json_generation_duration || Date.now()-start_time > utilities.maximum_json_generation_duration)) {
                         // every so often let other processes run
                         // also this way stack size not exceeded for large arrays
+                        // however if maximum_json_generation_duration is set then drag and drop needs the JSON without a timeout
                         utilities.set_timeout(function () {
                             this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
                         }.bind(this));
