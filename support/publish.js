@@ -60,11 +60,12 @@ var static_contents_end =
             if (google_drive_status === "Ready") {
                 program_name = widget.get_setting('program_name');
                 if (as_workspace) {
-                    TT.UTILITIES.get_json_top_level(widget, function (json) {
-                        widget.set_setting('program_name', program_name + " (published version)");
-                        widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
-                        widget.set_setting('program_name', program_name);
-                    }); 
+                    TT.UTILITIES.get_json_top_level(widget,
+                                                    function (json) {
+                                                        widget.set_setting('program_name', program_name + " (published version)");
+                                                        widgets_json = [TT.UTILITIES.toontalk_json_div(json, widget)];
+                                                        widget.set_setting('program_name', program_name);
+                                                    });
                 } else {
                     widgets = widget.get_backside_widgets();
                     widgets_json = [];
@@ -72,16 +73,17 @@ var static_contents_end =
                         if (!widget.visible()) {
                             return;
                         }
-                        TT.UTILITIES.get_json_top_level(widget, function (json) {
-                            // following ignores which side of the widget we have
-                            if (json.view) {
-                                // if they are on a web page saved dimensions don't make sense (and might be out of date)
-                                json.view.saved_width  = undefined;
-                                json.view.saved_height = undefined;
-                            }
-                            widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget.get_widget()));
-                            editable_contents.push(after_widget_text);
-                        });
+                        TT.UTILITIES.get_json_top_level(widget,
+                                                        function (json) {
+                                                            // following ignores which side of the widget we have
+                                                            if (json.view) {
+                                                                // if they are on a web page saved dimensions don't make sense (and might be out of date)
+                                                                json.view.saved_width  = undefined;
+                                                                json.view.saved_height = undefined;
+                                                            }
+                                                            widgets_json.push(TT.UTILITIES.toontalk_json_div(json, widget.get_widget()));
+                                                            editable_contents.push(after_widget_text);
+                                                        });
                     });
                 }
                 TT.google_drive.get_toontalk_files(TT.google_drive.full_file_name(program_name, 'page'), 

@@ -120,10 +120,11 @@ return {
             widgets_json = [];
             $elements.each(function (index, element) {
                 var widget = element.toontalk_widget_side.get_widget();
-                TT.UTILITIES.get_json_top_level(widget, function (json) {
-                    var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
-                    widgets_json[index] = json_div;
-                });
+                TT.UTILITIES.get_json_top_level(widget,
+                                                function (json) {
+                                                    var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
+                                                    widgets_json[index] = json_div;
+                                                });
             });
         }
         $(".froala-element").each(function () {
@@ -151,13 +152,14 @@ return {
         });
         $elements.each(function (index, element) {
             var widget = TT.UTILITIES.widget_side_of_element(element);
-            TT.UTILITIES.get_json_top_level(widget, function (json) {
-                var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
-                if (widgets_json[index] && widgets_json[index] !== json_div) {
-                    any_edits = true;
-                }
-                widgets_json[index] = json_div;
-            });
+            TT.UTILITIES.get_json_top_level(widget,
+                                            function (json) {
+                                                var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
+                                                if (widgets_json[index] && widgets_json[index] !== json_div) {
+                                                    any_edits = true;
+                                                }
+                                                widgets_json[index] = json_div;
+                                            });
         });
         if (any_edits && widgets_json.length > 0) {
             // don't save if there is no JSON
