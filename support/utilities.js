@@ -3309,7 +3309,7 @@ window.TOONTALK.UTILITIES =
                  // this happens on FireFox where this is called before the widget has been "rendered"
                  widget = TT.UTILITIES.widget_side_of_element(element);
                  if (widget) {
-                    widget.update_display();
+                    widget.render();
                 }
             }
             if (!original_width) {
