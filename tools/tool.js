@@ -36,10 +36,10 @@ window.TOONTALK.tool = (function (TT) {
                            },
                            200);
                 home_position = $(element).offset();
-                document.addEventListener('mousemove',  mouse_move);
-                document.addEventListener('touchmove',  mouse_move);
-                document.addEventListener('mouseup',    mouse_up);
-                document.addEventListener('touchend',   mouse_up);
+                document.addEventListener('mousemove', mouse_move);
+                document.addEventListener('touchmove', mouse_move);
+                document.addEventListener('mouseup',   mouse_up);
+                document.addEventListener('touchend',  mouse_up);
                 // rewrite using startsWith in ECMAScript version 6
                 if (TT.logging && TT.logging.indexOf('touch') === 0) {
                     TT.debugging += "\nmouse_down at " + Date.now();

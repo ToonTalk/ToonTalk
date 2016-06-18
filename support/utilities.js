@@ -1810,9 +1810,11 @@ window.TOONTALK.UTILITIES =
                     key_callback = function (toontalk_last_key) {    
                                        if (toontalk_last_key) {
                                            utilities.retrieve_object(toontalk_last_key,
-                                                                     function (json) {
-                                                                         if (json) {
+                                                                     function (json_from_storage) {
+                                                                         if (json_from_storage) {
                                                                              // create the top-level widget with the additional info stored here:
+                                                                             // json is a closure variable that is updated here
+                                                                             json = json_from_storage;
                                                                              widget = utilities.create_from_json(json);
                                                                              process_widget_callback();
                                                                          }
@@ -3309,7 +3311,7 @@ window.TOONTALK.UTILITIES =
                  // this happens on FireFox where this is called before the widget has been "rendered"
                  widget = TT.UTILITIES.widget_side_of_element(element);
                  if (widget) {
-                    widget.update_display();
+                    widget.render();
                 }
             }
             if (!original_width) {

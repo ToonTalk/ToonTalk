@@ -298,8 +298,9 @@ window.TOONTALK.box = (function (TT) {
     
     box.match = function (other) {
         if (this.get_erased && this.get_erased()) {
-            if (other.match_with_any_box) {
-                return other.match_with_any_box();
+            // get_widget() because an erased box matches the backside of an erased box
+            if (other.get_widget().match_with_any_box) {
+                return other.get_widget().match_with_any_box();
             }
             this.last_match = other;
             return this;
