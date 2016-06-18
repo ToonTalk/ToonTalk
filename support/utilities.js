@@ -326,7 +326,7 @@ window.TOONTALK.UTILITIES =
             // dropped a widget on editable text - insert it after that
             insert_widget_in_editable_text(json_object, event);
             return;
-        } else if ($source.is(".toontalk-backside")) {
+        } else if ($source && $source.is(".toontalk-backside")) {
             // backsides can only be dropped on other backsides, birds, nests, or boxes
             $target = $(event.target).closest(".toontalk-backside, .toontalk-bird, .toontalk-nest, .toontalk-box");
         } else {
@@ -505,7 +505,7 @@ window.TOONTALK.UTILITIES =
     var $toontalk_side_underneath = function (element) {
         var $dragee = utilities.get_$dragee();
         var $target;
-        if ($dragee.is(".toontalk-backside")) {
+        if ($dragee && $dragee.is(".toontalk-backside")) {
             // backsides can only be dropped on other backsides, birds, nests, or boxes
             $target = $(element).closest(".toontalk-backside, .toontalk-bird, .toontalk-nest, .toontalk-box");
         } else {
