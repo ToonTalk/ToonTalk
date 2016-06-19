@@ -542,6 +542,9 @@ window.TOONTALK.UTILITIES =
             drag_y_offset = 0;
         }
         source_widget_side.set_visible(true);
+        if (json_object && json_object.semantic && json_object.semantic.running) {
+            source_widget_side.set_running(true);
+        }
         if ($target.is(".toontalk-backside")) {
             if (source_widget_side.get_widget().is_top_level()) {
                // add all top-level backsides contents but not the backside widget itself
