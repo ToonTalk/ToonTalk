@@ -397,6 +397,9 @@ window.TOONTALK.widget = (function (TT) {
 //                     }
                     backside_widgets = this.get_backside_widgets();
                     running = new_value;
+                    if (running && TT.logging && TT.logging.indexOf("running") >= 0) {
+                        console.log(this._debug_string.substring(0, 100) + " running.");
+                    }
                     if (this.get_backside() && !unchanged_value) {
                         this.get_backside().run_status_changed(running);
                     }
@@ -419,6 +422,9 @@ window.TOONTALK.widget = (function (TT) {
                                                         if (backside_widget.is_robot() && !backside_widget.being_trained && !backside_widget.get_body().is_empty()) {
                                                             // could this set_stopped stuff be combined with set_running?
                                                             if (running) {
+                                                                if (running && TT.logging && TT.logging.indexOf("running") >= 0) {
+                                                                    console.log(backside_widget._debug_string.substring(0, 100) + " running.");
+                                                                }
                                                                 backside_widget.set_stopped(false);
                                                                 // no need to create backside to run the robot but the robot needs to know if the backside of the widget is running
                                                                 // e.g. to act like an "anima-gadget" if is a backside on a backside
