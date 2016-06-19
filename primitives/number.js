@@ -1132,8 +1132,8 @@ window.TOONTALK.number = (function () {
 
     number.match = function (other) {
         if (this.get_erased && this.get_erased()) {
-            if (other.match_with_any_number) {
-                return other.match_with_any_number();
+            if (other.get_widget().match_with_any_number) {
+                return other.get_widget().match_with_any_number();
             }
             this.last_match = other;
             return this; // since doesn't handle match_with_any_number

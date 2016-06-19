@@ -317,8 +317,8 @@ window.TOONTALK.scale = (function (TT) {
         };
         // equals needed??
         new_scale.match = function (other) {
-            if (other.match_with_scale) {
-                return other.match_with_scale(this);
+            if (other.get_widget().match_with_scale) {
+                return other.get_widget().match_with_scale(this);
             }
             this.last_match = other;
             return this;
@@ -352,7 +352,7 @@ window.TOONTALK.scale = (function (TT) {
                 if (pattern_hole) {
                     my_hole = this.get_hole_contents(i);
                     if (my_hole) {
-                        hole_match = TT.UTILITIES.match(pattern_hole, my_hole);
+                        hole_match = TT.UTILITIES.match(pattern_hole, my_hole.dereference());
                         if (hole_match.is_widget) {
                             // sub-match failed
                             return hole_match;

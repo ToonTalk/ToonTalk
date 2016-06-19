@@ -641,8 +641,8 @@ window.TOONTALK.bird = (function (TT) {
     bird.match = function (other) {
         // doesn't matter if erased
         // shouldn't be able to match to see if two birds are identical, right?
-        if (other.match_with_any_bird) {
-            return other.match_with_any_bird(this);
+        if (other.get_widget().match_with_any_bird) {
+            return other.get_widget().match_with_any_bird(this);
         }
         this.last_match = other;
         return this;
