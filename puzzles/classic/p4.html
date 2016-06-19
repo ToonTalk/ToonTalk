@@ -2,54 +2,74 @@
 <html>
 <head>
 <script src="../../toontalk.js"></script>
-<title>Puzzle 3 - Make a 9</title>
+<title>Puzzle 4 - Fill a box with 8, 16, and 32</title>
 </head>
 <body>
-<h2>I need a 9</h2>
+<h2>I need a box containing 8, 16, and 32.</h2>
 <div class='toontalk-json' translate='no' style='display:none'>
-This will be replaced by a work area containing 2 things: a number, and an element.
+This will be replaced by a work area containing 2 things: an element, and a box.
 top level widget
 <div style='display:none;'>{
   "semantic": {
     "type": "top_level",
-    "running": true,
     "backside_widgets": [
       {
         "widget": {
-          "semantic": {
-            "type": "number",
-            "operator": "+",
-            "numerator": "3",
-            "denominator": "1",
-            "format": "mixed_number",
-            "infinite_stack": true
-          },
-          "view": {
-            "frontside_width": 76,
-            "frontside_height": 55,
-            "frontside_left": 74.5469,
-            "frontside_top": 36.5625,
-            "saved_width": 76,
-            "saved_height": 55
-          },
-          "version": 1
+          "shared_widget_index": 0
         }
       },
       {
         "widget": {
-          "shared_widget_index": 0
+          "semantic": {
+            "type": "box",
+            "size": 3,
+            "contents": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "8",
+                    "denominator": "1",
+                    "format": "mixed_number",
+                    "infinite_stack": true
+                  },
+                  "view": {
+                    "frontside_left": 57,
+                    "frontside_top": 82,
+                    "saved_width": 76,
+                    "saved_height": 55
+                  },
+                  "version": 1
+                }
+              },
+              null,
+              null
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 289,
+            "frontside_height": 68,
+            "frontside_left": 46.6563,
+            "frontside_top": 125.406,
+            "saved_width": 289,
+            "saved_height": 68
+          },
+          "version": 1
         }
       }
     ]
   },
   "view": {
     "background_color": "rgb(245, 240, 240)",
-    "backside_width": 626,
-    "backside_height": 302,
+    "backside_width": 675,
+    "backside_height": 320,
     "backside_left": 8,
     "backside_top": 193.1875,
-    "drag_x_offset": 354,
-    "drag_y_offset": 115.8125
+    "drag_x_offset": 579,
+    "drag_y_offset": 262.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -66,8 +86,8 @@ top level widget
           "height"
         ],
         "attribute_values": [
-          101.328,
-          143.5,
+          115.9063,
+          4.843800000000002,
           595,
           91
         ],
@@ -77,9 +97,7 @@ top level widget
           [],
           []
         ],
-        "additional_classes": "toontalk-string-value-from-sensor",
         "children": false,
-        "running": true,
         "backside_widgets": [
           {
             "widget": {
@@ -98,8 +116,8 @@ top level widget
                       "height"
                     ],
                     "attribute_values": [
-                      8,
-                      511.188,
+                      0,
+                      0,
                       595,
                       91
                     ],
@@ -132,7 +150,7 @@ top level widget
                         ],
                         "attribute_values": [
                           8,
-                          511.188,
+                          529.188,
                           400,
                           38
                         ],
@@ -161,36 +179,82 @@ top level widget
                           {
                             "widget": {
                               "semantic": {
-                                "type": "number",
-                                "operator": "+",
-                                "numerator": "1",
-                                "denominator": "1",
-                                "format": "mixed_number",
+                                "type": "box",
+                                "size": 2,
+                                "contents": [
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "number",
+                                        "operator": "+",
+                                        "numerator": "1",
+                                        "denominator": "1",
+                                        "format": "mixed_number"
+                                      },
+                                      "view": {},
+                                      "version": 1
+                                    }
+                                  },
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "number",
+                                        "operator": "+",
+                                        "numerator": "2",
+                                        "denominator": "1",
+                                        "format": "mixed_number"
+                                      },
+                                      "view": {},
+                                      "version": 1
+                                    }
+                                  }
+                                ],
+                                "horizontal": true,
+                                "name": ";;",
                                 "erased": true
                               },
-                              "view": {
-                                "frontside_left": 57,
-                                "frontside_top": 82,
-                                "saved_width": 76,
-                                "saved_height": 55
-                              },
+                              "view": {},
                               "version": 1
                             }
                           },
                           {
                             "widget": {
                               "semantic": {
-                                "type": "number",
-                                "operator": "+",
-                                "numerator": "1",
-                                "denominator": "1",
-                                "format": "mixed_number",
+                                "type": "box",
+                                "size": 2,
+                                "contents": [
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "number",
+                                        "operator": "+",
+                                        "numerator": "1",
+                                        "denominator": "1",
+                                        "format": "mixed_number"
+                                      },
+                                      "view": {},
+                                      "version": 1
+                                    }
+                                  },
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "number",
+                                        "operator": "+",
+                                        "numerator": "2",
+                                        "denominator": "1",
+                                        "format": "mixed_number"
+                                      },
+                                      "view": {},
+                                      "version": 1
+                                    }
+                                  }
+                                ],
+                                "horizontal": true,
+                                "name": ";;",
                                 "erased": true
                               },
-                              "view": {
-                                "saved_width": 76,
-                                "saved_height": 55
-                              },
+                              "view": {},
                               "version": 1
                             }
                           }
@@ -487,45 +551,10 @@ top level widget
               "view": {
                 "frontside_width": 66,
                 "frontside_height": 110,
-                "frontside_left": "86.10521766462361%",
-                "frontside_top": "22.453703703703702%",
+                "frontside_left": "79.4193510850804%",
+                "frontside_top": "17.46238425925926%",
                 "saved_width": 66,
                 "saved_height": 110
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "element",
-                "html": "p4.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
-                "attributes": [
-                  "left",
-                  "top",
-                  "width",
-                  "height"
-                ],
-                "attribute_values": [
-                  0,
-                  0,
-                  400,
-                  38
-                ],
-                "attributes_backsides": [
-                  [],
-                  [],
-                  [],
-                  []
-                ],
-                "additional_classes": "toontalk-string-value-from-sensor",
-                "children": false
-              },
-              "view": {
-                "frontside_left": "28.245324532453246%",
-                "frontside_top": "9.194155092592593%",
-                "saved_width": 504,
-                "saved_height": 32
               },
               "version": 1
             }
@@ -539,17 +568,71 @@ top level widget
                   {
                     "widget": {
                       "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "9",
-                        "denominator": "1",
-                        "format": "mixed_number"
+                        "type": "box",
+                        "size": 3,
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "8",
+                                "denominator": "1",
+                                "format": "mixed_number"
+                              },
+                              "view": {
+                                "backside_left": 0,
+                                "backside_top": 0,
+                                "advanced_settings_open": true,
+                                "frontside_left": 57,
+                                "frontside_top": 82,
+                                "saved_width": 76,
+                                "saved_height": 55
+                              },
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "16",
+                                "denominator": "1",
+                                "format": "mixed_number"
+                              },
+                              "view": {
+                                "saved_width": 76,
+                                "saved_height": 55
+                              },
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "32",
+                                "denominator": "1",
+                                "format": "mixed_number"
+                              },
+                              "view": {
+                                "saved_width": 76,
+                                "saved_height": 55
+                              },
+                              "version": 1
+                            }
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;"
                       },
                       "view": {
-                        "frontside_left": 57,
-                        "frontside_top": 82,
-                        "saved_width": 76,
-                        "saved_height": 55
+                        "frontside_left": 64.0938,
+                        "frontside_top": 122.297,
+                        "saved_width": 289,
+                        "saved_height": 68
                       },
                       "version": 1
                     }
@@ -560,7 +643,7 @@ top level widget
                         "type": "sensor",
                         "contents": [],
                         "guid": "sensor",
-                        "serial_number": 4,
+                        "serial_number": 6,
                         "name": "sensor",
                         "event_name": "widget added",
                         "attribute": "back",
@@ -583,12 +666,45 @@ top level widget
                 "name": ""
               },
               "view": {
-                "frontside_width": 123,
-                "frontside_height": 91,
-                "frontside_left": "44.72929435800723%",
-                "frontside_top": "34.07118055555556%",
+                "frontside_left": "48.722921474700854%",
+                "frontside_top": "26.87355324074074%",
                 "saved_width": 123,
                 "saved_height": 91
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "element",
+                "html": "p5.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
+                "attributes": [
+                  "left",
+                  "top",
+                  "width",
+                  "height"
+                ],
+                "attribute_values": [
+                  0,
+                  0,
+                  400,
+                  38
+                ],
+                "attributes_backsides": [
+                  [],
+                  [],
+                  [],
+                  []
+                ],
+                "additional_classes": "toontalk-string-value-from-sensor",
+                "children": false
+              },
+              "view": {
+                "frontside_left": "32.72307662471152%",
+                "frontside_top": "6.669560185185185%",
+                "saved_width": 504,
+                "saved_height": 32
               },
               "version": 1
             }
@@ -596,12 +712,14 @@ top level widget
         ]
       },
       "view": {
-        "frontside_width": 366,
-        "frontside_height": 63,
-        "frontside_left": 215.828,
-        "frontside_top": 157.5,
+        "frontside_width": 685,
+        "frontside_height": 64,
+        "frontside_left": 70.9063,
+        "frontside_top": 18.3438,
+        "backside_left": 0,
+        "backside_top": 0,
         "backside_geometry": {
-          "x_scale": 1.4170471841704713,
+          "x_scale": 1.4357864357864358,
           "y_scale": 1,
           "original_width": 550,
           "original_height": 200
@@ -613,7 +731,7 @@ top level widget
     }
   ],
   "shared_html": [
-    "%3Cp%20class%3DMsoNormal%3E%3Cspan%20style%3D'font-size%3A20.0pt%3Bline-height%3A107%25%3Bfont-family%3A%0A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC%3Bbackground%3Anavy%3Bmso-highlight%3Anavy'%3E%3Cspan%0Astyle%3D'mso-spacerun%3Ayes'%3E%20%3C%2Fspan%3EI%26nbsp%3Bneed%26nbsp%3Ba%26nbsp%3B9.%20Please%26nbsp%3Bdrop%26nbsp%3Bit%26nbsp%3Bhere.%3C%2Fspan%3E%3Cspan%20style%3D'font-size%3A20.0pt%3B%0Aline-height%3A107%25%3Bfont-family%3A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC'%3E%3Co%3Ap%3E%3C%2Fo%3Ap%3E%3C%2Fspan%3E%3C%2Fp%3E",
+    "%3Cp%20class%3DMsoNormal%3E%3Cspan%20style%3D'font-size%3A20.0pt%3Bline-height%3A107%25%3Bfont-family%3A%0A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC%3Bbackground%3Anavy%3Bmso-highlight%3Anavy'%3E%3Cspan%0Astyle%3D'mso-spacerun%3Ayes'%3E%20%3C%2Fspan%3EI%26nbsp%3Bneed%26nbsp%3Ba%26nbsp%3Bbox%26nbsp%3Bwith%26nbsp%3Ba%26nbsp%3B8%2C%26nbsp%3Ba%26nbsp%3B16%2C%26nbsp%3Band%26nbsp%3Ba%26nbsp%3B32.%20Please%26nbsp%3Bdrop%26nbsp%3Bit%26nbsp%3Bhere.%3C%2Fspan%3E%3Cspan%20style%3D'font-size%3A20.0pt%3B%0Aline-height%3A107%25%3Bfont-family%3A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC'%3E%3Co%3Ap%3E%3C%2Fo%3Ap%3E%3C%2Fspan%3E%3C%2Fp%3E",
     "%3Cp%20class%3DMsoNormal%3E%3Cspan%20style%3D'font-size%3A20.0pt%3Bline-height%3A107%25%3Bfont-family%3A%0A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC%3Bbackground%3Anavy%3Bmso-highlight%3Anavy'%3E%3Cspan%0Astyle%3D'mso-spacerun%3Ayes'%3E%20%3C%2Fspan%3EI%26nbsp%3Bneed%26nbsp%3Ba%26nbsp%3B4.%20Please%26nbsp%3Bdrop%26nbsp%3Ba%26nbsp%3B4%26nbsp%3Bhere.%3C%2Fspan%3E%3Cspan%20style%3D'font-size%3A20.0pt%3B%0Aline-height%3A107%25%3Bfont-family%3A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC'%3E%3Co%3Ap%3E%3C%2Fo%3Ap%3E%3C%2Fspan%3E%3C%2Fp%3E"
   ]
 }</div></div>
