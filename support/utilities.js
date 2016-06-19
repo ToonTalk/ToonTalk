@@ -543,7 +543,10 @@ window.TOONTALK.UTILITIES =
         }
         source_widget_side.set_visible(true);
         if (json_object && json_object.semantic && json_object.semantic.running) {
-            source_widget_side.set_running(true);
+            utilities.set_timeout(function () {
+                                      source_widget_side.set_running(true);
+                                  },
+                                  100);
         }
         if ($target.is(".toontalk-backside")) {
             if (source_widget_side.get_widget().is_top_level()) {
