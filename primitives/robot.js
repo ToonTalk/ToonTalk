@@ -608,9 +608,9 @@ window.TOONTALK.robot = (function (TT) {
     robot.match = function (other) {
         // no need to do more -- any trained robot matches any other and any untrained matches any untrained
         var this_body_empty, other_body_empty;
-        if (other.is_robot()) {
+        if (other.get_widget().is_robot()) {
             this_body_empty  = this .get_body().is_empty();
-            other_body_empty = other.get_body().is_empty()
+            other_body_empty = other.get_widget().get_body().is_empty()
             if (this_body_empty === other_body_empty) {
                 return "matched";
             }

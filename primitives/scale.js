@@ -352,7 +352,7 @@ window.TOONTALK.scale = (function (TT) {
                 if (pattern_hole) {
                     my_hole = this.get_hole_contents(i);
                     if (my_hole) {
-                        hole_match = TT.UTILITIES.match(pattern_hole, my_hole);
+                        hole_match = TT.UTILITIES.match(pattern_hole, my_hole.dereference());
                         if (hole_match.is_widget) {
                             // sub-match failed
                             return hole_match;
