@@ -317,8 +317,8 @@ window.TOONTALK.scale = (function (TT) {
         };
         // equals needed??
         new_scale.match = function (other) {
-            if (other.match_with_scale) {
-                return other.match_with_scale(this);
+            if (other.get_widget().match_with_scale) {
+                return other.get_widget().match_with_scale(this);
             }
             this.last_match = other;
             return this;
