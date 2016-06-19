@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2>I need a 4</h2>
-<div class='toontalk-json' translate='no'>
+<div class='toontalk-json' translate='no' style='display:none'>
 This will be replaced by a work area containing 3 things: an element, a number, and a number.
 top level widget
 <div style='display:none;'>{
@@ -31,8 +31,8 @@ top level widget
           "view": {
             "frontside_width": 76,
             "frontside_height": 55,
-            "frontside_left": 345,
-            "frontside_top": 119,
+            "frontside_left": 74.5469,
+            "frontside_top": 36.5625,
             "saved_width": 76,
             "saved_height": 55
           },
@@ -51,8 +51,8 @@ top level widget
           "view": {
             "frontside_width": 76,
             "frontside_height": 55,
-            "frontside_left": 44,
-            "frontside_top": 123,
+            "frontside_left": 425.484,
+            "frontside_top": 66.2188,
             "saved_width": 76,
             "saved_height": 55
           },
@@ -62,13 +62,13 @@ top level widget
     ]
   },
   "view": {
-    "background_color": "rgba(0, 0, 0, 0)",
-    "backside_width": 559,
-    "backside_height": 270,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 665,
+    "backside_height": 331,
     "backside_left": 8,
-    "backside_top": 74.8125,
-    "drag_x_offset": 515,
-    "drag_y_offset": 39.1875
+    "backside_top": 193.1875,
+    "drag_x_offset": 590,
+    "drag_y_offset": 293.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -85,10 +85,10 @@ top level widget
           "height"
         ],
         "attribute_values": [
-          68,
-          12,
-          388,
-          61
+          78.031,
+          133.203,
+          595,
+          91
         ],
         "attributes_backsides": [
           [],
@@ -96,103 +96,10 @@ top level widget
           [],
           []
         ],
+        "additional_classes": "toontalk-string-value-from-sensor",
         "children": false,
         "running": true,
         "backside_widgets": [
-          {
-            "widget": {
-              "semantic": {
-                "type": "scale",
-                "size": 2,
-                "contents": [
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "4",
-                        "denominator": "1",
-                        "format": "mixed_number"
-                      },
-                      "view": {
-                        "saved_width": 76,
-                        "saved_height": 55
-                      },
-                      "version": 1
-                    }
-                  },
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "sensor",
-                        "contents": [],
-                        "guid": "sensor",
-                        "serial_number": 1,
-                        "name": "sensor",
-                        "event_name": "widget added",
-                        "attribute": "back",
-                        "active": true,
-                        "sensor_of": {
-                          "shared_widget_index": 0
-                        }
-                      },
-                      "view": {
-                        "saved_width": 116,
-                        "saved_height": 98
-                      },
-                      "version": 1
-                    }
-                  }
-                ],
-                "horizontal": true,
-                "name": ""
-              },
-              "view": {
-                "backside_geometry": {
-                  "x_scale": 1,
-                  "y_scale": 1,
-                  "original_width": 123,
-                  "original_height": 91
-                },
-                "saved_width": 123,
-                "saved_height": 91
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "element",
-                "html": "p3.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
-                "attributes": [
-                  "left",
-                  "top",
-                  "width",
-                  "height"
-                ],
-                "attribute_values": [
-                  0,
-                  0,
-                  400,
-                  38
-                ],
-                "attributes_backsides": [
-                  [],
-                  [],
-                  [],
-                  []
-                ],
-                "additional_classes": "toontalk-string-value-from-sensor",
-                "children": false
-              },
-              "view": {
-                "saved_width": 400,
-                "saved_height": 38
-              },
-              "version": 1
-            }
-          },
           {
             "widget": {
               "semantic": {
@@ -201,7 +108,7 @@ top level widget
                   "semantic": {
                     "type": "element",
                     "html": {
-                      "shared_html_index": 0
+                      "shared_html_index": 1
                     },
                     "attributes": [
                       "left",
@@ -210,10 +117,10 @@ top level widget
                       "height"
                     ],
                     "attribute_values": [
-                      0,
-                      0,
-                      388,
-                      61
+                      8,
+                      540.188,
+                      595,
+                      91
                     ],
                     "attributes_backsides": [
                       [],
@@ -225,8 +132,8 @@ top level widget
                     "erased": true
                   },
                   "view": {
-                    "saved_width": 388,
-                    "saved_height": 61
+                    "saved_width": 595,
+                    "saved_height": 91
                   },
                   "version": 1
                 },
@@ -235,7 +142,7 @@ top level widget
                     "widget": {
                       "semantic": {
                         "type": "element",
-                        "html": "p3.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
+                        "html": "p2.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
                         "attributes": [
                           "left",
                           "top",
@@ -243,8 +150,8 @@ top level widget
                           "height"
                         ],
                         "attribute_values": [
-                          0,
-                          0,
+                          8,
+                          540.188,
                           400,
                           38
                         ],
@@ -275,36 +182,35 @@ top level widget
                               "semantic": {
                                 "type": "number",
                                 "operator": "+",
-                                "numerator": "4",
+                                "numerator": "1",
                                 "denominator": "1",
-                                "format": "mixed_number"
+                                "format": "mixed_number",
+                                "erased": true
                               },
-                              "view": {},
+                              "view": {
+                                "frontside_left": 57,
+                                "frontside_top": 82,
+                                "saved_width": 76,
+                                "saved_height": 55
+                              },
                               "version": 1
                             }
                           },
                           {
                             "widget": {
-                              "type": "backside",
-                              "my_widget": {
-                                "semantic": {
-                                  "type": "number",
-                                  "operator": "+",
-                                  "numerator": "4",
-                                  "denominator": "1",
-                                  "format": "mixed_number"
-                                },
-                                "view": {
-                                  "saved_width": 388,
-                                  "saved_height": 63
-                                },
-                                "version": 1
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "1",
+                                "denominator": "1",
+                                "format": "mixed_number",
+                                "erased": true
                               },
-                              "css": {
-                                "top": 0,
-                                "left": 0
+                              "view": {
+                                "saved_width": 76,
+                                "saved_height": 55
                               },
-                              "view": {}
+                              "version": 1
                             }
                           }
                         ],
@@ -325,7 +231,7 @@ top level widget
                   "steps": [
                     {
                       "type": "robot_action",
-                      "action_name": "open the backside",
+                      "action_name": "open the backside of",
                       "path": {
                         "type": "path.to_backside_widget_of_context",
                         "type_name": "element",
@@ -379,7 +285,7 @@ top level widget
                     },
                     {
                       "type": "robot_action",
-                      "action_name": "close the backside",
+                      "action_name": "close the backside of",
                       "path": {
                         "type": "path.to_backside_widget_of_context",
                         "type_name": "element",
@@ -391,7 +297,7 @@ top level widget
                     },
                     {
                       "type": "robot_action",
-                      "action_name": "open the backside",
+                      "action_name": "open the backside of",
                       "path": {
                         "type": "newly_created_widgets_path",
                         "index": 0
@@ -417,7 +323,7 @@ top level widget
                     },
                     {
                       "type": "robot_action",
-                      "action_name": "close the backside",
+                      "action_name": "close the backside of",
                       "path": {
                         "type": "newly_created_widgets_path",
                         "index": 0
@@ -593,12 +499,111 @@ top level widget
                     }
                   ]
                 },
-                "name": "#2",
-                "running": true
+                "name": "Jump to URL",
+                "running": true,
+                "description": "a robot who when the sensor receives the expected widget jumps to the given URL."
               },
               "view": {
+                "frontside_left": "86.54133270469904%",
+                "frontside_top": "22.880497685185187%",
                 "saved_width": 66,
                 "saved_height": 110
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "element",
+                "html": "p3.html%3Falt_key_to_open_backside%3D1%26reset%3D1",
+                "attributes": [
+                  "left",
+                  "top",
+                  "width",
+                  "height"
+                ],
+                "attribute_values": [
+                  8,
+                  540.188,
+                  400,
+                  38
+                ],
+                "attributes_backsides": [
+                  [],
+                  [],
+                  [],
+                  []
+                ],
+                "additional_classes": "toontalk-string-value-from-sensor",
+                "children": false
+              },
+              "view": {
+                "frontside_left": "34.95992456388496%",
+                "frontside_top": "7.957175925925926%",
+                "saved_width": 504,
+                "saved_height": 32
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "scale",
+                "size": 2,
+                "contents": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "4",
+                        "denominator": "1",
+                        "format": "mixed_number"
+                      },
+                      "view": {
+                        "frontside_left": 57,
+                        "frontside_top": 82,
+                        "saved_width": 76,
+                        "saved_height": 55
+                      },
+                      "version": 1
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "sensor",
+                        "contents": [],
+                        "guid": "sensor",
+                        "serial_number": 3,
+                        "name": "sensor",
+                        "event_name": "widget added",
+                        "attribute": "back",
+                        "active": true,
+                        "sensor_of": {
+                          "shared_widget_index": 0
+                        }
+                      },
+                      "view": {
+                        "frontside_left": "24.319950549619193%",
+                        "frontside_top": "32.934387985626024%",
+                        "saved_width": 116,
+                        "saved_height": 98
+                      },
+                      "version": 1
+                    }
+                  }
+                ],
+                "horizontal": true,
+                "name": ""
+              },
+              "view": {
+                "frontside_left": "44.95717428885746%",
+                "frontside_top": "34.714988425925924%",
+                "saved_width": 123,
+                "saved_height": 91
               },
               "version": 1
             }
@@ -606,17 +611,24 @@ top level widget
         ]
       },
       "view": {
-        "frontside_width": 388,
+        "frontside_width": 366,
         "frontside_height": 63,
-        "frontside_left": 68,
-        "frontside_top": 11,
-        "saved_width": 388,
-        "saved_height": 61
+        "frontside_left": 192.531,
+        "frontside_top": 147.203,
+        "backside_geometry": {
+          "x_scale": 1.4170471841704713,
+          "y_scale": 1,
+          "original_width": 550,
+          "original_height": 200
+        },
+        "saved_width": 595,
+        "saved_height": 91
       },
       "version": 1
     }
   ],
   "shared_html": [
+    "%3Cp%20class%3DMsoNormal%3E%3Cspan%20style%3D'font-size%3A20.0pt%3Bline-height%3A107%25%3Bfont-family%3A%0A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC%3Bbackground%3Anavy%3Bmso-highlight%3Anavy'%3E%3Cspan%0Astyle%3D'mso-spacerun%3Ayes'%3E%20%3C%2Fspan%3EI%26nbsp%3Bneed%26nbsp%3Ba%26nbsp%3B4.%20Please%26nbsp%3Bdrop%26nbsp%3Bit%26nbsp%3Bhere.%3C%2Fspan%3E%3Cspan%20style%3D'font-size%3A20.0pt%3B%0Aline-height%3A107%25%3Bfont-family%3A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC'%3E%3Co%3Ap%3E%3C%2Fo%3Ap%3E%3C%2Fspan%3E%3C%2Fp%3E",
     "%3Cp%20class%3DMsoNormal%3E%3Cspan%20style%3D'font-size%3A20.0pt%3Bline-height%3A107%25%3Bfont-family%3A%0A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC%3Bbackground%3Anavy%3Bmso-highlight%3Anavy'%3E%3Cspan%0Astyle%3D'mso-spacerun%3Ayes'%3E%20%3C%2Fspan%3EI%26nbsp%3Bneed%26nbsp%3Ba%26nbsp%3B4.%20Please%26nbsp%3Bdrop%26nbsp%3Ba%26nbsp%3B4%26nbsp%3Bhere.%3C%2Fspan%3E%3Cspan%20style%3D'font-size%3A20.0pt%3B%0Aline-height%3A107%25%3Bfont-family%3A%22Tahoma%22%2Csans-serif%3Bcolor%3A%23FFCCCC'%3E%3Co%3Ap%3E%3C%2Fo%3Ap%3E%3C%2Fspan%3E%3C%2Fp%3E"
   ]
 }</div></div>
