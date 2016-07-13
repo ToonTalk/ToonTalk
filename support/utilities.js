@@ -4863,8 +4863,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         if (element) {
                             if (TT.CHROME_APP) {
                                 click_handler = function (event) {
-                                                utilities.add_iframe_popup(url);
-                                            };
+                                                    utilities.add_iframe_popup(url);
+                                                };
                                 button_or_link = utilities.create_button(label, "toontalk-manual-button", title, click_handler);
                             } else {
                                 button_or_link = document.createElement('a');
@@ -4873,11 +4873,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                 button_or_link.title     = title;
                                 button_or_link.target    = '_blank';
                                 $(button_or_link).addClass('ui-widget toontalk-help-link');
+                                utilities.use_custom_tooltip(button_or_link);
                             }       
                             element.appendChild(button_or_link);
-                            if (css) {
-                                $(button_or_link).css(css);
-                            }
+                            $(button_or_link).css(css);
                         }
                     };
                 add_button_or_link("toontalk-manual-button",
