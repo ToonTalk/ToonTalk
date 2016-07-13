@@ -2268,6 +2268,21 @@ window.TOONTALK.element.function =
         "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
         "speak",
         ['a widget']);
+    functions.add_function_object(
+        'show message', 
+        function (message, event, robot) {
+            var display_message = function (element_text) {
+                if (this.robot_in_training()) { // this will be bound to the message given to the function bird
+                    robot.display_message("Robot trained to display: " + element_text.get_text());
+                } else {
+                    TT.UTILITIES.display_message(element_text.get_text());
+                }
+            };
+            return functions.typed_bird_function(message, display_message, ['element'], 1, 'show message', event, robot);
+        },
+        "The bird will cause what is in the second box hole to be displayed.",
+        "display",
+        ['a widget']);
     return functions.get_function_table();
 
 }(window.TOONTALK));
