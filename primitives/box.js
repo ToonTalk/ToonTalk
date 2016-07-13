@@ -1466,6 +1466,43 @@ window.TOONTALK.box.function =
         "The bird will return with a box that joins together all the boxes.",
         "merge",
         ['any number of boxes']);
+    functions.add_function_object(
+        'get window property', 
+        function (message, event, robot) {
+            var get_value = function (box) {
+                var value = window;
+                var size = box.get_size();
+                var full_path = function () {
+                    var path = "window";
+                    var i;
+                    for (i = 0; i < size; i++) {
+                        path += "." + box.get_hole_contents(i).get_text().trim();
+                    }
+                    return path;
+                };
+                var i, message;
+                for (i = 0; i < size; i++) {
+                    try {
+                        value = value[box.get_hole_contents(i).get_text().trim()];
+                    } catch (exception) {
+                        TT.UTILITIES.display_message("Error trying to find the value accessing the " + full_path() + ". " + exception);
+                    }
+                }
+                if (!value) {
+                    message = "Error no value for " + full_path();
+                    TT.UTILITIES.display_message(message);
+                    return TT.element.create(message); // is this reasonable?
+                }
+                if (typeof value === 'number') {
+                    return TT.number.create(value);
+                }
+                return TT.element.create(value.toString());
+            };
+            return functions.typed_bird_function(message, get_value, ['box'], 1, 'window property', event, robot);
+        },
+        "The bird will return with the value of the property accessed by each of the property names in the box.",
+        "win prop",
+        ['box']);
     return functions.get_function_table();
 }
 ());
