@@ -1503,10 +1503,11 @@ html {
 	border-radius: 8px;
 	padding: 8px;
 }
-.toontalk-link {
+.toontalk-help-link {
 	font-weight: bold;
 	border-radius: 8px;
 	padding: 8px;
+	font-size: 1.2em;
 }
 .toontalk-frontside {
     position: absolute;

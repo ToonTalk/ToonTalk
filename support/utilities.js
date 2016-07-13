@@ -4872,7 +4872,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                 button_or_link.href      = url;
                                 button_or_link.title     = title;
                                 button_or_link.target    = '_blank';
-                                $(button_or_link).addClass('ui-widget toontalk-link');
+                                $(button_or_link).addClass('ui-widget toontalk-help-link');
                             }       
                             element.appendChild(button_or_link);
                             if (css) {
