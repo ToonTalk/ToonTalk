@@ -614,7 +614,8 @@ window.TOONTALK.backside =
             backside.run_status_changed = function (running) {
                 update_flag_and_stop_sign_classes(running);
             };
-            TT.UTILITIES.when_attached(backside_element, 
+            // top-level backside doesn't have a close button
+            TT.UTILITIES.when_attached(close_button || backside_element, 
                                        function () {
                                             var backside_width, backside_height, sign_width, close_button_width, green_flag_width, help_button_width;
                                             backside_width  = TT.UTILITIES.get_element_width (backside_element);
