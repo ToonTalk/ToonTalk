@@ -4921,28 +4921,23 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         }
                     });
                 };
-            TT.debugging = utilities.get_current_url_parameter('debugging');
-            TT.logging   = utilities.get_current_url_parameter('log');
+            TT.debugging                    = utilities.get_current_url_parameter('debugging');
+            TT.logging                      = utilities.get_current_url_parameter('log');
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
             if (TT.volume > 0) {
                 initialize_sounds();
             }
-            TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
-            TT.reset    = utilities.get_current_url_boolean_parameter('reset', false);
-            TT.speak    = utilities.get_current_url_boolean_parameter('speak', false);
+            TT.puzzle                        = utilities.get_current_url_boolean_parameter('puzzle', false);
+            // puzzle by default sets alt_key_to_open_backside and reset to its value
+            TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside', TT.puzzle);
+            TT.reset                         = utilities.get_current_url_boolean_parameter('reset', TT.puzzle);
+            TT.speak                         = utilities.get_current_url_boolean_parameter('speak', false);
             if (TT.speak && !window.speechSynthesis) {
                 TT.speak = false;
-                utilities.display_message("This browser doesn't support speech output. speak=1 ignored.");
+                utilities.display_message("This browser doesn't support speech output. speak=1 in URL ignored.");
             }
-            TT.balloons = utilities.get_current_url_boolean_parameter('balloons', true);
-            if (!TT.open_backside_only_if_alt_key) {
-                // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
-                TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
-                if (TT.open_backside_only_if_alt_key) {
-                    TT.reset = true;
-                }
-            }
+            TT.balloons                      = utilities.get_current_url_boolean_parameter('balloons', true);
             utilities.process_json_elements();
             // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
             // clicking on a running widget may not work since its HTML may be changing constantly
@@ -4956,7 +4951,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 window.addEventListener('beforeunload', unload_listener);
             }
-            TT.TRANSLATION_ENABLED = utilities.get_current_url_boolean_parameter("translate", false);
+            TT.TRANSLATION_ENABLED           = utilities.get_current_url_boolean_parameter("translate", false);
             if (TT.TRANSLATION_ENABLED) {
                 $("a").each(function (index, element) {
                                 element.href = utilities.add_URL_parameter(element.href, "translate", "1"); 
