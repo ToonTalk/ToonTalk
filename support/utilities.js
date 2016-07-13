@@ -3580,8 +3580,10 @@ window.TOONTALK.UTILITIES =
                                  };
             var $backside;
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
-            console.log(message);
-            console.trace();
+            if (TT.debugging) {
+                console.log(message);
+                console.trace();
+            }
             if (element || second_choice_element) {
                 $backside = $(element).closest(".toontalk-backside");
                 if ($backside.length === 0) {
