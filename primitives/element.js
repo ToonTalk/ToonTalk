@@ -630,9 +630,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 children = [];
             }
             this.fire_on_update_display_handlers();
-            TT.UTILITIES.give_tooltip(frontside_element,
-                                      "Click to see the backside where you can place robots or change the style of this " + 
-                                      element_description(frontside_element) + ".");
+            if (!TT.open_backside_only_if_alt_key) {
+                TT.UTILITIES.give_tooltip(frontside_element,
+                                          "Click to see the backside where you can place robots or change the style of this " + 
+                                          element_description(frontside_element) + ".");
+            }
             // will enable/disable as appropriate
             this.set_ignore_pointer_events(this.get_ignore_pointer_events());
         };
