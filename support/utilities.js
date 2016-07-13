@@ -3572,7 +3572,7 @@ window.TOONTALK.UTILITIES =
             }
         };
 
-        utilities.display_message = function (message, element, second_choice_element) {
+        utilities.display_message = function (message, element, second_choice_element, duration) {
             // if a backside containing element isn't found then try second_choice_element
             var alert_element = utilities.create_alert_element(message);
             var remove_handler = function () {
@@ -3602,8 +3602,15 @@ window.TOONTALK.UTILITIES =
                 utilities.speak(message);
             }
             alert_element.addEventListener('click', remove_handler);
-            setTimeout(remove_handler,
-                       Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100)));
+            if (!duration) {
+                if (message[0] === '<') {
+                    // is HTML not plain text
+                    duration = 5000;
+                } else {
+                    duration = Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                }
+            }
+            setTimeout(remove_handler, duration);
         };
 
         utilities.display_tooltip = function ($element) {
