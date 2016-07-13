@@ -4857,35 +4857,44 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                                                 });
                                                             });
             var add_help_buttons = function () {
-                var add_button = function (id, url, label, title, css) {
-                    var element = document.getElementById(id);
-                    var click_handler = function (event) {
-                                            utilities.add_iframe_popup(url);
-                                        };
-                    var button;
-                    if (element) {
-                        button = utilities.create_button(label, "toontalk-manual-button", title, click_handler);
-                        if (css) {
-                            $(button).css(css);
+                var add_button_or_link = function (id, url, label, title, css) {
+                        var element = document.getElementById(id);
+                        var button_or_link, click_handler;
+                        if (element) {
+                            if (TT.CHROME_APP) {
+                                click_handler = function (event) {
+                                                utilities.add_iframe_popup(url);
+                                            };
+                                button_or_link = utilities.create_button(label, "toontalk-manual-button", title, click_handler);
+                            } else {
+                                button_or_link = document.createElement('a');
+                                button_or_link.innerHTML = label;
+                                button_or_link.href      = url;
+                                button_or_link.title     = title;
+                                button_or_link.target    = '_blank';
+                                $(button_or_link).addClass('ui-widget toontalk-link');
+                            }       
+                            element.appendChild(button_or_link);
+                            if (css) {
+                                $(button_or_link).css(css);
+                            }
                         }
-                        element.appendChild(button);
-                    }
-                }
-                add_button("toontalk-manual-button",
-                           "docs/manual/index.html?reset=1",
-                           "Learn about ToonTalk",
-                           "Click to visit the page that introduces everything.",
-                           {"background": "yellow"});
-                add_button("toontalk-manual-tour",
-                           "docs/tours/tour1.html?reset=1",
-                           "Watch a tour of ToonTalk",
-                           "Click to visit a page that replays a tour.",
-                           {"background": "pink"});
-                add_button("toontalk-manual-whats-new",
-                           "docs/manual/whats-new.html?reset=1",
-                           "What's new?",
-                           "Click to visit see what has changed recently.",
-                           {"background": "cyan"});
+                    };
+                add_button_or_link("toontalk-manual-button",
+                                   "docs/manual/index.html?reset=1",
+                                   "Learn about ToonTalk",
+                                   "Click to visit the page that introduces everything.",
+                                   {"background": "yellow"});
+                add_button_or_link("toontalk-manual-tour",
+                                   "docs/tours/tour1.html?reset=1",
+                                   "Watch a tour of ToonTalk",
+                                   "Click to visit a page that replays a tour.",
+                                   {"background": "pink"});
+                add_button_or_link("toontalk-manual-whats-new",
+                                   "docs/manual/whats-new.html?reset=1",
+                                   "What's new?",
+                                   "Click to visit see what has changed recently.",
+                                   {"background": "cyan"});
             };
             var unload_listener = function (event) {
                 try {
