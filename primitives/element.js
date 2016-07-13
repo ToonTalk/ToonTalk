@@ -2206,11 +2206,13 @@ window.TOONTALK.element.function =
         'part of text', 
         function (message, event, robot) {
             var substring = function (element_or_number, start_widget, end_widget) {
-                var start = Math.round(start_widget.to_float());
-                var end   = Math.round(end_widget  .to_float());
-                return TT.element.create(element_or_number.get_text().substring(start+1, end+1));
+                var start = Math.round(start_widget.to_float()-1);
+                var end   = end_widget && Math.round(end_widget.to_float()-1);
+                return TT.element.create(element_or_number.get_text().substring(start, end));
             };
-            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], 3, 'part of text', event, robot);
+            // arity undefined since if end is specified it is the rest of the string
+            // TODO: check for arity 2 or 3
+            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], undefined, 'part of text', event, robot);
         },
         "The bird will return with a new element whose text is the part of the text of the first element (or number) beginning with the first number ending with the second number. 1 is for the first letter.",
         "part",
