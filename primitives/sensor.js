@@ -274,6 +274,9 @@ window.TOONTALK.sensor = (function (TT) {
                              } else if (event.detail && event.detail.element_widget && attribute === 'front') {
                                  return TT.UTILITIES.widget_side_of_element(event.detail.element_widget);
                              } else if (event.detail && event.detail[attribute] !== undefined) {
+                                 if (event.type === 'value changed') {
+                                     return TT.number.create_from_bigrat(event.detail[attribute]);
+                                 }
                                  return event.detail[attribute];
                              }
                              value = "No such attribute for " + new_sensor;

@@ -306,10 +306,18 @@ window.TOONTALK.number = (function () {
         };
         new_number.set_value =
             function (new_value, dont_check_if_new) {
+                var frontside_element;
                 if (!dont_check_if_new && bigrat.equals(value, new_value)) {
                     return;
                 }
                 this.fire_value_change_listeners(value, new_value);
+                frontside_element = this.get_frontside_element();
+                if (frontside_element) {
+                    // user sensors
+                    frontside_element.dispatchEvent(TT.UTILITIES.create_event('value changed',
+                                                                              {old_value: value,
+                                                                               new_value: new_value}));
+                } 
                 value = new_value;
                 this.rerender(); // will update if visible
                 if (TT.debugging) {
@@ -317,7 +325,7 @@ window.TOONTALK.number = (function () {
                     if (new_value.toString() === "0,0") {
                         TT.UTILITIES.report_internal_error("Impossible numeric value -- can be caused by decimal string not being parsable as a number.");
                     }
-                }
+                } 
                 return this;
             };
         // sub classes can call set_value_from_sub_classes from within their set_value without recurring 
