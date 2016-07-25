@@ -1205,6 +1205,11 @@ window.TOONTALK.box_hole =
                     contents.set_running(new_value);
                 }
             };
+            hole.set_parent = function (new_value) {
+                if (contents) {
+                    contents.set_parent(new_value);
+                }
+            };
             hole.maintain_proportional_dimensions = function () {
                 if (contents) {
                     return contents.maintain_proportional_dimensions();
