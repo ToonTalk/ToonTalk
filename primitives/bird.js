@@ -205,7 +205,9 @@ window.TOONTALK.bird = (function (TT) {
                             return;
                         } else {
                             // is an error -- this isn't the place to deal with it
-                            TT.sounds.bird_fly.pause();
+                            if (TT.sounds) {
+                                TT.sounds.bird_fly.pause();
+                            }
                             console.error(nest_or_error.stack);
                             throw nest_or_error;
                         }

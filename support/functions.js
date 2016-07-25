@@ -62,7 +62,9 @@ window.TOONTALK.create_function_table =
         var top_contents;
         if (widget.is_nest() && !widget.has_contents()) {
             // throw empty nest so can suspend this until nest is covered
-            TT.sounds.bird_fly.pause();
+            if (TT.sounds) {
+                TT.sounds.bird_fly.pause();
+            }
             throw {wait_for_nest_to_receive_something: widget};
         }
         if (!type) {
