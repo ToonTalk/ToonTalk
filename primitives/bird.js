@@ -123,8 +123,10 @@ window.TOONTALK.bird = (function (TT) {
                         robot.run_next_step();
                     }
                }
+            } else if (robot && !robot.visible()) {
+                message_side.remove();
             } else {
-                console.log("TODO: handle drop on a nestless bird -- just removes other?"); // isn't this handled?
+                console.error("Drop on a nestless bird should have been handled.");
             }
             if (event && this.robot_in_training()) {
                 this.robot_in_training().dropped_on(message_side, this);
