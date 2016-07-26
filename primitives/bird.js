@@ -8,8 +8,6 @@
 
  (function () {
      // start context sharing between bird and nest code
-     // ability to set the nest of a bird is private to this context
-     var bird_set_nest;
      // a nest copy needs to be updated when it is discovered that its bird was later copied as well
      var update_nest, add_nest_copy, remove_nest_copy, make_nest_fresh;
 
@@ -55,8 +53,12 @@ window.TOONTALK.bird = (function (TT) {
         var new_bird = Object.create(bird);
         var non_empty_listeners = [];
         var waiting_widgets     = [];
-        bird_set_nest = function (new_value) {
-            nest = new_value;
+        new_bird.set_nest = function (new_value, old_nest) {
+            // ability to set the nest of a bird is private to the bird and its nest
+            // hence the check that this is authorised
+            if (nest === old_nest || nest === undefined) {
+                nest = new_value;
+            }
         };
         new_bird.is_bird = function () {
             return true;
@@ -1156,8 +1158,11 @@ window.TOONTALK.nest = (function (TT) {
                         copy = TT.nest.create(this.get_description(), contents_copy, TT.UTILITIES.generate_unique_id());
                     }
                     parameters.birds_copied[guid].forEach(function (bird) {
-                        bird_set_nest.call(bird, copy);
-                    });
+                        bird.set_nest(copy, this);
+                        if (TT.debugging) {
+                            bird._debug_string = bird.to_debug_string();
+                        }
+                    }.bind(this));
                 } else {
                     copy = TT.nest.create(this.get_description(), contents_copy, guid, new_original_nest, serial_number, this.get_name());
                 }
