@@ -1493,7 +1493,7 @@ window.TOONTALK.box.function =
                         TT.UTILITIES.display_message("Error trying to find the value of " + full_path() + ". " + exception);
                     }
                 }
-                if (!value) {
+                if (value === undefined) {
                     message = "Error no value for " + full_path();
                     TT.UTILITIES.display_message(message);
                     return TT.element.create(message); // is this reasonable?
