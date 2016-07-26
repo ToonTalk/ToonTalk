@@ -1165,6 +1165,7 @@ window.TOONTALK.nest = (function (TT) {
                     }.bind(this));
                 } else {
                     copy = TT.nest.create(this.get_description(), contents_copy, guid, new_original_nest, serial_number, this.get_name());
+                    new_original_nest_guid = guid;
                 }
                 if (!parameters.nests_copied) {
                     parameters.nests_copied = {};
