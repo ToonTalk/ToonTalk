@@ -1157,7 +1157,8 @@ window.TOONTALK.nest = (function (TT) {
                         });                    
                     } else {
                         // create a fresh copy of the nest
-                        copy = TT.nest.create(this.get_description(), contents_copy, TT.UTILITIES.generate_unique_id());
+                        copy = TT.nest.create(this.get_description(), contents_copy, TT.UTILITIES.generate_unique_id(),
+                                              undefined, undefined, this.generate_name());
                     }
                     parameters.birds_copied[guid].forEach(function (bird) {
                         bird.set_nest(copy, this);
@@ -1537,7 +1538,10 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.generate_name = function () {
             name_counter++;
-            return "#" + name_counter.toString();
+            if (!name || name[0] === "#") {
+                return "#" + name_counter;
+            }
+            return TT.UTILITIES.strip_trailling_digits(name).trim() + " " + name_counter;
         };
         new_nest.has_name(new_nest);
         generic_set_name = new_nest.set_name;

@@ -1390,6 +1390,18 @@ window.TOONTALK.UTILITIES =
         return s.substring(0, first_part) + " ... " + s.substring(last_part, s.length);
     };
 
+    utilities.strip_trailling_digits = function (s) {
+        var last_character;
+        if (s.length === 0) {
+            return s;
+        }
+        last_character = s[s.length-1];
+        if (last_character >= '0' && last_character <= '9') {
+            return utilities.strip_trailling_digits(s.substring(0, s.length-2));
+        }
+        return s;
+    };
+
     utilities.clean_json = function (key, value) {
         if (key === "id_of_tree_replace_once_task") {
            return undefined;
