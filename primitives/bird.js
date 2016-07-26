@@ -751,6 +751,7 @@ window.TOONTALK.nest = (function (TT) {
     var contents_height = function (height) {
         return height*TT.nest.CONTENTS_HEIGHT_FACTOR;
     };
+    // serial_number is used only to give different CSS classes to bird/nest pairs 
     var next_serial_number = 0;
     var name_counter = 0;
     // nest capacity - enforced only for unwatched robots when robot_removed_contents_since_empty
@@ -784,6 +785,7 @@ window.TOONTALK.nest = (function (TT) {
             }
             original_nest = undefined;
             guid = TT.UTILITIES.generate_unique_id();
+            this.set_name(this.generate_name());
         };
         add_nest_copy = function (new_copy) {
             if (!add_copy_private_key) {
