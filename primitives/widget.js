@@ -1414,7 +1414,7 @@ window.TOONTALK.widget = (function (TT) {
                             this.apply_backside_geometry();
                         }.bind(this));
                 }.bind(this);
-            frontside_element = this.get_frontside_element();
+            frontside_element = this.get_frontside_element(true);
             // frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
             $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
             $frontside_ancestor_before_backside_element  = $(frontside_element);
