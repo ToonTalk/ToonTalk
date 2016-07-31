@@ -474,7 +474,7 @@ window.TOONTALK.number = (function () {
             return html;
         };
         var border_size = 28;
-        var frontside_element, $dimensions_holder, client_width, client_height, border_size,
+        var frontside_element, $dimensions_holder, bounding_box, client_width, client_height, border_size,
             font_height, font_width, max_decimal_places, new_HTML, backside, 
             size_unconstrained_by_container, no_borders, parent_widget, child_element;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
@@ -536,8 +536,8 @@ window.TOONTALK.number = (function () {
                                           height: client_height});
             }
         } else {
-            client_width  = $dimensions_holder.width();
-            client_height = $dimensions_holder.height();
+            client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
+            client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
             if (client_width === 0 || client_height === 0) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
                     console.log("Container has zero dimensions so no display of " + this.to_debug_string());
