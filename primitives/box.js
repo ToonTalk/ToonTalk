@@ -470,7 +470,7 @@ window.TOONTALK.box = (function (TT) {
                     new_height /= TT.nest.CONTENTS_HEIGHT_FACTOR;
                 }
             };
-            var left, top, new_width, new_height, hole_contents;
+            var left, top, new_width, new_height, hole_contents, css;
             if (horizontal) {
                 top = 0;
                 if ($parents.length > 0) {
@@ -532,8 +532,14 @@ window.TOONTALK.box = (function (TT) {
                 hole.get_contents().rerender();
             }
             if (hole.is_element()) {
+                css = {width:  new_width,
+                       height: new_height};
                 hole_contents = hole.get_contents();
+                $(hole_contents.get_frontside_element()).css(css);
+                hole_contents = hole_contents.dereference();
                 hole_contents.set_size_attributes(new_width, new_height, true);
+                // hole element needs to know its dimensions (at least when an element is on a nest in a box hole)
+                $(hole_element).css(css);
             }
         };
         var horizontal = this.get_horizontal();
@@ -1298,7 +1304,7 @@ window.TOONTALK.box_hole =
             };
             hole.is_element = function () {
                 if (contents) {
-                    return contents.is_element();
+                    return contents.dereference().is_element();
                 }
                 return false;
             };
