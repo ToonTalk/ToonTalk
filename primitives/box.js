@@ -573,7 +573,9 @@ window.TOONTALK.box = (function (TT) {
                     this.get_holes().forEach(function (hole, index) {
                         hole_element = hole.get_element();
                         $(hole_element).addClass("toontalk-hole-number-" + index);
-                        hole.get_contents().update_display();
+                        if (hole.get_contents()) {
+                            hole.get_contents().update_display();
+                        }
                         update_hole(hole_element, hole, index);
                         frontside_element.appendChild(hole_element);
                     });
