@@ -222,7 +222,39 @@ window.TOONTALK.vacuum = (function (TT) {
                 return held;
             },
             set_held: function(new_value) {
+                var listen_for_command = function () {
+                    TT.UTILITIES.listen_for_speech('suck | erase | restore | remove all',
+                                                   0.5,
+                                                   function (command, event) {
+                                                       var $highlighted_element, widget_side_under_tool, top_level_widget;
+                                                       if (command === 'remove all') {
+                                                           set_mode('suck_all');
+                                                       } else if (command === 'suck' || command === 'erase' || command === 'restore') {
+                                                           set_mode(command);                            
+                                                       } else {
+                                                           // give feedback?
+                                                           return;
+                                                       }
+                                                       $highlighted_element = $(".toontalk-highlight");
+                                                       if ($highlighted_element.length > 0) {
+                                                           widget_side_under_tool = TT.UTILITIES.widget_side_of_jquery($highlighted_element);
+                                                           if (widget_side_under_tool && widget_side_under_tool.top_level_widget) {
+                                                               // need to determine the top_level_widget first since if tool is vacuum
+                                                               // it will be removed
+                                                               top_level_widget = widget_side_under_tool.top_level_widget();
+                                                               this.apply_tool(widget_side_under_tool, event);
+                                                               top_level_widget.backup_all();
+                                                               listen_for_command(); // listen for next command
+                                                           }
+                                                       }   
+                                                   }.bind(this));
+                }.bind(this);
                 held = new_value;
+                if (held) {
+                    listen_for_command();
+                } else {
+                    TT.UTILITIES.stop_listening_for_speech();
+                }
             }
         };
         return TT.vacuum.the_vacuum;

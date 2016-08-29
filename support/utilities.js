@@ -846,6 +846,8 @@ window.TOONTALK.UTILITIES =
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
+    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+    var speech_recognition = new SpeechRecognition();
     // for implementing zero_timeout
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
@@ -4823,6 +4825,70 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 },
                 handles: "n,e,s,w,se,ne,sw,nw"});
     };
+
+    utilities.listen_for_speech = function (words, minimum_confidence, success_callback, fail_callback) {
+        var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
+        var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+        var grammar = '#JSGF V1.0; grammar words; public <words> = ' + words + ';';
+        var speechRecognitionList = new SpeechGrammarList();
+        var listening = false;
+        speechRecognitionList.addFromString(grammar, 1);
+        speech_recognition.grammars = speechRecognitionList;
+        speech_recognition.continuous = false;
+        // speech_recognition.continuous = true; // net yet supported??
+        speech_recognition.lang = 'en-US';
+        speech_recognition.interimResults = false;
+        speech_recognition.maxAlternatives = 1;
+
+        speech_recognition.onresult = function (event) {
+          // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
+          // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
+          // It has a getter so it can be accessed like an array
+          // The first [0] returns the SpeechRecognitionResult at position 0.
+          // Each SpeechRecognitionResult object contains SpeechRecognitionAlternative objects that contain individual results.
+          // These also have getters so they can be accessed like arrays.
+          // The second [0] returns the SpeechRecognitionAlternative at position 0.
+          // We then return the transcript property of the SpeechRecognitionAlternative object 
+          if (event.results[0][0].confidence >= minimum_confidence) {
+              success_callback(event.results[0][0].transcript, event);
+          } else {
+              // gives some feedback
+          }
+        };
+
+        speech_recognition.onspeechend = function () {
+            // good idea???
+            speech_recognition.stop();
+            listening = false;
+        };
+
+        speech_recognition.onnomatch = function (event) {
+            if (fail_callback) {
+                fail_callback(event);
+            }
+        };
+
+        speech_recognition.onerror = function (event) {
+            if (fail_callback) {
+                fail_callback(event);
+            }
+        }
+
+        if (!listening) {
+            try {
+                speech_recognition.start();
+            } catch (ignore_error) {
+                // assuming the error was that it had already started
+                console.log("Ignoring " + ignore_error);
+            }
+        }
+    };
+
+    utilities.stop_listening_for_speech = function () {
+//         speech_recognition.stop();
+    };
+
+
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
 // utilities.to_words = function (n) {
