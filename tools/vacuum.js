@@ -232,8 +232,8 @@ window.TOONTALK.vacuum = (function (TT) {
                                                        } else if (command === 'suck' || command === 'erase' || command === 'restore') {
                                                            set_mode(command);                            
                                                        } else {
-                                                           // give feedback?
-                                                           return;
+                                                           console.log("ignoring " + command); // give feedback?
+                                                           return false;
                                                        }
                                                        $highlighted_element = $(".toontalk-highlight");
                                                        if ($highlighted_element.length > 0) {
@@ -246,7 +246,8 @@ window.TOONTALK.vacuum = (function (TT) {
                                                                top_level_widget.backup_all();
                                                                listen_for_command(); // listen for next command
                                                            }
-                                                       }   
+                                                       }
+                                                       return true;  
                                                    }.bind(this));
                 }.bind(this);
                 held = new_value;
