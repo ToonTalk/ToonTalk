@@ -846,6 +846,9 @@ window.TOONTALK.UTILITIES =
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
+    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+    var speech_recognition = new SpeechRecognition();
+    var listening_to_speech = false;
     // for implementing zero_timeout
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
@@ -1388,6 +1391,18 @@ window.TOONTALK.UTILITIES =
         last_part = s.length-(length-first_part);
         last_part = Math.max(last_part, s.indexOf(" ", last_part)+1);
         return s.substring(0, first_part) + " ... " + s.substring(last_part, s.length);
+    };
+
+    utilities.strip_trailling_digits = function (s) {
+        var last_character;
+        if (s.length === 0) {
+            return s;
+        }
+        last_character = s[s.length-1];
+        if (last_character >= '0' && last_character <= '9') {
+            return utilities.strip_trailling_digits(s.substring(0, s.length-2));
+        }
+        return s;
     };
 
     utilities.clean_json = function (key, value) {
@@ -3314,9 +3329,9 @@ window.TOONTALK.UTILITIES =
             }; 
             var widget, x_scale, y_scale, $image;
             if ($(element).is(".toontalk-not-observable")) {
-                 // this happens on FireFox where this is called before the widget has been "rendered"
-                 widget = TT.UTILITIES.widget_side_of_element(element);
-                 if (widget) {
+                // this happens on FireFox where this is called before the widget has been "rendered"
+                widget = TT.UTILITIES.widget_side_of_element(element);
+                if (widget) {
                     widget.render();
                 }
             }
@@ -3572,7 +3587,7 @@ window.TOONTALK.UTILITIES =
             }
         };
 
-        utilities.display_message = function (message, element, second_choice_element) {
+        utilities.display_message = function (message, element, second_choice_element, duration) {
             // if a backside containing element isn't found then try second_choice_element
             var alert_element = utilities.create_alert_element(message);
             var remove_handler = function () {
@@ -3580,8 +3595,10 @@ window.TOONTALK.UTILITIES =
                                  };
             var $backside;
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
-            console.log(message);
-            console.trace();
+            if (TT.debugging) {
+                console.log(message);
+                console.trace();
+            }
             if (element || second_choice_element) {
                 $backside = $(element).closest(".toontalk-backside");
                 if ($backside.length === 0) {
@@ -3600,8 +3617,15 @@ window.TOONTALK.UTILITIES =
                 utilities.speak(message);
             }
             alert_element.addEventListener('click', remove_handler);
-            setTimeout(remove_handler,
-                       Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100)));
+            if (!duration) {
+                if (message[0] === '<') {
+                    // is HTML not plain text
+                    duration = 5000;
+                } else {
+                    duration = Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                }
+            }
+            setTimeout(remove_handler, duration);
         };
 
         utilities.display_tooltip = function ($element) {
@@ -4802,6 +4826,87 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 },
                 handles: "n,e,s,w,se,ne,sw,nw"});
     };
+
+    utilities.listen_for_speech = function (words, minimum_confidence, success_callback, fail_callback) {
+        var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
+        var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+        var grammar = '#JSGF V1.0; grammar words; public <words> = ' + words + ';';
+        var speechRecognitionList = new SpeechGrammarList();
+        var turn_on_speech = function () {
+            try {
+                speech_recognition.start();
+                listening_to_speech = true;
+                console.log("listening");
+            } catch (ignore_error) {
+                // assuming the error was that it had already started
+                console.log("Ignoring " + ignore_error);
+            }
+        };
+        speechRecognitionList.addFromString(grammar, 1);
+        speech_recognition.grammars = speechRecognitionList;
+        speech_recognition.continuous = false;
+        // speech_recognition.continuous = true; // net yet supported??
+        speech_recognition.lang = 'en-US';
+        speech_recognition.interimResults = false;
+        speech_recognition.maxAlternatives = 1;
+        speech_recognition.onresult = function (event) {
+            // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
+            // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
+            // It has a getter so it can be accessed like an array
+            // The first [0] returns the SpeechRecognitionResult at position 0.
+            // Each SpeechRecognitionResult object contains SpeechRecognitionAlternative objects that contain individual results.
+            // These also have getters so they can be accessed like arrays.
+            // The second [0] returns the SpeechRecognitionAlternative at position 0.
+            // We then return the transcript property of the SpeechRecognitionAlternative object 
+            if (event.results[0][0].confidence >= minimum_confidence) {
+                if (success_callback(event.results[0][0].transcript, event)) {
+                    speech_recognition.stop();
+                    listening_to_speech = false;
+                    console.log("stopped listening due to result");
+                    setTimeout(function () {
+                                  utilities.listen_for_speech(words, minimum_confidence, success_callback, fail_callback);
+                               },
+                               100);
+                }
+            } else {
+                console.log("Confidence too low: " + event.results[0][0].confidence); // gives better feedback
+            }
+        };
+
+//         speech_recognition.onspeechend = function () {
+//             // good idea???
+//             speech_recognition.stop();
+//             listening_to_speech = false;
+//         };
+
+        speech_recognition.onnomatch = function (event) {
+            if (fail_callback) {
+                fail_callback(event);
+            }
+        };
+
+        speech_recognition.onerror = function (event) {
+            if (event.error !== 'no-speech') {
+                utilities.listen_for_speech(words, minimum_confidence, success_callback, fail_callback);
+            } else if (fail_callback) {
+                fail_callback(event);
+            }
+        }
+
+        if (!listening_to_speech) {
+            turn_on_speech();
+        } else {
+            console.log("already listening");
+        }
+    };
+
+    utilities.stop_listening_for_speech = function () {
+        speech_recognition.stop();
+        listening_to_speech = false;
+        console.log("stopped listening due to stop_listening_for_speech");
+    };
+
+
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
 // utilities.to_words = function (n) {
@@ -4857,35 +4962,43 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                                                 });
                                                             });
             var add_help_buttons = function () {
-                var add_button = function (id, url, label, title, css) {
-                    var element = document.getElementById(id);
-                    var click_handler = function (event) {
-                                            utilities.add_iframe_popup(url);
-                                        };
-                    var button;
-                    if (element) {
-                        button = utilities.create_button(label, "toontalk-manual-button", title, click_handler);
-                        if (css) {
-                            $(button).css(css);
+                var add_button_or_link = function (id, url, label, title, css) {
+                        var element = document.getElementById(id);
+                        var button_or_link, click_handler;
+                        if (element) {
+                            if (TT.CHROME_APP) {
+                                click_handler = function (event) {
+                                                    utilities.add_iframe_popup(url);
+                                                };
+                                button_or_link = utilities.create_button(label, "toontalk-manual-button", title, click_handler);
+                            } else {
+                                button_or_link = document.createElement('a');
+                                button_or_link.innerHTML = label;
+                                button_or_link.href      = url;
+                                button_or_link.title     = title;
+                                button_or_link.target    = '_blank';
+                                $(button_or_link).addClass('ui-widget toontalk-help-link');
+                                utilities.use_custom_tooltip(button_or_link);
+                            }       
+                            element.appendChild(button_or_link);
+                            $(button_or_link).css(css);
                         }
-                        element.appendChild(button);
-                    }
-                }
-                add_button("toontalk-manual-button",
-                           "docs/manual/index.html?reset=1",
-                           "Learn about ToonTalk",
-                           "Click to visit the page that introduces everything.",
-                           {"background": "yellow"});
-                add_button("toontalk-manual-tour",
-                           "docs/tours/tour1.html?reset=1",
-                           "Watch a tour of ToonTalk",
-                           "Click to visit a page that replays a tour.",
-                           {"background": "pink"});
-                add_button("toontalk-manual-whats-new",
-                           "docs/manual/whats-new.html?reset=1",
-                           "What's new?",
-                           "Click to visit see what has changed recently.",
-                           {"background": "cyan"});
+                    };
+                add_button_or_link("toontalk-manual-button",
+                                   "docs/manual/index.html?reset=1",
+                                   "Learn about ToonTalk",
+                                   "Click to visit the page that introduces everything.",
+                                   {"background": "yellow"});
+                add_button_or_link("toontalk-manual-tour",
+                                   "docs/tours/tour1.html?reset=1",
+                                   "Watch a tour of ToonTalk",
+                                   "Click to visit a page that replays a tour.",
+                                   {"background": "pink"});
+                add_button_or_link("toontalk-manual-whats-new",
+                                   "docs/manual/whats-new.html?reset=1",
+                                   "What's new?",
+                                   "Click to visit see what has changed recently.",
+                                   {"background": "cyan"});
             };
             var unload_listener = function (event) {
                 try {
@@ -4913,28 +5026,23 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         }
                     });
                 };
-            TT.debugging = utilities.get_current_url_parameter('debugging');
-            TT.logging   = utilities.get_current_url_parameter('log');
+            TT.debugging                    = utilities.get_current_url_parameter('debugging');
+            TT.logging                      = utilities.get_current_url_parameter('log');
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
             if (TT.volume > 0) {
                 initialize_sounds();
             }
-            TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside');
-            TT.reset    = utilities.get_current_url_boolean_parameter('reset', false);
-            TT.speak    = utilities.get_current_url_boolean_parameter('speak', false);
+            TT.puzzle                        = utilities.get_current_url_boolean_parameter('puzzle', false);
+            // puzzle by default sets alt_key_to_open_backside and reset to its value
+            TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside', TT.puzzle);
+            TT.reset                         = utilities.get_current_url_boolean_parameter('reset', TT.puzzle);
+            TT.speak                         = utilities.get_current_url_boolean_parameter('speak', false);
             if (TT.speak && !window.speechSynthesis) {
                 TT.speak = false;
-                utilities.display_message("This browser doesn't support speech output. speak=1 ignored.");
+                utilities.display_message("This browser doesn't support speech output. speak=1 in URL ignored.");
             }
-            TT.balloons = utilities.get_current_url_boolean_parameter('balloons', true);
-            if (!TT.open_backside_only_if_alt_key) {
-                // puzzle=1 is shorthand for alt_key_to_open_backside=1&reset=1
-                TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('puzzle');
-                if (TT.open_backside_only_if_alt_key) {
-                    TT.reset = true;
-                }
-            }
+            TT.balloons                      = utilities.get_current_url_boolean_parameter('balloons', true);
             utilities.process_json_elements();
             // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
             // clicking on a running widget may not work since its HTML may be changing constantly
@@ -4948,7 +5056,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 window.addEventListener('beforeunload', unload_listener);
             }
-            TT.TRANSLATION_ENABLED = utilities.get_current_url_boolean_parameter("translate", false);
+            TT.TRANSLATION_ENABLED           = utilities.get_current_url_boolean_parameter("translate", false);
             if (TT.TRANSLATION_ENABLED) {
                 $("a").each(function (index, element) {
                                 element.href = utilities.add_URL_parameter(element.href, "translate", "1"); 

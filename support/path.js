@@ -42,6 +42,28 @@ window.TOONTALK.path =
             var compute_path = function (widget, robot) {
                 var context = robot.get_training_context();
                 var body = robot.get_body();
+                var backside_widget_path = function (backside_widget_side) {
+                    // widget might be on the backside of the context
+                    var backside_widget = backside_widget_side.get_widget();
+                    var sub_path;
+                    if (backside_widget === widget ||
+                        (backside_widget.top_contents_is && backside_widget.top_contents_is(widget)) ) {
+                        robot.add_to_backside_conditions(backside_widget); // does nothing if already added
+                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget, robot);
+                        path.is_backside = is_backside;
+                        return true; // stop searching
+                    } else if (backside_widget.get_path_to) {
+                        // e.g. might be in a box
+                        sub_path = backside_widget.get_path_to(widget, robot);
+                        if (sub_path) {
+                            sub_path.is_backside = is_backside;
+                            robot.add_to_backside_conditions(backside_widget);
+                            path = TT.path.get_path_to_backside_widget_of_context(backside_widget, robot);
+                            path.next = sub_path;
+                            return true; // stop searching
+                        }
+                    }
+                };
                 var path, sub_path, widget_type, is_backside, robot_ancestor;
                 if (widget.is_primary_backside && widget.is_primary_backside()) {
                     is_backside = true;
@@ -81,38 +103,23 @@ window.TOONTALK.path =
                         return path;
                     }
                 }
-                context.get_backside_widgets().some(function (backside_widget_side) {
-                    // widget might be on the backside of the context
-                    var backside_widget = backside_widget_side.get_widget();
-                    var sub_path;
-                    if (backside_widget === widget ||
-                        (backside_widget.top_contents_is && backside_widget.top_contents_is(widget)) ) {
-                        robot.add_to_backside_conditions(backside_widget); // does nothing if already added
-                        path = TT.path.get_path_to_backside_widget_of_context(backside_widget, robot);
-                        path.is_backside = is_backside;
-                        return true; // stop searching
-                    } else if (backside_widget.get_path_to) {
-                        // e.g. might be in a box
-                        sub_path = backside_widget.get_path_to(widget, robot);
-                        if (sub_path) {
-                            sub_path.is_backside = is_backside;
-                            robot.add_to_backside_conditions(backside_widget);
-                            path = TT.path.get_path_to_backside_widget_of_context(backside_widget, robot);
-                            path.next = sub_path;
-                            return true; // stop searching
-                        }
-                    }
-                });
+                context.get_backside_widgets().some(backside_widget_path);
                 if (path) {
                     path.is_backside = is_backside;
                     return path;
                 }
+                // need to decide if this is a good idea and if so make the path start from top-level of context...
+//                 context.top_level_widget().get_backside_widgets().some(backside_widget_path);
+//                 if (path) {
+//                     path.is_backside = is_backside;
+//                     return path;
+//                 }
                 robot_ancestor = widget.ancestor_of_type('robot');
                 if (robot_ancestor) {
                     // is a condition of a robot
                     return TT.robot.find_conditions_path(widget, robot_ancestor, robot);
                 }
-                path = TT.path.get_path_to_resource(widget.copy());
+                path = TT.path.get_path_to_resource(widget.derefernce().copy());
                 path.is_backside = is_backside;
                 return path;
             }

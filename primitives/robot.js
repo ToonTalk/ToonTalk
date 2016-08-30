@@ -873,7 +873,7 @@ window.TOONTALK.robot = (function (TT) {
         if (this.ignore_pick_up_or_drop(source_widget)) {
             return;
         }
-        if (this.get_parent_of_frontside() && this.get_parent_of_frontside().get_widget() === source_widget) {
+        if (source_widget.is_backside() && this.get_parent_of_frontside() && this.get_parent_of_frontside().get_widget() === source_widget) {
             // robot dropped the backside of what it is working on -- so ignore this
             // this.get_parent_of_frontside() is undefined when not first_in_team -- TODO: determine if this is sensible
             return;

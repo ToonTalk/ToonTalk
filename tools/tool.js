@@ -104,9 +104,32 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_up = function (event) {
-                var widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
-                var top_level_widget;
+                this.release_tool(TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2));
                 event.preventDefault();
+            }.bind(this);
+
+            var scroll_if_needed = function (event) {
+                var margin = 20;
+                var deltaX = 0, 
+                    deltaY = 0;
+                if (event.clientX < margin) {
+                    deltaX = -margin;
+                } else if (event.clientX+margin > window.innerWidth) {
+                    deltaX = margin;
+                }
+                if (event.clientY < margin) {
+                    deltaY = -margin;
+                } else if (event.clientY+margin > window.innerHeight) {
+                    deltaY = margin;
+                }
+                window.scrollBy(deltaX, deltaY);
+                return {deltaX: deltaX,
+                        deltaY: deltaY};
+            };
+
+            this.release_tool = function (widget_side_under_tool) {
+                // defined so that this can be called by tool "sub-classes"
+                var top_level_widget;
                 if (widget_side_under_tool && widget_side_under_tool.is_of_type("empty hole")) {
                     widget_side_under_tool = widget_side_under_tool.get_parent_of_frontside();
                 }
@@ -150,29 +173,10 @@ window.TOONTALK.tool = (function (TT) {
                     TT.debugging = 'touch';
                 }
             };
-
-            var scroll_if_needed = function (event) {
-                var margin = 20;
-                var deltaX = 0, 
-                    deltaY = 0;
-                if (event.clientX < margin) {
-                    deltaX = -margin;
-                } else if (event.clientX+margin > window.innerWidth) {
-                    deltaX = margin;
-                }
-                if (event.clientY < margin) {
-                    deltaY = -margin;
-                } else if (event.clientY+margin > window.innerHeight) {
-                    deltaY = margin;
-                }
-                window.scrollBy(deltaX, deltaY);
-                return {deltaX: deltaX,
-                        deltaY: deltaY};
-            };
+                
             
             element.addEventListener('mousedown',  mouse_down);
             element.addEventListener('touchstart', mouse_down);
-
             return pick_up;
        }
     };

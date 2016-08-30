@@ -60,6 +60,13 @@ window.TOONTALK.create_function_table =
     },
     type_check: function (type, widget, function_name, index) {
         var top_contents;
+        if (widget.is_nest() && !widget.has_contents()) {
+            // throw empty nest so can suspend this until nest is covered
+            if (TT.sounds) {
+                TT.sounds.bird_fly.pause();
+            }
+            throw {wait_for_nest_to_receive_something: widget};
+        }
         if (!type) {
             // any type is fine
             return true;
@@ -71,10 +78,6 @@ window.TOONTALK.create_function_table =
         }
         if (widget.dereference().is_of_type(type)) {
             return true;
-        }
-        if (widget.is_nest()) {
-            // throw empty nest so can suspend this until nest is covered
-            throw {wait_for_nest_to_receive_something: widget};
         }
         widget.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
                                + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index)

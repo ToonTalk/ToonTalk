@@ -1503,6 +1503,12 @@ html {
 	border-radius: 8px;
 	padding: 8px;
 }
+.toontalk-help-link {
+	font-weight: bold;
+	border-radius: 8px;
+	padding: 8px;
+	font-size: 1.2em;
+}
 .toontalk-frontside {
     position: absolute;
 }
@@ -1800,8 +1806,8 @@ padding-bottom:  8%;}
 	text-align: inherit;
 }
 .toontalk-conditions-contents {
-	width:  100%;
-	height: 100%;
+	width:  240px;
+	height: 60px;
 }
 .toontalk-conditions-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */

@@ -306,10 +306,18 @@ window.TOONTALK.number = (function () {
         };
         new_number.set_value =
             function (new_value, dont_check_if_new) {
+                var frontside_element;
                 if (!dont_check_if_new && bigrat.equals(value, new_value)) {
                     return;
                 }
                 this.fire_value_change_listeners(value, new_value);
+                frontside_element = this.get_frontside_element();
+                if (frontside_element) {
+                    // user sensors
+                    frontside_element.dispatchEvent(TT.UTILITIES.create_event('value changed',
+                                                                              {old_value: value,
+                                                                               new_value: new_value}));
+                } 
                 value = new_value;
                 this.rerender(); // will update if visible
                 if (TT.debugging) {
@@ -317,7 +325,7 @@ window.TOONTALK.number = (function () {
                     if (new_value.toString() === "0,0") {
                         TT.UTILITIES.report_internal_error("Impossible numeric value -- can be caused by decimal string not being parsable as a number.");
                     }
-                }
+                } 
                 return this;
             };
         // sub classes can call set_value_from_sub_classes from within their set_value without recurring 
@@ -466,7 +474,7 @@ window.TOONTALK.number = (function () {
             return html;
         };
         var border_size = 28;
-        var frontside_element, $dimensions_holder, client_width, client_height, border_size,
+        var frontside_element, $dimensions_holder, bounding_box, client_width, client_height, border_size,
             font_height, font_width, max_decimal_places, new_HTML, backside, 
             size_unconstrained_by_container, no_borders, parent_widget, child_element;
         if (TT.logging && TT.logging.indexOf('display') >= 0) {
@@ -528,8 +536,8 @@ window.TOONTALK.number = (function () {
                                           height: client_height});
             }
         } else {
-            client_width  = $dimensions_holder.width();
-            client_height = $dimensions_holder.height();
+            client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
+            client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
             if (client_width === 0 || client_height === 0) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0) {
                     console.log("Container has zero dimensions so no display of " + this.to_debug_string());

@@ -595,7 +595,9 @@ window.TOONTALK.widget = (function (TT) {
                             title = "Drag me to a work area.";
                         }   
                     } else if (!backside || !backside.get_element() || !TT.UTILITIES.visible_element(backside.get_element())) {
-                        if (this.can_run && this.can_run(true)) {
+                        if (TT.open_backside_only_if_alt_key) {
+                            // no title regarding backside since not readily available when in puzzle mode
+                        } else if (this.can_run && this.can_run(true)) {
                             if (this.get_running()) {
                                 title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign " +
                                         TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") +
@@ -1412,7 +1414,7 @@ window.TOONTALK.widget = (function (TT) {
                             this.apply_backside_geometry();
                         }.bind(this));
                 }.bind(this);
-            frontside_element = this.get_frontside_element();
+            frontside_element = this.get_frontside_element(true);
             // frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
             $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
             $frontside_ancestor_before_backside_element  = $(frontside_element);

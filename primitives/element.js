@@ -602,15 +602,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 this.restore_dimensions();
             }
             this.initialize_element();
-            if (TT.UTILITIES.on_a_nest_in_a_box(frontside_element)) {
-                // need to work around a CSS problem where nested percentage widths don't behave as expected
-                width = $(frontside_element).closest(".toontalk-box-hole").width();
-                if (width) {
-                    this.set_attribute('width', width,  false);
-                    height = $(frontside_element).closest(".toontalk-box-hole").height();
-                    this.set_attribute('height', height, false);
-                }
-            }
             if (typeof original_width === 'undefined' && frontside_element.parentElement) {
                 // if it doesn't have a parentElement it is too early
                 if (this.is_plain_text_element()) {
@@ -630,9 +621,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 children = [];
             }
             this.fire_on_update_display_handlers();
-            TT.UTILITIES.give_tooltip(frontside_element,
-                                      "Click to see the backside where you can place robots or change the style of this " + 
-                                      element_description(frontside_element) + ".");
+            if (!TT.open_backside_only_if_alt_key) {
+                TT.UTILITIES.give_tooltip(frontside_element,
+                                          "Click to see the backside where you can place robots or change the style of this " + 
+                                          element_description(frontside_element) + ".");
+            }
             // will enable/disable as appropriate
             this.set_ignore_pointer_events(this.get_ignore_pointer_events());
         };
@@ -2204,11 +2197,13 @@ window.TOONTALK.element.function =
         'part of text', 
         function (message, event, robot) {
             var substring = function (element_or_number, start_widget, end_widget) {
-                var start = Math.round(start_widget.to_float());
-                var end   = Math.round(end_widget  .to_float());
-                return TT.element.create(element_or_number.get_text().substring(start+1, end+1));
+                var start = Math.round(start_widget.to_float()-1);
+                var end   = end_widget && Math.round(end_widget.to_float()-1);
+                return TT.element.create(element_or_number.get_text().substring(start, end));
             };
-            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], 3, 'part of text', event, robot);
+            // arity undefined since if end is specified it is the rest of the string
+            // TODO: check for arity 2 or 3
+            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], undefined, 'part of text', event, robot);
         },
         "The bird will return with a new element whose text is the part of the text of the first element (or number) beginning with the first number ending with the second number. 1 is for the first letter.",
         "part",
@@ -2265,6 +2260,21 @@ window.TOONTALK.element.function =
         TT.widget.get_speak_function(functions),
         "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
         "speak",
+        ['a widget']);
+    functions.add_function_object(
+        'show message', 
+        function (message, event, robot) {
+            var display_message = function (element_text) {
+                if (this.robot_in_training()) { // this will be bound to the message given to the function bird
+                    robot.display_message("Robot trained to display: " + element_text.get_text());
+                } else {
+                    TT.UTILITIES.display_message(element_text.get_text());
+                }
+            };
+            return functions.typed_bird_function(message, display_message, ['element'], 1, 'show message', event, robot);
+        },
+        "The bird will cause what is in the second box hole to be displayed.",
+        "display",
         ['a widget']);
     return functions.get_function_table();
 

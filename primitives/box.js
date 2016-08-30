@@ -470,7 +470,7 @@ window.TOONTALK.box = (function (TT) {
                     new_height /= TT.nest.CONTENTS_HEIGHT_FACTOR;
                 }
             };
-            var left, top, new_width, new_height, hole_contents;
+            var left, top, new_width, new_height, hole_contents, css;
             if (horizontal) {
                 top = 0;
                 if ($parents.length > 0) {
@@ -532,8 +532,14 @@ window.TOONTALK.box = (function (TT) {
                 hole.get_contents().rerender();
             }
             if (hole.is_element()) {
+                css = {width:  new_width,
+                       height: new_height};
                 hole_contents = hole.get_contents();
+                $(hole_contents.get_frontside_element()).css(css);
+                hole_contents = hole_contents.dereference();
                 hole_contents.set_size_attributes(new_width, new_height, true);
+                // hole element needs to know its dimensions (at least when an element is on a nest in a box hole)
+                $(hole_element).css(css);
             }
         };
         var horizontal = this.get_horizontal();
@@ -567,6 +573,9 @@ window.TOONTALK.box = (function (TT) {
                     this.get_holes().forEach(function (hole, index) {
                         hole_element = hole.get_element();
                         $(hole_element).addClass("toontalk-hole-number-" + index);
+                        if (hole.get_contents()) {
+                            hole.get_contents().update_display();
+                        }
                         update_hole(hole_element, hole, index);
                         frontside_element.appendChild(hole_element);
                     });
@@ -1205,6 +1214,11 @@ window.TOONTALK.box_hole =
                     contents.set_running(new_value);
                 }
             };
+            hole.set_parent = function (new_value) {
+                if (contents) {
+                    contents.set_parent(new_value);
+                }
+            };
             hole.maintain_proportional_dimensions = function () {
                 if (contents) {
                     return contents.maintain_proportional_dimensions();
@@ -1293,7 +1307,7 @@ window.TOONTALK.box_hole =
             };
             hole.is_element = function () {
                 if (contents) {
-                    return contents.is_element();
+                    return contents.dereference().is_element();
                 }
                 return false;
             };
@@ -1466,6 +1480,94 @@ window.TOONTALK.box.function =
         "The bird will return with a box that joins together all the boxes.",
         "merge",
         ['any number of boxes']);
+    functions.add_function_object(
+        'get window property', 
+        function (message, event, robot) {
+            var get_value = function (box) {
+                var value = window;
+                var size = box.get_size();
+                var full_path = function () {
+                    var path = "window";
+                    var i;
+                    for (i = 0; i < size; i++) {
+                        path += "." + box.get_hole_contents(i).get_text().trim();
+                    }
+                    return path;
+                };
+                var i, message;
+                for (i = 0; i < size; i++) {
+                    try {
+                        value = value[box.get_hole_contents(i).get_text().trim()];
+                    } catch (exception) {
+                        TT.UTILITIES.display_message("Error trying to find the value of " + full_path() + ". " + exception);
+                    }
+                }
+                if (value === undefined) {
+                    message = "Error no value for " + full_path();
+                    TT.UTILITIES.display_message(message);
+                    return TT.element.create(message); // is this reasonable?
+                }
+                if (typeof value === 'number') {
+                    return TT.number.create(value);
+                }
+                return TT.element.create(value.toString());
+            };
+            return functions.typed_bird_function(message, get_value, ['box'], 1, 'window property', event, robot);
+        },
+        "The bird will return with the value of the property accessed by each of the property names in the box.",
+        "win prop",
+        ['box']);
+    functions.add_function_object(
+        'set window property', 
+        function (message, event, robot) {
+            var set_value = function (box, new_value_as_widget) {
+                var properties = window;
+                var size = box.get_size();
+                var full_path = function (stop) {
+                    var path = "window";
+                    var i;
+                    for (i = 0; i < stop; i++) {
+                        path += "." + box.get_hole_contents(i).get_text().trim();
+                    }
+                    return path;
+                };
+                var i, new_value, message;
+                for (i = 0; i < size-1; i++) {
+                    try {
+                        properties = properties[box.get_hole_contents(i).get_text().trim()];
+                    } catch (exception) {
+                        message = "Error trying to find the property of " + full_path(size-1) + ". " + exception;
+                        TT.UTILITIES.display_message(message);
+                    }
+                }
+                if (!properties) {
+                    message = "Property missing of " + full_path(size-1);
+                }
+                if (!message) {
+                    try {
+                        if (new_value_as_widget.to_float) {
+                             new_value = new_value_as_widget.to_float();
+                        } else if (new_value_as_widget.get_text) {
+                             new_value = new_value_as_widget.get_text();
+                        } else {
+                            new_value = new_value_as_widget.toString();
+                        }
+                        properties[box.get_hole_contents(size-1).get_text().trim()] = new_value;
+                    } catch (exception) {
+                        message = "Unable to set the value of " + full_path(size) + " to value of " + new_value_as_widget;
+                    }
+                }
+                if (message) {
+                    TT.UTILITIES.display_message(message);
+                    return TT.element.create(message); // is this reasonable?
+                }
+                return new_value_as_widget;
+            };
+            return functions.typed_bird_function(message, set_value, ['box', undefined], 2, 'set window property', event, robot);
+        },
+        "The bird will set the value of the property accessed by each of the property names in the box in the second hole to the value of the widget in the third hole.",
+        "set win prop",
+        ['box']);
     return functions.get_function_table();
 }
 ());
