@@ -4828,6 +4828,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     };
 
     utilities.listen_for_speech = function (words, minimum_confidence, success_callback, fail_callback) {
+        // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
         var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
         var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
         var grammar = '#JSGF V1.0; grammar words; public <words> = ' + words + ';';
