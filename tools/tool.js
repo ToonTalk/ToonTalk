@@ -157,11 +157,13 @@ window.TOONTALK.tool = (function (TT) {
                                                             $(element).removeClass("toontalk-tool-returning");                      
                                                         });
                 // return animation depends upon this delay
-                TT.UTILITIES.set_timeout(function () {
-                               // using style.left and style.top to faciliate CSS animation
-                               element.style.left = home_position.left + "px";
-                               element.style.top  = home_position.top  + "px";
-                    });
+                if (home_position) {
+                    TT.UTILITIES.set_timeout(function () {
+                                                 // using style.left and style.top to faciliate CSS animation
+                                                 element.style.left = home_position.left + "px";
+                                                 element.style.top  = home_position.top  + "px";
+                                             });
+                }
                 document.removeEventListener('mousemove',    mouse_move);
                 document.removeEventListener('touchmove',    mouse_move);
                 document.removeEventListener('mouseup',      mouse_up);
