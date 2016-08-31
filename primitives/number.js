@@ -404,7 +404,7 @@ window.TOONTALK.number = (function () {
         if (TT.listen) {
             listen_for_command = function () {
                 TT.UTILITIES.listen_for_speech('add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals', 
-                                               0.2,
+                                               0, // ignore confidence since if any answer matches the possible commands then it is OK
                                                function (command) {
                                                    switch (command) {
                                                        case 'add':

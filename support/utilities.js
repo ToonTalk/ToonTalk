@@ -4858,6 +4858,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 console.log("Ignoring " + ignore_error);
             }
         };
+        var command, confidence, i;
         SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
         speech_recognition = new SpeechRecognition();
         speechRecognitionList.addFromString(grammar, 1);
@@ -4866,7 +4867,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         // speech_recognition.continuous = true; // net yet supported??
         speech_recognition.lang = 'en-US';
         speech_recognition.interimResults = false;
-        speech_recognition.maxAlternatives = 1;
+        speech_recognition.maxAlternatives = 5;
         speech_recognition.onresult = function (event) {
             // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
             // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
@@ -4876,9 +4877,20 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // These also have getters so they can be accessed like arrays.
             // The second [0] returns the SpeechRecognitionAlternative at position 0.
             // We then return the transcript property of the SpeechRecognitionAlternative object 
-            console.log(event.results[0][0].transcript + " confidence : " + event.results[0][0].confidence);
-            if (event.results[0][0].confidence >= minimum_confidence) {
-                success_callback(event.results[0][0].transcript.toLowerCase(), event);
+            for (i = 0; i < event.results[0].length; i++) {
+                if (event.results[0][i].confidence >= minimum_confidence && 
+                    // if command is one of the expected tokens -- must have a | before and/or after it
+                    (commands.indexOf(event.results[0][i].transcript.toLowerCase() + " |") >= 0 ||
+                     commands.indexOf("| " + event.results[0][i].transcript.toLowerCase()) >= 0)) {
+                    command = event.results[0][i].transcript.toLowerCase();
+                    confidence = event.results[0][i].confidence;
+                    // assumes that the most confident answers are first
+                    break;
+                }
+            }
+            if (command) {
+                console.log(command + " confidence : " + confidence);
+                success_callback(command, event);
             } else {
                 console.log("confidence too low"); // give better feedback
             }
