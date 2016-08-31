@@ -8,6 +8,7 @@
 
 window.TOONTALK.tool = (function (TT) {
     "use strict";
+
     // tools need to know mouse location if they are called via keyboard
     document.addEventListener('mousemove', function (event) {
         TT.tool.pageX = event.pageX;
@@ -104,8 +105,9 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_up = function (event) {
-                this.release_tool(TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2));
+                var widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 event.preventDefault();
+                release_tool(element.toontalk_tool, widget_side_under_tool);
             }.bind(this);
 
             var scroll_if_needed = function (event) {
@@ -127,7 +129,8 @@ window.TOONTALK.tool = (function (TT) {
                         deltaY: deltaY};
             };
 
-            this.release_tool = function (widget_side_under_tool) {
+            
+            var release_tool = function (tool, widget_side_under_tool) {
                 // defined so that this can be called by tool "sub-classes"
                 var top_level_widget;
                 if (widget_side_under_tool && widget_side_under_tool.is_of_type("empty hole")) {
@@ -175,8 +178,7 @@ window.TOONTALK.tool = (function (TT) {
                     TT.debugging = 'touch';
                 }
             };
-                
-            
+                       
             element.addEventListener('mousedown',  mouse_down);
             element.addEventListener('touchstart', mouse_down);
             return pick_up;

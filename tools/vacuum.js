@@ -215,6 +215,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     pick_me_up = TT.tool.add_listeners(element, this);
                     set_mode('suck');
                     update_title();
+                    element.toontalk_tool = TT.vacuum.the_vacuum;
                 }      
                 return element;
             },

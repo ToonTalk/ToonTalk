@@ -14,8 +14,8 @@ window.TOONTALK.wand = (function (TT) {
     wand.create = function () {
         var held = false;
         var element;
-        return  {
-            apply_tool: function (widget) {
+        var wand =
+            {apply_tool: function (widget) {
                             var widget_copy;
                             if (!widget.is_top_level()) {
                                 if (TT.sounds) {
@@ -34,6 +34,7 @@ window.TOONTALK.wand = (function (TT) {
                                 $(element).addClass("toontalk-wand");
                                 TT.UTILITIES.give_tooltip(element, "I'm a magic wand. Drag me over the thing you want me to copy.");
                                 TT.tool.add_listeners(element, this);
+                                element.toontalk_tool = wand;
                             }
                             return element;
                         },
@@ -68,7 +69,8 @@ window.TOONTALK.wand = (function (TT) {
                     TT.UTILITIES.stop_listening_for_speech();
                 }
             }
-            };
+        };
+        return wand;
     };
 
     TT.creators_from_json["wand"] = function () {
