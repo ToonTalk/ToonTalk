@@ -4840,6 +4840,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 
     utilities.listen_for_speech = function (commands, minimum_confidence, success_callback, fail_callback) {
         // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
+        // tags would be a nice way to simplify this and make it language independent but at last Chrome doesn't currently support it
         if (!TT.listen) {
             return;
         }

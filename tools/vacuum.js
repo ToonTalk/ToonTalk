@@ -224,7 +224,7 @@ window.TOONTALK.vacuum = (function (TT) {
             set_held: function(new_value) {
                 var listen_for_command = function () {
                     TT.UTILITIES.listen_for_speech('suck | erase | restore | remove all',
-                                                   0.5,
+                                                   0, // // ignore confidence since if any answer matches the possible commands then it is OK
                                                    function (command, event) {
                                                        var $highlighted_element, widget_side_under_tool, top_level_widget;
                                                        if (command === 'remove all') {
