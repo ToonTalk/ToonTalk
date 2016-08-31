@@ -879,6 +879,7 @@ window.TOONTALK.widget = (function (TT) {
                     }        
                 };
             }
+            // add fire_listeners? if so still need get_listeners?
             if (!widget.get_listeners) {
                 widget.get_listeners = function (type) {
                     return listeners[type];

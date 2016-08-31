@@ -126,7 +126,7 @@ window.TOONTALK.UTILITIES =
         var $source_element = $(element).closest(".toontalk-side");
         var client_x = utilities.get_mouse_or_first_touch_event_attribute("clientX", event);
         var client_y = utilities.get_mouse_or_first_touch_event_attribute("clientY", event);
-        var bounding_rectangle, json, json_callback, json_div, widget_side, is_resource;
+        var bounding_rectangle, json, json_callback, json_div, widget_side, is_resource, held_listeners;
         $(".ui-tooltip").remove();
         // stop animating it if grabbed
         $(".ui-tooltip").removeClass("toontalk-side-animating");
@@ -195,10 +195,16 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.get_json_top_level(widget_side, json_callback, 1000*60*10);
         }
         $dragee.addClass("toontalk-being-dragged");
+        held_listeners = widget_side.get_listeners('picked up');
+        if (held_listeners) {
+            held_listeners.map(function (listener) {
+                listener();
+            });
+        }
         event.stopPropagation();
     };
     var drag_end_handler = function (event, element) {
-        var widget_side;
+        var widget_side, drop_listeners;
         if ($(element).is(".toontalk-conditions-contents")) {
             // don't drag widget out of condition container
             return;
@@ -209,6 +215,12 @@ window.TOONTALK.UTILITIES =
         widget_side = utilities.widget_side_of_jquery($dragee);
         if (widget_side) {
             widget_side.being_dragged = undefined;
+            drop_listeners = widget_side.get_listeners('dropped');
+                if (drop_listeners) {
+                    drop_listeners.map(function (listener) {
+                            listener();
+                    });
+                }
         }
         if ($dragee.is(".toontalk-frontside")) {
             if ($dragee.parent().is(".toontalk-backside")) {
@@ -846,8 +858,7 @@ window.TOONTALK.UTILITIES =
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
-    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-    var speech_recognition = new SpeechRecognition();
+    var SpeechRecognition, speech_recognition;
     var listening_to_speech = false;
     // for implementing zero_timeout
     var timeouts = [];
@@ -4827,11 +4838,15 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 handles: "n,e,s,w,se,ne,sw,nw"});
     };
 
-    utilities.listen_for_speech = function (words, minimum_confidence, success_callback, fail_callback) {
+    utilities.listen_for_speech = function (commands, minimum_confidence, success_callback, fail_callback) {
         // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
+        if (!TT.listen) {
+            return;
+        }
         var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
         var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
-        var grammar = '#JSGF V1.0; grammar words; public <words> = ' + words + ';';
+        // see https://www.w3.org/TR/jsgf/ for JSGF format
+        var grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
         var speechRecognitionList = new SpeechGrammarList();
         var turn_on_speech = function () {
             try {
@@ -4843,6 +4858,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 console.log("Ignoring " + ignore_error);
             }
         };
+        SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+        speech_recognition = new SpeechRecognition();
         speechRecognitionList.addFromString(grammar, 1);
         speech_recognition.grammars = speechRecognitionList;
         speech_recognition.continuous = false;
@@ -4859,19 +4876,18 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // These also have getters so they can be accessed like arrays.
             // The second [0] returns the SpeechRecognitionAlternative at position 0.
             // We then return the transcript property of the SpeechRecognitionAlternative object 
+            console.log(event.results[0][0].transcript + " confidence : " + event.results[0][0].confidence);
             if (event.results[0][0].confidence >= minimum_confidence) {
-                if (success_callback(event.results[0][0].transcript, event)) {
-                    speech_recognition.stop();
-                    listening_to_speech = false;
-                    console.log("stopped listening due to result");
-                    setTimeout(function () {
-                                  utilities.listen_for_speech(words, minimum_confidence, success_callback, fail_callback);
-                               },
-                               100);
-                }
+                success_callback(event.results[0][0].transcript.toLowerCase(), event);
             } else {
-                console.log("Confidence too low: " + event.results[0][0].confidence); // gives better feedback
+                console.log("confidence too low"); // give better feedback
             }
+            speech_recognition.stop();
+            listening_to_speech = false;
+            setTimeout(function () {
+                            utilities.listen_for_speech(commands, minimum_confidence, success_callback, fail_callback);
+                       },
+                       100);
         };
 
 //         speech_recognition.onspeechend = function () {
@@ -4888,6 +4904,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 
         speech_recognition.onerror = function (event) {
             if (event.error !== 'no-speech') {
+                console.log('no speech');
                 utilities.listen_for_speech(words, minimum_confidence, success_callback, fail_callback);
             } else if (fail_callback) {
                 fail_callback(event);
@@ -5039,6 +5056,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside', TT.puzzle);
             TT.reset                         = utilities.get_current_url_boolean_parameter('reset', TT.puzzle);
             TT.speak                         = utilities.get_current_url_boolean_parameter('speak', false);
+            TT.listen                        = utilities.get_current_url_boolean_parameter('listen', false);
             if (TT.speak && !window.speechSynthesis) {
                 TT.speak = false;
                 utilities.display_message("This browser doesn't support speech output. speak=1 in URL ignored.");

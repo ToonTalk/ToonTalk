@@ -29,6 +29,8 @@
     // Math.log10 not defined in IE11
     var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/LOG_10 };
 
+    var listen_for_command;
+
     var integer_and_fraction_parts = function (rational_number) {
         // if rational_number is negative then so are the parts (or zero if integer_part is zero)
         var integer_part    = bigrat.fromValues(bigrat.toBigInteger(rational_number), 1);
@@ -399,6 +401,50 @@ window.TOONTALK.number = (function () {
             };
         number.add_standard_widget_functionality(new_number);
         new_number.set_description(description);
+        if (TT.listen) {
+            listen_for_command = function () {
+                TT.UTILITIES.listen_for_speech('add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals', 
+                                               0.2,
+                                               function (command) {
+                                                   switch (command) {
+                                                       case 'add':
+                                                       case 'plus':
+                                                       case 'sum':
+                                                       case 'addition':
+                                                       new_number.set_operator('+', true);
+                                                       break;
+                                                       case 'subtract':
+                                                       case 'take away':
+                                                       case 'subtraction':
+                                                       new_number.set_operator('-', true);
+                                                       break;
+                                                       case 'times':
+                                                       case 'multiply':
+                                                       case 'multiplication':
+                                                       new_number.set_operator('*', true);
+                                                       break;
+                                                       case 'divide':
+                                                       case 'divides':
+                                                       case 'divide by':
+                                                       case 'division':
+                                                       new_number.set_operator('/', true);
+                                                       break;
+                                                       case 'equal':
+                                                       case 'equals':
+                                                       new_number.set_operator('=', true);
+                                                       break;
+                                                       default:
+                                                           console.log("did not understand '" + command + "'");
+                                                   }
+//                                                    listen_for_command(); // listen for next command
+                                               });
+            }
+            new_number.add_listener('picked up', listen_for_command); 
+            new_number.add_listener('dropped',
+                                    function () {
+                                        TT.UTILITIES.stop_listening_for_speech();
+                                    });
+        }
         if (TT.debugging) {
             new_number._debug_string = new_number.toString();
             new_number._debug_id = TT.UTILITIES.generate_unique_id();
