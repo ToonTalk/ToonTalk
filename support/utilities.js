@@ -859,7 +859,7 @@ window.TOONTALK.UTILITIES =
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
     var SpeechRecognition, speech_recognition;
-    var listening_to_speech = false;
+    var waiting_for_speech = false;
     // for implementing zero_timeout
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
@@ -4852,13 +4852,13 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         var turn_on_speech = function () {
             try {
                 speech_recognition.start();
-                listening_to_speech = true;
-                console.log("listening");
+//                 console.log("listening");
             } catch (ignore_error) {
                 // assuming the error was that it had already started
-                console.log("Ignoring " + ignore_error);
+//                 console.log("Ignoring " + ignore_error);
             }
         };
+        waiting_for_speech = true;
         var command, confidence, i;
         SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
         speech_recognition = new SpeechRecognition();
@@ -4896,18 +4896,14 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 console.log("confidence too low"); // give better feedback
             }
             speech_recognition.stop();
-            listening_to_speech = false;
-            setTimeout(function () {
-                            utilities.listen_for_speech(commands, minimum_confidence, success_callback, fail_callback);
-                       },
-                       100);
         };
 
-//         speech_recognition.onspeechend = function () {
-//             // good idea???
-//             speech_recognition.stop();
-//             listening_to_speech = false;
-//         };
+        speech_recognition.onend = function () {
+            if (waiting_for_speech) {
+//                 console.log("speech ended but restarted");
+                turn_on_speech();
+            }
+        };
 
         speech_recognition.onnomatch = function (event) {
             if (fail_callback) {
@@ -4917,24 +4913,21 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 
         speech_recognition.onerror = function (event) {
             if (event.error !== 'no-speech') {
-                console.log('no speech');
-                utilities.listen_for_speech(words, minimum_confidence, success_callback, fail_callback);
+//                 console.log('no speech');
             } else if (fail_callback) {
                 fail_callback(event);
             }
         }
 
-        if (!listening_to_speech) {
+        if (waiting_for_speech) {
             turn_on_speech();
-        } else {
-            console.log("already listening");
         }
     };
 
     utilities.stop_listening_for_speech = function () {
         speech_recognition.stop();
-        listening_to_speech = false;
-        console.log("stopped listening due to stop_listening_for_speech");
+        waiting_for_speech = false; 
+//         console.log("stopped listening due to stop_listening_for_speech");
     };
 
 
