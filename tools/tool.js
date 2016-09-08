@@ -15,7 +15,13 @@ window.TOONTALK.tool = (function (TT) {
         TT.tool.pageY = event.pageY;
     });
 
+    var widget_side_under_tool;
+
     return {
+        get_widget_side_under_tool: function () {
+            // needed for vacuum to restore if speech command (is still held)
+            return widget_side_under_tool;
+        },
         add_listeners: function (element, tool) {
             var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
 
@@ -66,7 +72,7 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_move = function (event) {
-                var widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
+                widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var new_highlighted_element, scroll_adjustment;
                 var point = {};
                 event.preventDefault();
