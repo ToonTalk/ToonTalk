@@ -1703,8 +1703,8 @@ window.TOONTALK.robot_backside =
             }
             next_robot_area.addEventListener('drop', function (event) {
                 // start training when robot is dropped here
-                var dragee = TT.UTILITIES.get_dragee();
-                var widget = TT.UTILITIES.widget_side_of_jquery(dragee);
+                var $dragee = TT.UTILITIES.get_$dragee();
+                var widget = TT.UTILITIES.widget_side_of_jquery($dragee);
                 var backside;
                 if (widget && widget.is_robot()) {
                     if (widget.get_body().is_empty()) {
