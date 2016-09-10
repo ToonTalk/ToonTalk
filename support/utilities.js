@@ -858,13 +858,12 @@ window.TOONTALK.UTILITIES =
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
-    var SpeechRecognition, speech_recognition;
     var waiting_for_speech = false;
     // for implementing zero_timeout
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
-    var path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
+    var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
     window.addEventListener("message", 
                             function (event) {
                                 if (event.data === timeout_message_name && event.source === window) {
@@ -4860,8 +4859,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         };
         waiting_for_speech = true;
         var command, confidence, i;
-        SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-        speech_recognition = new SpeechRecognition();
+        speech_recognition = (typeof SpeechRecognition === 'undefined') ? new webkitSpeechRecognition() : new SpeechRecognition();
         speechRecognitionList.addFromString(grammar, 1);
         speech_recognition.grammars = speechRecognitionList;
         speech_recognition.continuous = false;
