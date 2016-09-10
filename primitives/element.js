@@ -2258,9 +2258,18 @@ window.TOONTALK.element.function =
     functions.add_function_object(
         'speak', 
         TT.widget.get_speak_function(functions),
-        "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
+        "The bird will cause the browser to speak what is in the second box hole. "
+        + "Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. "
+        + "Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
         "speak",
         ['a widget']);
+    functions.add_function_object(
+        'listen', 
+        TT.widget.get_listen_function(functions),
+        "The bird will cause the browser to listen to the next thing said and give the words to the bird in the first hole. "
+        + "If there is an error and there is a bird in the second hole it will be given the error message.",
+        "listen",
+        []);
     functions.add_function_object(
         'show message', 
         function (message, event, robot) {

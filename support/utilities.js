@@ -4877,14 +4877,16 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // The second [0] returns the SpeechRecognitionAlternative at position 0.
             // We then return the transcript property of the SpeechRecognitionAlternative object 
             for (i = 0; i < event.results[0].length; i++) {
-                if (event.results[0][i].confidence >= minimum_confidence && 
-                    // if command is one of the expected tokens -- must have a | before and/or after it
-                    (commands.indexOf(event.results[0][i].transcript.toLowerCase() + " |") >= 0 ||
-                     commands.indexOf("| " + event.results[0][i].transcript.toLowerCase()) >= 0)) {
-                    command = event.results[0][i].transcript.toLowerCase();
-                    confidence = event.results[0][i].confidence;
-                    // assumes that the most confident answers are first
-                    break;
+                if (event.results[0][i].confidence >= minimum_confidence) { 
+                    if (!commands ||
+                        (commands.indexOf(event.results[0][i].transcript.toLowerCase() + " |") >= 0 ||
+                         commands.indexOf("| " + event.results[0][i].transcript.toLowerCase()) >= 0)) {
+                        // if command is one of the expected tokens -- must have a | before and/or after it
+                        command = event.results[0][i].transcript.toLowerCase();
+                        confidence = event.results[0][i].confidence;
+                        // assumes that the most confident answers are first
+                        break;
+                    }
                 }
             }
             if (command) {

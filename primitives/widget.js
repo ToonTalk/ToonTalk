@@ -1669,6 +1669,40 @@ window.TOONTALK.widget = (function (TT) {
             speak(message.get_hole_contents(1));
             return true;
         }},
+        get_listen_function: function (functions) {
+            return function (message, event, robot) {
+                var box_size_and_bird = functions.check_message(message);
+                var success_callback, fail_callback;
+                 if (!box_size_and_bird) {
+                     return;
+                 }
+                 if (box_size_and_bird.size < 1) {
+                     TT.UTILITIES.display_message("Listening birds need a box with one or more holes.");
+                     return;
+                 }
+                if (!window.webkitSpeechRecognition && !window.SpeechRecognition) {
+                    // ignore this
+                    widget.display_message("This browser doesn't support speech input. Try another browser such as Chrome.");
+                    return true;
+                }
+                success_callback = function (text) {
+                    var response = TT.element.create(text, [], "what was spoken");
+                    functions.process_response(response, message.get_hole_contents(0), message, event, robot);
+                    TT.UTILITIES.stop_listening_for_speech();
+                };
+                fail_callback = function (event) {
+                    var response;
+                    if (box_size_and_bird.size > 1 && message.get_hole_contents(1)) {
+                        // if no failure bird then ignore it
+                        response = TT.element.create(event.error, [], "a problem listening to speech");
+                        functions.process_response(response, message.get_hole_contents(1), message, event, robot);
+                    }
+                    TT.UTILITIES.stop_listening_for_speech();
+                };
+                TT.UTILITIES.listen_for_speech(undefined, 0, success_callback, fail_callback);
+                return true;
+            };
+        },
         get_description_function: function (functions) {
           return function (message, event, robot) {
             var describe = function (widget) {
