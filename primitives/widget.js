@@ -1672,7 +1672,7 @@ window.TOONTALK.widget = (function (TT) {
         get_listen_function: function (functions) {
             return function (message, event, robot) {
                 var box_size_and_bird = functions.check_message(message);
-                var success_callback, fail_callback;
+                var success_callback, fail_callback, confidence, expected_phrases;
                  if (!box_size_and_bird) {
                      return;
                  }
@@ -1684,6 +1684,19 @@ window.TOONTALK.widget = (function (TT) {
                     // ignore this
                     widget.display_message("This browser doesn't support speech input. Try another browser such as Chrome.");
                     return true;
+                }
+                confidence = message.get_hole_contents(2);
+                if (confidence) {
+                    confidence = confidence && confidence.to_float && confidence.to_float();
+                    if (confidence < 0) {
+                        confidence = 0; // any point displaying a message to the user?
+                    } else if (confidence > 1) {
+                        confidence = 1;
+                    }
+                }
+                expected_phrases = message.get_hole_contents(3);
+                if (expected_phrases) {
+                    expected_phrases = expected_phrases.get_text();
                 }
                 success_callback = function (text) {
                     var response = TT.element.create(text, [], "what was spoken");
@@ -1699,7 +1712,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     TT.UTILITIES.stop_listening_for_speech();
                 };
-                TT.UTILITIES.listen_for_speech(undefined, 0, success_callback, fail_callback);
+                TT.UTILITIES.listen_for_speech(expected_phrases, (confidence || 0), success_callback, fail_callback);
                 return true;
             };
         },
