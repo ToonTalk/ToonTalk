@@ -1851,6 +1851,9 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.get_infinite_stack = function () {
                 return false;
             };
+            top_level_widget.get_listeners = function () {
+                return [];
+            };
             top_level_widget.top_level_widget = function () {
                 return this;
             };
