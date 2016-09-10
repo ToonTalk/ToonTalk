@@ -1459,7 +1459,7 @@ window.TOONTALK.backside =
         },
 
         get_listeners: function (type) {
-            return this.get_widget().get_listeners(typee);     
+            return this.get_widget().get_listeners(type);     
         },
 
         is_hole: function () {
