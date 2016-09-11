@@ -1873,6 +1873,7 @@ table.toontalk-documentation-table {
    padding-left: 24px;
    padding-top: 24px;
    max-width: 10em;
+   padding-right: 8px;
 }
 .toontalk-function-bird-title-documentation {
 	max-width: 50em;
