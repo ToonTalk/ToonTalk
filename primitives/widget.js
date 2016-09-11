@@ -886,6 +886,20 @@ window.TOONTALK.widget = (function (TT) {
                 }
             }
         },
+
+        add_speech_listeners: function (options) {
+            if (TT.listen) {
+               options.widget = this;
+               this.add_listener('picked up', 
+                                 function () {
+                                     TT.UTILITIES.listen_for_speech(options);
+                                 }); 
+               this.add_listener('dropped',
+                                 function () {
+                                     TT.UTILITIES.stop_listening_for_speech();
+                                 });    
+            }  
+        },
         
         get_full_description: function (to_string_info) {
             var description, string;

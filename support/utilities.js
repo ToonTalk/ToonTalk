@@ -4840,7 +4840,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     utilities.listen_for_speech = function (options) {
         // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
         // tags would be a nice way to simplify this and make it language independent but at last Chrome doesn't currently support it
-        // options are commands, minimum_confidence, numbers_acceptable, success_callback, fail_callback
+        // options are commands, minimum_confidence, numbers_acceptable, descriptions_acceptable, widget, success_callback, fail_callback
         if (!TT.listen) {
             return;
         }
@@ -4852,6 +4852,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         if (options.descriptions_acceptable) {
             // accept anything that starts with I am or I'm
             commands += " | I am | I'm ";
+        }
+        if (options.names_acceptable) {
+            // accept anything that starts with my name is or call me
+            commands += " | My name is | call me ";
         }
         var grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
         var speechRecognitionList = new SpeechGrammarList();
@@ -4891,7 +4895,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         (commands.indexOf(result + " |") >= 0 ||
                          commands.indexOf("| " + result) >= 0 ||
                          (options.numbers_acceptable && !isNaN(parseFloat(result))) ||
-                         (options.descriptions_acceptable && (result.indexOf('i am') === 0 || result.indexOf("i'm") === 0)))) {
+                         (options.descriptions_acceptable && (result.indexOf('i am') === 0 || result.indexOf("i'm") === 0)) ||
+                         (options.names_acceptable && (result.indexOf('my name is') === 0 || result.indexOf("call me") === 0)))) {
                         // if command is one of the expected tokens -- must have a | before and/or after it
                         command = event.results[0][i].transcript.toLowerCase();
                         confidence = event.results[0][i].confidence;
@@ -4902,7 +4907,15 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             }
             if (command) {
                 console.log(command + " confidence : " + confidence);
-                options.success_callback(command, event);
+                if (options.descriptions_acceptable && options.widget && utilities.spoken_command_is_a_description(command, options.widget)) {
+                    // description updated
+                    options.widget.rerender();
+                } else if (options.names_acceptable && options.widget && utilities.spoken_command_is_a_naming(command, options.widget)) {
+                    // name updated
+                    options.widget.rerender();
+                } else if (options.success_callback) {
+                    options.success_callback(command, event);
+                }   
             } else {
                 console.log("confidence too low"); // give better feedback
             }
@@ -4944,8 +4957,21 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     utilities.spoken_command_is_a_description = function (command, widget) {
         if (command.indexOf("i am") === 0) {
             widget.set_description(command.substring(5));
-        } else if (command.indexOf("i'm") === 0) {
+            return true;
+        }
+        if (command.indexOf("i'm") === 0) {
             widget.set_description(command.substring(4));
+            return true;
+        }
+    };
+
+    utilities.spoken_command_is_a_naming = function (command, widget) {
+        if (command.indexOf("my name is ") === 0) {
+            widget.set_name(command.substring(11), true);
+            return true;
+        } else if (command.indexOf("call me ") === 0) {
+            widget.set_name(command.substring(8), true);
+            return true;
         }
     };
 

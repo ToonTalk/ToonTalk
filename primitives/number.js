@@ -400,78 +400,69 @@ window.TOONTALK.number = (function () {
                 return this;
             };
         number.add_standard_widget_functionality(new_number);
-        new_number.set_description(description);
+        new_number.set_description(description);  
         if (TT.listen) {
-            listen_for_command = function () {
-                var operations = 'add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals';
-                var formats    = 'decimal number | decimal | mixed number | mixed | improper fraction | improper | fraction | scientific notation | scientific';
-                var number_spoken;
-                TT.UTILITIES.listen_for_speech({commands: (operations + " | " + formats), 
-                                                numbers_acceptable: true,
-                                                descriptions_acceptable: true,
-                                                success_callback: function (command) {
-                                                   switch (command) {
-                                                       case 'add':
-                                                       case 'plus':
-                                                       case 'sum':
-                                                       case 'addition':
-                                                       new_number.set_operator('+', true);
-                                                       break;
-                                                       case 'subtract':
-                                                       case 'take away':
-                                                       case 'subtraction':
-                                                       new_number.set_operator('-', true);
-                                                       break;
-                                                       case 'times':
-                                                       case 'multiply':
-                                                       case 'multiplication':
-                                                       new_number.set_operator('*', true);
-                                                       break;
-                                                       case 'divide':
-                                                       case 'divides':
-                                                       case 'divide by':
-                                                       case 'division':
-                                                       new_number.set_operator('/', true);
-                                                       break;
-                                                       case 'equal':
-                                                       case 'equals':
-                                                       new_number.set_operator('=', true);
-                                                       break;
-                                                       case 'decimal number':
-                                                       case 'decimal':
-                                                       new_number.set_format('decimal');
-                                                       break;
-                                                       case 'mixed number':
-                                                       case 'mixed':
-                                                       new_number.set_format('mixed_number');
-                                                       break;
-                                                       case 'improper fraction':
-                                                       case 'improper':
-                                                       case 'fraction':
-                                                       new_number.set_format('improper_fraction');
-                                                       break;
-                                                       case 'scientific notation':
-                                                       case 'scientific':
-                                                       new_number.set_format('scientific_notation');
-                                                       break;
-                                                       default:
-                                                       if (!TT.UTILITIES.spoken_command_is_a_description(command, new_number)) {
-                                                           number_spoken = parseFloat(command);
-                                                           if (isNaN(number_spoken)) {
-                                                               console.log("did not understand '" + command + "'");
-                                                           } else {
-                                                               new_number.set_value_from_decimal(number_spoken);
-                                                           }
-                                                       }
-                                                   }
-                                                   new_number.rerender();
+            var operations = 'add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals';
+            var formats    = 'decimal number | decimal | mixed number | mixed | improper fraction | improper | fraction | scientific notation | scientific';
+            var number_spoken;
+            new_number.add_speech_listeners({commands: (operations + " | " + formats), 
+                                             numbers_acceptable: true,
+                                             descriptions_acceptable: true,
+                                             success_callback: function (command) {
+                                                 switch (command) {
+                                                 case 'add':
+                                                 case 'plus':
+                                                 case 'sum':
+                                                 case 'addition':
+                                                 new_number.set_operator('+', true);
+                                                 break;
+                                                 case 'subtract':
+                                                 case 'take away':
+                                                 case 'subtraction':
+                                                 new_number.set_operator('-', true);
+                                                 break;
+                                                 case 'times':
+                                                 case 'multiply':
+                                                 case 'multiplication':
+                                                 new_number.set_operator('*', true);
+                                                 break;
+                                                 case 'divide':
+                                                 case 'divides':
+                                                 case 'divide by':
+                                                 case 'division':
+                                                 new_number.set_operator('/', true);
+                                                 break;
+                                                 case 'equal':
+                                                 case 'equals':
+                                                 new_number.set_operator('=', true);
+                                                 break;
+                                                 case 'decimal number':
+                                                 case 'decimal':
+                                                 new_number.set_format('decimal');
+                                                 break;
+                                                 case 'mixed number':
+                                                 case 'mixed':
+                                                 new_number.set_format('mixed_number');
+                                                 break;
+                                                 case 'improper fraction':
+                                                 case 'improper':
+                                                 case 'fraction':
+                                                 new_number.set_format('improper_fraction');
+                                                 break;
+                                                 case 'scientific notation':
+                                                 case 'scientific':
+                                                 new_number.set_format('scientific_notation');
+                                                 break;
+                                                 default:
+                                                      number_spoken = parseFloat(command);
+                                                      if (isNaN(number_spoken)) {
+                                                          console.log("did not understand '" + command + "'");
+                                                      } else {
+                                                          new_number.set_value_from_decimal(number_spoken);
+                                                      }
+                                                  }
+                                                  new_number.rerender();
                                                }});
-            }
-            new_number.add_listener('picked up', listen_for_command); 
-            new_number.add_listener('dropped',
-                                    function () {
-                                        TT.UTILITIES.stop_listening_for_speech();
-                                    });
         }
         if (TT.debugging) {
             new_number._debug_string = new_number.toString();
