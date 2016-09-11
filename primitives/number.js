@@ -970,11 +970,17 @@ window.TOONTALK.number = (function () {
     };
     
     number.widget_side_dropped_on_me = function (side_of_other, event, robot) {
+        var frontside_element_of_other;
         if (side_of_other.number_dropped_on_me) {
             // this can happen if this number is on a nest
             return this.number_dropped_on_me(side_of_other, event, robot);
         }
-        // only numbers can be dropped on numbers (for now at least)
+        frontside_element_of_other = side_of_other.get_frontside_element();
+        if (frontside_element_of_other) {
+            this.get_frontside_element().dispatchEvent(TT.UTILITIES.create_event('widget added', 
+                                                                                 {element_widget: frontside_element_of_other,
+                                                                                  where: 'front'}));
+        }
         return false;
     };
 
