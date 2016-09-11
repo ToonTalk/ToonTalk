@@ -4837,12 +4837,15 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 handles: "n,e,s,w,se,ne,sw,nw"});
     };
 
-    utilities.listen_for_speech = function (commands, minimum_confidence, success_callback, fail_callback) {
+    utilities.listen_for_speech = function (options) {
         // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
         // tags would be a nice way to simplify this and make it language independent but at last Chrome doesn't currently support it
+        // options are commands, minimum_confidence, numbers_acceptable, success_callback, fail_callback
         if (!TT.listen) {
             return;
         }
+        var commands = options.commands || "";
+        var minimum_confidence = options.minimum_confidence || 0;
         var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
         var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
         // see https://www.w3.org/TR/jsgf/ for JSGF format
@@ -4880,7 +4883,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 if (event.results[0][i].confidence >= minimum_confidence) { 
                     if (!commands ||
                         (commands.indexOf(event.results[0][i].transcript.toLowerCase() + " |") >= 0 ||
-                         commands.indexOf("| " + event.results[0][i].transcript.toLowerCase()) >= 0)) {
+                         commands.indexOf("| " + event.results[0][i].transcript.toLowerCase()) >= 0 ||
+                         (options.numbers_acceptable && !isNaN(parseFloat(event.results[0][i].transcript))))) {
                         // if command is one of the expected tokens -- must have a | before and/or after it
                         command = event.results[0][i].transcript.toLowerCase();
                         confidence = event.results[0][i].confidence;
@@ -4891,7 +4895,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             }
             if (command) {
                 console.log(command + " confidence : " + confidence);
-                success_callback(command, event);
+                options.success_callback(command, event);
             } else {
                 console.log("confidence too low"); // give better feedback
             }
@@ -4906,16 +4910,16 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         };
 
         speech_recognition.onnomatch = function (event) {
-            if (fail_callback) {
-                fail_callback(event);
+            if (options.fail_callback) {
+                options.fail_callback(event);
             }
         };
 
         speech_recognition.onerror = function (event) {
             if (event.error !== 'no-speech') {
-//                 console.log('no speech');
-            } else if (fail_callback) {
-                fail_callback(event);
+//              console.log('no speech');
+            } else if (options.fail_callback) {
+                options.fail_callback(event);
             }
         }
 

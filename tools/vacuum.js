@@ -224,9 +224,8 @@ window.TOONTALK.vacuum = (function (TT) {
             },
             set_held: function(new_value) {
                 var listen_for_command = function () {
-                    TT.UTILITIES.listen_for_speech('suck | erase | restore | remove all',
-                                                   0, // // ignore confidence since if any answer matches the possible commands then it is OK
-                                                   function (command, event) {
+                    TT.UTILITIES.listen_for_speech({commands: 'suck | erase | restore | remove all',
+                                                    success_callback: function (command, event) {
                                                        var $highlighted_element, widget_side_under_tool, top_level_widget;
                                                        if (command === 'remove all') {
                                                            set_mode('suck_all');
@@ -252,7 +251,7 @@ window.TOONTALK.vacuum = (function (TT) {
                                                            this.apply_tool(top_level_widget, event);
                                                        }
                                                        return true;  
-                                                   }.bind(this));
+                                                   }.bind(this)});
                 }.bind(this);
                 held = new_value;
                 if (held) {

@@ -1728,7 +1728,11 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     TT.UTILITIES.stop_listening_for_speech();
                 };
-                TT.UTILITIES.listen_for_speech(expected_phrases, (confidence || 0), success_callback, fail_callback);
+                TT.UTILITIES.listen_for_speech({commands:           expected_phrases, 
+                                                confidence:         confidence,
+                                                numbers_acceptable: numbers_only,
+                                                success_callback:   success_callback, 
+                                                fail_callback:      fail_callback});
                 return true;
             };
         },

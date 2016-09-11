@@ -403,9 +403,10 @@ window.TOONTALK.number = (function () {
         new_number.set_description(description);
         if (TT.listen) {
             listen_for_command = function () {
-                TT.UTILITIES.listen_for_speech('add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals', 
-                                               0, // ignore confidence since if any answer matches the possible commands then it is OK
-                                               function (command) {
+                var number;
+                TT.UTILITIES.listen_for_speech({commands: 'add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals', 
+                                                numbers_acceptable: true,
+                                                success_callback: function (command) {
                                                    switch (command) {
                                                        case 'add':
                                                        case 'plus':
@@ -434,10 +435,14 @@ window.TOONTALK.number = (function () {
                                                        new_number.set_operator('=', true);
                                                        break;
                                                        default:
-                                                           console.log("did not understand '" + command + "'");
+                                                           number = parseFloat(command);
+                                                           if (isNaN(number)) {
+                                                               console.log("did not understand '" + command + "'");
+                                                           } else {
+                                                               new_number.set_value_from_decimal(number);
+                                                           }
                                                    }
-//                                                    listen_for_command(); // listen for next command
-                                               });
+                                               }});
             }
             new_number.add_listener('picked up', listen_for_command); 
             new_number.add_listener('dropped',
