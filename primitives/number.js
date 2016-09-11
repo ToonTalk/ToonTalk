@@ -403,8 +403,10 @@ window.TOONTALK.number = (function () {
         new_number.set_description(description);
         if (TT.listen) {
             listen_for_command = function () {
-                var number;
-                TT.UTILITIES.listen_for_speech({commands: 'add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals', 
+                var operations = 'add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals';
+                var formats    = 'decimal number | decimal | mixed number | mixed | improper fraction | improper | fraction | scientific notation | scientific';
+                var number_spoken;
+                TT.UTILITIES.listen_for_speech({commands: (operations + " | " + formats), 
                                                 numbers_acceptable: true,
                                                 success_callback: function (command) {
                                                    switch (command) {
@@ -434,14 +436,32 @@ window.TOONTALK.number = (function () {
                                                        case 'equals':
                                                        new_number.set_operator('=', true);
                                                        break;
+                                                       case 'decimal number':
+                                                       case 'decimal':
+                                                       new_number.set_format('decimal');
+                                                       break;
+                                                       case 'mixed number':
+                                                       case 'mixed':
+                                                       new_number.set_format('mixed_number');
+                                                       break;
+                                                       case 'improper fraction':
+                                                       case 'improper':
+                                                       case 'fraction':
+                                                       new_number.set_format('improper_fraction');
+                                                       break;
+                                                       case 'scientific notation':
+                                                       case 'scientific':
+                                                       new_number.set_format('scientific_notation');
+                                                       break;
                                                        default:
-                                                           number = parseFloat(command);
-                                                           if (isNaN(number)) {
+                                                           number_spoken = parseFloat(command);
+                                                           if (isNaN(number_spoken)) {
                                                                console.log("did not understand '" + command + "'");
                                                            } else {
-                                                               new_number.set_value_from_decimal(number);
+                                                               new_number.set_value_from_decimal(number_spoken);
                                                            }
                                                    }
+                                                   new_number.rerender();
                                                }});
             }
             new_number.add_listener('picked up', listen_for_command); 
