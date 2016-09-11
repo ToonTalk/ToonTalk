@@ -4849,6 +4849,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
         var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
         // see https://www.w3.org/TR/jsgf/ for JSGF format
+        if (options.descriptions_acceptable) {
+            // accept anything that starts with I am or I'm
+            commands += " | I am | I'm ";
+        }
         var grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
         var speechRecognitionList = new SpeechGrammarList();
         var turn_on_speech = function () {
@@ -4878,13 +4882,16 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // Each SpeechRecognitionResult object contains SpeechRecognitionAlternative objects that contain individual results.
             // These also have getters so they can be accessed like arrays.
             // The second [0] returns the SpeechRecognitionAlternative at position 0.
-            // We then return the transcript property of the SpeechRecognitionAlternative object 
+            // We then return the transcript property of the SpeechRecognitionAlternative object
+            var result; 
             for (i = 0; i < event.results[0].length; i++) {
-                if (event.results[0][i].confidence >= minimum_confidence) { 
+                if (event.results[0][i].confidence >= minimum_confidence) {
+                    result = event.results[0][i].transcript.toLowerCase(); 
                     if (!commands ||
-                        (commands.indexOf(event.results[0][i].transcript.toLowerCase() + " |") >= 0 ||
-                         commands.indexOf("| " + event.results[0][i].transcript.toLowerCase()) >= 0 ||
-                         (options.numbers_acceptable && !isNaN(parseFloat(event.results[0][i].transcript))))) {
+                        (commands.indexOf(result + " |") >= 0 ||
+                         commands.indexOf("| " + result) >= 0 ||
+                         (options.numbers_acceptable && !isNaN(parseFloat(result))) ||
+                         (options.descriptions_acceptable && (result.indexOf('i am') === 0 || result.indexOf("i'm") === 0)))) {
                         // if command is one of the expected tokens -- must have a | before and/or after it
                         command = event.results[0][i].transcript.toLowerCase();
                         confidence = event.results[0][i].confidence;
@@ -4932,6 +4939,14 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         speech_recognition.stop();
         waiting_for_speech = false; 
 //         console.log("stopped listening due to stop_listening_for_speech");
+    };
+
+    utilities.spoken_command_is_a_description = function (command, widget) {
+        if (command.indexOf("i am") === 0) {
+            widget.set_description(command.substring(5));
+        } else if (command.indexOf("i'm") === 0) {
+            widget.set_description(command.substring(4));
+        }
     };
 
 

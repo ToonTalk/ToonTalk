@@ -408,6 +408,7 @@ window.TOONTALK.number = (function () {
                 var number_spoken;
                 TT.UTILITIES.listen_for_speech({commands: (operations + " | " + formats), 
                                                 numbers_acceptable: true,
+                                                descriptions_acceptable: true,
                                                 success_callback: function (command) {
                                                    switch (command) {
                                                        case 'add':
@@ -454,12 +455,14 @@ window.TOONTALK.number = (function () {
                                                        new_number.set_format('scientific_notation');
                                                        break;
                                                        default:
+                                                       if (!TT.UTILITIES.spoken_command_is_a_description(command, new_number)) {
                                                            number_spoken = parseFloat(command);
                                                            if (isNaN(number_spoken)) {
                                                                console.log("did not understand '" + command + "'");
                                                            } else {
                                                                new_number.set_value_from_decimal(number_spoken);
                                                            }
+                                                       }
                                                    }
                                                    new_number.rerender();
                                                }});

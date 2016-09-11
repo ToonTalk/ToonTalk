@@ -1707,7 +1707,7 @@ window.TOONTALK.widget = (function (TT) {
                         if (!isNaN(number)) {
                             // otherwise ignore it
                             response = TT.number.create_from_bigrat(bigrat.fromDecimal(number));
-                            response.set_description("number that was heard");
+                            response.set_description("a number that was heard");
                             functions.process_response(response, message.get_hole_contents(0), message, event, robot);
                             TT.UTILITIES.stop_listening_for_speech();
                         }
