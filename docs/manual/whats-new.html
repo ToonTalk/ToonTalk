@@ -13,7 +13,83 @@ For the full gory details visit <a href="https://github.com/ToonTalk/ToonTalk/co
 <h2>Highlights of recent changes</h2>
 <ul>
 <li>
-<b style="color: brown">First few tutorial puzzles added.</b>.</br>
+<b style="color: brown">Voice commands supported</b>.</br>
+One can now speak commands such as 'erase', 'suck', and 'restore' while holding Dusty the Vacuum.
+And 'copy' or 'abracadabra' while holding the Magic Wand.
+The value of a number can be changed by saying the number while holding it.
+The operation of a number can be changed by saying things like 'subtract', 'divide', and 'multiply'.
+The format of a number can be changed by saying things like 'mixed number', 'improper fraction', 'decimal', or 'scientific notation'.
+You can say the name of a bird or nest by saying 'my name is ...' or 'call me ...' while holding them.
+You can change the description of a widget by saying 'I am ...' or 'I'm ...'.
+Currently is enabled only if listen=1 is a URL parameter.
+<i>Released 11 September 2016.</i>
+</li>
+<li>
+<b style="color: brown">New birds for speech recognition</b>.</br>
+<a href='function-birds.html#element_functions'>Element function birds</a> now includes one that recognises speech.
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a bird.
+a 'listen' function bird
+<div style='display:none;'>{
+  "semantic": {
+    "type": "bird",
+    "nest": {
+      "semantic": {
+        "type": "function_nest",
+        "function_type": "element",
+        "function_name": "listen"
+      },
+      "view": {},
+      "version": 1
+    }
+  },
+  "view": {
+    "frontside_width": 70,
+    "frontside_height": 102,
+    "frontside_left": 41.3194,
+    "frontside_top": 148.125,
+    "backside_left": 42.43055698455811,
+    "backside_top": 285.22570106567383,
+    "saved_width": 70,
+    "saved_height": 102,
+    "drag_x_offset": 25.871524810791016,
+    "drag_y_offset": 51.55902099609375
+  },
+  "version": 1
+}</div></div>
+<a href='function-birds.html#number_functions'>Number function birds</a> now includes one that recognises spoken numbers.
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a bird.
+a 'listen for a number' function bird
+<div style='display:none;'>{
+  "semantic": {
+    "type": "bird",
+    "nest": {
+      "semantic": {
+        "type": "function_nest",
+        "function_type": "number",
+        "function_name": "listen for a number"
+      },
+      "view": {},
+      "version": 1
+    }
+  },
+  "view": {
+    "frontside_width": 70,
+    "frontside_height": 101,
+    "frontside_left": 221.615,
+    "frontside_top": 47.3438,
+    "saved_width": 70,
+    "saved_height": 101,
+    "drag_x_offset": 21.288177490234375,
+    "drag_y_offset": 54.163177490234375
+  },
+  "version": 1
+}</div></div>
+<i>Released 11 September 2016.</i>
+</li>
+<li>
+<b style="color: brown">First few tutorial puzzles added</b>.</br>
 The puzzle game was very popular in the desktop version -- this is the first attempt to reproduce them.
 Puzzles only so far -- no hints or responses to wrong answers.
 <a href='../../puzzles/classic/p1.html?puzzle=1' target='_blank'>Try the puzzles</a>.
