@@ -1494,14 +1494,18 @@ html {
 	background-color: yellow;
 	font-size: 24px;
 	font-weight: bold;
+	border-radius: 8px;
+	padding: 8px;
+	z-index: 9999;
 }
 .toontalk-local-alert {
 	position: absolute;
-	top: -60px;
+	top: 10px;
 	background-color: orange;
 	color: black;
 	border-radius: 8px;
 	padding: 8px;
+	z-index: 9999;
 }
 .toontalk-help-link {
 	font-weight: bold;
