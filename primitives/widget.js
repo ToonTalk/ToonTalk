@@ -1612,11 +1612,11 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
 
-        display_message: function (message, display_on_backside_if_possible) {
+        display_message: function (message, display_on_backside_if_possible, duration) {
             if (display_on_backside_if_possible) {
-                TT.UTILITIES.display_message(message, this.get_backside_element(), this.get_frontside_element());
+                TT.UTILITIES.display_message(message, this.get_backside_element(), this.get_frontside_element(), duration);
             } else {
-               TT.UTILITIES.display_message(message, this.get_frontside_element());
+               TT.UTILITIES.display_message(message, this.get_frontside_element(), undefined, duration);
             }
         },
 

@@ -20,7 +20,6 @@ window.TOONTALK.UTILITIES =
     // defined here to support self-reference
     var utilities = {};  
     var toontalk_initialized = false;  
-    var $dragee;
     var z_index = 100;
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
@@ -421,7 +420,7 @@ window.TOONTALK.UTILITIES =
                         // leave the source there but create a copy
                         source_widget_saved_width  = source_widget_side.get_widget().saved_width;
                         source_widget_saved_height = source_widget_side.get_widget().saved_height;
-                        source_widget_side = source_widget_side.copy();
+                        source_widget_side = TT.UTILITIES.get_dragee_copy();
                         source_widget_side.get_widget().saved_width  = source_widget_saved_width;
                         source_widget_side.get_widget().saved_height = source_widget_saved_height;
                         width  = $source.width();
@@ -817,7 +816,8 @@ window.TOONTALK.UTILITIES =
         // e.g. drop area for next robot
         utilities.set_timeout(function () {
             $dragee = undefined;
-            }); 
+            dragee_copy = undefined;
+        }); 
     };
     var has_ancestor_element = function (element, possible_ancestor) {
         if (element === possible_ancestor) {
@@ -863,6 +863,7 @@ window.TOONTALK.UTILITIES =
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
+    var $dragee, dragee_copy;
     var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
     window.addEventListener("message", 
                             function (event) {
@@ -3114,6 +3115,24 @@ window.TOONTALK.UTILITIES =
         
         utilities.get_$dragee = function () {
             return $dragee;
+        };
+
+        utilities.get_dragee = function () {
+            return $dragee && TT.UTILITIES.widget_side_of_jquery($dragee);
+        };
+
+        utilities.get_dragee_copy = function () {
+            if (dragee_copy) {
+                return dragee_copy;
+            }
+            var dragee = utilities.get_dragee();
+            if (dragee && !dragee.is_backside() && dragee.get_infinite_stack()) {
+                if (!dragee_copy) {
+                    // by copying this when it is altered then the original (the 'infinite stack') isn't altered just its copy
+                    dragee_copy = dragee.copy();
+                }
+                return dragee_copy;
+            }
         };
 
         utilities.add_URL_parameter = function (url, parameter, value) {

@@ -29,8 +29,6 @@
     // Math.log10 not defined in IE11
     var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/LOG_10 };
 
-    var listen_for_command;
-
     var integer_and_fraction_parts = function (rational_number) {
         // if rational_number is negative then so are the parts (or zero if integer_part is zero)
         var integer_part    = bigrat.fromValues(bigrat.toBigInteger(rational_number), 1);
@@ -409,59 +407,62 @@ window.TOONTALK.number = (function () {
                                              numbers_acceptable: true,
                                              descriptions_acceptable: true,
                                              success_callback: function (command) {
+                                                 // if draging a copy (from an infinite stack) then update the copy not the stack
+                                                 var target_number = TT.UTILITIES.get_dragee_copy() || new_number;
                                                  switch (command) {
                                                  case 'add':
                                                  case 'plus':
                                                  case 'sum':
                                                  case 'addition':
-                                                 new_number.set_operator('+', true);
+                                                 target_number.set_operator('+', true);
                                                  break;
                                                  case 'subtract':
                                                  case 'take away':
                                                  case 'subtraction':
-                                                 new_number.set_operator('-', true);
+                                                 target_number.set_operator('-', true);
                                                  break;
                                                  case 'times':
                                                  case 'multiply':
                                                  case 'multiplication':
-                                                 new_number.set_operator('*', true);
+                                                 target_number.set_operator('*', true);
                                                  break;
                                                  case 'divide':
                                                  case 'divides':
                                                  case 'divide by':
                                                  case 'division':
-                                                 new_number.set_operator('/', true);
+                                                 target_number.set_operator('/', true);
                                                  break;
                                                  case 'equal':
                                                  case 'equals':
-                                                 new_number.set_operator('=', true);
+                                                 target_number.set_operator('=', true);
                                                  break;
                                                  case 'decimal number':
                                                  case 'decimal':
-                                                 new_number.set_format('decimal');
+                                                 target_number.set_format('decimal');
                                                  break;
                                                  case 'mixed number':
                                                  case 'mixed':
-                                                 new_number.set_format('mixed_number');
+                                                 target_number.set_format('mixed_number');
                                                  break;
                                                  case 'improper fraction':
                                                  case 'improper':
                                                  case 'fraction':
-                                                 new_number.set_format('improper_fraction');
+                                                 target_number.set_format('improper_fraction');
                                                  break;
                                                  case 'scientific notation':
                                                  case 'scientific':
-                                                 new_number.set_format('scientific_notation');
+                                                 target_number.set_format('scientific_notation');
                                                  break;
                                                  default:
                                                       number_spoken = parseFloat(command);
                                                       if (isNaN(number_spoken)) {
                                                           console.log("did not understand '" + command + "'");
                                                       } else {
-                                                          new_number.set_value_from_decimal(number_spoken);
+                                                          target_number.set_value_from_decimal(number_spoken);
                                                       }
                                                   }
-                                                  new_number.rerender();
+                                                  target_number.update_display();
+                                                  new_number.display_message("You are now holding " + target_number.get_frontside_element(true).innerHTML, true, 3000);
                                                }});
         }
         if (TT.debugging) {
