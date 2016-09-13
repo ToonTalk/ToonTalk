@@ -246,7 +246,7 @@ window.TOONTALK.vacuum = (function (TT) {
                                                                top_level_widget.backup_all();
                                                                listen_for_command(); // listen for next command
                                                            }
-                                                       } else if (command === 'restore') {
+                                                       } else if (command === 'restore' || command === 'remove all') {
                                                            top_level_widget = TT.tool.get_widget_side_under_tool();
                                                            this.apply_tool(top_level_widget, event);
                                                        }
