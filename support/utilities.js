@@ -3129,7 +3129,6 @@ window.TOONTALK.UTILITIES =
             if (dragee && !dragee.is_backside() && dragee.get_infinite_stack()) {
                 if (!dragee_copy) {
                     // by copying this when it is altered then the original (the 'infinite stack') isn't altered just its copy
-                    dragee_copy = dragee.copy();
                 }
                 return dragee_copy;
             }
@@ -3647,8 +3646,8 @@ window.TOONTALK.UTILITIES =
             }
             alert_element.addEventListener('click', remove_handler);
             if (!duration) {
-                if (message[0] === '<') {
-                    // is HTML not plain text
+                if (message.indexOf('<') >= 0) {
+                    // contains HTML not plain text
                     duration = 5000;
                 } else {
                     duration = Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
