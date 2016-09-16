@@ -2433,7 +2433,7 @@ window.TOONTALK.UTILITIES =
                     speech_utterance.onend = undefined;
                 };
                 setTimeout(function () {
-                               if (speech_utterance.onend) {
+                               if (speech_utterance.onend && !window.speechSynthesis.speaking) {
                                    // still hasn't run
                                    utilities.display_message("Browser did not begin speaking after waiting 20 seconds. Continuing as if speech occurred.");
                                    speech_utterance.onend();
