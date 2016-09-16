@@ -3129,6 +3129,8 @@ window.TOONTALK.UTILITIES =
             if (dragee && !dragee.is_backside() && dragee.get_infinite_stack()) {
                 if (!dragee_copy) {
                     // by copying this when it is altered then the original (the 'infinite stack') isn't altered just its copy
+                    // add it off screen so that can display it in speech feedback messages
+                    dragee_copy = dragee.add_copy_to_container(undefined, -1000, -1000);
                 }
                 return dragee_copy;
             }
@@ -3642,7 +3644,8 @@ window.TOONTALK.UTILITIES =
             }
             if (TT.speak) {
                 window.speechSynthesis.cancel(); // stop any ongoing speech
-                utilities.speak(message);
+                // ignore any HTML is message
+                utilities.speak(alert_element.textContent);
             }
             alert_element.addEventListener('click', remove_handler);
             if (!duration) {
