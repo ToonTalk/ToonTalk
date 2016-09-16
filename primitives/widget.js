@@ -1612,12 +1612,15 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
 
-        display_message: function (message, display_on_backside_if_possible, duration) {
-            if (display_on_backside_if_possible) {
-                TT.UTILITIES.display_message(message, this.get_backside_element(), this.get_frontside_element(), duration);
+        display_message: function (message, options) {
+            // options include display_on_backside_if_possible, duration, display_only_if_new, plain_text_message
+            if (options.display_on_backside_if_possible) {
+                options.element = this.get_backside_element();
+                options.second_choice_element = this.get_frontside_element();
             } else {
-               TT.UTILITIES.display_message(message, this.get_frontside_element(), undefined, duration);
+               options.element = this.get_frontside_element();
             }
+            TT.UTILITIES.display_message(message, options);
         },
 
         // defined here in order to share between element and number functions
@@ -1938,9 +1941,10 @@ window.TOONTALK.widget = (function (TT) {
                             callback = undefined;
                         } else if (TT.google_drive.connection_to_google_drive_possible()) {
                             if (google_drive_status === 'Need to authorize') {
-                                TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
-                                                                    "<span class='toontalk-settings-icon'></span>" +
-                                                                    " to log in.");
+                                TT.UTILITIES.display_message("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
+                                                              "<span class='toontalk-settings-icon'></span>" +
+                                                              " to log in.",
+                                                              {only_if_new: true});
                                 TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
                             } else {
                                 console.log("Unable to save to Google Drive because: " + google_drive_status);

@@ -3610,53 +3610,58 @@ window.TOONTALK.UTILITIES =
             return animation && animation.indexOf("none") !== 0;
         };
 
-        utilities.display_message_if_new = function (message) {
-            if (messages_displayed.indexOf(message) < 0) {
-                utilities.display_message(message);
-                messages_displayed.push(message);
-            }
-        };
-
-        utilities.display_message = function (message, element, second_choice_element, duration) {
-            // if a backside containing element isn't found then try second_choice_element
+        utilities.display_message = function (message, options) {
+            // options include duration, element, second_choice_element, only_if_new, plain_text
+            // if element is provided while try to display the message on its backside or a backside container
+            // if a backside containing element isn't found then second_choice_element is used if provided
             var alert_element = utilities.create_alert_element(message);
             var remove_handler = function () {
                                      $(alert_element).remove();
                                  };
             var $backside;
+            if (!options) {
+                options = {};
+            }
+            if (options.only_if_new) {
+                if (messages_displayed.indexOf(message) < 0) {
+                    messages_displayed.push(message);
+                } else {
+                    return;
+                }
+            }
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             if (TT.debugging) {
-                console.log(message);
+                console.log(options.plain_text || message);
                 console.trace();
             }
-            if (element || second_choice_element) {
-                $backside = $(element).closest(".toontalk-backside");
+            if (options.element || options.second_choice_element) {
+                $backside = $(options.element).closest(".toontalk-backside");
                 if ($backside.length === 0) {
-                    $backside = $(second_choice_element).closest(".toontalk-backside");
+                    $backside = $(options.second_choice_element).closest(".toontalk-backside");
                 }
                 if ($backside.length > 0) {
                     $(alert_element).addClass("toontalk-local-alert");
                     $backside.append(alert_element);
                 }
             } 
-            if (!element || $backside.length === 0) {
+            if (!options.element || $backside.length === 0) {
                 document.body.insertBefore(alert_element, document.body.firstChild);
             }
             if (TT.speak) {
                 window.speechSynthesis.cancel(); // stop any ongoing speech
-                // ignore any HTML is message
-                utilities.speak(alert_element.textContent);
+                // ignore any HTML in message
+                utilities.speak(options.plain_text || alert_element.textContent);
             }
             alert_element.addEventListener('click', remove_handler);
-            if (!duration) {
+            if (!options.duration) {
                 if (message.indexOf('<') >= 0) {
                     // contains HTML not plain text
-                    duration = 5000;
+                    options.duration = 5000;
                 } else {
-                    duration = Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                    options.duration = Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                 }
             }
-            setTimeout(remove_handler, duration);
+            setTimeout(remove_handler, options.duration);
         };
 
         utilities.display_tooltip = function ($element) {

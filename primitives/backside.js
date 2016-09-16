@@ -101,10 +101,10 @@ window.TOONTALK.backside =
                                          } else {
                                              if (widget.is_top_level()) {
                                                  TT.UTILITIES.display_message("There is nothing to run.",
-                                                                              event.target);
+                                                                              {element: event.target});
                                              } else {
                                                  TT.UTILITIES.display_message("This " + widget.get_type_name() + " has nothing to run. Add some robots on the back.",
-                                                                              event.target);
+                                                                              {element: event.target});
                                              }
                                          }
                                          if (widget.robot_in_training()) {

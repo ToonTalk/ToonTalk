@@ -402,7 +402,7 @@ window.TOONTALK.number = (function () {
         if (TT.listen) {
             var operations = 'add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals';
             var formats    = 'decimal number | decimal | mixed number | mixed | improper fraction | improper | fraction | scientific notation | scientific';
-            var number_spoken;
+            var number_spoken, plain_text_message, previous_message;
             new_number.add_speech_listeners({commands: (operations + " | " + formats), 
                                              numbers_acceptable: true,
                                              descriptions_acceptable: true,
@@ -462,7 +462,14 @@ window.TOONTALK.number = (function () {
                                                       }
                                                   }
                                                   target_number.update_display();
-                                                  new_number.display_message("You are now holding " + target_number.get_frontside_element(true).innerHTML, true, 3000);
+                                                  plain_text_message = "You are now holding " + target_number.get_text(true);
+                                                  if (plain_text_message !== previous_message) {
+                                                      new_number.display_message("You are now holding " + target_number.get_frontside_element(true).innerHTML, 
+                                                                                 {display_on_backside_if_possible: true, 
+                                                                                  duration: 4000,
+                                                                                  plain_text: plain_text_message});
+                                                      previous_message = plain_text_message;
+                                                  }
                                                }});
         }
         if (TT.debugging) {
@@ -1060,13 +1067,15 @@ window.TOONTALK.number = (function () {
         return bigrat.isNegative(this.get_value());
     };
 
-    number.toString = function () {
-        var operator_string;
+    number.toString = function (options) {
+        var operator_string = "";
         if (this.get_erased()) {
             return "erased number";
         }
         // addition is implicit so don't display it
-        operator_string = this.get_operator() === '+' ? '' : this.get_operator();
+        if (this.get_operator() !== '+' && !(options && options.without_operator)) {
+            operator_string = this.get_operator();
+        }
         return operator_string + bigrat.str(this.get_value());
     };
 
@@ -1086,29 +1095,45 @@ window.TOONTALK.number = (function () {
     number.get_text = function (for_speaking) {
         // for_speaking is because most (all?) text-to-speech engines fail to speak large numbers correctly
         var format = this.get_format();
+        var operator_string = "";
+        switch (this.get_operator()) {
+        case "-":
+            operator_string = "subtract ";
+            break;
+        case "*":
+            operator_string = "multiply by ";
+            break;
+        case "/":
+           operator_string = "divide by ";
+           break;
+        case "=":
+           operator_string = "make what I'm dropped on equal to ";
+           break;
+        }
         var integer_part, fractional_part;
         if (this.get_approximate() || (this.is_attribute_widget && this.is_attribute_widget())) {
             return "approximately " + bigrat.toDecimal(this.get_value()).toString();
         }
         if (this.is_integer() || format === 'improper_fraction') {
             if (for_speaking) {
-                return TT.UTILITIES.number_to_words(this.toString());
+                return operator_string + TT.UTILITIES.number_to_words(this.toString({without_operator: true}));
             }
-            return this.toString();
+            return operator_string + this.toString({without_operator: true});
         }
         integer_part = this.integer_part();
         if (integer_part.is_zero()) {
             if (for_speaking) {
-                return TT.UTILITIES.number_to_words(this.toString());
+                return operator_string + TT.UTILITIES.number_to_words(this.toString({without_operator: true}));
             }
-            return this.toString();
+            return operator_string + this.toString({without_operator: true});
         }
         fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
         if (for_speaking) {
-            return TT.UTILITIES.number_to_words(integer_part.toString()) + (for_speaking ? " and " : " ") + 
-                   TT.UTILITIES.number_to_words(fractional_part.toString());
+            return operator_string + 
+                   TT.UTILITIES.number_to_words(integer_part.toString({without_operator: true})) + (for_speaking ? " and " : " ") + 
+                   TT.UTILITIES.number_to_words(fractional_part.toString({without_operator: true}));
         }
-        return integer_part + " " + fractional_part;
+        return operator_string + integer_part + " " + fractional_part;
     };
     
     number.to_float = function () {
@@ -1322,7 +1347,7 @@ window.TOONTALK.number_backside =
                 if (validity.message) {
                     numerator_as_float = parseFloat(numerator);
                     if (isNaN(numerator_as_float)) {
-                        number.display_message(validity.message, true);
+                        number.display_message(validity.message, {display_on_backside_if_possible: true});
                         numerator = validity.replacement;
                     } else {
                        // convert to integer and adjust denominator accordingly
@@ -1330,14 +1355,14 @@ window.TOONTALK.number_backside =
                     }
                 }
                 if (denominator === "0") {
-                    number.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.", true);
+                    number.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.", {display_on_backside_if_possible: true});
                     denominator = "1";
                 } else {
                     validity = valid_integer(denominator, "denominator");
                     if (validity.message) {
                         denominator_as_float = parseFloat(denominator);
                         if (isNaN(denominator_as_float)) {
-                            number.display_message(validity.message, true);
+                            number.display_message(validity.message, {display_on_backside_if_possible: true});
                             denominator = validity.replacement || "1";
                         } else {
                             denominator_as_fraction = bigrat.fromDecimal(denominator_as_float);
