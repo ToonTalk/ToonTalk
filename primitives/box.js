@@ -218,6 +218,46 @@ window.TOONTALK.box = (function (TT) {
             holes[i].set_parent_of_frontside(new_box);
         }
         new_box.set_description(description);
+        if (TT.listen) {
+            var formats = 'left to right | horizontal | top to bottom | vertical';
+            var number_spoken, plain_text_message, previous_message;
+            new_box.add_speech_listeners(   {commands: formats, 
+                                             numbers_acceptable: true,
+                                             descriptions_acceptable: true,
+                                             success_callback: function (command) {
+                                                 // if draging a copy (from an infinite stack) then update the copy not the stack
+                                                 var target_box = TT.UTILITIES.get_dragee_copy() || new_box;
+                                                 var size;
+                                                 switch (command) {
+                                                     case 'left to right':
+                                                     case'horizontal':
+                                                     target_box.set_horizontal(true);
+                                                     break;
+                                                     case 'top to bottom':
+                                                     case 'vertical':
+                                                     target_box.set_horizontal(false);
+                                                     break;
+                                                     default:
+                                                     number_spoken = parseFloat(command);
+                                                     if (isNaN(number_spoken)) {
+                                                         console.log("did not understand '" + command + "'");
+                                                     } else {
+                                                          target_box.set_size(number_spoken);
+                                                     }
+                                                  }
+                                                  target_box.update_display();
+                                                  size = target_box.get_size();
+                                                  plain_text_message = "You are now holding a " + 
+                                                                        (target_box.get_horizontal() ? "horizontal" : "vertical") + " box with " +
+                                                                        ((size > 1) ? (size + " holes") : ((size === 0) ? "no holes" : "one hole")) + ".";
+                                                  if (plain_text_message !== previous_message) {
+                                                      new_box.display_message(plain_text_message, 
+                                                                              {display_on_backside_if_possible: true, 
+                                                                               duration: 4000});
+                                                      previous_message = plain_text_message;
+                                                  }
+                                             }});
+        }
         if (initial_contents) {
             new_box.set_contents(initial_contents);
         }
