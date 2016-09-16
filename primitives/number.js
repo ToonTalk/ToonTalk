@@ -1500,7 +1500,7 @@ window.TOONTALK.number_backside =
                                                      backside.rerender();
                                                  });
                                            }
-                                       });            
+                                       });       
             return backside;
         }
 

@@ -134,7 +134,7 @@ window.TOONTALK.box = (function (TT) {
             return size;
         };
         new_box.set_size = function (new_size, update_display) {
-            var i, box_visibility;
+            var i, box_visibility, listeners;
             if (size === new_size || new_size < 0 || isNaN(new_size)) {
                 // ingore no change, negative or NaN values
                 return false;
@@ -151,6 +151,13 @@ window.TOONTALK.box = (function (TT) {
             size = new_size;
             if (update_display) {
                 this.rerender();
+            }
+            listeners = this.get_listeners('contents_or_properties_changed');
+            if (listeners) {
+                listeners.forEach(function (listener) {
+                    listener({type: 'contents_or_properties_changed',
+                              new_size: new_size});
+                });
             }
             if (TT.debugging) {
                 this._debug_string = this.to_debug_string();
@@ -231,21 +238,22 @@ window.TOONTALK.box = (function (TT) {
                                                  switch (command) {
                                                      case 'left to right':
                                                      case'horizontal':
-                                                     target_box.set_horizontal(true);
+                                                     target_box.set_horizontal(true, true);
                                                      break;
                                                      case 'top to bottom':
                                                      case 'vertical':
-                                                     target_box.set_horizontal(false);
+                                                     target_box.set_horizontal(false, true);
                                                      break;
                                                      default:
-                                                     number_spoken = parseFloat(command);
+                                                     number_spoken = parseInt(command); // only integers make sense
                                                      if (isNaN(number_spoken)) {
                                                          console.log("did not understand '" + command + "'");
                                                      } else {
-                                                          target_box.set_size(number_spoken);
+                                                         // what about negative numbers?
+                                                         target_box.set_size(number_spoken, true);
                                                      }
                                                   }
-                                                  target_box.update_display();
+                                                  target_box.update_display(true);
                                                   size = target_box.get_size();
                                                   plain_text_message = "You are now holding a " + 
                                                                         (target_box.get_horizontal() ? "horizontal" : "vertical") + " box with " +
@@ -1025,6 +1033,16 @@ window.TOONTALK.box_backside =
                 }
                 generic_backside_update();
             };
+            TT.UTILITIES.when_attached(backside_element,
+                                       function () {
+                                           if (!backside.is_primary_backside()) {
+                                               // primary backsides update when frontside does
+                                               box.add_listener('contents_or_properties_changed', 
+                                                                function () {
+                                                                    backside.rerender();
+                                                                });
+                                           }
+                                       });  
             backside_element.appendChild(size_input.container);
             backside_element.appendChild(buttons);
             $(buttons).buttonset();
@@ -1188,23 +1206,23 @@ window.TOONTALK.box_hole =
                 return contents;
             };
             hole.set_contents = function (new_value) {
-                var listeners = this.get_listeners('value_changed');
+                var listeners = this.get_listeners('contents_or_properties_changed');
                 if (listeners) {
                     if (contents !== new_value) {
                         listeners.forEach(function (listener) {
-                            listener({type: 'value_changed',
+                            listener({type: 'contents_or_properties_changed',
                                       old_value: contents,
                                       new_value: new_value});
                         });
                     }
                     if (contents) {
                         listeners.forEach(function (listener) {
-                            contents.remove_listener('value_changed', listener, true);
+                            contents.remove_listener('contents_or_properties_changed', listener, true);
                         });
                     }
                     if (new_value) {
                         listeners.forEach(function (listener) {
-                            new_value.add_listener('value_changed', listener);
+                            new_value.add_listener('contents_or_properties_changed', listener);
                         });
                     }
                 }
