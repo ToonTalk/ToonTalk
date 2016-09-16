@@ -4867,13 +4867,23 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
         // tags would be a nice way to simplify this and make it language independent but at last Chrome doesn't currently support it
         // options are commands, minimum_confidence, numbers_acceptable, descriptions_acceptable, widget, success_callback, fail_callback
+        var commands, minimum_confidence, SpeechGrammarList, SpeechRecognitionEvent, grammar, speechRecognitionList, turn_on_speech_recognition;
+        var command, confidence, i;
         if (!TT.listen) {
             return;
         }
-        var commands = options.commands || "";
-        var minimum_confidence = options.minimum_confidence || 0;
-        var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
-        var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+        commands = options.commands || "";
+        minimum_confidence = options.minimum_confidence || 0;
+        SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+        SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
+        if (window.speechSynthesis.speaking) {
+            // busy wait until speech synthesis is over
+            setTimeout(function () {
+                           utilities.listen_for_speech(options);
+                       },
+                       1000);
+            return;
+        }
         // see https://www.w3.org/TR/jsgf/ for JSGF format
         if (options.descriptions_acceptable) {
             // accept anything that starts with I am or I'm
@@ -4883,9 +4893,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // accept anything that starts with my name is or call me
             commands += " | My name is | call me ";
         }
-        var grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
-        var speechRecognitionList = new SpeechGrammarList();
-        var turn_on_speech = function () {
+        grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
+        speechRecognitionList = new SpeechGrammarList();
+        turn_on_speech_recognition = function () {
             try {
                 speech_recognition.start();
 //                 console.log("listening");
@@ -4895,7 +4905,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             }
         };
         waiting_for_speech = true;
-        var command, confidence, i;
         speech_recognition = (typeof SpeechRecognition === 'undefined') ? new webkitSpeechRecognition() : new SpeechRecognition();
         speechRecognitionList.addFromString(grammar, 1);
         speech_recognition.grammars = speechRecognitionList;
@@ -4913,7 +4922,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // These also have getters so they can be accessed like arrays.
             // The second [0] returns the SpeechRecognitionAlternative at position 0.
             // We then return the transcript property of the SpeechRecognitionAlternative object
-            var result; 
+            var result;
             for (i = 0; i < event.results[0].length; i++) {
                 if (event.results[0][i].confidence >= minimum_confidence) {
                     result = event.results[0][i].transcript.toLowerCase(); 
@@ -4931,7 +4940,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     }
                 }
             }
-            if (command) {
+            if (window.speechSynthesis.speaking) {
+                console.log("Ignoring speech since synthesising speech. " + (command || ""));
+            } else if (command) {
                 console.log(command + " confidence : " + confidence);
                 if (options.descriptions_acceptable && options.widget && utilities.spoken_command_is_a_description(command, options.widget)) {
                     // description updated
@@ -4945,13 +4956,13 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 console.log("confidence too low"); // give better feedback
             }
-            speech_recognition.stop();
+            speech_recognition.stop(); // onend will restart listening
         };
 
         speech_recognition.onend = function () {
             if (waiting_for_speech) {
 //                 console.log("speech ended but restarted");
-                turn_on_speech();
+                turn_on_speech_recognition();
             }
         };
 
@@ -4970,7 +4981,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         }
 
         if (waiting_for_speech) {
-            turn_on_speech();
+            turn_on_speech_recognition();
         }
     };
 
