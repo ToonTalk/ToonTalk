@@ -277,6 +277,33 @@ window.TOONTALK.number = (function () {
         }
     };
 
+    var operator_phrase = function (operator, subject) {
+        switch (operator) {
+            case "+":
+                return "add " + subject + " to";
+            case "-":
+                return "subtract " + subject + " from";
+            case "*":
+                return "multiply " + subject + " with";
+            case "/":
+               return "divide " + subject + " into";
+         }
+            // equality not needed since caller handles it specially
+    };
+    
+    var operator_noun = function (operator) {
+        switch (operator) {
+            case "+": return "addition";
+            case "-": return "subtraction";
+            case "*": return "multiplication";
+            case "/": return "division";
+            case "=": return "equality";
+            default:
+                TT.UTILITIES.report_internal_error("Unsupported number operator: " + operator);
+                return "";
+        }
+    }
+
     var scientific_notation_exponent = function (rational_number) {
         var absolute_value = bigrat.abs(bigrat.create(), rational_number);
         var negative_exponent = bigrat.isLessThan(absolute_value, bigrat.ONE);
@@ -400,7 +427,7 @@ window.TOONTALK.number = (function () {
                     this.robot_in_training().edited(this, 
                                                     {setter_name: "set_operator",
                                                      argument_1: new_value,
-                                                     toString: "by changing the operator to " + new_value + " of the number",
+                                                     toString: "by changing the operator to " + operator_noun(new_value),
                                                      button_selector: "." + operator_radio_button_class_name(new_value)});
                 }
                 return this;
@@ -1099,19 +1126,6 @@ window.TOONTALK.number = (function () {
         return operator_string + bigrat.str(this.get_value());
     };
 
-    number.operator_word = function (subject) {
-        switch (this.get_operator()) {
-        case "+":
-            return "add " + subject + " to";
-        case "-":
-            return "subtract " + subject + " from";
-        case "*":
-            return "multiply " + subject + " with";
-        case "/":
-           return "divide " + subject + " into";
-        }
-    };
-
     number.get_text = function (for_speaking) {
         // for_speaking is because most (all?) text-to-speech engines fail to speak large numbers correctly
         var format = this.get_format();
@@ -1290,7 +1304,7 @@ window.TOONTALK.number = (function () {
         } else if (this.get_operator() === '/') {
             prefix =  "Drop me on another number I'll divide him by my value.";
         } else {
-            prefix = "Drop me on another number and I'll " + this.operator_word("myself") + " him.";
+            prefix = "Drop me on another number and I'll " + operator_phrase(this.get_operator(), "myself") + " him.";
         }
         if (this.get_approximate()) {
             prefix += "\nI look a bit yellow because I'm the result of an " +
