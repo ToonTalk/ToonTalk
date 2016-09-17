@@ -16,6 +16,10 @@ window.TOONTALK.path =
         return TT.path.to_entire_context();
     };
 
+    TT.creators_from_json["path.to_thing_in_hand"] = function () {
+        return TT.path.to_thing_in_hand();
+    };
+
     TT.creators_from_json["path.to_widget_on_nest"] = function () {
         return TT.path.to_widget_on_nest();
     };
@@ -73,6 +77,9 @@ window.TOONTALK.path =
                     path = TT.path.to_entire_context();
                     path.is_backside = is_backside;
                     return path;
+                }
+                if (robot.get_thing_in_hand() === widget) {
+                    return TT.path.to_thing_in_hand();
                 }
                 widget_type = widget.get_type_name();
                 if (widget_type === "top-level") {
@@ -284,6 +291,18 @@ window.TOONTALK.path =
                         callback({type: "path.to_widget_on_nest"}, start_time);
                     }
             }; 
+        },
+        to_thing_in_hand: function () {
+            return {dereference_path: function (robot, widget) {
+                        return TT.path.continue_dereferencing_path(this, robot.get_thing_in_hand(), robot);
+                    },
+                    toString: function () {
+                        return "what I'm holding";
+                    },
+                    get_json: function (json_history, callback, start_time) {
+                        callback({type: "path.to_thing_in_hand"}, start_time);
+                    }
+            };
         },
         get_path_to_resource: function (widget) {
             // ignore the side information and just use the widget

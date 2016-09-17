@@ -843,6 +843,7 @@ window.TOONTALK.robot = (function (TT) {
         if (widget_side.get_infinite_stack && widget_side.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
             this.current_action_name = "pick up a copy of";
+            widget_copy = TT.UTILITIES.get_dragee_copy();
         } else {
             this.current_action_name = "pick up";
         }
@@ -863,7 +864,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         widget_side.last_action = this.current_action_name;
         this.current_action_name = undefined;
-        this.set_thing_in_hand(widget_side);
+        this.set_thing_in_hand(widget_copy || widget_side);
         return step;
     };
     
