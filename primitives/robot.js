@@ -227,8 +227,11 @@ window.TOONTALK.robot = (function (TT) {
             if (stopped) {
                 if (this.visible()) {
                     $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
-                     this.drop_thing_in_hand();
-                     this.rerender();
+                    if (this.get_thing_in_hand()) {
+                        $(this.get_thing_in_hand().get_element()).removeClass("toontalk-held-by-robot");
+                        this.drop_thing_in_hand();
+                    }
+                    this.rerender();
                 }
                 running_or_in_run_queue = false;
             }
