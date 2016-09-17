@@ -476,56 +476,64 @@ window.TOONTALK.number = (function () {
                                                  // if draging a copy (from an infinite stack) then update the copy not the stack
                                                  var target_number = TT.UTILITIES.get_dragee_copy() || new_number;
                                                  switch (command) {
-                                                 case 'add':
-                                                 case 'plus':
-                                                 case 'sum':
-                                                 case 'addition':
-                                                 target_number.set_operator('+', true, true);
-                                                 break;
-                                                 case 'subtract':
-                                                 case 'take away':
-                                                 case 'subtraction':
-                                                 target_number.set_operator('-', true, true);
-                                                 break;
-                                                 case 'times':
-                                                 case 'multiply':
-                                                 case 'multiplication':
-                                                 target_number.set_operator('*', true, true);
-                                                 break;
-                                                 case 'divide':
-                                                 case 'divides':
-                                                 case 'divide by':
-                                                 case 'division':
-                                                 target_number.set_operator('/', true, true);
-                                                 break;
-                                                 case 'equal':
-                                                 case 'equals':
-                                                 target_number.set_operator('=', true, true);
-                                                 break;
-                                                 case 'decimal number':
-                                                 case 'decimal':
-                                                 target_number.set_format('decimal', true, true);
-                                                 break;
-                                                 case 'mixed number':
-                                                 case 'mixed':
-                                                 target_number.set_format('mixed_number', true, true);
-                                                 break;
-                                                 case 'improper fraction':
-                                                 case 'improper':
-                                                 case 'fraction':
-                                                 target_number.set_format('improper_fraction', true, true);
-                                                 break;
-                                                 case 'scientific notation':
-                                                 case 'scientific':
-                                                 target_number.set_format('scientific_notation', true, true);
-                                                 break;
-                                                 default:
-                                                      number_spoken = parseFloat(command);
-                                                      if (isNaN(number_spoken)) {
-                                                          console.log("did not understand '" + command + "'");
-                                                      } else {
-                                                          target_number.set_value_from_decimal(number_spoken);
-                                                      }
+                                                     case 'add':
+                                                     case 'plus':
+                                                     case 'sum':
+                                                     case 'addition':
+                                                        target_number.set_operator('+', true, true);
+                                                        break;
+                                                     case 'subtract':
+                                                     case 'take away':
+                                                     case 'subtraction':
+                                                        target_number.set_operator('-', true, true);
+                                                        break;
+                                                     case 'times':
+                                                     case 'multiply':
+                                                     case 'multiplication':
+                                                        target_number.set_operator('*', true, true);
+                                                        break;
+                                                     case 'divide':
+                                                     case 'divides':
+                                                     case 'divide by':
+                                                     case 'division':
+                                                        target_number.set_operator('/', true, true);
+                                                        break;
+                                                     case 'equal':
+                                                     case 'equals':
+                                                        target_number.set_operator('=', true, true);
+                                                        break;
+                                                     case 'decimal number':
+                                                     case 'decimal':
+                                                        target_number.set_format('decimal', true, true);
+                                                        break;
+                                                     case 'mixed number':
+                                                     case 'mixed':
+                                                         target_number.set_format('mixed_number', true, true);
+                                                         break;
+                                                     case 'improper fraction':
+                                                     case 'improper':
+                                                     case 'fraction':
+                                                         target_number.set_format('improper_fraction', true, true);
+                                                         break;
+                                                     case 'scientific notation':
+                                                     case 'scientific':
+                                                         target_number.set_format('scientific_notation', true, true);
+                                                         break;
+                                                     default:
+                                                          number_spoken = parseFloat(command);
+                                                          if (isNaN(number_spoken)) {
+                                                              console.log("did not understand spoken command: '" + command + "'");
+                                                          } else {
+                                                              target_number.set_value_from_decimal(number_spoken);
+                                                              if (target_number.robot_in_training()) {
+                                                                  target_number.robot_in_training().edited(target_number,
+                                                                                                           {setter_name: "set_value_from_decimal",
+                                                                                                            argument_1: number_spoken,
+                                                                                                            toString: "by changing its value to " + number_spoken,
+                                                                                                            // moving to numerator is best default
+                                                                                                            button_selector: ".toontalk-numerator-input"});
+                                                              }
+                                                          }
                                                   }
                                                   target_number.update_display();
                                                   plain_text_message = "You are now holding " + target_number.get_text(true);
@@ -1451,7 +1459,7 @@ window.TOONTALK.number_backside =
                                                                    argument_1: numerator,
                                                                    toString: "by changing the value of the numerator to " + numerator,
                                                                    button_selector: "." + first_class_name});
-                    }   
+                    }
                 }
                 number.rerender();
             };
