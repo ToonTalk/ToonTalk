@@ -264,6 +264,19 @@ window.TOONTALK.number = (function () {
         }
     };
 
+    var operator_radio_button_class_name = function (operator) {
+        switch (operator) {
+            case "+": return "toontalk-plus-radio-button";
+            case "-": return "toontalk-minus-radio-button";
+            case "*": return "toontalk-times-radio-button";
+            case "/": return "toontalk-divide-radio-button";
+            case "=": return "toontalk-set-equal-radio-button";
+            default:
+                TT.UTILITIES.report_internal_error("Unsupported number operator: " + operator);
+                return "";
+        }
+    };
+
     var scientific_notation_exponent = function (rational_number) {
         var absolute_value = bigrat.abs(bigrat.create(), rational_number);
         var negative_exponent = bigrat.isLessThan(absolute_value, bigrat.ONE);
@@ -378,10 +391,17 @@ window.TOONTALK.number = (function () {
                 return operator; 
             };
         new_number.set_operator =
-            function (new_value, update_now) { 
+            function (new_value, update_now, train) { 
                 operator = new_value;
                 if (update_now) {
                     this.rerender();
+                }
+                if (train && this.robot_in_training()) {
+                    this.robot_in_training().edited(this, 
+                                                    {setter_name: "set_operator",
+                                                     argument_1: new_value,
+                                                     toString: "by changing the operator to " + new_value + " of the number",
+                                                     button_selector: "." + operator_radio_button_class_name(new_value)});
                 }
                 return this;
             };
@@ -414,27 +434,27 @@ window.TOONTALK.number = (function () {
                                                  case 'plus':
                                                  case 'sum':
                                                  case 'addition':
-                                                 target_number.set_operator('+', true);
+                                                 target_number.set_operator('+', true, true);
                                                  break;
                                                  case 'subtract':
                                                  case 'take away':
                                                  case 'subtraction':
-                                                 target_number.set_operator('-', true);
+                                                 target_number.set_operator('-', true, true);
                                                  break;
                                                  case 'times':
                                                  case 'multiply':
                                                  case 'multiplication':
-                                                 target_number.set_operator('*', true);
+                                                 target_number.set_operator('*', true, true);
                                                  break;
                                                  case 'divide':
                                                  case 'divides':
                                                  case 'divide by':
                                                  case 'division':
-                                                 target_number.set_operator('/', true);
+                                                 target_number.set_operator('/', true, true);
                                                  break;
                                                  case 'equal':
                                                  case 'equals':
-                                                 target_number.set_operator('=', true);
+                                                 target_number.set_operator('=', true, true);
                                                  break;
                                                  case 'decimal number':
                                                  case 'decimal':
@@ -1309,7 +1329,7 @@ window.TOONTALK.number_backside =
             var minus    = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.", true);
             var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.", true);
             var divide   = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-divide-radio-button", "&divide;", "I will divide what I'm dropped on.", true);
-            var set = TT.UTILITIES.create_radio_button("operator", "=", "toontalk-set-equal-radio-button", "&equals;", "Set what I'm dropped on to my value.", true);
+            var set      = TT.UTILITIES.create_radio_button("operator", "=", "toontalk-set-equal-radio-button", "&equals;", "Set what I'm dropped on to my value.", true);
 //          var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.", true);
             var update_value = function (event) {
                 var numerator = numerator_input.button.value.trim();
@@ -1382,6 +1402,7 @@ window.TOONTALK.number_backside =
                 current_numerator   = number.numerator_string();
                 current_denominator = number.denominator_string();
                 if (number.robot_in_training()) {
+                    // why not use $(...).is(...)?
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
                         number.robot_in_training().edited(number, {setter_name: "set_denominator",
@@ -1412,15 +1433,7 @@ window.TOONTALK.number_backside =
             };
             var update_operator = function () {
                 var selected = TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, set);
-                var operator = selected.button.value;
-                number.set_operator(operator, true);
-                if (number.robot_in_training()) {
-                    number.robot_in_training().edited(number, {setter_name: "set_operator",
-                                                               argument_1: operator,
-                                                               toString: "by changing the operator to " + operator + " of the number",
-                                                               // just use the first className to find this button later
-                                                               button_selector: "." + selected.container.className.split(" ", 1)[0]});
-                }
+                number.set_operator(selected.button.value, true, true);
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container);
