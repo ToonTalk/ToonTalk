@@ -1490,7 +1490,9 @@ html {
 	display: none;
 }
 .toontalk-alert-element {
-	display: inline;
+/* 	display: inline; */
+	position: fixed;
+	top: 10px;
 	background-color: yellow;
 	font-size: 24px;
 	font-weight: bold;
