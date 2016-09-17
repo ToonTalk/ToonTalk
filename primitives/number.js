@@ -622,7 +622,8 @@ window.TOONTALK.number = (function () {
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
-        } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
+        } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json, .toontalk-robot")) {
+            // robots no longer change the dimensions of numbers held 
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
         } else if ($(frontside_element).parent().is(".toontalk-element-frontside")) {
@@ -657,9 +658,12 @@ window.TOONTALK.number = (function () {
             // good enough values when carried by a bird
             client_width  = 100;
             client_height = 100;
-        } else  if ($(frontside_element).is(".toontalk-held-by-robot")) {
-            client_width  = 76;
-            client_height = 55;
+//         } else  if ($(frontside_element).is(".toontalk-held-by-robot")) {
+//             client_width  = 76;
+//             client_height = 55;
+            // note that the dimensions of this number may remain as before
+            // maybe when picked up it should change the size and restore on drop 
+            // maybe birds as well
         } else if ($(frontside_element).is(".toontalk-element-attribute")) {
             // good enough if this number is an element attribute
             client_width  = 200;
