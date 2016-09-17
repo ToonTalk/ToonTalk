@@ -277,6 +277,18 @@ window.TOONTALK.number = (function () {
         }
     };
 
+    var format_radio_button_class_name = function (format) {
+        switch (format) {
+            case "decimal":             return "toontalk-decimal-radio-button";
+            case "proper_fraction":     return "toontalk-proper-fraction-radio-button";
+            case "improper_fraction":   return "toontalk-improper-fraction-radio-button";
+            case "scientific_notation": return "toontalk-scientific-notation-radio-button";
+            default:
+                TT.UTILITIES.report_internal_error("Unsupported number format: " + format);
+                return "";
+        }
+    };
+
     var operator_phrase = function (operator, subject) {
         switch (operator) {
             case "+":
@@ -406,10 +418,17 @@ window.TOONTALK.number = (function () {
                 return format || number.default_format; 
             };
         new_number.set_format =
-            function (new_value, update_now) { 
+            function (new_value, update_now, train) { 
                 format = new_value;
                 if (update_now) {
                     this.rerender();
+                }
+                if (train && this.robot_in_training()) {
+                    this.robot_in_training().edited(this,
+                                                    {setter_name: "set_format",
+                                                     argument_1: new_value,
+                                                     toString: "by changing the format to " + new_value,
+                                                     button_selector: "." + format_radio_button_class_name(new_value)});
                 }
                 return this;
             };
@@ -485,20 +504,20 @@ window.TOONTALK.number = (function () {
                                                  break;
                                                  case 'decimal number':
                                                  case 'decimal':
-                                                 target_number.set_format('decimal');
+                                                 target_number.set_format('decimal', true, true);
                                                  break;
                                                  case 'mixed number':
                                                  case 'mixed':
-                                                 target_number.set_format('mixed_number');
+                                                 target_number.set_format('mixed_number', true, true);
                                                  break;
                                                  case 'improper fraction':
                                                  case 'improper':
                                                  case 'fraction':
-                                                 target_number.set_format('improper_fraction');
+                                                 target_number.set_format('improper_fraction', true, true);
                                                  break;
                                                  case 'scientific notation':
                                                  case 'scientific':
-                                                 target_number.set_format('scientific_notation');
+                                                 target_number.set_format('scientific_notation', true, true);
                                                  break;
                                                  default:
                                                       number_spoken = parseFloat(command);
@@ -1435,19 +1454,13 @@ window.TOONTALK.number_backside =
             var update_format = function () {
                 var selected = TT.UTILITIES.selected_radio_button(decimal_format, mixed_number_format, improper_format, scientific_format);
                 var format = selected.button.value;
-                number.set_format(format, true);
-                if (number.robot_in_training()) {
-                    number.robot_in_training().edited(number, {setter_name: "set_format",
-                                                               argument_1: format,
-                                                               toString: "by changing the format to " + format + " of the number",
-                                                               // just use the first className to find this button later
-                                                               button_selector: "." + selected.container.className.split(" ", 1)[0]});
-                }
-                number.rerender();
+                number.set_format(format, true, true);
+//                 number.rerender();
             };
             var update_operator = function () {
                 var selected = TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, set);
-                number.set_operator(selected.button.value, true, true);
+                var operator = selected.button.value;
+                number.set_operator(operator, true, true);
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container);
