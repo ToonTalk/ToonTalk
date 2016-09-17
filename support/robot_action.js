@@ -473,7 +473,7 @@ window.TOONTALK.robot_action =
                                      0, 0, true);
         }
         if (!button_visible && widget.open_backside && robot.animate_consequences_of_actions()) {
-            if (widget.open_backside(animation_continuation)) {
+            if (widget.open_backside(animation_continuation, robot.transform_step_duration(500))) {
                 // open_backside returns backside only if it really opened it (not already open)
                 close_backside_when_finished(widget, robot);
             }
@@ -556,7 +556,7 @@ window.TOONTALK.robot_action =
             }
             continuation();
         };
-        button_use_animation(widget, robot, new_continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(1000));
+        button_use_animation(widget, robot, new_continuation, additional_info.button_selector, additional_info, robot.transform_step_duration(200));
     };
     var change_size_animation = function (widget, robot, continuation, additional_info) {
         var frontside_element = widget.get_frontside_element();

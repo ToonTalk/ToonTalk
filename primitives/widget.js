@@ -532,6 +532,7 @@ window.TOONTALK.widget = (function (TT) {
                     if (duration === 0) {
                         new_continuation();
                     } else {
+                        // why 100ms? and what if duration is undefined should it wait at all?
                         setTimeout(new_continuation, 100);
                     }           
                 };
@@ -1390,7 +1391,7 @@ window.TOONTALK.widget = (function (TT) {
             return false;
         },
         
-        open_backside: function (continuation) {
+        open_backside: function (continuation, duration) {
             // continuation will be run after animation is completed
             var backside = this.get_backside();
             var new_continuation, animate_backside_appearance,
@@ -1422,7 +1423,7 @@ window.TOONTALK.widget = (function (TT) {
                                 }
                             };
                             $(element).addClass("toontalk-side-appearing");
-                            TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 2500, remove_transition_class);
+                            TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", duration || 2500, remove_transition_class);
                             $(element).css({left:    final_left,
                                             top:     final_top,
                                             opacity: final_opacity});
