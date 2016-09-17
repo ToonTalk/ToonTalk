@@ -817,6 +817,7 @@ window.TOONTALK.UTILITIES =
         utilities.set_timeout(function () {
             $dragee = undefined;
             dragee_copy = undefined;
+            resource_copy = undefined;
         }); 
     };
     var has_ancestor_element = function (element, possible_ancestor) {
@@ -863,7 +864,7 @@ window.TOONTALK.UTILITIES =
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
-    var $dragee, dragee_copy;
+    var $dragee, dragee_copy, resource_copy;
     var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
     window.addEventListener("message", 
                             function (event) {
@@ -1958,7 +1959,7 @@ window.TOONTALK.UTILITIES =
             var dropped_copy, dropped_element_copy;
             if ($dropped && $dropped.is(".toontalk-top-level-resource")) {
                 // restore original
-                dropped_copy = dropped_widget_side.copy({fresh_copy: true}); // nest copies should be fresh - not linked
+                dropped_copy = utilities.get_resource_copy() || dropped_widget_side.copy({fresh_copy: true}); // nest copies should be fresh - not linked
                 dropped_element_copy = dropped_copy.get_frontside_element(true);
                 utilities.set_css(dropped_element_copy,
                                   {width:  $dropped.width(),
@@ -3121,16 +3122,25 @@ window.TOONTALK.UTILITIES =
             return $dragee && TT.UTILITIES.widget_side_of_jquery($dragee);
         };
 
+        utilities.get_resource_copy = function () {
+            return resource_copy;
+        };
+
         utilities.get_dragee_copy = function () {
             if (dragee_copy) {
                 return dragee_copy;
             }
             var dragee = utilities.get_dragee();
-            if (dragee && !dragee.is_backside() && dragee.get_infinite_stack()) {
+            if (dragee && !dragee.is_backside() && (dragee.get_infinite_stack() || $dragee.is(".toontalk-top-level-resource"))) {
                 if (!dragee_copy) {
-                    // by copying this when it is altered then the original (the 'infinite stack') isn't altered just its copy
-                    // add it off screen so that can display it in speech feedback messages
-                    dragee_copy = dragee.add_copy_to_container(undefined, -1000, -1000);
+                    if ($dragee.is(".toontalk-top-level-resource")) {
+                        dragee_copy = dragee;
+                        resource_copy = dragee.copy({fresh_copy: true});
+                    } else {
+                        // by copying this when it is altered then the original (the 'infinite stack') isn't altered just its copy
+                        // add it off screen so that can display it in speech feedback messages
+                        dragee_copy = dragee.add_copy_to_container(undefined, -1000, -1000);
+                    }
                 }
                 return dragee_copy;
             }
