@@ -5002,12 +5002,15 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     };
 
     utilities.spoken_command_is_a_description = function (command, widget) {
+        var description;
         if (command.indexOf("i am") === 0) {
-            widget.set_description(command.substring(5));
-            return true;
+            description = command.substring(5);
+        } else if (command.indexOf("i'm") === 0) {
+            description = command.substring(4);
         }
-        if (command.indexOf("i'm") === 0) {
-            widget.set_description(command.substring(4));
+        if (description) {
+            (utilities.get_dragee_copy() || widget).set_description(description, true, true);
+            utilities.display_message('The description of the ' + widget.get_type_name() + ' is now "' + description + '"');
             return true;
         }
     };

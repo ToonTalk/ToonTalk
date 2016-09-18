@@ -989,12 +989,7 @@ window.TOONTALK.backside =
             var description_change = 
                 function () {
                     var description = description_text_area.button.value.trim();
-                    if (widget.set_description(description, true) && widget.robot_in_training()) {
-                        widget.robot_in_training().edited(widget, {setter_name: "set_description",
-                                                                   argument_1: description,
-                                                                   toString: "change the description to '" + description + "'' of the " + type_name,
-                                                                   button_selector: ".toontalk-description-input"});
-                    }
+                    widget.set_description(description, true, true);
                 };
             $(description_text_area.button).val(widget.get_description());
             description_text_area.button.addEventListener('change',   description_change);

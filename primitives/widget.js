@@ -804,13 +804,20 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             if (!widget.set_description) {
-                widget.set_description = function (new_value, update_display) {
+                widget.set_description = function (new_value, update_display, train) {
                     if (description === new_value || (!description && new_value === "")) {
                         return false;
                     }
                     description = new_value;
                     if (update_display) {
                         this.rerender();
+                    }
+                    if (train && widget.robot_in_training()) {
+                        this.robot_in_training().edited(this,
+                                                        {setter_name: "set_description",
+                                                         argument_1: new_value,
+                                                         toString: "change the description to '" + new_value + "'' of the " + this.get_type_name(),
+                                                         button_selector: ".toontalk-description-input"});
                     }
                     return true;
                 };
