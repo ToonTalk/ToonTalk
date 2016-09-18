@@ -687,10 +687,12 @@ window.TOONTALK.number = (function () {
                                           height: client_height});
             }
         } else {
-            client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
-            client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
-            if (client_width === 0 || client_height === 0) {
-                if (TT.logging && TT.logging.indexOf('display') >= 0) {
+            if ($dimensions_holder.length > 0) {
+                client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
+                client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
+            }
+            if (client_width === 0 || client_height === 0 || $dimensions_holder.length === 0) {
+                if (TT.logging && TT.logging.indexOf('display') >= 0 && $dimensions_holder.length > 0) {
                     console.log("Container has zero dimensions so no display of " + this.to_debug_string());
                 }
                 if (!TT.UTILITIES.is_attached(frontside_element)) {
