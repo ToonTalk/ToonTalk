@@ -133,7 +133,7 @@ window.TOONTALK.box = (function (TT) {
         new_box.get_size = function () {
             return size;
         };
-        new_box.set_size = function (new_size, update_display) {
+        new_box.set_size = function (new_size, update_display, train) {
             var i, box_visibility, listeners;
             if (size === new_size || new_size < 0 || isNaN(new_size)) {
                 // ingore no change, negative or NaN values
@@ -158,6 +158,14 @@ window.TOONTALK.box = (function (TT) {
                     listener({type: 'contents_or_properties_changed',
                               new_size: new_size});
                 });
+            }
+            // should the following run even if nothing changed
+            if (train && this.robot_in_training()) {
+                this.robot_in_training().edited(this,
+                                                {setter_name: "set_size",
+                                                 argument_1: new_size,
+                                                 oString: "by changing the number of holes to " + new_size + " of the box",
+                                                 button_selector: ".toontalk-box-size-input"});
             }
             if (TT.debugging) {
                 this._debug_string = this.to_debug_string();
@@ -250,7 +258,7 @@ window.TOONTALK.box = (function (TT) {
                                                          console.log("did not understand '" + command + "'");
                                                      } else {
                                                          // what about negative numbers?
-                                                         target_box.set_size(number_spoken, true);
+                                                         target_box.set_size(number_spoken, true, true);
                                                      }
                                                   }
                                                   target_box.update_display(true);
@@ -996,12 +1004,7 @@ window.TOONTALK.box_backside =
             var vertical   = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-radio-button", "Top to bottom", "Show box vertically.", true);
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
-                if (box.set_size(new_size, true) && box.robot_in_training()) {
-                    box.robot_in_training().edited(box, {setter_name: "set_size",
-                                                         argument_1: new_size,
-                                                         toString: "by changing the number of holes to " + new_size + " of the box",
-                                                         button_selector: ".toontalk-box-size-input"});
-                }
+                box.set_size(new_size, true, true);
             };
             var update_orientation = function () {
                 var selected = TT.UTILITIES.selected_radio_button(horizontal, vertical);
