@@ -1022,14 +1022,10 @@ window.TOONTALK.backside =
                                                                  'text',
                                                                  name_drop_handler);
             var name_change = function () {
-                    var name = name_text_input.button.value.trim();
-                    if (widget.set_name && widget.set_name(name, true) && widget.robot_in_training()) {
-                        widget.robot_in_training().edited(widget, {setter_name: "set_name",
-                                                                   argument_1: name,
-                                                                   toString: "change the name to '" + name + "'' of the " + type_name,
-                                                                   button_selector: ".toontalk-name-input"});
-                    }
-                };
+                if (widget.set_name) {
+                    widget.set_name(name_text_input.button.value.trim(), true, true);        
+                }
+            };
             name_text_input.button.addEventListener('change',   name_change);
             name_text_input.button.addEventListener('mouseout', name_change);
             this.set_name_text_input(name_text_input);

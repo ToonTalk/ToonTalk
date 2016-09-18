@@ -2185,6 +2185,9 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.give_tooltip = function (element, new_title) {
+            if (!element) {
+                return;
+            }
             element.title = new_title;
             utilities.use_custom_tooltip(element);
         };
@@ -5016,11 +5019,18 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     };
 
     utilities.spoken_command_is_a_naming = function (command, widget) {
+        var name;
+        if (!widget.get_name) {
+            return;
+        }
         if (command.indexOf("my name is ") === 0) {
-            widget.set_name(command.substring(11), true);
-            return true;
+            name = command.substring(11);
         } else if (command.indexOf("call me ") === 0) {
-            widget.set_name(command.substring(8), true);
+            name = command.substring(8);
+        }
+        if (name) {
+            (utilities.get_dragee_copy() || widget).set_name(name, true, true);
+            utilities.display_message('The name of the ' + widget.get_type_name() + ' is now "' + name + '"');
             return true;
         }
     };

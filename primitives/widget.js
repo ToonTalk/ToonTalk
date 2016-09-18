@@ -812,7 +812,7 @@ window.TOONTALK.widget = (function (TT) {
                     if (update_display) {
                         this.rerender();
                     }
-                    if (train && widget.robot_in_training()) {
+                    if (train && this.robot_in_training()) {
                         this.robot_in_training().edited(this,
                                                         {setter_name: "set_description",
                                                          argument_1: new_value,
@@ -844,13 +844,20 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             if (!widget.set_name) {
-                widget.set_name = function (new_value, update_display) {
+                widget.set_name = function (new_value, update_display, train) {
                     if (name === new_value || typeof new_value !== 'string') {
                         return false;
                     }
                     name = new_value;
                     if (update_display) {
                         this.rerender();
+                    }
+                    if (train && this.robot_in_training()) {
+                        this.robot_in_training().edited(this,
+                                                        {setter_name: "set_name",
+                                                         argument_1: new_value,
+                                                         toString: 'change the name of the ' + this.get_type_name() + ' to "' + name + '"',
+                                                         button_selector: ".toontalk-name-input"});
                     }
                     return true;
                 };         

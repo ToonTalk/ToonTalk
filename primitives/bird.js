@@ -627,8 +627,8 @@ window.TOONTALK.bird = (function (TT) {
         };
         if (nest && nest.set_name) {
             // function nest names are read-only
-            new_bird.set_name = function (new_value, update_display) {
-                return nest.set_name(new_value, update_display);
+            new_bird.set_name = function (new_value, update_display, train) {
+                return nest.set_name(new_value, update_display, train);
             };
         }   
         new_bird.add_standard_widget_functionality(new_bird);
@@ -1549,9 +1549,9 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.has_name(new_nest);
         generic_set_name = new_nest.set_name;
-        new_nest.set_name = function (new_value, update_display) {
+        new_nest.set_name = function (new_value, update_display, train) {
             var old_name = this.get_name();
-            if (!generic_set_name.call(this, new_value, update_display)) {
+            if (!generic_set_name.call(this, new_value, update_display, train)) {
                 return false;
             }
             if (update_display) {
