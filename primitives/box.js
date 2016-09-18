@@ -62,11 +62,19 @@ window.TOONTALK.box = (function (TT) {
         new_box.get_horizontal = function () {
             return horizontal;
         };
-        new_box.set_horizontal = function (new_horizontal, update_display) {
-            horizontal = new_horizontal;
+        new_box.set_horizontal = function (new_value, update_display, train) {
+            horizontal = new_value;
             if (update_display) {
                 $(this.get_frontside_element()).children(".toontalk-side").remove();
                 this.rerender();
+            }
+            if (train && this.robot_in_training()) {
+                this.robot_in_training().edited(this,
+                                                {setter_name: "set_horizontal",
+                                                 argument_1: new_value,
+                                                 toString: "by changing the orientation to " + (new_value ? "horizontal" : "vertical"),
+                                                 // just use the first className to find this button later
+                                                 button_selector: new_value ? ".toontalk-horiztonal-radio-button" : "toontalk-vertical-radio-button"});
             }
             return this;
         };
@@ -246,11 +254,11 @@ window.TOONTALK.box = (function (TT) {
                                                  switch (command) {
                                                      case 'left to right':
                                                      case'horizontal':
-                                                     target_box.set_horizontal(true, true);
+                                                     target_box.set_horizontal(true, true, true);
                                                      break;
                                                      case 'top to bottom':
                                                      case 'vertical':
-                                                     target_box.set_horizontal(false, true);
+                                                     target_box.set_horizontal(false, true, true);
                                                      break;
                                                      default:
                                                      number_spoken = parseInt(command); // only integers make sense
@@ -1000,8 +1008,8 @@ window.TOONTALK.box_backside =
                     }
                 };
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number", size_area_drop_handler);
-            var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-radio-button", "Left to right", "Show box horizontally.", true); // might be nicer replaced by an icon
-            var vertical   = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-radio-button", "Top to bottom", "Show box vertically.", true);
+            var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-horiztonal-radio-button", "Left to right", "Show box horizontally.", true); // might be nicer replaced by an icon
+            var vertical   = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.", true);
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
                 box.set_size(new_size, true, true);
@@ -1010,14 +1018,7 @@ window.TOONTALK.box_backside =
                 var selected = TT.UTILITIES.selected_radio_button(horizontal, vertical);
                 var orientation = selected.button.value;
                 var is_horizontal = (orientation === "horizontal");
-                box.set_horizontal(is_horizontal, true);
-                if (box.robot_in_training()) {
-                    box.robot_in_training().edited(box, {setter_name: "set_horizontal",
-                                                         argument_1: is_horizontal,
-                                                         toString: "by changing the orientation to " + orientation + " of the box",
-                                                         // just use the first className to find this button later
-                                                         button_selector: "." + selected.container.className.split(" ", 1)[0]});
-                }
+                box.set_horizontal(is_horizontal, true, true);
             };
             var backside_element = backside.get_element();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, box);
