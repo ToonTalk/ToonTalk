@@ -1,12 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="../../toontalk.js"></script>
+<title>Voice Commands in ToonTalk?</title>
+</head>
+<body>
+<h2>Voice Commands</h2>
+ToonTalk can respond to voice commands while holding widgets or tools.
+This is currently enabled only if listen=1 is a URL parameter.
+It works in Chrome and some versions of FireFox.
+Click to learn if your <a href='http://caniuse.com/#feat=speech-recognition'>browser supports speech recognition</a>.
 
+Note that the first time ToonTalk attemmpts to access the microphone a dialog will appear asking permission.
+This will happen repeatedly if you are accessing ToonTalk via HTTP instead of HTTPS.
 
-TODO
+<h3>The magic wand</h3>
+While holding the Magic Wand over a widget you can say <b>"copy"</b> or <b>"abracadabra"</b> and the widget will be copied.
+<h3>Dusty the Vacuum</h3>
+You can say <b>"suck"</b> or <b>"erase"</b> while the vacuum is over a widget to remove or erase it.
+Each time you say <b>"restore"</b> the vacuum will unerase a widget if selected otherwise it will spit out a previously removed item.
+If you say <b>"remove all"</b> then everything will be removed (but still can be restored).
+<h3>Voice commands that work for all widgets</h3>
+You can say <b>"I am ..."</b> or <b>"I'm ..."</b> to provide a description of the widget that is held. 
+The description will appear in tool tips and on the back side of the widget.
 
-One can now speak commands such as 'erase', 'suck', and 'restore' while holding Dusty the Vacuum.
-And 'copy' or 'abracadabra' while holding the Magic Wand.
+If the widget has a name (currently robots, birds, and nests) then you can change their name by saying <b>"my name is ..."</b> or <b>"call me ..."</b>. 
+<h3>Numbers</h3>
 The value of a number can be changed by saying the number while holding it.
-The operation of a number can be changed by saying things like 'subtract', 'divide', and 'multiply'.
-The format of a number can be changed by saying things like 'mixed number', 'improper fraction', 'decimal', or 'scientific notation'.
-You can say the name of a bird or nest by saying 'my name is ...' or 'call me ...' while holding them.
-You can change the description of a widget by saying 'I am ...' or 'I'm ...'.
-Currently is enabled only if listen=1 is a URL parameter.
+The operation of a number can be changed by saying <b>"add"</b>, <b>"plus"</b>, <b>"sum"</b>, <b>"addition"</b>, <b>"subtract"</b>, <b>"subtraction"</b>, <b>"take away"</b>,
+<b>"times"</b>, <b>"multiply"</b>, <b>"multiplication"</b>, <b>"divide"</b>, <b>"division"</b>, <b>"equal"</b>, or <b>"equals"</b>.
+The format of the number can be changed by saying <b>"decimal number"</b>, <b>"decimal"</b>, <b>"mixed number"</b>, <b>"mixed"</b>,
+<b>"improper fraction"</b>, <b>"improper"</b>, <b>"fraction"</b>, <b>"scientific notation"</b>, or <b>"scientific"</b>.
+<h3>Boxes</h3>
+You can change the number of holes of a box while holding it by saying a whole number.
+You can change the box's orientation by saying <b>"left to right"</b>, <b>"horizontal"</b>, <b>"top to bottom"</b>, or <b>"vertical"</b>.
+</body>
+</html>
