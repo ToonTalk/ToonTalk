@@ -244,10 +244,10 @@ window.TOONTALK.box = (function (TT) {
         if (TT.listen) {
             var formats = 'left to right | horizontal | top to bottom | vertical';
             var number_spoken, plain_text_message, previous_message;
-            new_box.add_speech_listeners(   {commands: formats, 
-                                             numbers_acceptable: true,
-                                             descriptions_acceptable: true,
-                                             success_callback: function (command) {
+            new_box.add_speech_listeners({commands: formats, 
+                                          numbers_acceptable: true,
+                                          descriptions_acceptable: true,
+                                          success_callback: function (command) {
                                                  // if draging a copy (from an infinite stack) then update the copy not the stack
                                                  var target_box = TT.UTILITIES.get_dragee_copy() || new_box;
                                                  var size;
@@ -280,7 +280,7 @@ window.TOONTALK.box = (function (TT) {
                                                                                duration: 4000});
                                                       previous_message = plain_text_message;
                                                   }
-                                             }});
+                                          }});
         }
         if (initial_contents) {
             new_box.set_contents(initial_contents);
