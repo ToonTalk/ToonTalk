@@ -552,6 +552,10 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.has_name(new_robot);
         new_robot.set_name(name);
         new_robot.set_description(description);
+        if (TT.listen) {
+            new_robot.add_speech_listeners({descriptions_acceptable: true,
+                                            names_acceptable: true});
+        }
         new_robot.remove_backside_widget = function (widget_side, ignore_if_not_on_backside) {
             // e.g. a condition has been vacuumed away
             // TODO: if robot training a robot ensure path is OK
