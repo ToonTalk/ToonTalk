@@ -101,10 +101,10 @@ window.TOONTALK.backside =
                                          } else {
                                              if (widget.is_top_level()) {
                                                  TT.UTILITIES.display_message("There is nothing to run.",
-                                                                              event.target);
+                                                                              {element: event.target});
                                              } else {
                                                  TT.UTILITIES.display_message("This " + widget.get_type_name() + " has nothing to run. Add some robots on the back.",
-                                                                              event.target);
+                                                                              {element: event.target});
                                              }
                                          }
                                          if (widget.robot_in_training()) {
@@ -989,12 +989,7 @@ window.TOONTALK.backside =
             var description_change = 
                 function () {
                     var description = description_text_area.button.value.trim();
-                    if (widget.set_description(description, true) && widget.robot_in_training()) {
-                        widget.robot_in_training().edited(widget, {setter_name: "set_description",
-                                                                   argument_1: description,
-                                                                   toString: "change the description to '" + description + "'' of the " + type_name,
-                                                                   button_selector: ".toontalk-description-input"});
-                    }
+                    widget.set_description(description, true, true);
                 };
             $(description_text_area.button).val(widget.get_description());
             description_text_area.button.addEventListener('change',   description_change);
@@ -1027,14 +1022,10 @@ window.TOONTALK.backside =
                                                                  'text',
                                                                  name_drop_handler);
             var name_change = function () {
-                    var name = name_text_input.button.value.trim();
-                    if (widget.set_name && widget.set_name(name, true) && widget.robot_in_training()) {
-                        widget.robot_in_training().edited(widget, {setter_name: "set_name",
-                                                                   argument_1: name,
-                                                                   toString: "change the name to '" + name + "'' of the " + type_name,
-                                                                   button_selector: ".toontalk-name-input"});
-                    }
-                };
+                if (widget.set_name) {
+                    widget.set_name(name_text_input.button.value.trim(), true, true);        
+                }
+            };
             name_text_input.button.addEventListener('change',   name_change);
             name_text_input.button.addEventListener('mouseout', name_change);
             this.set_name_text_input(name_text_input);
@@ -1459,7 +1450,7 @@ window.TOONTALK.backside =
         },
 
         get_listeners: function (type) {
-            return this.get_widget().get_listeners(typee);     
+            return this.get_widget().get_listeners(type);     
         },
 
         is_hole: function () {

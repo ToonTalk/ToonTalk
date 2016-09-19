@@ -1490,18 +1490,27 @@ html {
 	display: none;
 }
 .toontalk-alert-element {
-	display: inline;
+/* 	display: inline; */
+	position: fixed;
+	top: 10px;
 	background-color: yellow;
 	font-size: 24px;
 	font-weight: bold;
+	border-radius: 8px;
+	padding: 8px;
+	z-index: 9999;
 }
 .toontalk-local-alert {
 	position: absolute;
-	top: -60px;
+	top: -80px;
 	background-color: orange;
 	color: black;
 	border-radius: 8px;
 	padding: 8px;
+	z-index: 9999;
+}
+body > .toontalk-local-alert {
+	top: 10px;
 }
 .toontalk-help-link {
 	font-weight: bold;
@@ -1873,6 +1882,7 @@ table.toontalk-documentation-table {
    padding-left: 24px;
    padding-top: 24px;
    max-width: 10em;
+   padding-right: 8px;
 }
 .toontalk-function-bird-title-documentation {
 	max-width: 50em;

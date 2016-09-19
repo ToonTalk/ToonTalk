@@ -62,11 +62,19 @@ window.TOONTALK.box = (function (TT) {
         new_box.get_horizontal = function () {
             return horizontal;
         };
-        new_box.set_horizontal = function (new_horizontal, update_display) {
-            horizontal = new_horizontal;
+        new_box.set_horizontal = function (new_value, update_display, train) {
+            horizontal = new_value;
             if (update_display) {
                 $(this.get_frontside_element()).children(".toontalk-side").remove();
                 this.rerender();
+            }
+            if (train && this.robot_in_training()) {
+                this.robot_in_training().edited(this,
+                                                {setter_name: "set_horizontal",
+                                                 argument_1: new_value,
+                                                 toString: "by changing the orientation to " + (new_value ? "horizontal" : "vertical"),
+                                                 // just use the first className to find this button later
+                                                 button_selector: new_value ? ".toontalk-horiztonal-radio-button" : "toontalk-vertical-radio-button"});
             }
             return this;
         };
@@ -133,8 +141,8 @@ window.TOONTALK.box = (function (TT) {
         new_box.get_size = function () {
             return size;
         };
-        new_box.set_size = function (new_size, update_display) {
-            var i, box_visibility;
+        new_box.set_size = function (new_size, update_display, train) {
+            var i, box_visibility, listeners;
             if (size === new_size || new_size < 0 || isNaN(new_size)) {
                 // ingore no change, negative or NaN values
                 return false;
@@ -151,6 +159,21 @@ window.TOONTALK.box = (function (TT) {
             size = new_size;
             if (update_display) {
                 this.rerender();
+            }
+            listeners = this.get_listeners('contents_or_properties_changed');
+            if (listeners) {
+                listeners.forEach(function (listener) {
+                    listener({type: 'contents_or_properties_changed',
+                              new_size: new_size});
+                });
+            }
+            // should the following run even if nothing changed
+            if (train && this.robot_in_training()) {
+                this.robot_in_training().edited(this,
+                                                {setter_name: "set_size",
+                                                 argument_1: new_size,
+                                                 oString: "by changing the number of holes to " + new_size + " of the box",
+                                                 button_selector: ".toontalk-box-size-input"});
             }
             if (TT.debugging) {
                 this._debug_string = this.to_debug_string();
@@ -218,6 +241,47 @@ window.TOONTALK.box = (function (TT) {
             holes[i].set_parent_of_frontside(new_box);
         }
         new_box.set_description(description);
+        if (TT.listen) {
+            var formats = 'left to right | horizontal | top to bottom | vertical';
+            var number_spoken, plain_text_message, previous_message;
+            new_box.add_speech_listeners({commands: formats, 
+                                          numbers_acceptable: true,
+                                          descriptions_acceptable: true,
+                                          success_callback: function (command) {
+                                                 // if draging a copy (from an infinite stack) then update the copy not the stack
+                                                 var target_box = TT.UTILITIES.get_dragee_copy() || new_box;
+                                                 var size;
+                                                 switch (command) {
+                                                     case 'left to right':
+                                                     case'horizontal':
+                                                     target_box.set_horizontal(true, true, true);
+                                                     break;
+                                                     case 'top to bottom':
+                                                     case 'vertical':
+                                                     target_box.set_horizontal(false, true, true);
+                                                     break;
+                                                     default:
+                                                     number_spoken = parseInt(command); // only integers make sense
+                                                     if (isNaN(number_spoken)) {
+                                                         console.log("did not understand '" + command + "'");
+                                                     } else {
+                                                         // what about negative numbers?
+                                                         target_box.set_size(number_spoken, true, true);
+                                                     }
+                                                  }
+                                                  target_box.update_display(true);
+                                                  size = target_box.get_size();
+                                                  plain_text_message = "You are now holding a " + 
+                                                                        (target_box.get_horizontal() ? "horizontal" : "vertical") + " box with " +
+                                                                        ((size > 1) ? (size + " holes") : ((size === 0) ? "no holes" : "one hole")) + ".";
+                                                  if (plain_text_message !== previous_message) {
+                                                      new_box.display_message(plain_text_message, 
+                                                                              {display_on_backside_if_possible: true, 
+                                                                               duration: 4000});
+                                                      previous_message = plain_text_message;
+                                                  }
+                                          }});
+        }
         if (initial_contents) {
             new_box.set_contents(initial_contents);
         }
@@ -944,29 +1008,17 @@ window.TOONTALK.box_backside =
                     }
                 };
             var size_input = TT.UTILITIES.create_text_input(box.get_size().toString(), 'toontalk-box-size-input', "Number of holes", "Type here to edit the number of holes.", undefined, "number", size_area_drop_handler);
-            var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-radio-button", "Left to right", "Show box horizontally.", true); // might be nicer replaced by an icon
-            var vertical   = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-radio-button", "Top to bottom", "Show box vertically.", true);
+            var horizontal = TT.UTILITIES.create_radio_button("box_orientation", "horizontal", "toontalk-horiztonal-radio-button", "Left to right", "Show box horizontally.", true); // might be nicer replaced by an icon
+            var vertical   = TT.UTILITIES.create_radio_button("box_orientation", "vertical", "toontalk-vertical-radio-button", "Top to bottom", "Show box vertically.", true);
             var update_value = function () {
                 var new_size = parseInt(size_input.button.value.trim(), 10);
-                if (box.set_size(new_size, true) && box.robot_in_training()) {
-                    box.robot_in_training().edited(box, {setter_name: "set_size",
-                                                         argument_1: new_size,
-                                                         toString: "by changing the number of holes to " + new_size + " of the box",
-                                                         button_selector: ".toontalk-box-size-input"});
-                }
+                box.set_size(new_size, true, true);
             };
             var update_orientation = function () {
                 var selected = TT.UTILITIES.selected_radio_button(horizontal, vertical);
                 var orientation = selected.button.value;
                 var is_horizontal = (orientation === "horizontal");
-                box.set_horizontal(is_horizontal, true);
-                if (box.robot_in_training()) {
-                    box.robot_in_training().edited(box, {setter_name: "set_horizontal",
-                                                         argument_1: is_horizontal,
-                                                         toString: "by changing the orientation to " + orientation + " of the box",
-                                                         // just use the first className to find this button later
-                                                         button_selector: "." + selected.container.className.split(" ", 1)[0]});
-                }
+                box.set_horizontal(is_horizontal, true, true);
             };
             var backside_element = backside.get_element();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, box);
@@ -985,6 +1037,16 @@ window.TOONTALK.box_backside =
                 }
                 generic_backside_update();
             };
+            TT.UTILITIES.when_attached(backside_element,
+                                       function () {
+                                           if (!backside.is_primary_backside()) {
+                                               // primary backsides update when frontside does
+                                               box.add_listener('contents_or_properties_changed', 
+                                                                function () {
+                                                                    backside.rerender();
+                                                                });
+                                           }
+                                       });  
             backside_element.appendChild(size_input.container);
             backside_element.appendChild(buttons);
             $(buttons).buttonset();
@@ -1148,23 +1210,23 @@ window.TOONTALK.box_hole =
                 return contents;
             };
             hole.set_contents = function (new_value) {
-                var listeners = this.get_listeners('value_changed');
+                var listeners = this.get_listeners('contents_or_properties_changed');
                 if (listeners) {
                     if (contents !== new_value) {
                         listeners.forEach(function (listener) {
-                            listener({type: 'value_changed',
+                            listener({type: 'contents_or_properties_changed',
                                       old_value: contents,
                                       new_value: new_value});
                         });
                     }
                     if (contents) {
                         listeners.forEach(function (listener) {
-                            contents.remove_listener('value_changed', listener, true);
+                            contents.remove_listener('contents_or_properties_changed', listener, true);
                         });
                     }
                     if (new_value) {
                         listeners.forEach(function (listener) {
-                            new_value.add_listener('value_changed', listener);
+                            new_value.add_listener('contents_or_properties_changed', listener);
                         });
                     }
                 }

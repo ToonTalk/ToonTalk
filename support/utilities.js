@@ -20,7 +20,6 @@ window.TOONTALK.UTILITIES =
     // defined here to support self-reference
     var utilities = {};  
     var toontalk_initialized = false;  
-    var $dragee;
     var z_index = 100;
     // id needs to be unique across ToonTalks due to drag and drop
     var id_counter = new Date().getTime();
@@ -126,7 +125,7 @@ window.TOONTALK.UTILITIES =
         var $source_element = $(element).closest(".toontalk-side");
         var client_x = utilities.get_mouse_or_first_touch_event_attribute("clientX", event);
         var client_y = utilities.get_mouse_or_first_touch_event_attribute("clientY", event);
-        var bounding_rectangle, json, json_callback, json_div, widget_side, is_resource;
+        var bounding_rectangle, json, json_callback, json_div, widget_side, is_resource, held_listeners;
         $(".ui-tooltip").remove();
         // stop animating it if grabbed
         $(".ui-tooltip").removeClass("toontalk-side-animating");
@@ -195,10 +194,16 @@ window.TOONTALK.UTILITIES =
             TT.UTILITIES.get_json_top_level(widget_side, json_callback, 1000*60*10);
         }
         $dragee.addClass("toontalk-being-dragged");
+        held_listeners = widget_side.get_listeners('picked up');
+        if (held_listeners) {
+            held_listeners.map(function (listener) {
+                listener();
+            });
+        }
         event.stopPropagation();
     };
     var drag_end_handler = function (event, element) {
-        var widget_side;
+        var widget_side, drop_listeners;
         if ($(element).is(".toontalk-conditions-contents")) {
             // don't drag widget out of condition container
             return;
@@ -209,6 +214,12 @@ window.TOONTALK.UTILITIES =
         widget_side = utilities.widget_side_of_jquery($dragee);
         if (widget_side) {
             widget_side.being_dragged = undefined;
+            drop_listeners = widget_side.get_listeners('dropped');
+                if (drop_listeners) {
+                    drop_listeners.map(function (listener) {
+                            listener();
+                    });
+                }
         }
         if ($dragee.is(".toontalk-frontside")) {
             if ($dragee.parent().is(".toontalk-backside")) {
@@ -409,7 +420,7 @@ window.TOONTALK.UTILITIES =
                         // leave the source there but create a copy
                         source_widget_saved_width  = source_widget_side.get_widget().saved_width;
                         source_widget_saved_height = source_widget_side.get_widget().saved_height;
-                        source_widget_side = source_widget_side.copy();
+                        source_widget_side = TT.UTILITIES.get_dragee_copy();
                         source_widget_side.get_widget().saved_width  = source_widget_saved_width;
                         source_widget_side.get_widget().saved_height = source_widget_saved_height;
                         width  = $source.width();
@@ -805,7 +816,9 @@ window.TOONTALK.UTILITIES =
         // e.g. drop area for next robot
         utilities.set_timeout(function () {
             $dragee = undefined;
-            }); 
+            dragee_copy = undefined;
+            resource_copy = undefined;
+        }); 
     };
     var has_ancestor_element = function (element, possible_ancestor) {
         if (element === possible_ancestor) {
@@ -846,14 +859,13 @@ window.TOONTALK.UTILITIES =
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
-    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-    var speech_recognition = new SpeechRecognition();
-    var listening_to_speech = false;
+    var waiting_for_speech = false;
     // for implementing zero_timeout
     var timeouts = [];
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
-    var path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
+    var $dragee, dragee_copy, resource_copy;
+    var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
     window.addEventListener("message", 
                             function (event) {
                                 if (event.data === timeout_message_name && event.source === window) {
@@ -1947,7 +1959,7 @@ window.TOONTALK.UTILITIES =
             var dropped_copy, dropped_element_copy;
             if ($dropped && $dropped.is(".toontalk-top-level-resource")) {
                 // restore original
-                dropped_copy = dropped_widget_side.copy({fresh_copy: true}); // nest copies should be fresh - not linked
+                dropped_copy = utilities.get_resource_copy() || dropped_widget_side.copy({fresh_copy: true}); // nest copies should be fresh - not linked
                 dropped_element_copy = dropped_copy.get_frontside_element(true);
                 utilities.set_css(dropped_element_copy,
                                   {width:  $dropped.width(),
@@ -2173,6 +2185,9 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.give_tooltip = function (element, new_title) {
+            if (!element) {
+                return;
+            }
             element.title = new_title;
             utilities.use_custom_tooltip(element);
         };
@@ -2422,7 +2437,7 @@ window.TOONTALK.UTILITIES =
                     speech_utterance.onend = undefined;
                 };
                 setTimeout(function () {
-                               if (speech_utterance.onend) {
+                               if (speech_utterance.onend && !window.speechSynthesis.speaking) {
                                    // still hasn't run
                                    utilities.display_message("Browser did not begin speaking after waiting 20 seconds. Continuing as if speech occurred.");
                                    speech_utterance.onend();
@@ -3106,6 +3121,34 @@ window.TOONTALK.UTILITIES =
             return $dragee;
         };
 
+        utilities.get_dragee = function () {
+            return $dragee && TT.UTILITIES.widget_side_of_jquery($dragee);
+        };
+
+        utilities.get_resource_copy = function () {
+            return resource_copy;
+        };
+
+        utilities.get_dragee_copy = function () {
+            if (dragee_copy) {
+                return dragee_copy;
+            }
+            var dragee = utilities.get_dragee();
+            if (dragee && !dragee.is_backside() && (dragee.get_infinite_stack() || $dragee.is(".toontalk-top-level-resource"))) {
+                if (!dragee_copy) {
+                    if ($dragee.is(".toontalk-top-level-resource")) {
+                        dragee_copy = dragee;
+                        resource_copy = dragee.copy({fresh_copy: true});
+                    } else {
+                        // by copying this when it is altered then the original (the 'infinite stack') isn't altered just its copy
+                        // add it off screen so that can display it in speech feedback messages
+                        dragee_copy = dragee.add_copy_to_container(undefined, -1000, -1000);
+                    }
+                }
+                return dragee_copy;
+            }
+        };
+
         utilities.add_URL_parameter = function (url, parameter, value) {
             url = utilities.remove_URL_parameter(url, parameter);
             var query_index, parameter_conjunction;
@@ -3580,52 +3623,58 @@ window.TOONTALK.UTILITIES =
             return animation && animation.indexOf("none") !== 0;
         };
 
-        utilities.display_message_if_new = function (message) {
-            if (messages_displayed.indexOf(message) < 0) {
-                utilities.display_message(message);
-                messages_displayed.push(message);
-            }
-        };
-
-        utilities.display_message = function (message, element, second_choice_element, duration) {
-            // if a backside containing element isn't found then try second_choice_element
+        utilities.display_message = function (message, options) {
+            // options include duration, element, second_choice_element, only_if_new, plain_text
+            // if element is provided while try to display the message on its backside or a backside container
+            // if a backside containing element isn't found then second_choice_element is used if provided
             var alert_element = utilities.create_alert_element(message);
             var remove_handler = function () {
                                      $(alert_element).remove();
                                  };
             var $backside;
+            if (!options) {
+                options = {};
+            }
+            if (options.only_if_new) {
+                if (messages_displayed.indexOf(message) < 0) {
+                    messages_displayed.push(message);
+                } else {
+                    return;
+                }
+            }
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             if (TT.debugging) {
-                console.log(message);
+                console.log(options.plain_text || message);
                 console.trace();
             }
-            if (element || second_choice_element) {
-                $backside = $(element).closest(".toontalk-backside");
+            if (options.element || options.second_choice_element) {
+                $backside = $(options.element).closest(".toontalk-backside");
                 if ($backside.length === 0) {
-                    $backside = $(second_choice_element).closest(".toontalk-backside");
+                    $backside = $(options.second_choice_element).closest(".toontalk-backside");
                 }
                 if ($backside.length > 0) {
                     $(alert_element).addClass("toontalk-local-alert");
                     $backside.append(alert_element);
                 }
             } 
-            if (!element || $backside.length === 0) {
+            if (!options.element || $backside.length === 0) {
                 document.body.insertBefore(alert_element, document.body.firstChild);
             }
             if (TT.speak) {
                 window.speechSynthesis.cancel(); // stop any ongoing speech
-                utilities.speak(message);
+                // ignore any HTML in message
+                utilities.speak(options.plain_text || alert_element.textContent);
             }
             alert_element.addEventListener('click', remove_handler);
-            if (!duration) {
-                if (message[0] === '<') {
-                    // is HTML not plain text
-                    duration = 5000;
+            if (!options.duration) {
+                if (message.indexOf('<') >= 0) {
+                    // contains HTML not plain text
+                    options.duration = 5000;
                 } else {
-                    duration = Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
+                    options.duration = Math.max(2000, message.length * (TT.MAXIMUM_TOOLTIP_DURATION_PER_CHARACTER || 100));
                 }
             }
-            setTimeout(remove_handler, duration);
+            setTimeout(remove_handler, options.duration);
         };
 
         utilities.display_tooltip = function ($element) {
@@ -4827,28 +4876,56 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 handles: "n,e,s,w,se,ne,sw,nw"});
     };
 
-    utilities.listen_for_speech = function (words, minimum_confidence, success_callback, fail_callback) {
-        var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
-        var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
-        var grammar = '#JSGF V1.0; grammar words; public <words> = ' + words + ';';
-        var speechRecognitionList = new SpeechGrammarList();
-        var turn_on_speech = function () {
+    utilities.listen_for_speech = function (options) {
+        // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
+        // tags would be a nice way to simplify this and make it language independent but at last Chrome doesn't currently support it
+        // options are commands, minimum_confidence, numbers_acceptable, descriptions_acceptable, widget, success_callback, fail_callback
+        var commands, minimum_confidence, SpeechGrammarList, SpeechRecognitionEvent, grammar, speechRecognitionList, turn_on_speech_recognition;
+        var command, confidence, i;
+        if (!TT.listen) {
+            return;
+        }
+        commands = options.commands || "";
+        minimum_confidence = options.minimum_confidence || 0;
+        SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+        SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
+        if (window.speechSynthesis.speaking) {
+            // busy wait until speech synthesis is over
+            setTimeout(function () {
+                           utilities.listen_for_speech(options);
+                       },
+                       1000);
+            return;
+        }
+        // see https://www.w3.org/TR/jsgf/ for JSGF format
+        if (options.descriptions_acceptable) {
+            // accept anything that starts with I am or I'm
+            commands += " | I am | I'm ";
+        }
+        if (options.names_acceptable) {
+            // accept anything that starts with my name is or call me
+            commands += " | My name is | call me ";
+        }
+        grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
+        speechRecognitionList = new SpeechGrammarList();
+        turn_on_speech_recognition = function () {
             try {
                 speech_recognition.start();
-                listening_to_speech = true;
-                console.log("listening");
+//                 console.log("listening");
             } catch (ignore_error) {
                 // assuming the error was that it had already started
-                console.log("Ignoring " + ignore_error);
+//                 console.log("Ignoring " + ignore_error);
             }
         };
+        waiting_for_speech = true;
+        speech_recognition = (typeof SpeechRecognition === 'undefined') ? new webkitSpeechRecognition() : new SpeechRecognition();
         speechRecognitionList.addFromString(grammar, 1);
         speech_recognition.grammars = speechRecognitionList;
         speech_recognition.continuous = false;
         // speech_recognition.continuous = true; // net yet supported??
         speech_recognition.lang = 'en-US';
         speech_recognition.interimResults = false;
-        speech_recognition.maxAlternatives = 1;
+        speech_recognition.maxAlternatives = 5;
         speech_recognition.onresult = function (event) {
             // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
             // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
@@ -4857,53 +4934,105 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // Each SpeechRecognitionResult object contains SpeechRecognitionAlternative objects that contain individual results.
             // These also have getters so they can be accessed like arrays.
             // The second [0] returns the SpeechRecognitionAlternative at position 0.
-            // We then return the transcript property of the SpeechRecognitionAlternative object 
-            if (event.results[0][0].confidence >= minimum_confidence) {
-                if (success_callback(event.results[0][0].transcript, event)) {
-                    speech_recognition.stop();
-                    listening_to_speech = false;
-                    console.log("stopped listening due to result");
-                    setTimeout(function () {
-                                  utilities.listen_for_speech(words, minimum_confidence, success_callback, fail_callback);
-                               },
-                               100);
+            // We then return the transcript property of the SpeechRecognitionAlternative object
+            var result;
+            for (i = 0; i < event.results[0].length; i++) {
+                if (event.results[0][i].confidence >= minimum_confidence) {
+                    result = event.results[0][i].transcript.toLowerCase(); 
+                    if (!commands ||
+                        (commands.indexOf(result + " |") >= 0 ||
+                         commands.indexOf("| " + result) >= 0 ||
+                         (options.numbers_acceptable && !isNaN(parseFloat(result))) ||
+                         (options.descriptions_acceptable && (result.indexOf('i am') === 0 || result.indexOf("i'm") === 0)) ||
+                         (options.names_acceptable && (result.indexOf('my name is') === 0 || result.indexOf("call me") === 0)))) {
+                        // if command is one of the expected tokens -- must have a | before and/or after it
+                        command = event.results[0][i].transcript.toLowerCase();
+                        confidence = event.results[0][i].confidence;
+                        // assumes that the most confident answers are first
+                        break;
+                    }
                 }
+            }
+            if (window.speechSynthesis.speaking) {
+                console.log("Ignoring speech since synthesising speech. " + (command || ""));
+            } else if (command) {
+                console.log(command + " confidence : " + confidence);
+                if (options.descriptions_acceptable && options.widget && utilities.spoken_command_is_a_description(command, options.widget)) {
+                    // description updated
+                    options.widget.rerender();
+                } else if (options.names_acceptable && options.widget && utilities.spoken_command_is_a_naming(command, options.widget)) {
+                    // name updated
+                    options.widget.rerender();
+                } else if (options.success_callback) {
+                    options.success_callback(command, event);
+                }   
             } else {
-                console.log("Confidence too low: " + event.results[0][0].confidence); // gives better feedback
+                console.log("confidence too low"); // give better feedback
+            }
+            speech_recognition.stop(); // onend will restart listening
+        };
+
+        speech_recognition.onend = function () {
+            if (waiting_for_speech) {
+//                 console.log("speech ended but restarted");
+                turn_on_speech_recognition();
             }
         };
 
-//         speech_recognition.onspeechend = function () {
-//             // good idea???
-//             speech_recognition.stop();
-//             listening_to_speech = false;
-//         };
-
         speech_recognition.onnomatch = function (event) {
-            if (fail_callback) {
-                fail_callback(event);
+            if (options.fail_callback) {
+                options.fail_callback(event);
             }
         };
 
         speech_recognition.onerror = function (event) {
             if (event.error !== 'no-speech') {
-                utilities.listen_for_speech(words, minimum_confidence, success_callback, fail_callback);
-            } else if (fail_callback) {
-                fail_callback(event);
+//              console.log('no speech');
+            } else if (options.fail_callback) {
+                options.fail_callback(event);
             }
         }
 
-        if (!listening_to_speech) {
-            turn_on_speech();
-        } else {
-            console.log("already listening");
+        if (waiting_for_speech) {
+            turn_on_speech_recognition();
         }
     };
 
     utilities.stop_listening_for_speech = function () {
         speech_recognition.stop();
-        listening_to_speech = false;
-        console.log("stopped listening due to stop_listening_for_speech");
+        waiting_for_speech = false; 
+//         console.log("stopped listening due to stop_listening_for_speech");
+    };
+
+    utilities.spoken_command_is_a_description = function (command, widget) {
+        var description;
+        if (command.indexOf("i am") === 0) {
+            description = command.substring(5);
+        } else if (command.indexOf("i'm") === 0) {
+            description = command.substring(4);
+        }
+        if (description) {
+            (utilities.get_dragee_copy() || widget).set_description(description, true, true);
+            utilities.display_message('The description of the ' + widget.get_type_name() + ' is now "' + description + '"');
+            return true;
+        }
+    };
+
+    utilities.spoken_command_is_a_naming = function (command, widget) {
+        var name;
+        if (!widget.get_name) {
+            return;
+        }
+        if (command.indexOf("my name is ") === 0) {
+            name = command.substring(11);
+        } else if (command.indexOf("call me ") === 0) {
+            name = command.substring(8);
+        }
+        if (name) {
+            (utilities.get_dragee_copy() || widget).set_name(name, true, true);
+            utilities.display_message('The name of the ' + widget.get_type_name() + ' is now "' + name + '"');
+            return true;
+        }
     };
 
 
@@ -5038,6 +5167,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside', TT.puzzle);
             TT.reset                         = utilities.get_current_url_boolean_parameter('reset', TT.puzzle);
             TT.speak                         = utilities.get_current_url_boolean_parameter('speak', false);
+            TT.listen                        = utilities.get_current_url_boolean_parameter('listen', false);
             if (TT.speak && !window.speechSynthesis) {
                 TT.speak = false;
                 utilities.display_message("This browser doesn't support speech output. speak=1 in URL ignored.");

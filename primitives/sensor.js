@@ -280,7 +280,7 @@ window.TOONTALK.sensor = (function (TT) {
                                  return event.detail[attribute];
                              }
                              value = "No such attribute for " + new_sensor;
-                             new_sensor.display_message(value, true);
+                             new_sensor.display_message(value, {display_on_backside_if_possible: true});
                          }
                     }
                     return value;

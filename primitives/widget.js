@@ -532,6 +532,7 @@ window.TOONTALK.widget = (function (TT) {
                     if (duration === 0) {
                         new_continuation();
                     } else {
+                        // why 100ms? and what if duration is undefined should it wait at all?
                         setTimeout(new_continuation, 100);
                     }           
                 };
@@ -803,13 +804,20 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             if (!widget.set_description) {
-                widget.set_description = function (new_value, update_display) {
+                widget.set_description = function (new_value, update_display, train) {
                     if (description === new_value || (!description && new_value === "")) {
                         return false;
                     }
                     description = new_value;
                     if (update_display) {
                         this.rerender();
+                    }
+                    if (train && this.robot_in_training()) {
+                        this.robot_in_training().edited(this,
+                                                        {setter_name: "set_description",
+                                                         argument_1: new_value,
+                                                         toString: "change the description to '" + new_value + "'' of the " + this.get_type_name(),
+                                                         button_selector: ".toontalk-description-input"});
                     }
                     return true;
                 };
@@ -836,13 +844,20 @@ window.TOONTALK.widget = (function (TT) {
                 };
             }
             if (!widget.set_name) {
-                widget.set_name = function (new_value, update_display) {
+                widget.set_name = function (new_value, update_display, train) {
                     if (name === new_value || typeof new_value !== 'string') {
                         return false;
                     }
                     name = new_value;
                     if (update_display) {
                         this.rerender();
+                    }
+                    if (train && this.robot_in_training()) {
+                        this.robot_in_training().edited(this,
+                                                        {setter_name: "set_name",
+                                                         argument_1: new_value,
+                                                         toString: 'change the name of the ' + this.get_type_name() + ' to "' + name + '"',
+                                                         button_selector: ".toontalk-name-input"});
                     }
                     return true;
                 };         
@@ -879,11 +894,26 @@ window.TOONTALK.widget = (function (TT) {
                     }        
                 };
             }
+            // add fire_listeners? if so still need get_listeners?
             if (!widget.get_listeners) {
                 widget.get_listeners = function (type) {
                     return listeners[type];
                 }
             }
+        },
+
+        add_speech_listeners: function (options) {
+            if (TT.listen) {
+               options.widget = this;
+               this.add_listener('picked up', 
+                                 function () {
+                                     TT.UTILITIES.listen_for_speech(options);
+                                 }); 
+               this.add_listener('dropped',
+                                 function () {
+                                     TT.UTILITIES.stop_listening_for_speech();
+                                 });    
+            }  
         },
         
         get_full_description: function (to_string_info) {
@@ -1375,7 +1405,7 @@ window.TOONTALK.widget = (function (TT) {
             return false;
         },
         
-        open_backside: function (continuation) {
+        open_backside: function (continuation, duration) {
             // continuation will be run after animation is completed
             var backside = this.get_backside();
             var new_continuation, animate_backside_appearance,
@@ -1407,7 +1437,7 @@ window.TOONTALK.widget = (function (TT) {
                                 }
                             };
                             $(element).addClass("toontalk-side-appearing");
-                            TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 2500, remove_transition_class);
+                            TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", duration || 2500, remove_transition_class);
                             $(element).css({left:    final_left,
                                             top:     final_top,
                                             opacity: final_opacity});
@@ -1597,12 +1627,15 @@ window.TOONTALK.widget = (function (TT) {
             return this;
         },
 
-        display_message: function (message, display_on_backside_if_possible) {
-            if (display_on_backside_if_possible) {
-                TT.UTILITIES.display_message(message, this.get_backside_element(), this.get_frontside_element());
+        display_message: function (message, options) {
+            // options include display_on_backside_if_possible, duration, display_only_if_new, plain_text_message
+            if (options.display_on_backside_if_possible) {
+                options.element = this.get_backside_element();
+                options.second_choice_element = this.get_frontside_element();
             } else {
-               TT.UTILITIES.display_message(message, this.get_frontside_element());
+               options.element = this.get_frontside_element();
             }
+            TT.UTILITIES.display_message(message, options);
         },
 
         // defined here in order to share between element and number functions
@@ -1668,6 +1701,73 @@ window.TOONTALK.widget = (function (TT) {
             speak(message.get_hole_contents(1));
             return true;
         }},
+        get_listen_function: function (functions, numbers_only) {
+            return function (message, event, robot) {
+                var box_size_and_bird = functions.check_message(message);
+                var success_callback, fail_callback, confidence, expected_phrases;
+                if (!box_size_and_bird) {
+                    return;
+                }
+                if (box_size_and_bird.size < 1) {
+                    TT.UTILITIES.display_message("Listening birds need a box with one or more holes.");
+                    return;
+                }
+                if (!window.webkitSpeechRecognition && !window.SpeechRecognition) {
+                    // ignore this
+                    widget.display_message("This browser doesn't support speech input. Try another browser such as Chrome.");
+                    return true;
+                }
+                confidence = message.get_hole_contents(2);
+                if (confidence) {
+                    confidence = confidence && confidence.to_float && confidence.to_float();
+                    if (confidence < 0) {
+                        confidence = 0; // any point displaying a message to the user?
+                    } else if (confidence > 1) {
+                        confidence = 1;
+                    }
+                }
+                if (!numbers_only) {
+                    expected_phrases = message.get_hole_contents(3);
+                    if (expected_phrases) {
+                        expected_phrases = expected_phrases.get_text();
+                    }
+                }
+                if (numbers_only) {
+                    success_callback = function (text) {
+                        var number = parseFloat(text);
+                        var response;
+                        if (!isNaN(number)) {
+                            // otherwise ignore it
+                            response = TT.number.create_from_bigrat(bigrat.fromDecimal(number));
+                            response.set_description("a number that was heard");
+                            functions.process_response(response, message.get_hole_contents(0), message, event, robot);
+                            TT.UTILITIES.stop_listening_for_speech();
+                        }
+                    };   
+                } else {
+                    success_callback = function (text) {
+                        var response = TT.element.create(text, [], "what was spoken");
+                        functions.process_response(response, message.get_hole_contents(0), message, event, robot);
+                        TT.UTILITIES.stop_listening_for_speech();
+                    };  
+                }  
+                fail_callback = function (event) {
+                    var response;
+                    if (box_size_and_bird.size > 1 && message.get_hole_contents(1)) {
+                        // if no failure bird then ignore it
+                        response = TT.element.create(event.error, [], "description of a problem listening to speech");
+                        functions.process_response(response, message.get_hole_contents(1), message, event, robot);
+                    }
+                    TT.UTILITIES.stop_listening_for_speech();
+                };
+                TT.UTILITIES.listen_for_speech({commands:           expected_phrases, 
+                                                confidence:         confidence,
+                                                numbers_acceptable: numbers_only,
+                                                success_callback:   success_callback, 
+                                                fail_callback:      fail_callback});
+                return true;
+            };
+        },
         get_description_function: function (functions) {
           return function (message, event, robot) {
             var describe = function (widget) {
@@ -1787,6 +1887,9 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.get_infinite_stack = function () {
                 return false;
             };
+            top_level_widget.get_listeners = function () {
+                return [];
+            };
             top_level_widget.top_level_widget = function () {
                 return this;
             };
@@ -1853,9 +1956,10 @@ window.TOONTALK.widget = (function (TT) {
                             callback = undefined;
                         } else if (TT.google_drive.connection_to_google_drive_possible()) {
                             if (google_drive_status === 'Need to authorize') {
-                                TT.UTILITIES.display_message_if_new("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
-                                                                    "<span class='toontalk-settings-icon'></span>" +
-                                                                    " to log in.");
+                                TT.UTILITIES.display_message("Unable to save to your Google Drive because you need to log in. Click on the settings icon " +
+                                                              "<span class='toontalk-settings-icon'></span>" +
+                                                              " to log in.",
+                                                              {only_if_new: true});
                                 TT.UTILITIES.display_tooltip($(".toontalk-settings-button"));
                             } else {
                                 console.log("Unable to save to Google Drive because: " + google_drive_status);

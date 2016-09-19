@@ -8,13 +8,20 @@
 
 window.TOONTALK.tool = (function (TT) {
     "use strict";
+
     // tools need to know mouse location if they are called via keyboard
     document.addEventListener('mousemove', function (event) {
         TT.tool.pageX = event.pageX;
         TT.tool.pageY = event.pageY;
     });
 
+    var widget_side_under_tool;
+
     return {
+        get_widget_side_under_tool: function () {
+            // needed for vacuum to restore if speech command (is still held)
+            return widget_side_under_tool;
+        },
         add_listeners: function (element, tool) {
             var home_position, drag_x_offset, drag_y_offset, tool_height, highlighted_element;
 
@@ -65,7 +72,7 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_move = function (event) {
-                var widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
+                widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 var new_highlighted_element, scroll_adjustment;
                 var point = {};
                 event.preventDefault();
@@ -104,8 +111,9 @@ window.TOONTALK.tool = (function (TT) {
             };
 
             var mouse_up = function (event) {
-                this.release_tool(TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2));
+                var widget_side_under_tool = TT.UTILITIES.find_widget_side_on_page(event, element, drag_x_offset, drag_y_offset-tool_height/2);
                 event.preventDefault();
+                release_tool(element.toontalk_tool, widget_side_under_tool);
             }.bind(this);
 
             var scroll_if_needed = function (event) {
@@ -127,7 +135,8 @@ window.TOONTALK.tool = (function (TT) {
                         deltaY: deltaY};
             };
 
-            this.release_tool = function (widget_side_under_tool) {
+            
+            var release_tool = function (tool, widget_side_under_tool) {
                 // defined so that this can be called by tool "sub-classes"
                 var top_level_widget;
                 if (widget_side_under_tool && widget_side_under_tool.is_of_type("empty hole")) {
@@ -157,11 +166,13 @@ window.TOONTALK.tool = (function (TT) {
                                                             $(element).removeClass("toontalk-tool-returning");                      
                                                         });
                 // return animation depends upon this delay
-                TT.UTILITIES.set_timeout(function () {
-                               // using style.left and style.top to faciliate CSS animation
-                               element.style.left = home_position.left + "px";
-                               element.style.top  = home_position.top  + "px";
-                    });
+                if (home_position) {
+                    TT.UTILITIES.set_timeout(function () {
+                                                 // using style.left and style.top to faciliate CSS animation
+                                                 element.style.left = home_position.left + "px";
+                                                 element.style.top  = home_position.top  + "px";
+                                             });
+                }
                 document.removeEventListener('mousemove',    mouse_move);
                 document.removeEventListener('touchmove',    mouse_move);
                 document.removeEventListener('mouseup',      mouse_up);
@@ -173,8 +184,7 @@ window.TOONTALK.tool = (function (TT) {
                     TT.debugging = 'touch';
                 }
             };
-                
-            
+                       
             element.addEventListener('mousedown',  mouse_down);
             element.addEventListener('touchstart', mouse_down);
             return pick_up;

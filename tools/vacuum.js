@@ -215,6 +215,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     pick_me_up = TT.tool.add_listeners(element, this);
                     set_mode('suck');
                     update_title();
+                    element.toontalk_tool = TT.vacuum.the_vacuum;
                 }      
                 return element;
             },
@@ -223,9 +224,8 @@ window.TOONTALK.vacuum = (function (TT) {
             },
             set_held: function(new_value) {
                 var listen_for_command = function () {
-                    TT.UTILITIES.listen_for_speech('suck | erase | restore | remove all',
-                                                   0.5,
-                                                   function (command, event) {
+                    TT.UTILITIES.listen_for_speech({commands: 'suck | erase | restore | remove all',
+                                                    success_callback: function (command, event) {
                                                        var $highlighted_element, widget_side_under_tool, top_level_widget;
                                                        if (command === 'remove all') {
                                                            set_mode('suck_all');
@@ -246,9 +246,12 @@ window.TOONTALK.vacuum = (function (TT) {
                                                                top_level_widget.backup_all();
                                                                listen_for_command(); // listen for next command
                                                            }
+                                                       } else if (command === 'restore' || command === 'remove all') {
+                                                           top_level_widget = TT.tool.get_widget_side_under_tool();
+                                                           this.apply_tool(top_level_widget, event);
                                                        }
                                                        return true;  
-                                                   }.bind(this));
+                                                   }.bind(this)});
                 }.bind(this);
                 held = new_value;
                 if (held) {

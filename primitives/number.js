@@ -264,6 +264,58 @@ window.TOONTALK.number = (function () {
         }
     };
 
+    var operator_radio_button_class_name = function (operator) {
+        switch (operator) {
+            case "+": return "toontalk-plus-radio-button";
+            case "-": return "toontalk-minus-radio-button";
+            case "*": return "toontalk-times-radio-button";
+            case "/": return "toontalk-divide-radio-button";
+            case "=": return "toontalk-set-equal-radio-button";
+            default:
+                TT.UTILITIES.report_internal_error("Unsupported number operator: " + operator);
+                return "";
+        }
+    };
+
+    var format_radio_button_class_name = function (format) {
+        switch (format) {
+            case "decimal":             return "toontalk-decimal-radio-button";
+            case "proper_fraction":     return "toontalk-proper-fraction-radio-button";
+            case "improper_fraction":   return "toontalk-improper-fraction-radio-button";
+            case "scientific_notation": return "toontalk-scientific-notation-radio-button";
+            default:
+                TT.UTILITIES.report_internal_error("Unsupported number format: " + format);
+                return "";
+        }
+    };
+
+    var operator_phrase = function (operator, subject) {
+        switch (operator) {
+            case "+":
+                return "add " + subject + " to";
+            case "-":
+                return "subtract " + subject + " from";
+            case "*":
+                return "multiply " + subject + " with";
+            case "/":
+               return "divide " + subject + " into";
+         }
+            // equality not needed since caller handles it specially
+    };
+    
+    var operator_noun = function (operator) {
+        switch (operator) {
+            case "+": return "addition";
+            case "-": return "subtraction";
+            case "*": return "multiplication";
+            case "/": return "division";
+            case "=": return "equality";
+            default:
+                TT.UTILITIES.report_internal_error("Unsupported number operator: " + operator);
+                return "";
+        }
+    }
+
     var scientific_notation_exponent = function (rational_number) {
         var absolute_value = bigrat.abs(bigrat.create(), rational_number);
         var negative_exponent = bigrat.isLessThan(absolute_value, bigrat.ONE);
@@ -366,10 +418,17 @@ window.TOONTALK.number = (function () {
                 return format || number.default_format; 
             };
         new_number.set_format =
-            function (new_value, update_now) { 
+            function (new_value, update_now, train) { 
                 format = new_value;
                 if (update_now) {
                     this.rerender();
+                }
+                if (train && this.robot_in_training()) {
+                    this.robot_in_training().edited(this,
+                                                    {setter_name: "set_format",
+                                                     argument_1: new_value,
+                                                     toString: "by changing the format to " + new_value,
+                                                     button_selector: "." + format_radio_button_class_name(new_value)});
                 }
                 return this;
             };
@@ -378,10 +437,17 @@ window.TOONTALK.number = (function () {
                 return operator; 
             };
         new_number.set_operator =
-            function (new_value, update_now) { 
+            function (new_value, update_now, train) { 
                 operator = new_value;
                 if (update_now) {
                     this.rerender();
+                }
+                if (train && this.robot_in_training()) {
+                    this.robot_in_training().edited(this, 
+                                                    {setter_name: "set_operator",
+                                                     argument_1: new_value,
+                                                     toString: "by changing the operator to " + operator_noun(new_value),
+                                                     button_selector: "." + operator_radio_button_class_name(new_value)});
                 }
                 return this;
             };
@@ -398,7 +464,88 @@ window.TOONTALK.number = (function () {
                 return this;
             };
         number.add_standard_widget_functionality(new_number);
-        new_number.set_description(description);
+        new_number.set_description(description);  
+        if (TT.listen) {
+            var operations = 'add | plus | sum | addition | subtract | subtraction | take away | times | multiply | multiplication | divide | division | equal | equals';
+            var formats    = 'decimal number | decimal | mixed number | mixed | improper fraction | improper | fraction | scientific notation | scientific';
+            var number_spoken, plain_text_message, previous_message;
+            new_number.add_speech_listeners({commands: (operations + " | " + formats), 
+                                             numbers_acceptable: true,
+                                             descriptions_acceptable: true,
+                                             success_callback: function (command) {
+                                                 // if draging a copy (from an infinite stack) then update the copy not the stack
+                                                 var target_number = TT.UTILITIES.get_dragee_copy() || new_number;
+                                                 switch (command) {
+                                                     case 'add':
+                                                     case 'plus':
+                                                     case 'sum':
+                                                     case 'addition':
+                                                        target_number.set_operator('+', true, true);
+                                                        break;
+                                                     case 'subtract':
+                                                     case 'take away':
+                                                     case 'subtraction':
+                                                        target_number.set_operator('-', true, true);
+                                                        break;
+                                                     case 'times':
+                                                     case 'multiply':
+                                                     case 'multiplication':
+                                                        target_number.set_operator('*', true, true);
+                                                        break;
+                                                     case 'divide':
+                                                     case 'divides':
+                                                     case 'divide by':
+                                                     case 'division':
+                                                        target_number.set_operator('/', true, true);
+                                                        break;
+                                                     case 'equal':
+                                                     case 'equals':
+                                                        target_number.set_operator('=', true, true);
+                                                        break;
+                                                     case 'decimal number':
+                                                     case 'decimal':
+                                                        target_number.set_format('decimal', true, true);
+                                                        break;
+                                                     case 'mixed number':
+                                                     case 'mixed':
+                                                         target_number.set_format('mixed_number', true, true);
+                                                         break;
+                                                     case 'improper fraction':
+                                                     case 'improper':
+                                                     case 'fraction':
+                                                         target_number.set_format('improper_fraction', true, true);
+                                                         break;
+                                                     case 'scientific notation':
+                                                     case 'scientific':
+                                                         target_number.set_format('scientific_notation', true, true);
+                                                         break;
+                                                     default:
+                                                          number_spoken = parseFloat(command);
+                                                          if (isNaN(number_spoken)) {
+                                                              console.log("did not understand spoken command: '" + command + "'");
+                                                          } else {
+                                                              target_number.set_value_from_decimal(number_spoken);
+                                                              if (target_number.robot_in_training()) {
+                                                                  target_number.robot_in_training().edited(target_number,
+                                                                                                           {setter_name: "set_value_from_decimal",
+                                                                                                            argument_1: number_spoken,
+                                                                                                            toString: "by changing its value to " + number_spoken,
+                                                                                                            // moving to numerator is best default
+                                                                                                            button_selector: ".toontalk-numerator-input"});
+                                                              }
+                                                          }
+                                                  }
+                                                  target_number.update_display();
+                                                  plain_text_message = "You are now holding " + target_number.get_text(true);
+                                                  if (plain_text_message !== previous_message) {
+                                                      new_number.display_message("You are now holding " + target_number.get_frontside_element(true).innerHTML, 
+                                                                                 {display_on_backside_if_possible: true, 
+                                                                                  duration: 4000,
+                                                                                  plain_text: plain_text_message});
+                                                      previous_message = plain_text_message;
+                                                  }
+                                               }});
+        }
         if (TT.debugging) {
             new_number._debug_string = new_number.toString();
             new_number._debug_id = TT.UTILITIES.generate_unique_id();
@@ -483,7 +630,8 @@ window.TOONTALK.number = (function () {
         frontside_element = frontside.get_element();
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             $dimensions_holder = $(frontside_element);
-        } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json")) {
+        } else if ($(frontside_element).parent().is(".toontalk-backside, .toontalk-json, .toontalk-robot")) {
+            // robots no longer change the dimensions of numbers held 
             $dimensions_holder = $(frontside_element);
             size_unconstrained_by_container = true;
         } else if ($(frontside_element).parent().is(".toontalk-element-frontside")) {
@@ -518,9 +666,12 @@ window.TOONTALK.number = (function () {
             // good enough values when carried by a bird
             client_width  = 100;
             client_height = 100;
-        } else  if ($(frontside_element).is(".toontalk-held-by-robot")) {
-            client_width  = 76;
-            client_height = 55;
+//         } else  if ($(frontside_element).is(".toontalk-held-by-robot")) {
+//             client_width  = 76;
+//             client_height = 55;
+            // note that the dimensions of this number may remain as before
+            // maybe when picked up it should change the size and restore on drop 
+            // maybe birds as well
         } else if ($(frontside_element).is(".toontalk-element-attribute")) {
             // good enough if this number is an element attribute
             client_width  = 200;
@@ -536,10 +687,12 @@ window.TOONTALK.number = (function () {
                                           height: client_height});
             }
         } else {
-            client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
-            client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
-            if (client_width === 0 || client_height === 0) {
-                if (TT.logging && TT.logging.indexOf('display') >= 0) {
+            if ($dimensions_holder.length > 0) {
+                client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
+                client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
+            }
+            if (client_width === 0 || client_height === 0 || $dimensions_holder.length === 0) {
+                if (TT.logging && TT.logging.indexOf('display') >= 0 && $dimensions_holder.length > 0) {
                     console.log("Container has zero dimensions so no display of " + this.to_debug_string());
                 }
                 if (!TT.UTILITIES.is_attached(frontside_element)) {
@@ -924,11 +1077,17 @@ window.TOONTALK.number = (function () {
     };
     
     number.widget_side_dropped_on_me = function (side_of_other, event, robot) {
+        var frontside_element_of_other;
         if (side_of_other.number_dropped_on_me) {
             // this can happen if this number is on a nest
             return this.number_dropped_on_me(side_of_other, event, robot);
         }
-        // only numbers can be dropped on numbers (for now at least)
+        frontside_element_of_other = side_of_other.get_frontside_element();
+        if (frontside_element_of_other) {
+            this.get_frontside_element().dispatchEvent(TT.UTILITIES.create_event('widget added', 
+                                                                                 {element_widget: frontside_element_of_other,
+                                                                                  where: 'front'}));
+        }
         return false;
     };
 
@@ -988,55 +1147,60 @@ window.TOONTALK.number = (function () {
         return bigrat.isNegative(this.get_value());
     };
 
-    number.toString = function () {
-        var operator_string;
+    number.toString = function (options) {
+        var operator_string = "";
         if (this.get_erased()) {
             return "erased number";
         }
         // addition is implicit so don't display it
-        operator_string = this.get_operator() === '+' ? '' : this.get_operator();
-        return operator_string + bigrat.str(this.get_value());
-    };
-
-    number.operator_word = function (subject) {
-        switch (this.get_operator()) {
-        case "+":
-            return "add " + subject + " to";
-        case "-":
-            return "subtract " + subject + " from";
-        case "*":
-            return "multiply " + subject + " with";
-        case "/":
-           return "divide " + subject + " into";
+        if (this.get_operator() !== '+' && !(options && options.without_operator)) {
+            operator_string = this.get_operator();
         }
+        return operator_string + bigrat.str(this.get_value());
     };
 
     number.get_text = function (for_speaking) {
         // for_speaking is because most (all?) text-to-speech engines fail to speak large numbers correctly
         var format = this.get_format();
+        var operator_string = "";
+        switch (this.get_operator()) {
+        case "-":
+            operator_string = "subtract ";
+            break;
+        case "*":
+            operator_string = "multiply by ";
+            break;
+        case "/":
+           operator_string = "divide by ";
+           break;
+        case "=":
+           operator_string = "make what I'm dropped on equal to ";
+           break;
+        }
         var integer_part, fractional_part;
         if (this.get_approximate() || (this.is_attribute_widget && this.is_attribute_widget())) {
             return "approximately " + bigrat.toDecimal(this.get_value()).toString();
         }
         if (this.is_integer() || format === 'improper_fraction') {
             if (for_speaking) {
-                return TT.UTILITIES.number_to_words(this.toString());
+                return operator_string + TT.UTILITIES.number_to_words(this.toString({without_operator: true}));
             }
-            return this.toString();
+            return operator_string + this.toString({without_operator: true});
         }
         integer_part = this.integer_part();
         if (integer_part.is_zero()) {
             if (for_speaking) {
-                return TT.UTILITIES.number_to_words(this.toString());
+                return operator_string + TT.UTILITIES.number_to_words(this.toString({without_operator: true}));
             }
-            return this.toString();
+            return operator_string + this.toString({without_operator: true});
         }
         fractional_part = this.copy({just_value: true}).subtract(integer_part).absolute_value();
         if (for_speaking) {
-            return TT.UTILITIES.number_to_words(integer_part.toString()) + (for_speaking ? " and " : " ") + 
-                   TT.UTILITIES.number_to_words(fractional_part.toString());
+            return operator_string + 
+                   TT.UTILITIES.number_to_words(integer_part.toString({without_operator: true})) + (for_speaking ? " and " : " ") + 
+                   TT.UTILITIES.number_to_words(fractional_part.toString({without_operator: true}));
         }
-        return integer_part + " " + fractional_part;
+        return operator_string + integer_part + " " + fractional_part;
     };
     
     number.to_float = function () {
@@ -1173,7 +1337,7 @@ window.TOONTALK.number = (function () {
         } else if (this.get_operator() === '/') {
             prefix =  "Drop me on another number I'll divide him by my value.";
         } else {
-            prefix = "Drop me on another number and I'll " + this.operator_word("myself") + " him.";
+            prefix = "Drop me on another number and I'll " + operator_phrase(this.get_operator(), "myself") + " him.";
         }
         if (this.get_approximate()) {
             prefix += "\nI look a bit yellow because I'm the result of an " +
@@ -1212,7 +1376,7 @@ window.TOONTALK.number_backside =
             var minus    = TT.UTILITIES.create_radio_button("operator", "-", "toontalk-minus-radio-button", "&minus;", "Subtract me from what I'm dropped on.", true);
             var multiply = TT.UTILITIES.create_radio_button("operator", "*", "toontalk-times-radio-button", "&times;", "Multiply me with what I'm dropped on.", true);
             var divide   = TT.UTILITIES.create_radio_button("operator", "/", "toontalk-divide-radio-button", "&divide;", "I will divide what I'm dropped on.", true);
-            var set = TT.UTILITIES.create_radio_button("operator", "=", "toontalk-set-equal-radio-button", "&equals;", "Set what I'm dropped on to my value.", true);
+            var set      = TT.UTILITIES.create_radio_button("operator", "=", "toontalk-set-equal-radio-button", "&equals;", "Set what I'm dropped on to my value.", true);
 //          var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.", true);
             var update_value = function (event) {
                 var numerator = numerator_input.button.value.trim();
@@ -1250,7 +1414,7 @@ window.TOONTALK.number_backside =
                 if (validity.message) {
                     numerator_as_float = parseFloat(numerator);
                     if (isNaN(numerator_as_float)) {
-                        number.display_message(validity.message, true);
+                        number.display_message(validity.message, {display_on_backside_if_possible: true});
                         numerator = validity.replacement;
                     } else {
                        // convert to integer and adjust denominator accordingly
@@ -1258,14 +1422,14 @@ window.TOONTALK.number_backside =
                     }
                 }
                 if (denominator === "0") {
-                    number.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.", true);
+                    number.display_message("It doesn't make sense for a fraction to have a denominator of 0. Resetting it to 1.", {display_on_backside_if_possible: true});
                     denominator = "1";
                 } else {
                     validity = valid_integer(denominator, "denominator");
                     if (validity.message) {
                         denominator_as_float = parseFloat(denominator);
                         if (isNaN(denominator_as_float)) {
-                            number.display_message(validity.message, true);
+                            number.display_message(validity.message, {display_on_backside_if_possible: true});
                             denominator = validity.replacement || "1";
                         } else {
                             denominator_as_fraction = bigrat.fromDecimal(denominator_as_float);
@@ -1285,6 +1449,7 @@ window.TOONTALK.number_backside =
                 current_numerator   = number.numerator_string();
                 current_denominator = number.denominator_string();
                 if (number.robot_in_training()) {
+                    // why not use $(...).is(...)?
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
                         number.robot_in_training().edited(number, {setter_name: "set_denominator",
@@ -1296,34 +1461,20 @@ window.TOONTALK.number_backside =
                                                                    argument_1: numerator,
                                                                    toString: "by changing the value of the numerator to " + numerator,
                                                                    button_selector: "." + first_class_name});
-                    }   
+                    }
                 }
                 number.rerender();
             };
             var update_format = function () {
                 var selected = TT.UTILITIES.selected_radio_button(decimal_format, mixed_number_format, improper_format, scientific_format);
                 var format = selected.button.value;
-                number.set_format(format, true);
-                if (number.robot_in_training()) {
-                    number.robot_in_training().edited(number, {setter_name: "set_format",
-                                                               argument_1: format,
-                                                               toString: "by changing the format to " + format + " of the number",
-                                                               // just use the first className to find this button later
-                                                               button_selector: "." + selected.container.className.split(" ", 1)[0]});
-                }
-                number.rerender();
+                number.set_format(format, true, true);
+//                 number.rerender();
             };
             var update_operator = function () {
                 var selected = TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, set);
                 var operator = selected.button.value;
-                number.set_operator(operator, true);
-                if (number.robot_in_training()) {
-                    number.robot_in_training().edited(number, {setter_name: "set_operator",
-                                                               argument_1: operator,
-                                                               toString: "by changing the operator to " + operator + " of the number",
-                                                               // just use the first className to find this button later
-                                                               button_selector: "." + selected.container.className.split(" ", 1)[0]});
-                }
+                number.set_operator(operator, true, true);
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set = TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container);
@@ -1403,7 +1554,7 @@ window.TOONTALK.number_backside =
                                                      backside.rerender();
                                                  });
                                            }
-                                       });            
+                                       });       
             return backside;
         }
 
@@ -1644,6 +1795,13 @@ window.TOONTALK.number.function =
                                   "The bird will cause the browser to speak what is in the second box hole. Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
                                   "speak",
                                   ['a widget']);
+    functions.add_function_object('listen for a number', 
+                                  TT.widget.get_listen_function(functions, true),
+                                  "The bird will cause the browser to listen to the next number said and give the number to the bird in the first hole. "
+                                  + "If there is an error and there is a bird in the second hole it will be given the error message. "
+                                  + "If you put a number between 0 and 1 in the third hole then only recognitions with at least that confidence will be considered. ",
+                                  "listen",
+                                  []);
     return functions.get_function_table();
 }());
 

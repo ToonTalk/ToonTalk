@@ -227,8 +227,11 @@ window.TOONTALK.robot = (function (TT) {
             if (stopped) {
                 if (this.visible()) {
                     $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
-                     this.drop_thing_in_hand();
-                     this.rerender();
+                    if (this.get_thing_in_hand()) {
+                        $(this.get_thing_in_hand().get_element()).removeClass("toontalk-held-by-robot");
+                        this.drop_thing_in_hand();
+                    }
+                    this.rerender();
                 }
                 running_or_in_run_queue = false;
             }
@@ -549,6 +552,10 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.has_name(new_robot);
         new_robot.set_name(name);
         new_robot.set_description(description);
+        if (TT.listen) {
+            new_robot.add_speech_listeners({descriptions_acceptable: true,
+                                            names_acceptable: true});
+        }
         new_robot.remove_backside_widget = function (widget_side, ignore_if_not_on_backside) {
             // e.g. a condition has been vacuumed away
             // TODO: if robot training a robot ensure path is OK
@@ -840,6 +847,7 @@ window.TOONTALK.robot = (function (TT) {
         if (widget_side.get_infinite_stack && widget_side.get_infinite_stack()) {
             // does this cause an addition to newly created backside widgets?
             this.current_action_name = "pick up a copy of";
+            widget_copy = TT.UTILITIES.get_dragee_copy();
         } else {
             this.current_action_name = "pick up";
         }
@@ -860,7 +868,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         widget_side.last_action = this.current_action_name;
         this.current_action_name = undefined;
-        this.set_thing_in_hand(widget_side);
+        this.set_thing_in_hand(widget_copy || widget_side);
         return step;
     };
     
@@ -1703,8 +1711,7 @@ window.TOONTALK.robot_backside =
             }
             next_robot_area.addEventListener('drop', function (event) {
                 // start training when robot is dropped here
-                var dragee = TT.UTILITIES.get_dragee();
-                var widget = TT.UTILITIES.widget_side_of_jquery(dragee);
+                var widget = TT.UTILITIES.get_dragee();
                 var backside;
                 if (widget && widget.is_robot()) {
                     if (widget.get_body().is_empty()) {

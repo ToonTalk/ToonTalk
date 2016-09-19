@@ -627,11 +627,13 @@ window.TOONTALK.bird = (function (TT) {
         };
         if (nest && nest.set_name) {
             // function nest names are read-only
-            new_bird.set_name = function (new_value, update_display) {
-                return nest.set_name(new_value, update_display);
+            new_bird.set_name = function (new_value, update_display, train) {
+                return nest.set_name(new_value, update_display, train);
             };
         }   
         new_bird.add_standard_widget_functionality(new_bird);
+        new_bird.add_speech_listeners({descriptions_acceptable: true,
+                                       names_acceptable: true});
         new_bird.set_description(description);
         if (TT.debugging) {
             new_bird._debug_id = TT.UTILITIES.generate_unique_id();
@@ -1547,9 +1549,9 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.has_name(new_nest);
         generic_set_name = new_nest.set_name;
-        new_nest.set_name = function (new_value, update_display) {
+        new_nest.set_name = function (new_value, update_display, train) {
             var old_name = this.get_name();
-            if (!generic_set_name.call(this, new_value, update_display)) {
+            if (!generic_set_name.call(this, new_value, update_display, train)) {
                 return false;
             }
             if (update_display) {
@@ -1567,6 +1569,8 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest.add_standard_widget_functionality(new_nest);
+        new_nest.add_speech_listeners({descriptions_acceptable: true,
+                                       names_acceptable: true});
         generic_set_visible = new_nest.set_visible;
         new_nest.set_visible = function (new_value) {
             generic_set_visible.call(this, new_value);
