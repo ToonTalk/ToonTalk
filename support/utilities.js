@@ -4999,9 +4999,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     };
 
     utilities.stop_listening_for_speech = function () {
-        speech_recognition.stop();
-        waiting_for_speech = false; 
-//         console.log("stopped listening due to stop_listening_for_speech");
+        if (speech_recognition) {
+            speech_recognition.stop();
+            waiting_for_speech = false;
+        }
+//      console.log("stopped listening due to stop_listening_for_speech");
     };
 
     utilities.spoken_command_is_a_description = function (command, widget) {
