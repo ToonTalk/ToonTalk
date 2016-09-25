@@ -200,15 +200,18 @@ window.TOONTALK.scale = (function (TT) {
             $frontside_element.removeClass("toontalk-scale-balanced toontalk-scale-left_heavier toontalk-scale-right_heavier toontalk-scale-unbalanced");
             $frontside_element.addClass(class_name);
             $frontside_element.addClass("toontalk-scale");
-            scales = TT.UTILITIES.scale_to_fit(frontside_element, container_element, full_size_width, full_size_height);
-            if (scale_width === 0) {
+             if (scale_width === 0) {
                 scale_width = 1;
             }
             if (scale_height === 0) {
                 scale_height = 1;
             }
-            scale_width  /= scales.x_scale;
-            scale_height /= scales.y_scale;
+            if (!$(container_element).is(".toontalk-top-level-resource")) {
+                // don't scale to fit container if top-level resource
+                scales = TT.UTILITIES.scale_to_fit(frontside_element, container_element, full_size_width, full_size_height);
+                scale_width  /= scales.x_scale;
+                scale_height /= scales.y_scale;
+            }
             if ($scale_parts.length === 2) {
                 $scale_parts.each(function (index, hole_element) {
                         // delaying ensures they contents of the holes have the right size
