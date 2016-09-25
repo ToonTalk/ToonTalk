@@ -3061,7 +3061,7 @@ window.TOONTALK.UTILITIES =
                                             if (button_class) {
                                                 return "<div class='" + button_class + "' title='" + url + "'id='" + full.id + "'>" + name + "</div>";
                                             } else {
-                                                // is just an ordinarly link now
+                                                // is just an ordinary link now
                                                 if (TT.TRANSLATION_ENABLED) {
                                                     url = utilities.add_URL_parameter(url, "translate", "1");
                                                 }

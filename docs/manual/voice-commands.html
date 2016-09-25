@@ -5,34 +5,225 @@
 <title>Voice Commands in ToonTalk?</title>
 </head>
 <body>
+<div class="toontalk-documentation-section" style="max-width: 1000px;">
 <h2>Voice Commands</h2>
+<p>
 ToonTalk can respond to voice commands while holding widgets or tools.
 This is currently enabled only if listen=1 is a URL parameter.
 It works in Chrome and some versions of FireFox.
 Click to learn if your <a href='http://caniuse.com/#feat=speech-recognition'>browser supports speech recognition</a>.
-
+</p>
+<p>
 Note that the first time ToonTalk attemmpts to access the microphone a dialog will appear asking permission.
 This will happen repeatedly if you are accessing ToonTalk via HTTP instead of HTTPS.
-
+</p>
+</div>
+<div class="toontalk-documentation-section">
 <h3>The magic wand</h3>
+<div class='toontalk-json' translate='no'>{
+  "semantic": {
+    "type": "wand"
+  },
+  "view": {
+    "frontside_width": 191,
+    "frontside_height": 31,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+<p>
 While holding the Magic Wand over a widget you can say <b>"copy"</b> or <b>"abracadabra"</b> and the widget will be copied.
+</p>
+</div>
+<div class="toontalk-documentation-section">
 <h3>Dusty the Vacuum</h3>
+<div class='toontalk-json' translate='no'>{
+  "semantic": {
+    "type": "vacuum"
+  },
+  "view": {
+    "frontside_width": 123,
+    "frontside_height": 45,
+    "frontside_left": 6,
+    "frontside_top": 6
+  },
+  "version": 1
+}</div>
+<p>
 You can say <b>"suck"</b> or <b>"erase"</b> while the vacuum is over a widget to remove or erase it.
 Each time you say <b>"restore"</b> the vacuum will unerase a widget if selected otherwise it will spit out a previously removed item.
 If you say <b>"remove all"</b> then everything will be removed (but still can be restored).
+</p>
+</div>
+<div class="toontalk-documentation-section">
 <h3>Voice commands that work for all widgets</h3>
+<p>
 You can say <b>"I am ..."</b> or <b>"I'm ..."</b> to provide a description of the widget that is held. 
 The description will appear in tool tips and on the back side of the widget.
-
-If the widget has a name (currently robots, birds, and nests) then you can change their name by saying <b>"my name is ..."</b> or <b>"call me ..."</b>. 
+</p>
+</div>
+<div class="toontalk-documentation-section">
+<h3>Voice commands for named widgets</h2>
+<span class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a nest.
+nest
+<span style='display:none;'>{
+  "semantic": {
+    "type": "nest",
+    "contents": [],
+    "guid": "toontalk_id_1474811004623",
+    "serial_number": 1,
+    "name": "Tom"
+  },
+  "view": {
+    "frontside_width": 116,
+    "frontside_height": 98,
+    "frontside_left": 186.5,
+    "frontside_top": 209.047,
+    "backside_left": 188.203125,
+    "backside_top": 342.75,
+    "saved_width": 116,
+    "saved_height": 98,
+    "drag_x_offset": 48.421875,
+    "drag_y_offset": 48.6875
+  },
+  "version": 1
+}</span></span>
+<span class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a bird.
+bird
+<span style='display:none;'>{
+  "semantic": {
+    "type": "bird",
+    "nest": {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1474811004623",
+        "serial_number": 1,
+        "name": "Dick"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 98,
+        "frontside_left": 186.5,
+        "frontside_top": 209.047,
+        "saved_width": 116,
+        "saved_height": 98
+      },
+      "version": 1
+    }
+  },
+  "view": {
+    "frontside_width": 70,
+    "frontside_height": 102,
+    "frontside_left": 119.5,
+    "frontside_top": 232.047,
+    "saved_width": 70,
+    "saved_height": 102,
+    "drag_x_offset": 32.828125,
+    "drag_y_offset": 51.09375
+  },
+  "version": 1
+}</span></span>
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a robot.
+When the workspace's green flag %3Cspan%20class%3D'notranslate'%20translate%3D'no'%3EdecodeURIComponent%3Cspan%20class%3D'toontalk-green-flag-icon'%3E%3C%2Fspan%3EdecodeURIComponent%3C%2Fspan%3E is pressed I will repeatedly 
+do nothing
+<div style='display:none;'>{
+  "semantic": {
+    "type": "robot",
+    "frontside_conditions": {
+      "type": "top_level"
+    },
+    "backside_conditions": [],
+    "body": {
+      "type": "body",
+      "steps": []
+    },
+    "name": "Harry"
+  },
+  "view": {
+    "frontside_width": 73,
+    "frontside_height": 101,
+    "frontside_left": 654.266,
+    "frontside_top": 45.7344,
+    "backside_left": 656.265625,
+    "backside_top": 182.734375,
+    "advanced_settings_open": true,
+    "saved_width": 73,
+    "saved_height": 101,
+    "drag_x_offset": 24.953125,
+    "drag_y_offset": 46.296875
+  },
+  "version": 1
+}</div></div>
+<p>
+If the widget has a name (currently robots, birds, and nests) then you can change their name by saying <b>"my name is ..."</b> or <b>"call me ..."</b>.
+</p>
+</div>
+<div class="toontalk-documentation-section">
 <h3>Numbers</h3>
+<div class='toontalk-json' translate='no'>{
+  "semantic": {
+    "type": "number",
+    "operator": "+",
+    "numerator": "1",
+    "denominator": "1",
+    "format": "improper_fraction"
+  },
+  "view": {
+    "frontside_width": 76,
+    "frontside_height": 55,
+    "frontside_left": 57,
+    "frontside_top": 82,
+    "drag_x_offset": 19,
+    "drag_y_offset": 46
+  },
+  "version": 1
+}</div>
+<p>
 The value of a number can be changed by saying the number while holding it.
 The operation of a number can be changed by saying <b>"add"</b>, <b>"plus"</b>, <b>"sum"</b>, <b>"addition"</b>, <b>"subtract"</b>, <b>"subtraction"</b>, <b>"take away"</b>,
 <b>"times"</b>, <b>"multiply"</b>, <b>"multiplication"</b>, <b>"divide"</b>, <b>"division"</b>, <b>"equal"</b>, or <b>"equals"</b>.
 The format of the number can be changed by saying <b>"decimal number"</b>, <b>"decimal"</b>, <b>"mixed number"</b>, <b>"mixed"</b>,
 <b>"improper fraction"</b>, <b>"improper"</b>, <b>"fraction"</b>, <b>"scientific notation"</b>, or <b>"scientific"</b>.
+</p>
+</div>
+<div class="toontalk-documentation-section">
 <h3>Boxes</h3>
+<div class='toontalk-json' translate='no'>{
+  "semantic": {
+    "type": "box",
+    "size": 2,
+    "contents": [
+      null,
+      null
+    ],
+    "horizontal": true,
+    "running": true
+  },
+  "view": {
+    "frontside_width": 164,
+    "frontside_height": 68,
+    "frontside_left": 268,
+    "frontside_top": 53,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1,
+      "original_width": 171,
+      "original_height": 39
+    },
+    "drag_x_offset": 68,
+    "drag_y_offset": 66
+  },
+  "version": 1
+}</div>
+<p>
 You can change the number of holes of a box while holding it by saying a whole number.
 You can change the box's orientation by saying <b>"left to right"</b>, <b>"horizontal"</b>, <b>"top to bottom"</b>, or <b>"vertical"</b>.
+</p>
+</div>
 </body>
 </html>

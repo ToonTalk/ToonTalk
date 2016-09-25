@@ -1344,9 +1344,19 @@ html {
 	overflow-y: visible;
 }
 
+.toontalk-documentation-section {
+/* 	So the text isn't displayed as long lines when window is wide' */
+   width: 600px;
+   display: inline-block;
+   vertical-align: text-top;
+   padding: 12px;"
+}
+
 .toontalk-top-level-resource {
-	 /* position: relative; */
- }
+/* 	 position: relative; */
+	 display: inline-block;
+}
+
 .toontalk-top-level-resource:hover {
 	cursor: move;
 }
