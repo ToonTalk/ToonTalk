@@ -313,7 +313,10 @@ window.TOONTALK.google_drive =
        },
 
        google_drive_url: function (id) {
-           return "https://googledrive.com/host/" + id + "/";
+//            return "https://googledrive.com/host/" + id + "/";
+           // Google no longer supports static web pages from Google Drive
+           // download it for now since can be displayed locally (but not edited (yet?))
+           return "https://drive.google.com/uc?export=download&id=" + id;
        },
 
        /**
