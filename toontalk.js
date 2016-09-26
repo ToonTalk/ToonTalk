@@ -53,7 +53,7 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
                    RUNNING_LOCALLY: this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0,
                    CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
                   };
-// localhost: 214811459094-hoflchh2g30ume7iji6cqhseuent36ef.apps.googleusercontent.com
+// localhost: 148386604750-advtvsmt840u2ulf52g38gja71als4f2.apps.googleusercontent.com
 
 var debugging = get_parameter('debugging', '0') !== '0';
 
@@ -120,7 +120,9 @@ if (debugging) {
                   "support/publish.js",
                   "support/google_drive.js",
                   "support/utilities.js",
-                  "https://apis.google.com/js/client.js?onload=handle_client_load",
+//                  "https://apis.google.com/js/client.js?onload=handle_client_load",
+"libraries/nimbus.min.js",
+"support/remote_storage.js",
                   // following enables JQuery UI resize handles to respond to touch
                   "libraries/jquery.ui.touch-punch.min.js"];
 } else {
