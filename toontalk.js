@@ -53,6 +53,7 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
                    RUNNING_LOCALLY: this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0,
                    CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
                   };
+// localhost: 214811459094-hoflchh2g30ume7iji6cqhseuent36ef.apps.googleusercontent.com
 
 var debugging = get_parameter('debugging', '0') !== '0';
 
@@ -154,9 +155,11 @@ var loadFile = function (index, offline) {
                                             }
                                         };
                    if (file_name.indexOf("http") >= 0) {
-                       if (!offline && !TOONTALK.CHROME_APP) {
+                       if ((!offline && !TOONTALK.CHROME_APP) ||
+                           (get_parameter('GOOGLE_DRIVE_CLIENT_ID', false) && file_name === "https://apis.google.com/js/client.js?onload=handle_client_load")) {
                            // Chrome App complains:
                            // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' because it violates the following Content Security Policy directive: ...
+                           // if drive client id provided then load api even if local host 
                            script.src = file_name;
                        } else if (local_replacements[file_name]) {
                            script.src = path_prefix + local_replacements[file_name];
