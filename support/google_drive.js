@@ -29,7 +29,7 @@ window.TOONTALK.google_drive =
     var programs_folder_id, pages_folder_id;
     return {
         handle_client_load: function (callback_when_authorized) {
-            if (window.location.href.indexOf(origin) < 0) {
+            if (window.location.href.indexOf(origin) !== 0) {
                 status = wrong_origin_message + origin + ".\nIf you are hosting ToonTalk elsewhere you need to set TOONTALK.GOOGLE_DRIVE_CLIENT_ID and TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE";
                 if (callback_when_authorized) {
                     callback_when_authorized(status);
