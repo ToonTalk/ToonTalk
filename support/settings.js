@@ -20,7 +20,7 @@ window.TOONTALK.SETTINGS =
             var tab_activated_handler = function(event, ui) {
                 var become_cloud_files_table_callback = function (table) {
                     if (!table) {
-                        ui.newPanel.appendChild(TT.UTILITIES.create_text_element("Error connecting to cloud"));
+                        ui.newPanel.append(TT.UTILITIES.create_text_element("Error connecting to cloud. Have you logged in?"));
                     }
                 };
                 var initialised = ui.newPanel.is(".dataTable");
