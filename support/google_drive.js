@@ -102,7 +102,8 @@ window.TOONTALK.google_drive =
                    if (response && response.id) {
                        callback(response.id);
                    } else {
-                       console.error("Failure to create folder '" + title + "'. Response was " + response);
+                       console.error("Failure to create folder '" + title + "'. Response follows.");
+                       console.error(response);
                    }
                }
                var folder_id = response && response.items && response.items.length > 0 && response.items[0].id;
