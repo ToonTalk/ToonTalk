@@ -2691,10 +2691,13 @@ window.TOONTALK.UTILITIES =
             return alert_element;
         };
         
-        utilities.create_text_element = function (text) {
+        utilities.create_text_element = function (text, extra_classes) {
             var div = document.createElement("div");
             div.innerHTML = text;
             $(div).addClass('ui-widget');
+            if (extra_classes) {
+                $(div).addClass(extra_classes);
+            }
             return div;
         };
 

@@ -125,8 +125,7 @@ if (debugging) {
                   "support/google_drive.js",
                   "support/utilities.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
-// "libraries/nimbus.min.js",
-// "support/remote_storage.js",
+//                   "https://www.dropbox.com/static/api/2/dropins.js",
                   // following enables JQuery UI resize handles to respond to touch
                   "libraries/jquery.ui.touch-punch.min.js"];
 } else {
@@ -134,6 +133,7 @@ if (debugging) {
                   "libraries/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
+//                   "https://www.dropbox.com/static/api/2/dropins.js",
                   // following enables JQuery UI resize handles to respond to touch
                   // Note that including this in the closure compiler resulted in errors
                   "libraries/jquery.ui.touch-punch.min.js"];                 
@@ -162,7 +162,9 @@ var loadFile = function (index, offline) {
                                         };
                    if (file_name.indexOf("http") >= 0) {
                        if ((!offline && !TOONTALK.CHROME_APP) ||
-                           (get_parameter('remote_storage', false) && file_name.indexOf("https://apis.google.com/js/client.js") === 0)) {
+                           (get_parameter('remote_storage', false) && 
+                            (file_name.indexOf("https://apis.google.com/js/client.js") === 0 ||
+                             file_name === "https://www.dropbox.com/static/api/2/dropins.js"))) {
                            // Chrome App complains:
                            // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' because it violates the following Content Security Policy directive: ...
                            // if remote_storage is set then want to connect to remote storage even though running localhost 
@@ -175,6 +177,10 @@ var loadFile = function (index, offline) {
                        }
                    } else {
                        script.src = path_prefix + file_name;
+                   }
+                   if (file_name === "https://www.dropbox.com/static/api/2/dropins.js") {
+                       script.id ="dropboxjs";
+                       script["data-app-key"] = "ikwgpe4tcbvaxh4";
                    }
                    script.addEventListener('load', load_next_file);
                    script.addEventListener('error', function (event) {
