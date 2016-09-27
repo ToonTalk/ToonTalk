@@ -50,10 +50,14 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
                    USABILITY_DRAG_OFFSET: {x: 0,
                                            y: 0},
                    // following needed since window.navigator.onLine was true even after disconnecting from the net
-                   RUNNING_LOCALLY: this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0,
+                   RUNNING_LOCALLY: this_url.indexOf("file://") === 0 || this_url.indexOf("http://localhost") === 0,
                    CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
                   };
-// localhost: 148386604750-advtvsmt840u2ulf52g38gja71als4f2.apps.googleusercontent.com
+
+if (this_url.indexOf("http://localhost") === 0) {
+    window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID = "148386604750-advtvsmt840u2ulf52g38gja71als4f2.apps.googleusercontent.com";
+    window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE = window.location.origin;
+}
 
 var debugging = get_parameter('debugging', '0') !== '0';
 
@@ -120,9 +124,9 @@ if (debugging) {
                   "support/publish.js",
                   "support/google_drive.js",
                   "support/utilities.js",
-//                  "https://apis.google.com/js/client.js?onload=handle_client_load",
-"libraries/nimbus.min.js",
-"support/remote_storage.js",
+                  "https://apis.google.com/js/client.js?onload=handle_client_load",
+// "libraries/nimbus.min.js",
+// "support/remote_storage.js",
                   // following enables JQuery UI resize handles to respond to touch
                   "libraries/jquery.ui.touch-punch.min.js"];
 } else {
@@ -158,10 +162,10 @@ var loadFile = function (index, offline) {
                                         };
                    if (file_name.indexOf("http") >= 0) {
                        if ((!offline && !TOONTALK.CHROME_APP) ||
-                           (get_parameter('GOOGLE_DRIVE_CLIENT_ID', false) && file_name === "https://apis.google.com/js/client.js?onload=handle_client_load")) {
+                           (get_parameter('remote_storage', false) && file_name.indexOf("https://apis.google.com/js/client.js") === 0)) {
                            // Chrome App complains:
                            // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' because it violates the following Content Security Policy directive: ...
-                           // if drive client id provided then load api even if local host 
+                           // if remote_storage is set then want to connect to remote storage even though running localhost 
                            script.src = file_name;
                        } else if (local_replacements[file_name]) {
                            script.src = path_prefix + local_replacements[file_name];
