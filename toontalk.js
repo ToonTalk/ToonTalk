@@ -162,9 +162,7 @@ var loadFile = function (index, offline) {
                                         };
                    if (file_name.indexOf("http") >= 0) {
                        if ((!offline && !TOONTALK.CHROME_APP) ||
-                           (get_parameter('remote_storage', false) && 
-                            (file_name.indexOf("https://apis.google.com/js/client.js") === 0 ||
-                             file_name === "https://www.dropbox.com/static/api/2/dropins.js"))) {
+                           get_parameter('remote_storage', false)) {
                            // Chrome App complains:
                            // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' because it violates the following Content Security Policy directive: ...
                            // if remote_storage is set then want to connect to remote storage even though running localhost 
