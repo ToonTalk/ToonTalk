@@ -122,6 +122,7 @@ window.TOONTALK.SETTINGS =
             // published pages don't have a button class -- they are now ordinary links
             class_name = (toontalk_type === 'program') && "toontalk-file-load-button toontalk-file-load-button-without-click-handler"; 
             TT.UTILITIES.become_file_data_table($table, response.items, true, class_name);
+            add_click_listeners(widget, $table.get(0), true, settings_panel);
             $table.on('draw.dt', function () {
                 add_click_listeners(widget, $table.get(0), true, settings_panel);
             });
