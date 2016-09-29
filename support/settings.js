@@ -14,7 +14,7 @@ window.TOONTALK.SETTINGS =
     var local_files_index = 0; // cloud_available ? 1: 0; // so cloud version is first if available
     var cloud_files_index = 1;
     var cloud_pages_index = 2;
-    var dropbox_file_chooser = function (extension, callback) {
+    var dropbox_file_chooser = function (extensions, callback) {
         // see https://www.dropbox.com/developers/chooser
         var options = {
             success: callback,
@@ -25,7 +25,7 @@ window.TOONTALK.SETTINGS =
             // Optional. This is a list of file extensions. If specified, the user will
             // only be able to select files with these extensions. You may also specify
             // file types, such as "video" or "images" in the list. By default, all extensions are allowed.
-            extensions: [extension]
+            extensions: extensions
         };
         Dropbox.choose(options);
     };
@@ -46,7 +46,7 @@ window.TOONTALK.SETTINGS =
                 $(".dataTables_wrapper").hide();
                 if (ui.newTab.find(".toontalk-programs-in-cloud-tab-label").length > 0) {
                     if (widget.get_setting('save_to_dropbox')) {
-                        dropbox_file_chooser(".tt.json",
+                        dropbox_file_chooser([".tt.json"],
                                                function (files) {
                                                    TT.UTILITIES.download_file(files[0].link,
                                                                               widget.download_callback(function () {
@@ -62,7 +62,7 @@ window.TOONTALK.SETTINGS =
                     }
                 } else if (ui.newTab.find(".toontalk-pages-in-cloud-tab-label").length > 0) {
                     if (widget.get_setting('save_to_dropbox')) {
-                        dropbox_file_chooser(".tt.html", 
+                        dropbox_file_chooser([".tt.html"], 
                                                function (files) {
                                                    ui.newPanel.before($("<p><a href='" + files[0].link + "' target='_blank'>Click to open " + files[0].name + "</a></p>"));
                                                });
@@ -371,7 +371,9 @@ window.TOONTALK.SETTINGS =
           contents_div.appendChild(heading);
           contents_div.appendChild(program_name.container);
           contents_div.appendChild(save_to_google_drive.container);
-          contents_div.appendChild(save_to_dropbox.container);
+          // commented out until https://www.dropbox.com/developers/documentation/javascript is ready since saving
+          // is only possible using the deprecated version 1 SDK
+//           contents_div.appendChild(save_to_dropbox.container);
           contents_div.appendChild(auto_save_to_cloud.container);
           contents_div.appendChild(local_storage.container);
           save_to_google_drive.container.appendChild(TT.UTILITIES.create_space());
