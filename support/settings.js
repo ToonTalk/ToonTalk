@@ -390,19 +390,19 @@ window.TOONTALK.SETTINGS =
           }
           if (widget.get_setting('save_to_google_drive')) {
               if (google_status === 'Need to authorize') {
-                  google_drive.container.appendChild(TT.UTILITIES.create_space());
-                  google_drive.container.appendChild(authorize);
+                  save_to_google_drive.container.appendChild(TT.UTILITIES.create_space());
+                  save_to_google_drive.container.appendChild(authorize);
               } else if (google_status !== 'Authorized' && google_status !== 'Ready' && google_status !== 'Authorized but not yet ready') {
                   cloud_available = false;
                   widget.set_setting('google_drive_unavailable', true);
                   // delayed because JQuery otherwise complains that the buttons haven't been initialised
                   setTimeout(function () {
-                                 google_drive.button.disabled = true; // is a checkbox
-                                 $(publish)            .button("option", "disabled", true);
-                                 $(save_now_google)    .button("option", "disabled", true);
-                                 TT.UTILITIES.give_tooltip(google_drive.container, "Inactivated because attempt to connect to Google Drive returned: " + google_status);
-                                 publish.title                = google_drive.container.title;
-                                 save_now_google.title        = google_drive.container.title;          
+                                 save_to_google_drive.button.disabled = true; // is a checkbox
+                                 $(publish)       .button("option", "disabled", true);
+                                 $(save_now_cloud).button("option", "disabled", true);
+                                 TT.UTILITIES.give_tooltip(save_to_google_drive.container, "Inactivated because attempt to connect to Google Drive returned: " + google_status);
+                                 publish.title               = save_to_google_drive.container.title;
+                                 save_now_cloud.title        = save_to_google_drive.container.title;          
                              },
                              1);
               }
