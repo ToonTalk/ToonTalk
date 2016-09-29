@@ -859,6 +859,37 @@ window.TOONTALK.UTILITIES =
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
+    var replace_body = function () {
+        var encoded_url = utilities.get_current_url_parameter("url");
+        if (!encoded_url) {
+            utilities.display_message("Expected a url=... parameter in the URL.");
+            return;
+        }
+        var url = decodeURIComponent(encoded_url);
+        utilities.download_file(url,
+                                function (contents) {
+                                    var body_start, body_end, body;
+                                    if (!contents) {
+                                        utilities.display_message("Unable to read contents of " + url);
+                                        return;
+                                    }
+                                    body_start = contents.indexOf("<body");
+                                    if (body_start < 0) {
+                                        utilities.display_message("Expected contents of " + url + " to contain &lt;body&gt;");
+                                        return;
+                                    }
+                                    body_end = contents.indexOf("</body>");
+                                    if (body_end < 0) {
+                                        utilities.display_message("Expected contents of " + url + " to contain &lt;/body&gt;");
+                                        return;
+                                    }
+                                    body = contents.substring(body_start, body_end+7);
+                                    document.body.innerHTML = body;
+                                    // may wan to add a callback here
+                                    utilities.initialize(undefined, true);
+                                },
+                                gapi.auth.getToken().access_token);
+    };
     var waiting_for_speech = false;
     // for implementing zero_timeout
     var timeouts = [];
@@ -5099,7 +5130,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //       };
 //       return iter('')(0)(grp(String(n)))(rem(String(n)));
 //     };
-        utilities.initialize = function (callback) {
+        utilities.initialize = function (callback, reinitialize) {
             var translation_observer = new MutationObserver(function (mutations) {
                                                                 mutations.forEach(function (mutation) {
                                                                     var translation_element = $(mutation.target).closest(".toontalk-translation-element").get(0);
@@ -5162,7 +5193,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 }
             };
             var document_click, translation_div, translation_element, $saved_selection;
-            if (toontalk_initialized) {
+            if (toontalk_initialized && !reinitialize) {
                 return;
             }
             document_click =
@@ -5305,6 +5336,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //                     $saved_selection = undefined;
 //                 }
 //             });
+            if (!toontalk_initialized && utilities.get_current_url_boolean_parameter('replace-body')) {
+                replace_body();
+            }
             setTimeout(function () {
                            TT.DISPLAY_UPDATES.update_display();
                        },
