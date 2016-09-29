@@ -40,10 +40,10 @@ var add_save_edits_iframe = function () {
 //     iframe.src        = "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page_dropbox.html?id=" + file_id; 
     document.body.appendChild(iframe);
 };
-if (window.location.href.indexOf("googledrive.com/host") >= 0) {
+//if (window.location.href.indexOf("googledrive.com/host") >= 0) {
     // don't add iframe if file has been moved from Google Drive (e.g. as a test file)
     add_save_edits_iframe();
-}
+//}
 
 var respond_to_authorization_need = function (error, saving_window, saving_window_URL) {
     var alert_element = document.createElement('div');
