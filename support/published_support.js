@@ -35,6 +35,9 @@ var add_save_edits_iframe = function () {
     var iframe        = document.createElement("iframe");
     iframe.className  = "toontalk-saver-iframe";
     iframe.src        = "https://toontalk.github.io/ToonTalk/support/save_page.html?id=" + file_id;
+    if (window.location.search.indexOf("debugging=1") >= 0) {
+        iframe.src += "&debugging=1";
+    }
     // using GitHub caused problems with editor fonts not loading so used DropBox
     // but that broke saving edits on IE11 so fixed the web fonts problem elsewhere
 //     iframe.src        = "https://dl.dropboxusercontent.com/u/51973316/ToonTalk/support/save_page_dropbox.html?id=" + file_id; 
