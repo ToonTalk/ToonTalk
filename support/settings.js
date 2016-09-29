@@ -67,7 +67,7 @@ window.TOONTALK.SETTINGS =
                         $("#tab-" + cloud_pages_index + "_info").show();
                         $("#tab-" + cloud_pages_index + "_wrapper").show();
                     } else {
-                        become_cloud_files_table(ui.newPanel, 'page'   , widget, settings_panel, become_cloud_files_table_callback);
+                        become_cloud_files_table(ui.newPanel, 'page', widget, settings_panel, become_cloud_files_table_callback);
                     }
                 } else {
                     $("#tab-" + local_files_index + "_info").show();
@@ -143,7 +143,7 @@ window.TOONTALK.SETTINGS =
                 // TODO: when in the cloud use this.title or the like to directly load the Google file
                 widget.load(in_the_cloud, callback);
             }.bind(this);
-            // save in case current program has changed
+            // save before loading new program in case current program has changed
             widget.save(true, undefined, saved_callback);
         };
         var $elements_needing_click_handlers = $(table).find(".toontalk-file-load-button-without-click-handler");
