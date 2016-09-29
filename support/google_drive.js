@@ -298,16 +298,7 @@ window.TOONTALK.google_drive =
       download_file: function(file, callback) {
           if (file.downloadUrl) {
               var access_token = gapi.auth.getToken().access_token;
-              var xhr = new XMLHttpRequest();
-              xhr.open('GET', file.downloadUrl);
-              xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
-              xhr.onload = function() {
-                               callback(xhr.responseText);
-              };
-              xhr.onerror = function() {
-                                callback(null);
-              };
-              xhr.send();
+              TT.UTILITIES.download_file(file.downloadUrl, callback, access_token);
           } else {
               callback(null);
           }

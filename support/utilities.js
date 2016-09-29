@@ -5040,6 +5040,21 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         }
     };
 
+    utilities.download_file = function (url, callback, access_token) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        if (access_token) {
+           xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
+        }
+        xhr.onload = function() {
+                         callback(xhr.responseText);
+        };
+        xhr.onerror = function() {
+                          callback(null);
+        };
+        xhr.send();
+    };
+
 
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
