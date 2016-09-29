@@ -1989,7 +1989,7 @@ window.TOONTALK.widget = (function (TT) {
                     parameters.google_drive = TT.google_drive && this.get_setting('save_to_google_drive') && this.get_setting('auto_save_to_cloud');
                 }
                 if (typeof parameters.local_storage === 'undefined') {
-                    parameters.local_storage = this.get_setting('save_to_local_storage');
+                    parameters.local_storage = this.get_setting('auto_save_to_local_storage');
                 };
                 if (!immediately) {
                     // delay it so the geometry settles down -- perhaps 0 (i.e. 4ms) is good enough
