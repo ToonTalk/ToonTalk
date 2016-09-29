@@ -14,7 +14,7 @@ window.TOONTALK.SETTINGS =
     var local_files_index = 0; // cloud_available ? 1: 0; // so cloud version is first if available
     var cloud_files_index = 1;
     var cloud_pages_index = 2;
-    var load_file_from_dropbox = function (extension, callback) {
+    var dropbox_file_chooser = function (extension, callback) {
         // see https://www.dropbox.com/developers/chooser
         var options = {
             success: callback,
@@ -46,9 +46,12 @@ window.TOONTALK.SETTINGS =
                 $(".dataTables_wrapper").hide();
                 if (ui.newTab.find(".toontalk-programs-in-cloud-tab-label").length > 0) {
                     if (widget.get_setting('save_to_dropbox')) {
-                        load_file_from_dropbox(".toontalk",
+                        dropbox_file_chooser(".tt.json",
                                                function (files) {
-                                                   console.log("download " + files[0].link);
+                                                   TT.UTILITIES.download_file(files[0].link,
+                                                                              widget.download_callback(function () {
+                                                                                                            $(settings_panel).remove();
+                                                                                                        }));
                                                });
                     } else if (initialised) {
                         $("#tab-" + cloud_files_index + "_info").show();
@@ -59,7 +62,7 @@ window.TOONTALK.SETTINGS =
                     }
                 } else if (ui.newTab.find(".toontalk-pages-in-cloud-tab-label").length > 0) {
                     if (widget.get_setting('save_to_dropbox')) {
-                        load_file_from_dropbox(".tt.html", 
+                        dropbox_file_chooser(".tt.html", 
                                                function (files) {
                                                    ui.newPanel.before($("<p><a href='" + files[0].link + "' target='_blank'>Click to open " + files[0].name + "</a></p>"));
                                                });
