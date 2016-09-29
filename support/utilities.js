@@ -2691,10 +2691,13 @@ window.TOONTALK.UTILITIES =
             return alert_element;
         };
         
-        utilities.create_text_element = function (text) {
+        utilities.create_text_element = function (text, extra_classes) {
             var div = document.createElement("div");
             div.innerHTML = text;
             $(div).addClass('ui-widget');
+            if (extra_classes) {
+                $(div).addClass(extra_classes);
+            }
             return div;
         };
 
@@ -5035,6 +5038,21 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             utilities.display_message('The name of the ' + widget.get_type_name() + ' is now "' + name + '"');
             return true;
         }
+    };
+
+    utilities.download_file = function (url, callback, access_token) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        if (access_token) {
+           xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
+        }
+        xhr.onload = function() {
+                         callback(xhr.responseText);
+        };
+        xhr.onerror = function() {
+                          callback(null);
+        };
+        xhr.send();
     };
 
 

@@ -50,9 +50,14 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
                    USABILITY_DRAG_OFFSET: {x: 0,
                                            y: 0},
                    // following needed since window.navigator.onLine was true even after disconnecting from the net
-                   RUNNING_LOCALLY: this_url.indexOf("file://")  === 0 || this_url.indexOf("http://localhost")  === 0,
+                   RUNNING_LOCALLY: this_url.indexOf("file://") === 0 || this_url.indexOf("http://localhost") === 0,
                    CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
                   };
+
+if (this_url.indexOf("http://localhost") === 0) {
+    window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID = "148386604750-advtvsmt840u2ulf52g38gja71als4f2.apps.googleusercontent.com";
+    window.TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE = window.location.origin;
+}
 
 var debugging = get_parameter('debugging', '0') !== '0';
 
@@ -120,6 +125,7 @@ if (debugging) {
                   "support/google_drive.js",
                   "support/utilities.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
+//                   "https://www.dropbox.com/static/api/2/dropins.js",
                   // following enables JQuery UI resize handles to respond to touch
                   "libraries/jquery.ui.touch-punch.min.js"];
 } else {
@@ -127,6 +133,7 @@ if (debugging) {
                   "libraries/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
+//                   "https://www.dropbox.com/static/api/2/dropins.js",
                   // following enables JQuery UI resize handles to respond to touch
                   // Note that including this in the closure compiler resulted in errors
                   "libraries/jquery.ui.touch-punch.min.js"];                 
@@ -154,9 +161,11 @@ var loadFile = function (index, offline) {
                                             }
                                         };
                    if (file_name.indexOf("http") >= 0) {
-                       if (!offline && !TOONTALK.CHROME_APP) {
+                       if ((!offline && !TOONTALK.CHROME_APP) ||
+                           get_parameter('remote_storage', false)) {
                            // Chrome App complains:
                            // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' because it violates the following Content Security Policy directive: ...
+                           // if remote_storage is set then want to connect to remote storage even though running localhost 
                            script.src = file_name;
                        } else if (local_replacements[file_name]) {
                            script.src = path_prefix + local_replacements[file_name];
@@ -166,6 +175,10 @@ var loadFile = function (index, offline) {
                        }
                    } else {
                        script.src = path_prefix + file_name;
+                   }
+                   if (file_name === "https://www.dropbox.com/static/api/2/dropins.js") {
+                       script.id ="dropboxjs";
+                       script["data-app-key"] = "ikwgpe4tcbvaxh4";
                    }
                    script.addEventListener('load', load_next_file);
                    script.addEventListener('error', function (event) {

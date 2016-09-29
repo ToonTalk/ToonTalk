@@ -1986,7 +1986,7 @@ window.TOONTALK.widget = (function (TT) {
                     parameters = {};
                 }
                 if (typeof parameters.google_drive === 'undefined') {
-                    parameters.google_drive = TT.google_drive && this.get_setting('auto_save_to_google_drive');
+                    parameters.google_drive = TT.google_drive && this.get_setting('save_to_google_drive') && this.get_setting('auto_save_to_cloud');
                 }
                 if (typeof parameters.local_storage === 'undefined') {
                     parameters.local_storage = this.get_setting('auto_save_to_local_storage');
@@ -2064,28 +2064,7 @@ window.TOONTALK.widget = (function (TT) {
                 var program_name = this.get_setting('program_name');
                 var file_name = program_name + ".json";
                 var key = TT.UTILITIES.local_storage_program_key(program_name);
-                var download_callback = 
-                    function (json_string) {
-                        var json;
-                        if (json_string) {
-                            try {
-                                json = JSON.parse(json_string);
-                                top_level_widget.remove_all_backside_widgets();
-                                TT.UTILITIES.add_backside_widgets_from_json(top_level_widget,
-                                                                            json.semantic.backside_widgets,
-                                                                            {json_of_shared_widgets: json.shared_widgets,
-                                                                             shared_widgets:         [],
-                                                                             shared_html:            json.shared_html});
-                                if (loaded_callback) {
-                                    loaded_callback();
-                                }
-                            } catch (e) {
-                                TT.UTILITIES.display_message("Error encountered loading " + program_name + " : " + e);
-                            }
-                        } else if (nothing_to_load_callback) {
-                            nothing_to_load_callback();
-                        }
-                };
+                var download_callback = this.download_callback(loaded_callback, nothing_to_load_callback);
                 var callback = function (google_file) {   
                      if (google_file) {
                          TT.google_drive.download_file(google_file, download_callback);
@@ -2098,6 +2077,29 @@ window.TOONTALK.widget = (function (TT) {
                 } else {
                     TT.UTILITIES.retrieve_string(key, download_callback);
                 }
+            };
+            top_level_widget.download_callback = function (loaded_callback, nothing_to_load_callback) {
+                return function (json_string) {
+                    var json;
+                    if (json_string) {
+                        try {
+                            json = JSON.parse(json_string);
+                            this.remove_all_backside_widgets();
+                            TT.UTILITIES.add_backside_widgets_from_json(this,
+                                                                        json.semantic.backside_widgets,
+                                                                        {json_of_shared_widgets: json.shared_widgets,
+                                                                         shared_widgets:         [],
+                                                                         shared_html:            json.shared_html});
+                            if (loaded_callback) {
+                                loaded_callback();
+                            }
+                        } catch (e) {
+                            TT.UTILITIES.display_message("Error encountered loading " + program_name + ": " + e);
+                        }
+                    } else if (nothing_to_load_callback) {
+                        nothing_to_load_callback();
+                    }
+                }.bind(this);
             };
             top_level_widget.walk_children = function () {
                 // ignore since top-level widgets are currently only used for their backside

@@ -29,7 +29,7 @@ window.TOONTALK.google_drive =
     var programs_folder_id, pages_folder_id;
     return {
         handle_client_load: function (callback_when_authorized) {
-            if (window.location.href.indexOf(origin) < 0) {
+            if (window.location.href.indexOf(origin) !== 0) {
                 status = wrong_origin_message + origin + ".\nIf you are hosting ToonTalk elsewhere you need to set TOONTALK.GOOGLE_DRIVE_CLIENT_ID and TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE";
                 if (callback_when_authorized) {
                     callback_when_authorized(status);
@@ -102,7 +102,8 @@ window.TOONTALK.google_drive =
                    if (response && response.id) {
                        callback(response.id);
                    } else {
-                       console.error("Failure to create folder '" + title + "'. Response was " + response);
+                       console.error("Failure to create folder '" + title + "'. Response follows.");
+                       console.error(response);
                    }
                }
                var folder_id = response && response.items && response.items.length > 0 && response.items[0].id;
@@ -297,16 +298,7 @@ window.TOONTALK.google_drive =
       download_file: function(file, callback) {
           if (file.downloadUrl) {
               var access_token = gapi.auth.getToken().access_token;
-              var xhr = new XMLHttpRequest();
-              xhr.open('GET', file.downloadUrl);
-              xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
-              xhr.onload = function() {
-                               callback(xhr.responseText);
-              };
-              xhr.onerror = function() {
-                                callback(null);
-              };
-              xhr.send();
+              TT.UTILITIES.download_file(file.downloadUrl, callback, access_token);
           } else {
               callback(null);
           }
