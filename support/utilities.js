@@ -859,7 +859,7 @@ window.TOONTALK.UTILITIES =
         // not clear what to do if some URLs are data and some not -- can that happen?
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
-    var replace_body = function () {
+    var replace_body = function (callback) {
         var encoded_url = utilities.get_current_url_parameter("url");
         if (!encoded_url) {
             utilities.display_message("Expected a url=... parameter in the URL.");
@@ -885,8 +885,7 @@ window.TOONTALK.UTILITIES =
                                     }
                                     body = contents.substring(body_start, body_end+7);
                                     document.body.innerHTML = body;
-                                    // may wan to add a callback here
-                                    utilities.initialize(undefined, true);
+                                    callback();
                                 },
                                 gapi.auth.getToken().access_token);
     };
@@ -5130,18 +5129,18 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //       };
 //       return iter('')(0)(grp(String(n)))(rem(String(n)));
 //     };
-        utilities.initialize = function (callback, reinitialize) {
-            var translation_observer = new MutationObserver(function (mutations) {
-                                                                mutations.forEach(function (mutation) {
-                                                                    var translation_element = $(mutation.target).closest(".toontalk-translation-element").get(0);
-                                                                    if (translation_element && translation_element.toontalk_callback) {
-                                                                        translation_element.toontalk_callback(translation_element.innerText);
-                                                                        translation_element.innerText = '';
-                                                                        translation_element.toontalk_callback = undefined;
-                                                                    }
-                                                                });
+    utilities.initialize = function (callback) {
+        var translation_observer = new MutationObserver(function (mutations) {
+                                                            mutations.forEach(function (mutation) {
+                                                                var translation_element = $(mutation.target).closest(".toontalk-translation-element").get(0);
+                                                                if (translation_element && translation_element.toontalk_callback) {
+                                                                    translation_element.toontalk_callback(translation_element.innerText);
+                                                                    translation_element.innerText = '';
+                                                                    translation_element.toontalk_callback = undefined;
+                                                                }
                                                             });
-            var add_help_buttons = function () {
+                                                        });
+        var add_help_buttons = function () {
                 var add_button_or_link = function (id, url, label, title, css) {
                         var element = document.getElementById(id);
                         var button_or_link, click_handler;
@@ -5163,7 +5162,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                             element.appendChild(button_or_link);
                             $(button_or_link).css(css);
                         }
-                    };
+                };
                 add_button_or_link("toontalk-manual-button",
                                    "docs/manual/index.html?reset=1",
                                    "Learn about ToonTalk",
@@ -5179,8 +5178,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                    "What's new?",
                                    "Click to visit see what has changed recently.",
                                    {"background": "cyan"});
-            };
-            var unload_listener = function (event) {
+        };
+        var unload_listener = function (event) {
                 try {
                     window.speechSynthesis.cancel();
                 } catch (e) {
@@ -5191,11 +5190,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 } catch (error) {
                     TT.UTILITIES.report_internal_error(error);
                 }
-            };
-            var document_click, translation_div, translation_element, $saved_selection;
-            if (toontalk_initialized && !reinitialize) {
-                return;
-            }
+        };
+        var continue_initialization = function () {
             document_click =
                 function (event) {
         //          event.stopPropagation();
@@ -5336,26 +5332,33 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //                     $saved_selection = undefined;
 //                 }
 //             });
-            if (!toontalk_initialized && utilities.get_current_url_boolean_parameter('replace-body')) {
-                replace_body();
-            }
             setTimeout(function () {
                            TT.DISPLAY_UPDATES.update_display();
                        },
                        100);
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
-        };
+        }
+        var document_click, translation_div, translation_element, $saved_selection;
+        if (toontalk_initialized) {
+            return;
+        }
+        if (utilities.get_current_url_boolean_parameter('replace-body')) {
+            replace_body(continue_initialization);
+        } else {
+            continue_initialization();
+        }
+    }; 
 
-        utilities.do_after_initialization = function (callback) {
-            if (toontalk_initialized) {
-                callback();
-            } else {
-                document.addEventListener('toontalk_initialized', callback);
-            }
-        };
+    utilities.do_after_initialization = function (callback) {
+        if (toontalk_initialized) {
+            callback();
+        } else {
+            document.addEventListener('toontalk_initialized', callback);
+        }
+    };
 
-        return utilities;
+    return utilities;
     
 }(window.TOONTALK));
 
