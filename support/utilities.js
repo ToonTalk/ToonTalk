@@ -860,7 +860,7 @@ window.TOONTALK.UTILITIES =
         return urls && urls.length > 0 && urls.indexOf("data:") < 0;
     };
     var replace_body = function (callback) {
-        var encoded_url = utilities.get_current_url_parameter("url");
+        var encoded_url = utilities.get_current_url_parameter('replace-with-url');
         if (!encoded_url) {
             utilities.display_message("Expected a url=... parameter in the URL.");
             return;
@@ -887,7 +887,7 @@ window.TOONTALK.UTILITIES =
                                     document.body.innerHTML = body;
                                     callback();
                                 },
-                                gapi.auth.getToken().access_token);
+                                gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
     };
     var waiting_for_speech = false;
     // for implementing zero_timeout
@@ -5343,7 +5343,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         if (toontalk_initialized) {
             return;
         }
-        if (utilities.get_current_url_boolean_parameter('replace-body')) {
+        if (utilities.get_current_url_parameter('replace-with-url')) {
             replace_body(continue_initialization);
         } else {
             continue_initialization();
