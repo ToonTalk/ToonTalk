@@ -141,7 +141,7 @@ return {
          TT.UTILITIES.can_receive_drops($(editable_text).children(".froala-element").get(0));
          return editable_text;
     },
-    send_edit_updates: function (saving_window, saving_window_URL, file_id) {
+    old_send_edit_updates: function (saving_window, saving_window_URL, file_id) {
         var $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");
         var any_edits;
         any_edits = widget_count_in_last_save !== $elements.length;
@@ -170,7 +170,73 @@ return {
         }
         // check every 10 seconds for edits
         setTimeout(function () {
-                       TT.published_support.send_edit_updates(saving_window, saving_window_URL, file_id);
+                       TT.published_support.old_send_edit_updates(saving_window, saving_window_URL, file_id);
+                   },
+                   10000);
+    },
+    send_edit_updates: function (file_id) {
+        var $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");
+        var assemble_contents = function (title, editable_contents, widgets_json) {
+            var static_contents_header_1 =
+'<!DOCTYPE html>\n' +
+'<html>\n' +
+'<head>\n' +
+'<script src="https://toontalk.github.io/ToonTalk/toontalk.js?published=1"></script>\n' +
+'<title>\n';
+// title will be inserted here
+var static_contents_header_2 =
+'</title>\n' +
+'</head>\n' +
+'<body>\n';
+var static_contents_end =
+'</body>\n' +
+'</html>\n';
+            var page_contents = static_contents_header_1 + title + static_contents_header_2;
+            editable_contents.forEach(function (editable_content, index) {
+                                          page_contents += '<div class="toontalk-edit" name="content">\n' + editable_content + "\n</div>\n";
+                                          if (widgets_json[index]) {
+                                              page_contents += widgets_json[index]; 
+                                          }
+                                      });
+            page_contents += static_contents_end;
+            return page_contents;
+        };
+        var any_edits;
+        any_edits = widget_count_in_last_save !== $elements.length;
+        widget_count_in_last_save = $elements.length;
+        $(".toontalk-edit").each(function (index, element) {
+                                     var content = $(element).editable("getHTML", false, true);
+                                     if (editable_contents[index] && editable_contents[index] !== content) {
+                                         any_edits = true;
+                                     }
+                                     editable_contents[index] = content;
+        });
+        $elements.each(function (index, element) {
+            var widget = TT.UTILITIES.widget_side_of_element(element);
+            TT.UTILITIES.get_json_top_level(widget,
+                                            function (json) {
+                                                var json_div = TT.UTILITIES.toontalk_json_div(json, widget);
+                                                if (widgets_json[index] && widgets_json[index] !== json_div) {
+                                                    any_edits = true;
+                                                }
+                                                widgets_json[index] = json_div;
+                                            });
+        });
+        if (any_edits && widgets_json.length > 0) {
+            // don't save if there is no JSON
+            var callback = function () {
+                // do something more?
+                console.log("Published page '" + message_document.title + "' updated.");
+            };
+            TT.google_drive.insert_or_update_file(undefined, 
+                                                  file_id,
+                                                  'page',
+                                                  assemble_contents(document.title, editable_contents, widgets_json),
+                                                  callback);
+        }
+        // check every 10 seconds for edits
+        setTimeout(function () {
+                       TT.published_support.send_edit_updates(file_id);
                    },
                    10000);
     }};

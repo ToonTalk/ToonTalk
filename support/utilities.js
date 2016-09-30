@@ -887,7 +887,7 @@ window.TOONTALK.UTILITIES =
                                     document.body.innerHTML = body;
                                     callback();
                                 },
-                                gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
+                                gapi && gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
     };
     var waiting_for_speech = false;
     // for implementing zero_timeout

@@ -405,6 +405,8 @@ window.TOONTALK.SETTINGS =
                                  save_now_cloud.title        = save_to_google_drive.container.title;          
                              },
                              1);
+              } else {
+                  widget.set_setting('google_drive_unavailable', false);
               }
           } else if (widget.get_setting('save_to_dropbox')) {
               cloud_available = true;
