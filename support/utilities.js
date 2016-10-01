@@ -868,7 +868,7 @@ window.TOONTALK.UTILITIES =
         var url = decodeURIComponent(encoded_url);
         utilities.download_file(url,
                                 function (contents) {
-                                    var body_start, body_end, body, div;
+                                    var body_start, body_end, body, id, title, div;
                                     if (!contents) {
                                         utilities.display_message("Unable to read contents of " + url);
                                         return;
@@ -890,6 +890,13 @@ window.TOONTALK.UTILITIES =
                                     div.innerHTML = body;                                
                                     document.body.appendChild(div);
                                     callback();
+                                    if (TT.google_drive.connection_to_google_drive_possible()) {
+                                        id = url.substring(url.lastIndexOf('/')+1,url.indexOf('?'));
+                                        $(".toontalk-edit").editable({inlineMode:  !TT.UTILITIES.get_current_url_boolean_parameter('edit', false),
+                                                                      imageUpload: false, 
+                                                                      crossDomain: true});
+                                        TT.published_support.send_edit_updates(id);
+                                    }
                                 },
                                 gapi && gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
     };
