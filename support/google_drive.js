@@ -304,10 +304,11 @@ window.TOONTALK.google_drive =
           }
        },
 
-       google_drive_url: function (id) {
-//            return "https://googledrive.com/host/" + id + "/";
-           // Google no longer supports static web pages from Google Drive
-           // download it for now since can be displayed locally (but not edited (yet?))
+       google_drive_url: function (id, read_write) {
+           // Google no longer supports static web pages from Google Drive: "https://googledrive.com/host/" + id + "/";
+           if (read_write) {
+               return "https://www.googleapis.com/drive/v2/files/" + id + "?alt=media";
+           }
            return "https://drive.google.com/uc?export=download&id=" + id;
        },
 
