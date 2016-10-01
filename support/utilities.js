@@ -868,29 +868,28 @@ window.TOONTALK.UTILITIES =
         var url = decodeURIComponent(encoded_url);
         utilities.download_file(url,
                                 function (contents) {
-                                    var body_start, body_end, body, id, title, div;
+                                    var body, id, title, div;
                                     if (!contents) {
                                         utilities.display_message("Unable to read contents of " + url);
                                         return;
                                     }
-                                    body_start = contents.indexOf("<body");
-                                    if (body_start < 0) {
-                                        utilities.display_message("Expected contents of " + url + " to contain &lt;body&gt;");
+                                    body = extract_html_by_tag(contents, 'body');
+                                    if (!body) {
+                                        utilities.display_message("Expected contents of " + url + " to contain a body element.");
                                         return;
                                     }
-                                    body_end = contents.indexOf("</body>");
-                                    if (body_end < 0) {
-                                        utilities.display_message("Expected contents of " + url + " to contain &lt;/body&gt;");
-                                        return;
+                                    title = extract_html_by_tag(contents, 'title', true);
+                                    if (title) {
+                                        document.title = title;
                                     }
-                                    body = contents.substring(body_start, body_end+7);
                                     // can't just do document.body.innerHTML = body
                                     // since that clobbers hidden elements added by Google API
                                     div = document.createElement('div');
                                     div.innerHTML = body;                                
                                     document.body.appendChild(div);
                                     callback();
-                                    if (TT.google_drive.connection_to_google_drive_possible()) {
+                                    if ((url.indexOf("googleapis.com") >= 0 || url.indexOf("googleusercontents.com") >= 0) &&
+                                        TT.google_drive.connection_to_google_drive_possible()) {
                                         id = url.substring(url.lastIndexOf('/')+1,url.indexOf('?'));
                                         $(".toontalk-edit").editable({inlineMode:  !TT.UTILITIES.get_current_url_boolean_parameter('edit', false),
                                                                       imageUpload: false, 
@@ -899,6 +898,21 @@ window.TOONTALK.UTILITIES =
                                     }
                                 },
                                 gapi && gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
+    };
+    var extract_html_by_tag = function (html, tag, contents_only) {
+        var start = html.indexOf("<" + tag);
+        var end;
+        if (start < 0) {
+           return;
+        }
+        end = html.indexOf("</" + tag + ">");
+        if (end < 0) {
+            return;
+        }
+        if (contents_only) {
+            return html.substring(start+2+tag.length, end); // include < and > -- assumes tag is <tag>
+        }
+        return html.substring(start, end+3+tag.length); // include < / and >
     };
     var waiting_for_speech = false;
     // for implementing zero_timeout
