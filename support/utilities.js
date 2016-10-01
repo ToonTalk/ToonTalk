@@ -868,7 +868,7 @@ window.TOONTALK.UTILITIES =
         var url = decodeURIComponent(encoded_url);
         utilities.download_file(url,
                                 function (contents) {
-                                    var body_start, body_end, body;
+                                    var body_start, body_end, body, div;
                                     if (!contents) {
                                         utilities.display_message("Unable to read contents of " + url);
                                         return;
@@ -884,7 +884,11 @@ window.TOONTALK.UTILITIES =
                                         return;
                                     }
                                     body = contents.substring(body_start, body_end+7);
-                                    document.body.innerHTML = body;
+                                    // can't just do document.body.innerHTML = body
+                                    // since that clobbers hidden elements added by Google API
+                                    div = document.createElement('div');
+                                    div.innerHTML = body;                                
+                                    document.body.appendChild(div);
                                     callback();
                                 },
                                 gapi && gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
