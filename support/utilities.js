@@ -930,9 +930,9 @@ window.TOONTALK.UTILITIES =
                                     }
                                     return;
                                 }
-                                if (event.data.editable_contents) {
-                                    TT.publish.republish(event.data);
-                                }
+//                                 if (event.data.editable_contents) {
+//                                     TT.publish.republish(event.data);
+//                                 }
                             },
                             false); // don't capture events
     observer.observe(window.document, {childList: true,
@@ -4008,42 +4008,6 @@ window.TOONTALK.UTILITIES =
                 }
                 callback(window.localStorage.getItem(key));
             };
-        };
-
-        utilities.enable_editor = function (editor_window, url, file_id, widgets_json) {
-            // widgets_json can be undefined
-            var repeatedly_post_message_until_reply = function (message_poster, file_id) {
-                var message_listener = function (event) {
-                    if (event.data.editor_enabled_for && event.data.editor_enabled_for === file_id) {
-                        message_acknowledged = true;
-                        window.removeEventListener("message", message_listener);
-                    }
-                };
-                var repeat_until_acknowledged = function (message_poster, file_id) {
-                    if (message_acknowledged) {
-                        return;
-                    }
-                    setTimeout(function () {
-                                   message_poster();
-                                   // and try again after a delay (unless acknowledged)
-                                   repeat_until_acknowledged(message_poster, file_id);
-                               },
-                               500);
-                };
-                var message_acknowledged = false;
-                window.addEventListener("message", message_listener);
-                repeat_until_acknowledged(message_poster, file_id);
-            };
-            repeatedly_post_message_until_reply(function () {
-                                                    // using * instead of url
-                                                    // since https://googledrive.com/host/...
-                                                    // becomes https://a1801c08722da65109a4efa9e0ae4bdf83fafed0.googledrive.com/host/...
-                                                    editor_window.postMessage({save_edits_to: window.location.href,
-                                                                               file_id: file_id,
-                                                                               widgets_json: widgets_json},
-                                                                              "*");
-                                                },
-                                                file_id);
         };
 
         utilities.touch_available = function () {
