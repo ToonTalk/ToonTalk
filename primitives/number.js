@@ -572,8 +572,18 @@ window.TOONTALK.number = (function () {
         return this.set_value(bigrat_from_values(numerator, this.get_value()[1].toString()));
     };
 
+    number.set_numerator_to_float = function (new_numerator_as_float) {
+        // called if a robot was trained to change the numerator to a non-integer
+        return this.set_value(bigrat.divide(this.get_value(), bigrat.fromDecimal(new_numerator_as_float), this.denominator()), true);
+    };
+
     number.set_denominator = function (denominator) {
         return this.set_value(bigrat_from_values(this.get_value()[0].toString(), denominator));
+    };
+
+    number.set_denominator_to_float = function (new_denominator_as_float) {
+        // called if a robot was trained to change the denominator to a non-integer
+        return this.set_value(bigrat.divide(this.get_value(), this.numerator(), bigrat.fromDecimal(new_denominator_as_float)), true);
     };
 
     number.ONE = function () {
@@ -1452,12 +1462,12 @@ window.TOONTALK.number_backside =
                     // why not use $(...).is(...)?
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
-                        number.robot_in_training().edited(number, {setter_name: "set_denominator",
+                        number.robot_in_training().edited(number, {setter_name: denominator_as_fraction ? "set_denominator_to_float" : "set_denominator",
                                                                    argument_1: denominator,
                                                                    toString: "by changing the value of the denominator to " + denominator,
                                                                    button_selector: "." + first_class_name});
                     } else {
-                        number.robot_in_training().edited(number, {setter_name: "set_numerator",
+                        number.robot_in_training().edited(number, {setter_name: numerator_as_fraction ? "set_numerator_to_float" : "set_numerator",
                                                                    argument_1: numerator,
                                                                    toString: "by changing the value of the numerator to " + numerator,
                                                                    button_selector: "." + first_class_name});
