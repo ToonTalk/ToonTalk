@@ -117,7 +117,9 @@ var static_contents_end =
             // don't save if there is no JSON
             var callback = function () {
                 // do something more?
-                console.log("Published page '" + document.title + "' updated.");
+                if (TT.debugging) {
+                    console.log("Published page '" + document.title + "' updated.");
+                }
             };
             TT.google_drive.insert_or_update_file(undefined, 
                                                   file_id,

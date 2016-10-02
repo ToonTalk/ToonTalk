@@ -191,14 +191,13 @@ window.TOONTALK.google_drive =
                                             console.log(file.error.message);
                                          }
                                      }
-                                     console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));
+                                     if (TT.debugging) {
+                                        console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));
+                                     }
                       };
                   };
                   if (file_id) { 
                       TT.google_drive.insert_or_update_file(undefined, file_id, toontalk_type, contents, callback);
-//                        TT.google_drive.download_file(response.items[0], function (response) {
-//                            console.log(response);
-//                        });
                   } else {
                       TT.google_drive.insert_or_update_file(full_file_name, undefined, toontalk_type, contents, callback);   
                   }
