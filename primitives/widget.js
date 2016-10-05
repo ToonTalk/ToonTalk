@@ -1019,7 +1019,7 @@ window.TOONTALK.widget = (function (TT) {
                                backside_parent_view_of_this = parent_widget_of_frontside && parent_widget_of_frontside.get_widget().get_backside_widgets_json_views();
                                if (backside_parent_view_of_this) {
                                    index = this.get_parent_of_frontside().get_widget().get_backside_widgets().indexOf(this);
-                                   if (index >= 0) {
+                                   if (index >= 0 && backside_parent_view_of_this[index]) {
                                        json_view.frontside_left = backside_parent_view_of_this[index].frontside_left;
                                        json_view.frontside_top =  backside_parent_view_of_this[index].frontside_top;
                                    }
@@ -2037,7 +2037,6 @@ window.TOONTALK.widget = (function (TT) {
                             TT.UTILITIES.set_all_locally_stored_program_names(all_program_names);   
                         }  
                     });
-                    
                 };
                 var json_string, all_program_names, meta_data, message;
                 if (!time_stamp) {
