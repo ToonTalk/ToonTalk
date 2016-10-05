@@ -1891,7 +1891,7 @@ window.TOONTALK.UTILITIES =
             if (json.semantic && 
                 json.semantic.type === 'top_level' &&
                 !TT.no_local_storage &&
-                !TT.reset &&
+                !TT.reset && // if reset=1 then just use the JSON on the page itself
                 json.load_most_recent_program) {
                 // perhaps local storage will be used instead of the current json
                try {
@@ -1910,8 +1910,7 @@ window.TOONTALK.UTILITIES =
                                         } else {
                                             widget = utilities.create_from_json(json);
                                             process_widget_callback();
-                                        }
-                                        
+                                        }                            
                                    };
                     utilities.retrieve_string('toontalk-last-key', key_callback);
                } catch (error) {
@@ -3533,7 +3532,9 @@ window.TOONTALK.UTILITIES =
                                var height = $(element).height();
                                if (width && height) { // } && !$(element).is(".toontalk-carried-by-bird")) {
                                    if (not_in_a_hole(element.parentElement)) {
-                                       callback(original_parent);
+                                       setTimeout(function () {
+                                           callback(original_parent);
+                                       });
                                        if (original_parent) {
                                            original_parent.appendChild(element);
                                        } else if (element.parentElement === document.body) {
