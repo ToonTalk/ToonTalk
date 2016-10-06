@@ -1660,6 +1660,7 @@ body > .toontalk-local-alert {
     background-image: url("images/hole-tile-quarter-size.png");
     background-repeat: round;
     text-align: center;
+    font-size: 11pt;
 }
 .toontalk-box-hole::after {
  	content: attr(toontalk_name);
@@ -1668,7 +1669,6 @@ body > .toontalk-local-alert {
  	color: rgb(246, 237, 237);
  	text-shadow: 1px 1px 2px red;
  	background-color: rgb(67, 67, 211);
- 	font-size: 11pt;
 	border-radius: 5px;
 /* 	padding looked nice but was there even when there was no toontalk_name */
  	/* padding-left: 4px; */
@@ -2330,14 +2330,14 @@ background-image: url("images/dusty-morph.png");
 	width: 116px;
 	height: 98px;
 	text-align: center;
+    font-size: 18pt;
+    text-shadow: 1px 1px 2px black;
+    color: white;
 }
 .toontalk-sensor-nest::after {
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
- 	color: white;
- 	text-shadow: 1px 1px 2px black;
-    font-size: 18pt;
 }
 .toontalk-sensor-inactive-nest {
     background-image: url("images/sensor-nest-inactive.png");
@@ -2346,14 +2346,13 @@ background-image: url("images/dusty-morph.png");
 	width: 116px;
 	height: 98px;
 	text-align: center;
+    text-shadow: 1px 1px 2px black;
+    font-size: 18pt;     color: white;
 }
 .toontalk-sensor-inactive-nest::after {
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
-    color: white;
-    text-shadow: 1px 1px 2px black;
-    font-size: 18pt;
 }
 .toontalk-backside-of-sensor {
 	background: linear-gradient(to bottom, rgb(248, 228, 210), rgb(233, 177, 127));
@@ -2388,6 +2387,7 @@ background-image: url("images/dusty-morph.png");
 	width: 116px;
 	height: 98px;
 	text-align: center;
+    font-size: 18pt;
 }
 .toontalk-empty-nest::after {
  	content: attr(toontalk_name);
@@ -2395,7 +2395,6 @@ background-image: url("images/dusty-morph.png");
  	top: 30%;
  	color: navy;
  	text-shadow: 1px 1px 2px white;
- 	font-size: 18pt;
 }
 .toontalk-empty-nest-yellow {
 	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
