@@ -523,6 +523,7 @@ window.TOONTALK.box = (function (TT) {
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var size = this.get_size();
+        var z_index = TT.UTILITIES.get_style_numeric_property(frontside_element, 'z-index');
         var update_hole = function (hole_element, hole, index) {
             var contents = hole.get_contents();
             var content_element = (contents || hole).get_element(true);
@@ -568,7 +569,8 @@ window.TOONTALK.box = (function (TT) {
                                  {left:   left,
                                   top:    top,
                                   width:  new_width,
-                                  height: new_height});
+                                  height: new_height,
+                                  "z-index": typeof z_index === 'number' && z_index+size-index});
             if (hole_labels[index]) {
                 hole_element.setAttribute("toontalk_name", hole_labels[index]);
             }                                         
@@ -812,7 +814,19 @@ window.TOONTALK.box = (function (TT) {
     };
 
     box.label_font_size = function () {
-        return this.get_height()/8;
+        var size_due_to_width  = 0;
+        var size_due_to_height = 0;
+        if (this.get_size() === 0) {
+            return 0;
+        }
+        if (this.get_horizontal()) {
+            size_due_to_height = this.get_height()/8;
+            size_due_to_width  = this.get_width()/(12*this.get_size()); // 12 characters is a reasonable long label
+        } else {
+            size_due_to_height = this.get_height()/(6*this.get_size());
+            size_due_to_width  = this.get_width()/8;
+        }
+        return Math.min(size_due_to_width, size_due_to_height);
     };
     
     box.removed_from_container = function (part_side, event) {

@@ -1661,15 +1661,15 @@ body > .toontalk-local-alert {
     background-repeat: round;
     text-align: center;
     font-size: 11pt;
- 	color: rgb(246, 237, 237);
  	text-shadow: 1px 1px 2px red;
 }
 .toontalk-box-hole::after {
  	content: attr(toontalk_name);
  	position: relative;
- 	top: 95%;
+ 	top: 100%;
  	border-radius: 5px;
  	background-color: rgb(67, 67, 211);
+ 	color: rgb(246, 237, 237);
 /* 	padding looked nice but was there even when there was no toontalk_name */
  	/* padding-left: 4px; */
  	/* padding-right: 4px; */
@@ -2332,12 +2332,12 @@ background-image: url("images/dusty-morph.png");
 	text-align: center;
     font-size: 18pt;
     text-shadow: 1px 1px 2px black;
-    color: white;
 }
 .toontalk-sensor-nest::after {
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
+    color: white;
 }
 .toontalk-sensor-inactive-nest {
     background-image: url("images/sensor-nest-inactive.png");
@@ -2347,12 +2347,13 @@ background-image: url("images/dusty-morph.png");
 	height: 98px;
 	text-align: center;
     text-shadow: 1px 1px 2px black;
-    font-size: 18pt;     color: white;
+    font-size: 18pt;
 }
 .toontalk-sensor-inactive-nest::after {
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
+    color: white;
 }
 .toontalk-backside-of-sensor {
 	background: linear-gradient(to bottom, rgb(248, 228, 210), rgb(233, 177, 127));
@@ -2388,13 +2389,13 @@ background-image: url("images/dusty-morph.png");
 	height: 98px;
 	text-align: center;
     font-size: 18pt;
- 	color: navy;
  	text-shadow: 1px 1px 2px white;
 }
 .toontalk-empty-nest::after {
  	content: attr(toontalk_name);
  	position: relative;
  	top: 30%;
+ 	color: navy;
 }
 .toontalk-empty-nest-yellow {
 	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
@@ -2510,7 +2511,6 @@ background-image: url("images/dusty-morph.png");
 	width:  70px;
     height: 102px;
     text-align: center;
-	color: #432707;
 	text-shadow: 1px 1px 2px #E7D9A8;
 	font-weight: bold;
 	font-size: 12pt;
@@ -2521,6 +2521,7 @@ background-image: url("images/dusty-morph.png");
 	content: attr(toontalk_name);
 	position: relative;
 	top: 50%;
+	color: #432707;
 }
 .toontalk-bird-static-magenta {
     background-image: url("images/bird-static-magenta-transparent.png"), url("images/bird-static.png");
