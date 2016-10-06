@@ -810,6 +810,10 @@ window.TOONTALK.box = (function (TT) {
         // parent should be a hole
         return part.get_parent_of_frontside() && part.get_parent_of_frontside().get_index && part.get_parent_of_frontside().get_index();
     };
+
+    box.label_font_size = function () {
+        return this.get_height()/8;
+    };
     
     box.removed_from_container = function (part_side, event) {
         var update_display = !!event;
@@ -1177,6 +1181,22 @@ window.TOONTALK.box_hole =
                     return "empty holes";
                 }
                 return "empty hole";
+            };
+//             hole.get_name = function () {
+//                 // not currently used but might be worth keeping around
+//                 var hole_names = this.get_box().get_name();
+//                 var index;
+//                 if (!hole_names) {
+//                     return;
+//                 }
+//                 hole_names = hole_names.split(';');
+//                 index = this.get_index();
+//                 if (index < hole_names.length) {
+//                     return hole_names[index];
+//                 }
+//             };
+            hole.label_font_size = function () {
+                return this.get_box().label_font_size();
             };
             hole.is_of_type = function (type_name) {
                 if (contents) {

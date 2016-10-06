@@ -4246,13 +4246,13 @@ window.TOONTALK.UTILITIES =
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
                widget_side_dereferenced = widget_side.dereference();
-               if (css.width && widget_side_dereferenced.get_name && widget_side_dereferenced.get_name() && !css['font-size']) {
-                   // change font size so text fits (unless explicitly set)
-                   if (widget_side_dereferenced.is_box()) {
-                       // to do
-                   } else {
-                      // +2 to leave space on both sides of the label 
-                      css['font-size'] = utilities.font_size(widget_side_dereferenced.get_name(), css.width);
+               if (css.width) {
+                   if (widget_side.is_hole()) {
+                       css['font-size'] = widget_side.label_font_size();
+                   } else if (widget_side_dereferenced.get_name && widget_side_dereferenced.get_name() && !css['font-size']) {
+                       // change font size so text fits (unless explicitly set)
+                       // +2 to leave space on both sides of the label 
+                       css['font-size'] = utilities.font_size(widget_side_dereferenced.get_name(), css.width);
                    }
                }
                if ($(element).is(".toontalk-temporarily-set-down")) {
@@ -4285,7 +4285,11 @@ window.TOONTALK.UTILITIES =
        };
 
        utilities.font_size = function (string, width) {
-           var maximum_width = string.split(" ").map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
+           var maximum_width;
+           if (!string || !width) {
+               return 0;
+           }
+           maximum_width = string.split(" ").map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
            // +2 to leave some space on both sides of the label
            return width / (TT.FONT_ASPECT_RATIO * (maximum_width+2));
        };

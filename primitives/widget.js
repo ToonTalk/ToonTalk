@@ -20,8 +20,6 @@ window.TOONTALK.widget = (function (TT) {
     TT.creators_from_json["top_level"] = function (json) {
         var widget = TT.widget.create_top_level_widget(json.settings);
         widget.get_backside(true)
-//         var $backside_element = $(widget.get_backside(true).get_element());
-//         $backside_element.addClass("toontalk-top-level-backside");
         return widget;
     };
     

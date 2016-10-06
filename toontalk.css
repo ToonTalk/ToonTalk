@@ -1663,13 +1663,13 @@ body > .toontalk-local-alert {
     font-size: 11pt;
  	color: rgb(246, 237, 237);
  	text-shadow: 1px 1px 2px red;
- 	background-color: rgb(67, 67, 211);
 }
 .toontalk-box-hole::after {
  	content: attr(toontalk_name);
  	position: relative;
- 	top: 90%;
+ 	top: 95%;
  	border-radius: 5px;
+ 	background-color: rgb(67, 67, 211);
 /* 	padding looked nice but was there even when there was no toontalk_name */
  	/* padding-left: 4px; */
  	/* padding-right: 4px; */
