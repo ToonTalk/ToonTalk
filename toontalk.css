@@ -1661,15 +1661,15 @@ body > .toontalk-local-alert {
     background-repeat: round;
     text-align: center;
     font-size: 11pt;
+ 	color: rgb(246, 237, 237);
+ 	text-shadow: 1px 1px 2px red;
+ 	background-color: rgb(67, 67, 211);
 }
 .toontalk-box-hole::after {
  	content: attr(toontalk_name);
  	position: relative;
  	top: 90%;
- 	color: rgb(246, 237, 237);
- 	text-shadow: 1px 1px 2px red;
- 	background-color: rgb(67, 67, 211);
-	border-radius: 5px;
+ 	border-radius: 5px;
 /* 	padding looked nice but was there even when there was no toontalk_name */
  	/* padding-left: 4px; */
  	/* padding-right: 4px; */
@@ -2388,13 +2388,13 @@ background-image: url("images/dusty-morph.png");
 	height: 98px;
 	text-align: center;
     font-size: 18pt;
+ 	color: navy;
+ 	text-shadow: 1px 1px 2px white;
 }
 .toontalk-empty-nest::after {
  	content: attr(toontalk_name);
  	position: relative;
  	top: 30%;
- 	color: navy;
- 	text-shadow: 1px 1px 2px white;
 }
 .toontalk-empty-nest-yellow {
 	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
@@ -2510,34 +2510,23 @@ background-image: url("images/dusty-morph.png");
 	width:  70px;
     height: 102px;
     text-align: center;
+	color: #432707;
+	text-shadow: 1px 1px 2px #E7D9A8;
+	font-weight: bold;
+	font-size: 12pt;
 }
-.toontalk-bird-static-magenta {
-    background-image: url("images/bird-static-magenta-transparent.png"), url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width:  70px;
-    height: 102px;
-    text-align: center;
-}
-.toontalk-bird-static-yellow {
-    background-image: url("images/bird-static-yellow-transparent.png"), url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width:  70px;
-    height: 102px;
-    text-align: center;
-}
-
 /* 	::before isntead of ::after in case bird is holding something 
 	in which case her name ends up below the thing */
 .toontalk-bird-static::before {
 	content: attr(toontalk_name);
 	position: relative;
 	top: 50%;
-	color: #432707;
-	text-shadow: 1px 1px 2px #E7D9A8;
-	font-weight: bold;
-	font-size: 12pt;
+}
+.toontalk-bird-static-magenta {
+    background-image: url("images/bird-static-magenta-transparent.png"), url("images/bird-static.png");
+}
+.toontalk-bird-static-yellow {
+    background-image: url("images/bird-static-yellow-transparent.png"), url("images/bird-static.png");
 }
 
 /* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
