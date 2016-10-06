@@ -1663,12 +1663,12 @@ body > .toontalk-local-alert {
 }
 .toontalk-box-hole::after {
  	content: attr(toontalk_name);
- 	position: relative;	
-    top: 90%;
+ 	position: relative;
+ 	top: 90%;
  	color: rgb(246, 237, 237);
  	text-shadow: 1px 1px 2px red;
  	background-color: rgb(67, 67, 211);
-    font-size: 11pt;
+ 	font-size: 11pt;
 	border-radius: 5px;
 /* 	padding looked nice but was there even when there was no toontalk_name */
  	/* padding-left: 4px; */
@@ -2389,45 +2389,19 @@ background-image: url("images/dusty-morph.png");
 	height: 98px;
 	text-align: center;
 }
+.toontalk-empty-nest::after {
+ 	content: attr(toontalk_name);
+ 	position: relative;
+ 	top: 30%;
+ 	color: navy;
+ 	text-shadow: 1px 1px 2px white;
+ 	font-size: 18pt;
+}
 .toontalk-empty-nest-yellow {
 	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-	text-align: center;
 }
 .toontalk-empty-nest-magenta {
 	background-image: url("images/empty-nest-magenta-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-	text-align: center;
-}
-.toontalk-empty-nest::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 30%;
-    color: navy;
-    text-shadow: 1px 1px 2px white;
-    font-size: 18pt;
-}
-.toontalk-empty-nest-yellow::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 30%;
-    color: navy;
-    text-shadow: 1px 1px 2px white;
-    font-size: 18pt;
-}
-.toontalk-empty-nest-magenta::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 30%;
-    color: navy;
-    text-shadow: 1px 1px 2px white;
-    font-size: 18pt;
 }
 /* could make this 14 steps and change -1744 to 1628 */
 .toontalk-hatch-egg {
@@ -2554,17 +2528,19 @@ background-image: url("images/dusty-morph.png");
     height: 102px;
     text-align: center;
 }
-.toontalk-bird-static::before {
+
 /* 	::before isntead of ::after in case bird is holding something 
 	in which case her name ends up below the thing */
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 50%;
- 	color: #432707; 
- 	text-shadow: 1px 1px 2px #E7D9A8;
- 	font-weight: bold;
-    font-size: 12pt;
+.toontalk-bird-static::before {
+	content: attr(toontalk_name);
+	position: relative;
+	top: 50%;
+	color: #432707;
+	text-shadow: 1px 1px 2px #E7D9A8;
+	font-weight: bold;
+	font-size: 12pt;
 }
+
 /* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
 /* .toontalk-bird-morph-from-static {
     width:  88px;

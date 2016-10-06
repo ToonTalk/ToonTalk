@@ -1263,7 +1263,7 @@ window.TOONTALK.nest = (function (TT) {
                         backside_where_bird_goes.widget_side_dropped_on_me(bird, event);
                     }
                     $(frontside_element).removeClass("toontalk-hatch-egg")
-                                        .addClass(this.get_class_name_with_color("toontalk-empty-nest"))
+                                        .addClass("toontalk-empty-nest " + this.get_class_name_with_color("toontalk-empty-nest"))
                                         // rely upon toontalk-empty-nest for dimensions (or other classes)
                                         // problem this addresses is nest otherwise is too tall since it needed that
                                         // height while bird was hatching
@@ -1402,7 +1402,7 @@ window.TOONTALK.nest = (function (TT) {
                 } else {
                     frontside_element.appendChild(top_contents_element);
                 }
-                $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
+                $(frontside_element).addClass("toontalk-empty-nest " + this.get_class_name_with_color("toontalk-empty-nest"));
                 if (contents[0].is_backside()) {
                     top_contents.set_parent_of_backside(this);
                 } else {
@@ -1412,7 +1412,7 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element.setAttribute('toontalk_name', this.get_name());
                 if (guid) {
                     $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-nest-with-egg"));
-                    $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
+                    $(frontside_element).addClass("toontalk-empty-nest " + this.get_class_name_with_color("toontalk-empty-nest"));
                 } else {
                     TT.UTILITIES.add_animation_class(frontside_element, this.get_class_name_with_color("toontalk-nest-with-egg"));
                 }
