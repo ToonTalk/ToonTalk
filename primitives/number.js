@@ -693,8 +693,11 @@ window.TOONTALK.number = (function () {
             }
         } else {
             if ($dimensions_holder.length > 0) {
-                client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
-                client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
+                client_width  = $dimensions_holder.width();
+               client_height = $dimensions_holder.height();
+               // when $dimensions_holder is a box hole in a box in a box then the following sometimes produces larger incorrect numbers
+//                 client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
+//                 client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
             }
             if (client_width === 0 || client_height === 0 || $dimensions_holder.length === 0) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0 && $dimensions_holder.length > 0) {
