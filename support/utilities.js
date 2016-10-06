@@ -4246,6 +4246,15 @@ window.TOONTALK.UTILITIES =
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
                widget_side_dereferenced = widget_side.dereference();
+               if (css.width && widget_side_dereferenced.get_name && widget_side_dereferenced.get_name() && !css['font-size']) {
+                   // change font size so text fits (unless explicitly set)
+                   if (widget_side_dereferenced.is_box()) {
+                       // to do
+                   } else {
+                      // +2 to leave space on both sides of the label 
+                      css['font-size'] = utilities.font_size(widget_side_dereferenced.get_name(), css.width);
+                   }
+               }
                if ($(element).is(".toontalk-temporarily-set-down")) {
                    // leave the CSS alone
                    // TODO: make this more modular/cleaner
@@ -4273,6 +4282,12 @@ window.TOONTALK.UTILITIES =
            } else {
                $(element).css(css);
            }
+       };
+
+       utilities.font_size = function (string, width) {
+           var maximum_width = string.split(" ").map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
+           // +2 to leave some space on both sides of the label
+           return width / (TT.FONT_ASPECT_RATIO * (maximum_width+2));
        };
 
        utilities.map_arguments = function (args, fun) {
@@ -5210,7 +5225,11 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 TT.speak = false;
                 utilities.display_message("This browser doesn't support speech output. speak=1 in URL ignored.");
             }
-            TT.balloons                      = utilities.get_current_url_boolean_parameter('balloons', true);
+            TT.balloons                      = utilities.get_current_url_boolean_parameter('balloons', true);           
+            // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
+            // the aspect ratio of monospace fonts varies from .43 to .55
+            // .55 'worst' aspect ratio -- adding a little extra here
+            TT.FONT_ASPECT_RATIO = 0.64;
             utilities.process_json_elements();
             // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
             // clicking on a running widget may not work since its HTML may be changing constantly

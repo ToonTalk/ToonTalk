@@ -21,11 +21,6 @@
     var THREE_HUNDRED_AND_SIXTY        = bigrat.fromInteger(360);
     var TWO_PI                         = bigrat.fromDecimal(2*Math.PI);
 
-    // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
-    // the aspect ratio of monospace fonts varies from .43 to .55
-    // .55 'worst' aspect ratio -- add a little extra
-    var FONT_ASPECT_RATIO           = 0.64;
-
     // Math.log10 not defined in IE11
     var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/LOG_10 };
 
@@ -739,7 +734,7 @@ window.TOONTALK.number = (function () {
         }
         font_height = (client_height-border_size*2);
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
-        font_width = font_height * FONT_ASPECT_RATIO; 
+        font_width = font_height * TT.FONT_ASPECT_RATIO; 
         // could find the font name and use the precise value
         max_decimal_places = client_width / font_width;
         new_HTML = this.to_HTML(max_decimal_places, client_width, client_height, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
@@ -879,7 +874,7 @@ window.TOONTALK.number = (function () {
                        operator_HTML + '<div style="margin-top: ' + (client_height-font_size)/2 + 'px">' + value_as_string + '</div>' + exponent_string + '</div>';
             }
         }
-        table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
+        table_style = ' style="font-size:' + (TT.font_size * 0.4) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             improper_fraction_HTML = 

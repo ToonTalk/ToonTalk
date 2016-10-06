@@ -850,6 +850,8 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     name = new_value;
                     if (update_display) {
+                        // name change may cause font size change
+                        TT.UTILITIES.set_css(this.get_element(), {'font-size': TT.UTILITIES.font_size(new_value, this.get_width())});
                         this.rerender();
                     }
                     if (train && this.robot_in_training()) {
