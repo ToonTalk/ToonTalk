@@ -3532,9 +3532,7 @@ window.TOONTALK.UTILITIES =
                                var height = $(element).height();
                                if (width && height) { // } && !$(element).is(".toontalk-carried-by-bird")) {
                                    if (not_in_a_hole(element.parentElement)) {
-                                       setTimeout(function () {
-                                           callback(original_parent);
-                                       });
+                                       callback(original_parent);
                                        if (original_parent) {
                                            original_parent.appendChild(element);
                                        } else if (element.parentElement === document.body) {
@@ -4408,6 +4406,9 @@ window.TOONTALK.UTILITIES =
                           new_callback();
                           $(element).removeClass("toontalk-has-attached-callback");
                           element.toontalk_attached_callback = undefined;
+                          if (element.toontalk_widget_side) {
+                              element.toontalk_widget_side.rerender();
+                          }
                       };
            element.toontalk_attached_callback = callback;
            if (even_if_not_observable) {
