@@ -1264,12 +1264,13 @@ window.TOONTALK.backside =
                 $advanced_settings.show();
                 $settings_button.html("<");
                 TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to hide the advanced settings.");
-                $(backside_element).find(".toontalk-side").hide();
+                // hide widgets added to the backside but not those that are element attribute widgets or robot conditions
+                $(backside_element).find(".toontalk-side").not(".toontalk-element-attribute").not(".toontalk-conditions-contents").hide();
             } else {
                 $advanced_settings.hide();
                 $settings_button.html(">");
                 TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");
-                $(backside_element).find(".toontalk-side").show();    
+                 $(backside_element).find(".toontalk-side").not(".toontalk-element-attribute").not(".toontalk-conditions-contents").show();    
             }
         },
         
