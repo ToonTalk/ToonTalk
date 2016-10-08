@@ -1263,11 +1263,13 @@ window.TOONTALK.backside =
             if (show) {
                 $advanced_settings.show();
                 $settings_button.html("<");
-                TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to hide the advanced settings.");  
+                TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to hide the advanced settings.");
+                $(backside_element).find(".toontalk-side").hide();
             } else {
                 $advanced_settings.hide();
                 $settings_button.html(">");
-                TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");    
+                TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");
+                $(backside_element).find(".toontalk-side").show();    
             }
         },
         
