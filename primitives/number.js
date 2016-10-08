@@ -872,7 +872,7 @@ window.TOONTALK.number = (function () {
                 } else {
                     exponent_string = "";
                 }
-                font_size = Math.min(font_size, client_width / (FONT_ASPECT_RATIO * digits_needed));
+                font_size = Math.min(font_size, client_width / (TT.FONT_ASPECT_RATIO * digits_needed));
                 return '<div class="toontalk-number toontalk-approximate-number' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
                        operator_HTML + '<div style="margin-top: ' + (client_height-font_size)/2 + 'px">' + value_as_string + '</div>' + exponent_string + '</div>';
             }
