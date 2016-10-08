@@ -9,7 +9,7 @@
 // so can optionally have Google Translate
 function googleTranslateElementInit() {
     "use strict";
-    new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    window.TOONTALK.translate_element = new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
 }
 
 window.TOONTALK.UTILITIES = 
@@ -2444,6 +2444,9 @@ window.TOONTALK.UTILITIES =
                                                          };
                 return;
             }
+            if (!toontalk_initialized) {
+                return;
+            }
             // if the text is too long it needs to be broken into pieces
             // see http://stackoverflow.com/questions/21947730/chrome-speech-synthesis-with-longer-texts
             if (text.length > maximum_length) {
@@ -2465,11 +2468,7 @@ window.TOONTALK.UTILITIES =
             speech_utterance.volume = volume === undefined ? Math.min(1, 3*TT.volume) : volume;
             speech_utterance.pitch  = pitch  === undefined ? 1.2 : pitch; // higher value to sound more like a child -- should really be parameter
             speech_utterance.rate   = rate   === undefined ? .75 : rate; // slow it down for kids
-            if (TT.TRANSLATION_ENABLED && google && google.translate) {
-                language_code = google.translate.TranslateElement().f;
-            } else {
-                language_code = navigator.language;
-            }
+            language_code = utilities.translation_language_code();
             voices.some(function (voice) {
                 if (voice.lang.indexOf(language_code) === 0) {
                     // might be 'es' while voice.lang will be 'es-ES'
@@ -2500,6 +2499,15 @@ window.TOONTALK.UTILITIES =
                            20000);
             }
             window.speechSynthesis.speak(speech_utterance);
+        };
+
+        utilities.translation_language_code = function () {
+            if (TT.TRANSLATION_ENABLED && google && google.translate && google.translate.TranslateElement) {
+                // c seems to be the result of minification so new versions may have a different key - not clear how to avoid this problem
+               return google.translate.TranslateElement().c;
+            } else {
+                return navigator.language;
+            }
         };
 
         utilities.encode_HTML_for_title = function (html) {
@@ -4965,8 +4973,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         speechRecognitionList.addFromString(grammar, 1);
         speech_recognition.grammars = speechRecognitionList;
         speech_recognition.continuous = false;
-        // speech_recognition.continuous = true; // net yet supported??
-        speech_recognition.lang = 'en-US';
+        speech_recognition.lang = utilities.translation_language_code();
         speech_recognition.interimResults = false;
         speech_recognition.maxAlternatives = 5;
         speech_recognition.onresult = function (event) {
