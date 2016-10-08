@@ -2328,7 +2328,7 @@ window.TOONTALK.UTILITIES =
                                       }
                                   };
                               }    
-                              utilities.speak(tooltip.innerText, when_speaking_finished);
+                              utilities.speak(tooltip.innerText, {when_finished: when_speaking_finished});
                           }
                           if (element_displaying_tooltip) {
                               // remove old tool tip
@@ -2393,7 +2393,8 @@ window.TOONTALK.UTILITIES =
                }});
         };
 
-        utilities.speak = function (text, when_finished, volume, pitch, rate, voice_number) {
+        utilities.speak = function (text, options) {
+            // options include when_finished, volume, pitch, rate, voice_number, no_translation
             var speech_utterance = new SpeechSynthesisUtterance(text);
             var voices = window.speechSynthesis.getVoices();
             var maximum_length = 200; // not sure what a good value is
@@ -2436,15 +2437,26 @@ window.TOONTALK.UTILITIES =
                 return segments;
             };
             var language_code, segments, speech_utterance_index;
+            if (!toontalk_initialized) {
+                return;
+            }
+            if (!options) {
+                options = {};
+            }
             if (voices.length === 0) {
                 // not yet loaded -- see https://bugs.chromium.org/p/chromium/issues/detail?id=334847
                 window.speechSynthesis.onvoiceschanged = function () {
-                                                             utilities.speak(text, when_finished, volume, pitch, rate, voice_number);
+                                                             utilities.speak(text, options);
                                                              window.speechSynthesis.onvoiceschanged = undefined;
                                                          };
                 return;
             }
-            if (!toontalk_initialized) {
+            if (utilities.translate && !options.no_translation) {
+                // default is to translate if translation enabled
+                utilities.translate(text, function (translated_text) {
+                                              options.no_translation = true;
+                                              utilities.speak(translated_text, options);
+                });
                 return;
             }
             // if the text is too long it needs to be broken into pieces
@@ -2452,22 +2464,19 @@ window.TOONTALK.UTILITIES =
             if (text.length > maximum_length) {
                 segments = break_into_short_segments(text);
                 segments.forEach(function (segment, index) {
-                    var new_when_finished;
-                    if (index === segments.length-1) {
-                        new_when_finished = when_finished;
-                    } else if (index === 0) {
+                    if (index === 0) {
                         // add a dummy callback that will cause a warning if it takes too long
-                        new_when_finished = function () {};
+                        options.when_finished = function () {};
                     }
-                    utilities.speak(segment, new_when_finished, volume, pitch, rate, voice_number)
+                    utilities.speak(segment, options);
                 });
                 return;
             }
             speech_utterance_index = speech_utterances.push(speech_utterance)-1;
             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
-            speech_utterance.volume = volume === undefined ? Math.min(1, 3*TT.volume) : volume;
-            speech_utterance.pitch  = pitch  === undefined ? 1.2 : pitch; // higher value to sound more like a child -- should really be parameter
-            speech_utterance.rate   = rate   === undefined ? .75 : rate; // slow it down for kids
+            speech_utterance.volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
+            speech_utterance.pitch  = options.pitch  === undefined ? 1.2 : options.pitch; // higher value to sound more like a child -- should really be parameter
+            speech_utterance.rate   = options.rate   === undefined ? .75 : options.rate; // slow it down for kids
             language_code = utilities.translation_language_code();
             voices.some(function (voice) {
                 if (voice.lang.indexOf(language_code) === 0) {
@@ -2475,18 +2484,18 @@ window.TOONTALK.UTILITIES =
                     // first one is good enough
                     speech_utterance.lang = voice.lang;
                     speech_utterance.voice = voice;
-                    if (voice_number === 0 || voice_number === undefined) {
+                    if (options.voice_number === 0 || options.voice_number === undefined) {
                         return true;
                     }
                     // note that if voice number is greater than the number of matching voices the last one found is used
-                    voice_number--;
+                    options.voice_number--;
                 }
             });
             // if language_code's format is name-country and nothing found could try again with just the language name
-            if (when_finished) {
+            if (options.when_finished) {
                 speech_utterance.onend = function () {
                     speech_utterances.splice(speech_utterance_index, 1);
-                    when_finished();
+                    options.when_finished();
                     speech_utterance.onend = undefined;
                 };
                 setTimeout(function () {
@@ -3710,7 +3719,7 @@ window.TOONTALK.UTILITIES =
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             if (TT.debugging) {
                 console.log(options.plain_text || message);
-                console.trace();
+//                 console.trace();
             }
             if (options.element || options.second_choice_element) {
                 $backside = $(options.element).closest(".toontalk-backside");

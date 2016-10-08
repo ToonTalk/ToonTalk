@@ -1643,7 +1643,7 @@ window.TOONTALK.widget = (function (TT) {
 
         // defined here in order to share between element and number functions
         get_speak_function: function (functions) {
-            return function (message, event, robot) {
+          return function (message, event, robot) {
             var speak = function (widget) {
                 var text, speech_utterance, when_finished;
                 if (!widget) {
@@ -1666,7 +1666,12 @@ window.TOONTALK.widget = (function (TT) {
                                                    var response = TT.element.create(translated_text, [], "a response to speaking '" + text + "'");
                                                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
                                                };
-                                               TT.UTILITIES.speak(translated_text, when_finished, volume, pitch, rate, voice_number);
+                                               TT.UTILITIES.speak(translated_text, 
+                                                                 {when_finished: when_finished,
+                                                                  volume: volume,
+                                                                  pitch: pitch, 
+                                                                  rate: rate, 
+                                                                  voice_number: voice_number});
                                            });
                 } else {
                     when_finished = function (event) {
