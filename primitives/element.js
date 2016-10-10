@@ -322,18 +322,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (!jQuery.contains(window.document, frontside_element)) {
                 // not yet visible so postpone
                 TT.UTILITIES.when_attached(frontside_element, this.apply_css.bind(this));
-//                 if (!count) {
-//                     count = 1;
-//                 } else {
-//                     count++;
-//                 }
-//                 if (count < 100) {
-//                     // give up after 100 tries (10 seconds)
-//                     TT.UTILITIES.set_timeout(function () {
-//                         this.apply_css(count);
-//                     }.bind(this),
-//                     100);
-//                 }
                 return;
             }
             if (pending_css) {
@@ -1085,14 +1073,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                    toString: "change the '" + attribute + "' style to " + new_value + " of",
                                                    button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
-        this.add_to_css(attribute, new_value);
-        if (add_to_style_attributes) {
-            style_attributes = this.get_style_attributes();
-            if (style_attributes.indexOf(attribute) < 0) {
-                style_attributes.push(attribute);
+        if (!(this.location_constrained_by_container())) {
+            this.add_to_css(attribute, new_value);
+            if (add_to_style_attributes) {
+                style_attributes = this.get_style_attributes();
+                if (style_attributes.indexOf(attribute) < 0) {
+                    style_attributes.push(attribute);
+                }
             }
+            this.rerender();
         }
-        this.rerender();
         return true;
     };
     
@@ -1201,7 +1191,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 var attribute_value, owner, decimal_value, css;
                 if (!this.get_erased()) {
                     owner = this.get_attribute_owner();
-                    if (owner.get_parent_of_frontside() && owner.get_parent_of_frontside().is_element() && !owner.being_dragged) {
+                    if (owner.get_parent_of_frontside() && 
+                        owner.get_parent_of_frontside().is_element() && 
+                        !owner.being_dragged &&
+                        !owner.location_constrained_by_container()) {
                         // owner is part of an element so use its value to determine the CSS of this child
                         css = {};
                         decimal_value = bigrat.toDecimal(this.get_value());

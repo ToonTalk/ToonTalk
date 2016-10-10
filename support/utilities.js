@@ -3547,15 +3547,15 @@ window.TOONTALK.UTILITIES =
                 setTimeout(function () {
                                var width  = $(element).width();
                                var height = $(element).height();
-                               if (width && height) { // } && !$(element).is(".toontalk-carried-by-bird")) {
+                               if (width && height) {
                                    if (not_in_a_hole(element.parentElement)) {
+                                       $(element).removeClass("toontalk-not-observable");
                                        callback(original_parent);
                                        if (original_parent) {
                                            original_parent.appendChild(element);
                                        } else if (element.parentElement === document.body) {
                                            $(element).remove();
-                                       }
-                                       $(element).removeClass("toontalk-not-observable");
+                                       }    
                                    } else {
                                        // try again -- probably because in the meanwhile this has been
                                        // added to some container and its dimensions aren't original
