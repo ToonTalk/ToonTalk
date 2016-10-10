@@ -1639,15 +1639,12 @@ body > .toontalk-local-alert {
 }
 .toontalk-plain-text-element {
 	background-color: white;
-	font-size: 80%;
 }
 .toontalk-nest > .toontalk-plain-text-element {
    /* font-size: 100%; */
 }
 .toontalk-box-hole > .toontalk-plain-text-element {
-/* 	looks better with a smaller font when scaled to fit in a hole */
-   font-size: 80%;
-}
+/* 	looks better with a smaller font when scaled to fit in a hole */font-size: 80%;}
 .toontalk-element-frontside > .toontalk-plain-text-element {
 	background-color: transparent;
 }
