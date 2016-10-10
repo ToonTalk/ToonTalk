@@ -572,6 +572,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.being_dragged) {
                 return;
             }
+            if ($(element).is(".toontalk-has-attached-callback")) {
+               // will be updated when attached
+               // note that this check is also made in display_updates.js but update_display can be called directly
+               return;
+            }
             if (this.get_erased()) {
                 var width, height;
                 if ($(frontside_element).parent(".toontalk-backside").is("*")) {
