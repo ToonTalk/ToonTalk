@@ -601,6 +601,11 @@ window.TOONTALK.box = (function (TT) {
                 css = {width:  new_width,
                        height: new_height};
                 hole_contents = hole.get_contents();
+                if (hole_contents.is_plain_text_element()) {
+                    css['font-size'] = new_width/(TT.FONT_ASPECT_RATIO*(hole_contents.get_text().length+2));
+                    // following should allow line breaks at spaces but doesn't 
+//                     css['font-size'] = TT.UTILITIES.font_size(hole_contents.get_text(), new_width, 2);
+                }        
                 $(hole_contents.get_frontside_element()).css(css);
                 hole_contents = hole_contents.dereference();
                 hole_contents.set_size_attributes(new_width, new_height, true);
