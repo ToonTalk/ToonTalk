@@ -223,6 +223,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return false;
             }
             html = transform_HTML(new_value);
+            text = undefined; // needs to be recomputed
             if (!frontside_element) {
                 return false;
             }
@@ -359,7 +360,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                         height: original_height});
                 }
                 if (this.is_plain_text_element()) {
-                    this.plain_text_dimensions();
+                    this.plain_text_dimensions(current_width, current_height);
+                    if (!this.location_constrained_by_container()) {
+                        pending_css['font-size'] = Math.min((current_width  || this.get_width())/((this.get_text().length*TT.FONT_ASPECT_RATIO)), 
+                                                            (current_height || this.get_height())*TT.FONT_ASPECT_RATIO);
+                        $(frontside_element).css(pending_css);
+                        return;
+                    }
                 }
                 $(frontside_element).css({width: '', height: ''});
                 current_pending_css = pending_css;
@@ -388,7 +395,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                        }.bind(this));
                 return;
             } else {
-                // use center center for transform-origin unless in a box hole
+                // use center for transform-origin unless in a box hole
                 wrap_location(this, pending_css);
                 TT.UTILITIES.add_transform_to_css(transform, "", pending_css, frontside_element.parentElement.className.indexOf("toontalk-box-hole") < 0);
                 $(frontside_element).css(pending_css);
@@ -661,11 +668,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return !html.match(/<\w/);
         };
-        new_element.plain_text_dimensions = function () {
+        new_element.plain_text_dimensions = function (width, height) {
             // this is to scale the element (and its font) properly
             // TODO: fix this in a principled manner
-            original_width  = 12*this.get_HTML().length;
-            original_height = 32;
+            original_width  = width  || 12*this.get_text().length;
+            original_height = height || 32;
             this.saved_width  = original_width;
             this.saved_height = original_height;
         };
