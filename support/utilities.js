@@ -2015,15 +2015,15 @@ window.TOONTALK.UTILITIES =
                 // restore original
                 dropped_copy = utilities.get_resource_copy() || dropped_widget_side.copy({fresh_copy: true}); // nest copies should be fresh - not linked
                 dropped_element_copy = dropped_copy.get_frontside_element(true);
-                utilities.set_css(dropped_element_copy,
-                                  {width:  $dropped.width(),
-                                   height: $dropped.height()});
                 $dropped.parent().removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
                 $dropped.removeClass("toontalk-top-level-resource toontalk-top-level-resource-container");
                 // elements are relative only when outside of ToonTalk (e.g. a resource on the page)
                 $(dropped_element_copy).addClass("toontalk-top-level-resource toontalk-top-level-resource-container")
                                        .css({position: 'relative'});
                 $dropped.css({position: 'absolute'});
+                utilities.set_css(dropped_element_copy,
+                                  {width:  $dropped.width(),
+                                   height: $dropped.height()});
                 $dropped.get(0).parentElement.appendChild(dropped_element_copy);
                 TT.DISPLAY_UPDATES.pending_update(dropped_copy);
                 if (dropped_widget_side.set_active) {

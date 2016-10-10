@@ -206,7 +206,8 @@ window.TOONTALK.scale = (function (TT) {
             if (scale_height === 0) {
                 scale_height = 1;
             }
-            if (!$(container_element).is(".toontalk-top-level-resource")) {
+            if (!$(container_element).is(".toontalk-top-level-resource") &&
+                !$(frontside_element).is(".toontalk-top-level-resource")) {
                 // don't scale to fit container if top-level resource
                 scales = TT.UTILITIES.scale_to_fit(frontside_element, container_element, full_size_width, full_size_height);
                 scale_width  /= scales.x_scale;
