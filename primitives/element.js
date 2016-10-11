@@ -250,7 +250,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_text = function (new_value) {
             var frontside_element = this.get_frontside_element();
             var set_first_text_node = function (element) {
-                $(element).contents().each(function () {
+                var contents = $(element).contents();
+                if (contents.length === 0) {
+                    frontside_element.textContent = new_value;
+                    return;
+                }
+                contents.each(function () {
                     if (this.nodeType == Node.TEXT_NODE) {
                         this.textContent = new_value;
                         new_value = ""; // empty the other ones
