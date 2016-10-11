@@ -3343,15 +3343,20 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.match = function (pattern, widget) {
-            var match_status;
+            var dereferenced_widget, match_status;
             if (pattern === undefined) {
                 return "matched";
-            };
-            widget = widget.dereference(); // e.g. widget on top of nest
-            match_status = pattern.match(widget);
-            if (match_status.is_widget && widget.matched_by) {
-                // e.g. widget is a nest             
-                return widget.matched_by(pattern);
+            }; 
+            if (pattern.is_nest()) {
+                // nests match other nests regardless of whether they are covered or not
+                match_status = pattern.match(widget);
+            } else {
+                dereferenced_widget = widget.dereference(); // e.g. widget on top of nest
+                match_status = pattern.match(dereferenced_widget);
+                if (match_status.is_widget && dereferenced_widget.matched_by) {
+                    // e.g. widget is a nest             
+                    return dereferenced_widget.matched_by(pattern);
+                }
             }
             return match_status;
         };
