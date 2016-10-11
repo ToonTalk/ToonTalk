@@ -103,6 +103,8 @@ window.TOONTALK.box = (function (TT) {
                     $hole_element.get(0).appendChild(content_element);
                 }
                 update_css_of_hole_contents(new_content, content_element, hole_dimensions.width, hole_dimensions.height);
+                // subtract 20 since that is the top border of toontalk-iframe-container
+                $(content_element).find("iframe").attr('width', hole_dimensions.width).attr('height', hole_dimensions.height-20);
                 new_content.rerender();
             }
             this.rerender();
@@ -592,6 +594,9 @@ window.TOONTALK.box = (function (TT) {
                 // checked if contents still in hole since this was delayed and things may have changed
                 // save dimensions first?
                 update_css_of_hole_contents(contents, content_element, new_width, new_height);
+                // if contents is an iframe then set its attributes
+                // subtract 20 since that is the top border of toontalk-iframe-container
+                $(hole.element).find("iframe").attr("width", new_width).attr("height", new_height-20);
                 hole_element.appendChild(content_element);
                 // tried to delay the following until the changes to this box in the DOM have settled down
                 // but the hole's contents may have changed

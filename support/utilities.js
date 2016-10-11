@@ -738,6 +738,7 @@ window.TOONTALK.UTILITIES =
         }
     };
     var handle_drop_from_uri_list = function (uri_list, $target, target_widget_side, target_position, event) {
+        var previous_data;
         var handle_drop_from_uri = 
             function (uri, $target, target_position, event) {                 
                 var widget_callback = function (widget) {
@@ -750,13 +751,20 @@ window.TOONTALK.UTILITIES =
                 };
                 var error_handler = function (error) {
                     var text =  event.dataTransfer.getData("text/html") || event.dataTransfer.getData("text");
+                    var iframe;
                     if (text) {
+                        previous_data = text;
                         widget_callback(TT.element.create(text));
                     } else {
-                        utilities.display_message("Error: " + error + ". When trying to fetch " + uri);
+                        if (previous_data) {
+                            iframe = TT.element.create("<div class='toontalk-iframe-container'><iframe srcdoc='" + previous_data + "' width='480' height='320'></iframe></div>");
+                        } else {
+                            iframe = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + uri + "' width='480' height='480'></iframe></div>");
+                        } 
+                        widget_callback(iframe);
+                        console.log("Error loading URL. Loading it in an iframe instead. URL is " + uri);
                         console.log(error);
                     }
-                    // is there more than be done if not text?
                 };
                 utilities.create_widget_from_URL(uri, widget_callback, error_handler);               
         };
@@ -1535,16 +1543,15 @@ window.TOONTALK.UTILITIES =
        request.addEventListener('readystatechange', response_handler);
 //        request.addEventListener('error', error_callback);
        request.open('GET', url, true);
-       try {
-           request.send();
-       } catch (e) {
+       request.onerror = function (e) {
            if (error_callback) {
                error_callback(e);
            } else {
                utilities.display_message("Error trying to GET " + url + " " + e);
                console.error(e.stack);
            }
-       }
+       };
+       request.send();
     };
         
 //         tree_replace_all = function (object, replace, replacement) {
@@ -3446,8 +3453,15 @@ window.TOONTALK.UTILITIES =
 //                     }
 //                 }
                 utilities.set_css(element, pending_css);
-            }; 
+            };
+            var $iframe = $(element).find("iframe");
             var widget, x_scale, y_scale, $image;
+            if ($iframe.length > 0) {
+                // if iframe just set its dimensions
+                // -20 to account for the top margin
+                $iframe.attr('width', new_width).attr('height', new_height-20);
+                return;
+            }
             if ($(element).is(".toontalk-not-observable")) {
                 // this happens on FireFox where this is called before the widget has been "rendered"
                 widget = TT.UTILITIES.widget_side_of_element(element);

@@ -1761,6 +1761,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         TT.UTILITIES.set_timeout(function () {
             this.rerender();
+            // -20 for top margin
+            $(this.get_frontside_element()).find("iframe").attr('width', width).attr('height', height-20);
         }.bind(this));        
     };
 
