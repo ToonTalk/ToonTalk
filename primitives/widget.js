@@ -849,7 +849,7 @@ window.TOONTALK.widget = (function (TT) {
                     name = new_value;
                     if (update_display) {
                         // name change may cause font size change
-                        TT.UTILITIES.set_css(this.get_element(), {'font-size': TT.UTILITIES.font_size(new_value, this.get_width())});
+                        TT.UTILITIES.set_css(this.get_element(), {'font-size': TT.UTILITIES.font_size(new_value, this.get_name_width(), {height: this.get_name_height()})});
                         this.rerender();
                     }
                     if (train && this.robot_in_training()) {
@@ -861,6 +861,16 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     return true;
                 };         
+            }
+            if (!widget.get_name_width) {
+                widget.get_name_width = function () {
+                    return .5*this.get_width();
+                };
+            }
+            if (!widget.get_name_height) {
+                widget.get_name_height = function () {
+                    return .5*this.get_height();
+                };
             }
         },
 

@@ -233,7 +233,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 // the following is necessary so that when placed in boxes
                 // and is scaled to fit it doesn't change its line breaks
                 // note that don't want to set the html instance variable
-                frontside_element.innerHTML = html.replace(/ /g, "&nbsp;");
+                frontside_element.innerHTML = html;
             } else {
                 frontside_element.innerHTML = html; // until re-rendered
             }
@@ -361,8 +361,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 if (this.is_plain_text_element()) {
                     this.plain_text_dimensions(current_width, current_height);
-                    // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide 
-                    pending_css['font-size'] = Math.min((current_width  || this.get_width())/this.get_text().length, 
+                    // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
+                    // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length)
+                    pending_css['font-size'] = Math.min(TT.UTILITIES.font_size(this.get_text(),
+                                                                               current_width || this.get_width(), 
+                                                                               {height: current_height || this.get_height()}), 
                                                         (current_height || this.get_height())*TT.FONT_ASPECT_RATIO);
                     if (!this.location_constrained_by_container()) {
                         $(frontside_element).css(pending_css);
@@ -642,7 +645,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 is_plain_text = this.is_plain_text_element();
                 // the introduction of non-breaking spaces is necessary for plain text elements
                 // so that when placed in boxes they don't change shape
-                frontside_element.innerHTML = is_plain_text ? html.replace(/ /g, "&nbsp;") : html;
+//                 frontside_element.innerHTML = is_plain_text ? html.replace(/ /g, "&nbsp;") : html;
+                frontside_element.innerHTML = html;
                 $(frontside_element).addClass("toontalk-element-frontside");
                 if (is_plain_text) {
                     //  give it a class that will give it a better font and size

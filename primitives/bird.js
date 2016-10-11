@@ -1548,6 +1548,14 @@ window.TOONTALK.nest = (function (TT) {
             return TT.UTILITIES.strip_trailling_digits(name).trim() + " " + name_counter;
         };
         new_nest.has_name(new_nest);
+        new_nest.get_name_width = function () {
+            // nests have more room than default 50% for displaying their name
+            return .8*this.get_width();
+        };
+        new_nest.get_name_height = function () {
+            // nests have more room than default 50% for displaying their name
+            return .6*this.get_height();
+        };
         generic_set_name = new_nest.set_name;
         new_nest.set_name = function (new_value, update_display, train) {
             var old_name = this.get_name();
@@ -1557,10 +1565,13 @@ window.TOONTALK.nest = (function (TT) {
             if (update_display) {
                 // also re-render any birds
                 $(".toontalk-bird").each(function () {
+                    var bird;
                     if (this.getAttribute('toontalk_name') === old_name) {
                         // if some happen to have the same name (e.g. are in different backsides)
                         // then just some time wasted re-rendering them
-                        TT.UTILITIES.widget_side_of_element(this).rerender();
+                        bird = TT.UTILITIES.widget_side_of_element(this);
+                        TT.UTILITIES.set_css(bird.get_element(), {'font-size': TT.UTILITIES.font_size(new_value, .4*bird.get_width(), {height: .6*bird.get_height()})});
+                        bird.rerender();
                     }
                 });
             }

@@ -4268,8 +4268,9 @@ window.TOONTALK.UTILITIES =
                        css['font-size'] = widget_side.label_font_size();
                    } else if (widget_side_dereferenced.get_name && widget_side_dereferenced.get_name() && !css['font-size']) {
                        // change font size so text fits (unless explicitly set)
-                       // +2 to leave space on both sides of the label 
-                       css['font-size'] = utilities.font_size(widget_side_dereferenced.get_name(), css.width, 2);
+                       // margin to leave space on both sides of the label 
+                       css['font-size'] = utilities.font_size(widget_side_dereferenced.get_name(), css.width, {margin: 2,
+                                                                                                               height: css.height});
                    }
                }
                if ($(element).is(".toontalk-temporarily-set-down")) {
@@ -4301,14 +4302,32 @@ window.TOONTALK.UTILITIES =
            }
        };
 
-       utilities.font_size = function (string, width, margin_in_characters) {
-           var maximum_width;
+       utilities.font_size = function (string, width, options) {
+           // options can be margin (units in characters) and height which prevents fonts so big they fit horizontally but not vertically
+           // width is required so is not an option 
+           var words, maximum_word_length, font_size, line_count;
            if (!string || !width) {
                return 0;
            }
-           maximum_width = string.split(" ").map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
-           // +2 to leave some space on both sides of the label
-           return width / (TT.FONT_ASPECT_RATIO * (maximum_width+(margin_in_characters || 0)));
+           if (!options) {
+               options = {};
+           }
+           words = string.split(" ");
+           maximum_word_length = words.map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
+           font_size = width / (TT.FONT_ASPECT_RATIO * (maximum_word_length+(options.margin || 0)));
+           if (words.length === 1 || !options.height) {
+               // single line or don't care how tall it is
+               return font_size;
+           }
+           // make sure there is enough height for multiple lines
+           line_count = Math.ceil(string.length/maximum_word_length);
+           if (font_size*line_count > options.height) {
+               // square root since as the font size is adjusted so is the line count
+               font_size *= Math.sqrt(options.height/(font_size*line_count));
+               // testing shows the font is just a bit too big
+               font_size *= .9;
+           }
+           return font_size;
        };
 
        utilities.map_arguments = function (args, fun) {
