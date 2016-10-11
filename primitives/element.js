@@ -361,9 +361,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 if (this.is_plain_text_element()) {
                     this.plain_text_dimensions(current_width, current_height);
+                    // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide 
+                    pending_css['font-size'] = Math.min((current_width  || this.get_width())/this.get_text().length, 
+                                                        (current_height || this.get_height())*TT.FONT_ASPECT_RATIO);
                     if (!this.location_constrained_by_container()) {
-                        pending_css['font-size'] = Math.min((current_width  || this.get_width())/((this.get_text().length*TT.FONT_ASPECT_RATIO)), 
-                                                            (current_height || this.get_height())*TT.FONT_ASPECT_RATIO);
                         $(frontside_element).css(pending_css);
                         return;
                     }
@@ -671,10 +672,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.plain_text_dimensions = function (width, height) {
             // this is to scale the element (and its font) properly
             // TODO: fix this in a principled manner
+            var frontside_element = this.get_frontside_element();
             original_width  = width  || 12*this.get_text().length;
             original_height = height || 32;
             this.saved_width  = original_width;
             this.saved_height = original_height;
+            this.add_to_css('width', original_width);
+            this.add_to_css('height', original_height);
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
