@@ -126,7 +126,7 @@ window.TOONTALK.path =
                     // is a condition of a robot
                     return TT.robot.find_conditions_path(widget, robot_ancestor, robot);
                 }
-                path = TT.path.get_path_to_resource(widget.derefernce().copy());
+                path = TT.path.get_path_to_resource(widget.dereference().copy());
                 path.is_backside = is_backside;
                 return path;
             }
