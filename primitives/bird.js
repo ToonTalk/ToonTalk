@@ -150,7 +150,7 @@ window.TOONTALK.bird = (function (TT) {
                     }
                     if (temporary_bird) {
                         this.remove();
-                    } else if (this.visible()) {
+                    } else { 
                         become_static = function () {
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
                             $(bird_frontside_element).addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
