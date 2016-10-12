@@ -1016,6 +1016,7 @@ window.TOONTALK.number = (function () {
                  }
                  if (this.number_dropped_on_me_semantics(side_of_other_number, event, robot) && robot) {
                      // will stop if drop signaled an error
+                     this.rerender();
                      robot.run_next_step();
                  }
                  if (event) {
