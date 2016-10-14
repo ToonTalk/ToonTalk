@@ -694,8 +694,8 @@ window.TOONTALK.number = (function () {
         } else {
             if ($dimensions_holder.length > 0) {
                 client_width  = $dimensions_holder.width();
-               client_height = $dimensions_holder.height();
-               // when $dimensions_holder is a box hole in a box in a box then the following sometimes produces larger incorrect numbers
+                client_height = $dimensions_holder.height();
+                // when $dimensions_holder is a box hole in a box in a box then the following sometimes produces larger incorrect numbers
 //                 client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
 //                 client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
             }
@@ -877,7 +877,7 @@ window.TOONTALK.number = (function () {
                        operator_HTML + '<div style="margin-top: ' + (client_height-font_size)/2 + 'px">' + value_as_string + '</div>' + exponent_string + '</div>';
             }
         }
-        table_style = ' style="font-size:' + (TT.font_size * 0.4) + 'px;"';
+        table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             improper_fraction_HTML = 
