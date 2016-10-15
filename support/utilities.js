@@ -47,6 +47,11 @@ window.TOONTALK.UTILITIES =
                                                                       added_node = mutation.addedNodes.item(i);
                                                                       if (added_node.nodeType === 1) {
                                                                           // is an element
+                                                                          if (!added_node.toontalk_widget_side && $(added_node).is(".toontalk-side")) {
+                                                                              // has been removed since this callback was added 
+                                                                              $(added_node).remove();
+                                                                              return;
+                                                                          }
                                                                           setTimeout(function () {
                                                                               // delay seems necessary since callbacks below can trigger new mutations
                                                                               if (added_node.toontalk_attached_callback) {
