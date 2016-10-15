@@ -612,6 +612,7 @@ window.TOONTALK.UTILITIES =
                            widget.apply_backside_geometry();
                        }
                    }.bind(this));
+               target_widget_side.top_level_widget().backup_all();
                return;
             }
             if (!target_widget_side) {
