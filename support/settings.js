@@ -171,7 +171,31 @@ window.TOONTALK.SETTINGS =
                                                              "Edit this to change the name of your program", 
                                                              "docs/manual/settings.html");
           var close_button         = TT.UTILITIES.create_close_button(close_handler, "Click to close the settings panel.");
-          var heading              = TT.UTILITIES.create_text_element("How should your program be saved?");
+          var reload_with_speech   = TT.UTILITIES.create_check_box(false, 
+                                                                   "toontalk-url-parameter-setting",
+                                                                   TT.speak ? "Reload with speaking turned off"
+                                                                            : "Reload with spoken help",
+                                                                   TT.speak ? "Check this if you no longer want spoken help."
+                                                                            : "Check this if you would like ToonTalk to speak to you.");
+          var reload_with_balloons = TT.UTILITIES.create_check_box(false, 
+                                                                   "toontalk-url-parameter-setting",
+                                                                   TT.balloons ? "Reload with no balloon help"
+                                                                               : "Reload with balloon help",
+                                                                   TT.balloons ? "Check this if you no longer want ToonTalk to display balloons giving tips and help."
+                                                                               : "Check this if you would like ToonTalk to display balloons giving tips and help.");                                                                            
+          var reload_with_listen   = TT.UTILITIES.create_check_box(false, 
+                                                                   "toontalk-url-parameter-setting",
+                                                                   TT.listen ? "Reload with voice commands turned off"
+                                                                             : "Reload with <a href='docs/manual/voice-commands.html' target = '_blank'>voice commands</a> turned on",
+                                                                   TT.listen ? "Check this if you no longer want ToonTalk to listen to voice commands."
+                                                                             : "Check this if you would like ToonTalk to listen for voice commadns."); 
+          var reload_with_translate = TT.UTILITIES.create_check_box(false, 
+                                                                   "toontalk-url-parameter-setting",
+                                                                   TT.TRANSLATION_ENABLED ? "Reload with no translation from English"
+                                                                                          : "Reload with with over one hundred languages that ToonTalk can be translated to",
+                                                                   TT.TRANSLATION_ENABLED ? "Check this if you no longer want ToonTalk to display a choice of languages."
+                                                                                          : "Check this if you would like ToonTalk to display a menu of languages for the interface to be translated to."); 
+          var heading              = TT.UTILITIES.create_text_element("Saving and loading options");
           var save_to_dropbox      = TT.UTILITIES.create_check_box(widget.get_setting('save_to_dropbox'), 
                                                              "toontalk-save-setting",
                                                              "When saving to the cloud use my Dropbox account",
@@ -289,6 +313,11 @@ window.TOONTALK.SETTINGS =
                         });
           };
           var publish_and_as_workspace = TT.UTILITIES.create_vertical_table(publish, as_workspace.container);
+          var reload_listenter_function = function (parameter_name, current_value) {
+              return function () {
+                         window.location.assign(TT.UTILITIES.add_URL_parameter(window.location.href, parameter_name, current_value ? '0' : '1'));    
+              };                         
+          }
           var $row = $(program_name.container).children("tr");
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
@@ -299,6 +328,10 @@ window.TOONTALK.SETTINGS =
                                 "z-index": 9999999});
           settings_panel.appendChild(close_button);
           program_name.button.addEventListener('change', program_name_changed);
+          reload_with_speech.button   .addEventListener('click', reload_listenter_function('speak',     TT.speak));
+          reload_with_listen.button   .addEventListener('click', reload_listenter_function('listen',    TT.listen));
+          reload_with_balloons.button .addEventListener('click', reload_listenter_function('balloons',  TT.balloons));
+          reload_with_translate.button.addEventListener('click', reload_listenter_function('translate', TT.TRANSLATION_ENABLED));
           save_to_google_drive.button.addEventListener('click', 
                                                function (event) {
                                                    // if turning off auto-saving save one last time
@@ -376,6 +409,12 @@ window.TOONTALK.SETTINGS =
           $(heading).css({"font-weight": 'bold',
                           "font-size": 24,
                           "color": "navy"});
+           if (!TT.CHROME_APP) {
+               contents_div.appendChild(reload_with_speech.container);
+               contents_div.appendChild(reload_with_balloons.container);
+               contents_div.appendChild(reload_with_listen.container);
+               contents_div.appendChild(reload_with_translate.container);
+           }
           contents_div.appendChild(heading);
           contents_div.appendChild(program_name.container);
           if (!TT.CHROME_APP) {
