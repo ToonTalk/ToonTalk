@@ -2494,12 +2494,12 @@ window.TOONTALK.UTILITIES =
             speech_utterance.rate   = options.rate   === undefined ? .75 : options.rate; // slow it down for kids
             language_code = utilities.translation_language_code();
             voices.some(function (voice) {
-                if (voice.lang.indexOf(language_code) === 0) {
+                if (voice.lang.indexOf(language_code) === 0 || voice.lang === "") {
                     // might be 'es' while voice.lang will be 'es-ES'
-                    // first one is good enough
                     speech_utterance.lang = voice.lang;
                     speech_utterance.voice = voice;
                     if (options.voice_number === 0 || options.voice_number === undefined) {
+                        // if undefined go with the first one
                         return true;
                     }
                     // note that if voice number is greater than the number of matching voices the last one found is used
