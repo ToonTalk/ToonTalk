@@ -942,7 +942,7 @@ window.TOONTALK.widget = (function (TT) {
             return string;
         },
         
-        remove: function (event, do_not_remove_children) {
+        remove: function (event, do_not_remove_children, do_not_remove_frontside) {
             var backside  = this.get_backside();
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
@@ -950,7 +950,7 @@ window.TOONTALK.widget = (function (TT) {
                 // remove both front and back if backside is on the top level backside
                 backside.hide_backside();
             }
-            if (frontside) {
+            if (frontside && !do_not_remove_frontside) {
                 frontside.remove(); 
             } 
             if (parent_of_frontside) {
