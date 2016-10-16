@@ -378,12 +378,14 @@ window.TOONTALK.SETTINGS =
                           "color": "navy"});
           contents_div.appendChild(heading);
           contents_div.appendChild(program_name.container);
-          contents_div.appendChild(save_to_google_drive.container);
+          if (!TT.CHROME_APP) {
+              contents_div.appendChild(save_to_google_drive.container);
           // commented out until https://www.dropbox.com/developers/documentation/javascript is ready since saving
           // is only possible using the deprecated version 1 SDK
 //           contents_div.appendChild(save_to_dropbox.container);
-          contents_div.appendChild(auto_save_to_cloud.container);
-          contents_div.appendChild(local_storage.container);
+              contents_div.appendChild(auto_save_to_cloud.container);
+              contents_div.appendChild(local_storage.container);
+          }
           save_to_google_drive.container.appendChild(TT.UTILITIES.create_space());
           save_to_google_drive.container.appendChild(save_now_cloud);
           save_to_dropbox.container.appendChild(TT.UTILITIES.create_space());
