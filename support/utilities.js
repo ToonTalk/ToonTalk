@@ -2360,7 +2360,6 @@ window.TOONTALK.UTILITIES =
                           if (text.length > default_capacity) {
                               new_width = Math.min(800, maximum_width_if_moved || $(window).width()-100);
                               position = $(tooltip).position();
-                              // //width: (340 + 340*(text.length-default_capacity)/default_capacity),
                               ui.tooltip.css({maxWidth: new_width});
                           }
                           // higher than a select menu which is one elss 9

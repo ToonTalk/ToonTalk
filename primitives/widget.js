@@ -1688,7 +1688,12 @@ window.TOONTALK.widget = (function (TT) {
                         var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
                         functions.process_response(response, box_size_and_bird.bird, message, event, robot);
                     };
-                    TT.UTILITIES.speak(text, when_finished, volume, pitch, rate, voice_number);
+                    TT.UTILITIES.speak(text,
+                                       {when_finished: when_finished, 
+                                        volume: volume, 
+                                        pitch: pitch, 
+                                        rate: rate, 
+                                        voice_number: voice_number});
                 }
             };
             var box_size_and_bird = functions.check_message(message);
