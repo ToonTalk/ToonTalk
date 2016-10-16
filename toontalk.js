@@ -226,6 +226,10 @@ if (published_page) {
     add_css("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css");
 }
 
+// if (TOONTALK.CHROME_APP) {
+//     file_names.push("libraries/translate_a/element.js?cb=googleTranslateElementInit");
+// }
+
 loadFile(0, TOONTALK.RUNNING_LOCALLY);
 
 }());

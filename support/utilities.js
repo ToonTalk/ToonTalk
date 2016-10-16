@@ -78,6 +78,46 @@ window.TOONTALK.UTILITIES =
                                                                   }                                                                
                                                               });    
                                         });
+    var enable_translation = function () {
+        var translation_observer = new MutationObserver(function (mutations) {
+                                                            mutations.forEach(function (mutation) {
+                                                                var translation_element = $(mutation.target).closest(".toontalk-translation-element").get(0);
+                                                                if (translation_element && translation_element.toontalk_callback) {
+                                                                    translation_element.toontalk_callback(translation_element.innerText);
+                                                                    translation_element.innerText = '';
+                                                                    translation_element.toontalk_callback = undefined;
+                                                                }
+                                                            });
+                                    });
+        var translation_div, translation_element;
+            $("a").each(function (index, element) {
+                            element.href = utilities.add_URL_parameter(element.href, "translate", "1"); 
+                        });
+            if (!$("#google_translate_element").is("*")) {
+                // if one wasn't added to the page then add it at the top of the body
+                translation_div = document.createElement("div");
+                translation_div.id = "google_translate_element";
+                document.body.insertBefore(translation_div, document.body.firstChild);
+            }
+            document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
+            if (!TT.CHROME_APP) {
+                // tried to load it since the following triggers Chrome App errors but so did loading it earlier
+                load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
+            }
+            // need an element that triggers Google translate to speak arbitrary text
+            translation_element = document.createElement('div');
+            translation_element.className = 'toontalk-translation-element';
+            document.body.appendChild(translation_element);
+            translation_observer.observe(translation_element, {characterData: true,
+                                                               subtree: true});
+            utilities.translate = function (text, callback) {
+                                      var original;
+                                      translation_element.innerHTML = text;
+                                      original = translation_element.innerText;
+                                      translation_element.toontalk_callback = callback;
+            };
+    };
+ 
     var translate = function (element, translate_attribute, scale_attribute) {
         var translation, ancestor;
         if (!element) {
@@ -5157,6 +5197,13 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         xhr.send();
     };
 
+    utilities.set_parameter = function (parameter_name, value) {
+        TT[parameter_name] = value;
+        if (parameter_name === 'TRANSLATION_ENABLED' && value) {
+            enable_translation();
+        }
+    };
+
 
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
@@ -5202,16 +5249,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //       return iter('')(0)(grp(String(n)))(rem(String(n)));
 //     };
     utilities.initialize = function (callback) {
-        var translation_observer = new MutationObserver(function (mutations) {
-                                                            mutations.forEach(function (mutation) {
-                                                                var translation_element = $(mutation.target).closest(".toontalk-translation-element").get(0);
-                                                                if (translation_element && translation_element.toontalk_callback) {
-                                                                    translation_element.toontalk_callback(translation_element.innerText);
-                                                                    translation_element.innerText = '';
-                                                                    translation_element.toontalk_callback = undefined;
-                                                                }
-                                                            });
-                                                        });
         var add_help_buttons = function () {
                 var add_button_or_link = function (id, url, label, title, css) {
                         var element = document.getElementById(id);
@@ -5311,29 +5348,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             }
             TT.TRANSLATION_ENABLED           = utilities.get_current_url_boolean_parameter("translate", false);
             if (TT.TRANSLATION_ENABLED) {
-                $("a").each(function (index, element) {
-                                element.href = utilities.add_URL_parameter(element.href, "translate", "1"); 
-                            });
-                if (!$("#google_translate_element").is("*")) {
-                    // if one wasn't added to the page then add it at the top of the body
-                    translation_div = document.createElement("div");
-                    translation_div.id = "google_translate_element";
-                    document.body.insertBefore(translation_div, document.body.firstChild);
-                }
-                document.head.appendChild($('<meta name="google-translate-customization" content="7e20c0dc38d147d6-a2c819007bfac9d1-gc84ee27cc12fd5d1-1b"></meta>')[0]);
-                load_script("https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit");
-                // need an element that triggers Google translate to speak arbitrary text
-                translation_element = document.createElement('div');
-                translation_element.className = 'toontalk-translation-element';
-                document.body.appendChild(translation_element);
-                translation_observer.observe(translation_element, {characterData: true,
-                                                                   subtree: true});
-                utilities.translate = function (text, callback) {
-                                          var original;
-                                          translation_element.innerHTML = text;
-                                          original = translation_element.innerText;
-                                          translation_element.toontalk_callback = callback;
-                };
+                enable_translation();
             } else {
                 $("#google_translate_element").remove();
             }
@@ -5415,7 +5430,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
         }
-        var document_click, translation_div, translation_element, $saved_selection;
+        var document_click, $saved_selection;
         if (toontalk_initialized) {
             return;
         }
@@ -5424,7 +5439,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         } else {
             continue_initialization();
         }
-    }; 
+    };
 
     utilities.do_after_initialization = function (callback) {
         if (toontalk_initialized) {
