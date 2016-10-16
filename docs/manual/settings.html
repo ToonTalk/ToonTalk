@@ -5,6 +5,9 @@
 <title>Settings</title>
 </head>
 <body>
+<h2>Customising the interface</h2>
+You can check boxes to enable or disable spoken help, balloon help, voice commands, and translation to other languauges.
+Click on the <img src="../../images/settings-gear.png" width="22" height="22" alt="a gear" /> icon to see these options.
 <h2>Saving programs</h2>
 <p>
 To save your program click on the <img src="../../images/settings-gear.png" width="22" height="22" alt="a gear" /> icon.
@@ -16,12 +19,32 @@ Or you can do both.
 </p>
 <p>
 You can try it here:
-<div class='toontalk-json' translate='no'>
-This will be replaced by a work area containing 2 things: a number, and an element.
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a work area containing 2 things: an element, and a number.
+top level widget
 <div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "element",
+            "html": "Here%20is%20a%20program%20that%20counts%3A",
+            "attributes": [],
+            "attribute_values": [],
+            "attributes_backsides": [],
+            "children": false
+          },
+          "view": {
+            "frontside_left": 48.5781,
+            "frontside_top": 8.9375,
+            "saved_width": 360,
+            "saved_height": 32
+          },
+          "version": 1
+        }
+      },
       {
         "widget": {
           "semantic": {
@@ -45,8 +68,8 @@ This will be replaced by a work area containing 2 things: a number, and an eleme
                         "erased": true
                       },
                       "view": {
-                        "frontside_width": 200,
-                        "frontside_height": 36
+                        "saved_width": 200,
+                        "saved_height": 36
                       },
                       "version": 1
                     },
@@ -75,17 +98,18 @@ This will be replaced by a work area containing 2 things: a number, and an eleme
                           }
                         }
                       ]
-                    }
+                    },
+                    "name": "#1"
                   },
                   "view": {
-                    "frontside_width": 73,
-                    "frontside_height": 101,
                     "backside_geometry": {
                       "x_scale": 1,
                       "y_scale": 1,
                       "original_width": 480,
                       "original_height": 83
-                    }
+                    },
+                    "saved_width": 73,
+                    "saved_height": 101
                   },
                   "version": 1
                 }
@@ -95,31 +119,14 @@ This will be replaced by a work area containing 2 things: a number, and an eleme
           "view": {
             "frontside_width": 310,
             "frontside_height": 55,
-            "frontside_left": 377,
-            "frontside_top": 18.78125,
-            "backside_width": 0,
-            "backside_height": 0,
-            "backside_left": 0,
-            "backside_top": 0,
+            "frontside_left": 239.813,
+            "frontside_top": 68.1875,
             "backside_geometry": {
               "x_scale": 1,
               "y_scale": 1
-            }
-          },
-          "version": 1
-        }
-      },
-      {
-        "widget": {
-          "semantic": {
-            "type": "element",
-            "html": "Here%20is%20a%20program%20that%20counts%3A",
-            "attributes": [],
-            "attribute_values": []
-          },
-          "view": {
-            "frontside_left": 106,
-            "frontside_top": 36.8125
+            },
+            "saved_width": 310,
+            "saved_height": 55
           },
           "version": 1
         }
@@ -131,14 +138,13 @@ This will be replaced by a work area containing 2 things: a number, and an eleme
     "backside_width": 820,
     "backside_height": 164,
     "backside_left": 8,
-    "backside_top": 181.1875,
+    "backside_top": 204,
     "backside_geometry": {
       "x_scale": 1,
       "y_scale": 1
     },
-    "drag_x_offset": 130,
-    "drag_y_offset": 145.8125,
-    "backside": true
+    "drag_x_offset": 177,
+    "drag_y_offset": 120
   },
   "version": 1
 }</div></div>
@@ -155,8 +161,12 @@ Try it!
 </p>
 <h2>Publishing programs</h2>
 <p>
-if you have Google Drive account you can publish your program as a public web page containing either the work space or as a list of widgets depending upon whether the <i>As a workspace</i> checkbox is checked.
-A link to your page should then appear and you can edit the text or change the workspace and your edits will be saved.
+if you have Google Drive account you can publish your program as a web page containing either the work space
+or as a list of widgets depending upon whether the <i>As a workspace</i> checkbox is checked.
+A link to edit your page should then appear.
+You can edit the text or change the workspace and your edits will be saved.
+
+Your published page can be hosted anywhere that supports static web pages.
 </p>
 <p>
 Try it!
