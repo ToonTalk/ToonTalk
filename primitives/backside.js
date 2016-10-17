@@ -1045,25 +1045,17 @@ window.TOONTALK.backside =
             var settings = document.createElement("table");
             var backside_element = this.get_element();
             var add_new_widget_to_backside = function (new_widget, $button) {
-                var parent_backside = widget.get_parent_of_frontside();
+                // this used to conditionally add to parent backside instead of top-level backside
+                // but this wasn't better and broke when the parent is a nest
                 var widget_frontside_element = new_widget.get_frontside_element(true);
-                var initial_location, parent_backside_element;
-                if (parent_backside && parent_backside.add_backside_widget && !parent_backside.get_widget().is_top_level()) {
-                    // following works for back of a top-level widget but the placement isn't as good
-                    parent_backside.add_backside_widget(new_widget);
-                    parent_backside_element = parent_backside.get_element();
-                    parent_backside_element.appendChild(widget_frontside_element);
-                    initial_location = $(parent_backside_element).offset();
-                    initial_location.top += $(parent_backside_element).height()*.6;
-                } else {
-                    // place the widget near the button
-                    widget.add_to_top_level_backside(new_widget, false);
-                    initial_location = $button.offset();
-                    initial_location.left -= 120; // to the left of the button
-                    if (initial_location.left < 0) {
-                        // don't go off edge
-                        initial_location.left = 0;
-                    }
+                var initial_location;
+                // place the widget near the button
+                widget.add_to_top_level_backside(new_widget, false);
+                initial_location = $button.offset();
+                initial_location.left -= 120; // to the left of the button
+                if (initial_location.left < 0) {
+                    // don't go off edge
+                    initial_location.left = 0;
                 }
                 TT.UTILITIES.set_absolute_position(widget_frontside_element, initial_location); 
             };
