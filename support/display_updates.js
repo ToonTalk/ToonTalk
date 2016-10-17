@@ -73,6 +73,11 @@ window.TOONTALK.DISPLAY_UPDATES =
                                                 return;
                                             }
                                             if ($(element).is(".toontalk-has-attached-callback")) {
+                                                if (element.parentElement && element.toontalk_attached_callback) {
+                                                    // is already attached
+                                                    element.toontalk_attached_callback();
+                                                    element.toontalk_attached_callback = undefined;
+                                                }
                                                 // will be updated when attached
                                                 return;
                                             }
