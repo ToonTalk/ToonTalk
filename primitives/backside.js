@@ -136,6 +136,7 @@ window.TOONTALK.backside =
                                               help_button.target = '_blank';
                                           }
                                       };
+            var advanced_settings_showing = false;
             var erased, parent, parent_is_backside, settings_button, visible,
                 original_width, original_height, original_x_scale, original_y_scale, 
                 close_button, help_button, backside_widgets,
@@ -611,6 +612,41 @@ window.TOONTALK.backside =
             backside.get_original_height = function () {
                 return original_height;
             };
+            backside.get_advanced_settings_showing = function () {
+                return advanced_settings_showing;
+            };
+            backside.set_advanced_settings_showing = function (new_value) {
+                var backside_element = this.get_element();
+                var $settings_button = $(backside_element).children(".toontalk-settings-backside-button");
+                var $advanced_settings = $(backside_element).children(".toontalk-advanced-settings-table");
+                if ($advanced_settings.length === 0 && this.add_advanced_settings) {
+                    this.add_advanced_settings();
+                    $advanced_settings = $(backside_element).children(".toontalk-advanced-settings-table");
+                }
+                advanced_settings_showing = new_value;
+                if (advanced_settings_showing) {
+                    $advanced_settings.show();
+                    $settings_button.html("<");
+                    TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to hide the advanced settings.");
+                    // hide widgets added to the backside but not those that are element attribute widgets or robot conditions
+                    $(backside_element).find(".toontalk-side").not(".toontalk-element-attribute").not(".toontalk-conditions-contents").hide();
+                    backside_element.saved_width  = backside_element.style.width;
+                    backside_element.saved_height = backside_element.style.height;
+//                 if (backside_element.style.width === this.get_original_width()+"px" && backside_element.style.height === this.get_original_height()+"px") {
+                    // expand to fill contents
+                    // this.get_width() was very different from backside_element.style.width -- not sure why
+                        $(backside_element).css({width:  '',
+                                                 height: ''});
+//                     }
+                } else {
+                    $advanced_settings.hide();
+                    $settings_button.html(">");
+                    TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");
+                    $(backside_element).find(".toontalk-side").not(".toontalk-element-attribute").not(".toontalk-conditions-contents").show();
+                    $(backside_element).css({width:  backside_element.saved_width,
+                                             height: backside_element.saved_height});  
+                }
+            };
             backside.run_status_changed = function (running) {
                 update_flag_and_stop_sign_classes(running);
             };
@@ -716,6 +752,10 @@ window.TOONTALK.backside =
             TT.UTILITIES.drag_and_drop(backside_element);
             TT.UTILITIES.resizable_and_scalable(backside_element,
                                                 function (x_scale, y_scale) {
+                                                    if (backside.get_advanced_settings_showing()) {
+                                                        // shouldn't scale when advanced settings showing
+                                                        return;
+                                                    }
                                                     backside.set_dimensions({x_scale: x_scale,
                                                                              y_scale: y_scale});
                                                     backside.render_current_scale();
@@ -1226,11 +1266,9 @@ window.TOONTALK.backside =
         create_advanced_settings_button: function (backside, widget) {
             var buuton = document.createElement('div');
             var $settings_button = $(buuton);
-            var settings_showing = false;
             var settings_button_clicked = 
                 function (event) {
-                    settings_showing = !settings_showing;
-                    backside.set_advanced_settings_showing(settings_showing, backside.get_element(), $settings_button);
+                    backside.set_advanced_settings_showing(!backside.get_advanced_settings_showing(), backside.get_element(), $settings_button);
                     event.stopPropagation();
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().button_clicked(".toontalk-settings-backside-button", widget);   
@@ -1242,28 +1280,6 @@ window.TOONTALK.backside =
             $settings_button.get(0).addEventListener('click', settings_button_clicked);
             TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to see the advanced settings of this " + widget.get_type_name() + ".");
             return $settings_button.get(0);
-        },
-
-        set_advanced_settings_showing: function (show) {
-            var backside_element = this.get_element();
-            var $settings_button = $(backside_element).children(".toontalk-settings-backside-button");
-            var $advanced_settings = $(backside_element).children(".toontalk-advanced-settings-table");
-            if ($advanced_settings.length === 0 && this.add_advanced_settings) {
-                this.add_advanced_settings();
-                $advanced_settings = $(backside_element).children(".toontalk-advanced-settings-table");
-            }
-            if (show) {
-                $advanced_settings.show();
-                $settings_button.html("<");
-                TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to hide the advanced settings.");
-                // hide widgets added to the backside but not those that are element attribute widgets or robot conditions
-                $(backside_element).find(".toontalk-side").not(".toontalk-element-attribute").not(".toontalk-conditions-contents").hide();
-            } else {
-                $advanced_settings.hide();
-                $settings_button.html(">");
-                TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");
-                 $(backside_element).find(".toontalk-side").not(".toontalk-element-attribute").not(".toontalk-conditions-contents").show();    
-            }
         },
         
         scale_backside: function (backside_element, x_scale, y_scale, original_width, original_height) {
