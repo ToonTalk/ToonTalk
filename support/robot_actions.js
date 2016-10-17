@@ -121,6 +121,9 @@ window.TOONTALK.actions =
                 step_number = 0;
             }
             robot.run_next_step = function (now_visible) {
+                if (this.stopped()) {
+                     return;
+                }
                 if (step_number < steps.length) {
                     var step = steps[step_number];
                     step_number++;

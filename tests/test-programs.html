@@ -4169,7 +4169,7 @@ top level widget
     }
   ]
 }</div>
-<p>Natural numbers split in two:</p>
+<p>Natural numbers split in two (watched):</p>
 <div class='toontalk-json'>
 This will be replaced by a work area containing 6 things: a box, the backside of a box, a box, the backside of a box, a nest, and a nest.
 top level widget
@@ -4687,6 +4687,477 @@ top level widget
         "saved_width": 116,
         "saved_height": 141,
         "backside": false
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
+<p>Natural numbers split in two (unwatched):</p>
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a work area containing 4 things: a box, a box, a nest, and a nest.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "1",
+                    "denominator": "1",
+                    "format": "improper_fraction"
+                  },
+                  "view": {
+                    "saved_width": 58,
+                    "saved_height": 52
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird",
+                    "nest": {
+                      "shared_widget_index": 0
+                    }
+                  },
+                  "view": {
+                    "saved_width": 74,
+                    "saved_height": 68
+                  },
+                  "version": 1
+                }
+              }
+            ],
+            "horizontal": true,
+            "name": ";;",
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "box",
+                        "size": 2,
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "0",
+                                "denominator": "1",
+                                "format": "improper_fraction",
+                                "erased": true
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;"
+                      },
+                      "view": {},
+                      "version": 1
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_resource",
+                            "resource": {
+                              "type": "number",
+                              "operator": "+",
+                              "numerator": "1",
+                              "denominator": "1",
+                              "format": "improper_fraction"
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 0
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "copy",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 0
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 1,
+                            "removing_widget": true
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "name": "#13",
+                    "speed": 1
+                  },
+                  "view": {
+                    "frontside_width": 66,
+                    "frontside_height": 110,
+                    "frontside_left": "8.480565371024735%",
+                    "frontside_top": "44.632523148148145%",
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 550,
+                      "original_height": 200
+                    },
+                    "saved_width": 66,
+                    "saved_height": 110
+                  },
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 67,
+            "frontside_top": 41,
+            "saved_width": 164,
+            "saved_height": 68
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 3,
+            "contents": [
+              {
+                "widget": {
+                  "shared_widget_index": 0
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird",
+                    "nest": {
+                      "shared_widget_index": 1
+                    }
+                  },
+                  "view": {
+                    "saved_width": 98,
+                    "saved_height": 68
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird",
+                    "nest": {
+                      "shared_widget_index": 2
+                    }
+                  },
+                  "view": {},
+                  "version": 1
+                }
+              }
+            ],
+            "horizontal": true,
+            "name": ";;;",
+            "backside_widgets": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "robot",
+                    "frontside_conditions": {
+                      "semantic": {
+                        "type": "box",
+                        "size": 3,
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "number",
+                                "operator": "+",
+                                "numerator": "1",
+                                "denominator": "1",
+                                "format": "improper_fraction",
+                                "erased": true
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;;"
+                      },
+                      "view": {},
+                      "version": 1
+                    },
+                    "body": {
+                      "type": "body",
+                      "steps": [
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 0,
+                              "removing_widget": true
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1,
+                              "removing_widget": true
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.top_level_backside",
+                            "removing_widget": true
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 2,
+                              "removing_widget": true
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 1
+                            }
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "pick up",
+                          "path": {
+                            "type": "newly_created_widgets_path",
+                            "index": 1,
+                            "removing_widget": true
+                          }
+                        },
+                        {
+                          "type": "robot_action",
+                          "action_name": "drop it on",
+                          "path": {
+                            "type": "path.to_entire_context",
+                            "next_path": {
+                              "type": "box_path",
+                              "index": 2
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "name": "#14",
+                    "speed": 1
+                  },
+                  "view": {
+                    "backside_geometry": {
+                      "x_scale": 1,
+                      "y_scale": 1,
+                      "original_width": 550,
+                      "original_height": 200
+                    },
+                    "frontside_left": "59.01060070671378%",
+                    "frontside_top": "27.96585648148148%"
+                  },
+                  "version": 1
+                }
+              }
+            ]
+          },
+          "view": {
+            "frontside_width": 326,
+            "frontside_height": 68,
+            "frontside_left": 289,
+            "frontside_top": 32,
+            "saved_width": 326,
+            "saved_height": 68
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 2
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgba(245, 240, 240, 0.941176)",
+    "backside_width": 811,
+    "backside_height": 434,
+    "backside_left": 8,
+    "backside_top": 6257.96875,
+    "backside_geometry": {
+      "x_scale": 1,
+      "y_scale": 1
+    },
+    "drag_x_offset": 659,
+    "drag_y_offset": 324.03125
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1413286486516",
+        "serial_number": 8,
+        "name": "#15"
+      },
+      "view": {
+        "saved_width": 116,
+        "saved_height": 98
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1413446452231",
+        "serial_number": 7,
+        "name": "#14"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 141,
+        "frontside_left": 78.9375,
+        "frontside_top": 217.094,
+        "saved_width": 116,
+        "saved_height": 141
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1413446452228",
+        "serial_number": 6,
+        "name": "#13"
+      },
+      "view": {
+        "frontside_width": 116,
+        "frontside_height": 141,
+        "frontside_left": 372.109,
+        "frontside_top": 211.25,
+        "saved_width": 116,
+        "saved_height": 141
       },
       "version": 1
     }
@@ -17935,7 +18406,7 @@ top level widget
     }
   ]
 }</div></div>
-<p>Rotates at 200 degrees per second:</p>
+<p>Rotates at 200 degrees per second (not clear why needed to add br to provide space for this test):</p>
 <div class='toontalk-json'>
 This will be replaced by an element.
 <div style='display:none;'>{
@@ -18439,6 +18910,7 @@ This will be replaced by an element.
     "%3Cimg%20src%3D'data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAAHQAAABiCAYAAACBFfehAAAABmJLR0QA%2FwD%2FAP%2BgvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wQKAgwmyL1cYQAAApVJREFUeNrtnctygzAMRYHxfxu%2BnC46yaSpg3kEWbo%2Bd9d20aDjK0uCmDHnPFhpXpb1z885j4OI3q%2Ft39%2BNrjV5CUJEuDWILa5ttHLo3ovfE5B5WVarIF353N059EpQH79TStvdAD0M%2BwWypZsBalV8dQR1IkkBFAH0d1%2BjgBHcQ0stCBiEiqIt134TtpdJjsxgwVOT723hUhQBM34fGsmdLdN305S7NeV5DANIs0GA9lTdWoKdgKl1vWPLG9wUSIGBAtMG9mQBCZh2iz7d%2BY8AeS5mV5yaAKmlyUOaQEZAj1ofuO330uTpw6ByHI8YKwEynmO3AFf30D2rA5hCRRECKLqSfisZE6A9OpSn9Ui5CKAIoBREJ%2FdQ%2BkwcigCKaFvQaYcCVTDlAtW%2F0lY1C8CADn2eJvLhpBFallga12EAmNBwAaBicAEqBhegPbctCKAIoAigCKCqlS5AxZQIQbxe8%2Flz4fsvODQS0MLNk3fIU4k8iuvc6XnQE1AlVDwFhVtmMfbQ3UABGw8kfaggzE2guDMWSFKuIMzqYOH9hTaE2r8OPZdLayMEFJcqAmUI4Xr%2FrBZFODYWzMtAAesL5tcGC6RgP%2FFjUiQEE6C9V7mkXd%2FuxKGC4pkiAVfi0JZAb27xcKiIM3EoVS6VboSY4FADmPJvJ6QAAijpFqAURbKrtqeUe8v7Q%2FeeSNbLfVTLRdz8pepjJyexdDFYmHPu5lgdq2zUzKG9PrYiO5w%2F%2FCpLngvWcWgJZESHWyzI5B1mLTjewVpnlUQwtBT%2Bfuic8%2BjNpS0X4tQMQuWiI7rTw2duOlj4tKeeCcydLt3ztUovC9AFUE997WuxVRtZPtK9p2wCULFCjNtnDBY0XKraEnX3GKd6b%2FsDP0SOhuSTXq8AAAAASUVORK5CYII%3D'%20alt%3D'empty-nest-red.png'%2F%3E"
   ]
 }</div></div>
+<br><br><br><br><br><br><br><br><br><br><br><br>
 <p>Resizing the decimal form of 1/49:</p>
 <div class='toontalk-json'>
 This will be replaced by a work area containing one thing: a robot.
@@ -20979,72 +21451,14 @@ top level widget
   ]
 }</div></div>
 <p>Unwtched robot reacts to a number dropped in a box with message:</p>
-<div class='toontalk-json'>
-This will be replaced by a work area containing 4 things: an element, an element, a box, and an element.
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a work area containing 2 things: a box, and an element.
 top level widget
 <div style='display:none;'>{
   "semantic": {
     "type": "top_level",
     "running": true,
     "backside_widgets": [
-      {
-        "widget": {
-          "semantic": {
-            "type": "element",
-            "html": "Good%20drop!",
-            "attributes": [
-              "left",
-              "top",
-              "width",
-              "height"
-            ],
-            "attribute_values": [
-              0,
-              0,
-              90,
-              24
-            ],
-            "attributes_backsides": [
-              null,
-              null,
-              null,
-              null
-            ],
-            "children": false
-          },
-          "view": {},
-          "version": 1
-        }
-      },
-      {
-        "widget": {
-          "semantic": {
-            "type": "element",
-            "html": "Good%20drop!",
-            "attributes": [
-              "left",
-              "top",
-              "width",
-              "height"
-            ],
-            "attribute_values": [
-              0,
-              0,
-              90,
-              24
-            ],
-            "attributes_backsides": [
-              null,
-              null,
-              null,
-              null
-            ],
-            "children": false
-          },
-          "view": {},
-          "version": 1
-        }
-      },
       {
         "widget": {
           "shared_widget_index": 0
@@ -21064,8 +21478,8 @@ top level widget
             "attribute_values": [
               92,
               166,
-              288,
-              24
+              384,
+              32
             ],
             "attributes_backsides": [
               null,
@@ -21077,7 +21491,9 @@ top level widget
           },
           "view": {
             "frontside_left": 92,
-            "frontside_top": 166
+            "frontside_top": 166,
+            "saved_width": 384,
+            "saved_height": 32
           },
           "version": 1
         }
@@ -21085,13 +21501,13 @@ top level widget
     ]
   },
   "view": {
-    "background_color": "rgba(0, 0, 0, 0)",
-    "backside_width": 636,
-    "backside_height": 276,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 615,
+    "backside_height": 285,
     "backside_left": 8,
-    "backside_top": 184.1875,
-    "drag_x_offset": 438,
-    "drag_y_offset": 134.8125
+    "backside_top": 182.1875,
+    "drag_x_offset": 360,
+    "drag_y_offset": 122.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -21102,15 +21518,17 @@ top level widget
         "contents": [
           null,
           {
-            "semantic": {
-              "type": "number",
-              "operator": "+",
-              "numerator": "2",
-              "denominator": "1",
-              "format": "mixed_number"
-            },
-            "view": {},
-            "version": 1
+            "widget": {
+              "semantic": {
+                "type": "number",
+                "operator": "+",
+                "numerator": "2",
+                "denominator": "1",
+                "format": "mixed_number"
+              },
+              "view": {},
+              "version": 1
+            }
           }
         ],
         "horizontal": true,
@@ -21123,7 +21541,7 @@ top level widget
                 "type": "sensor",
                 "contents": [],
                 "guid": "sensor",
-                "serial_number": 5,
+                "serial_number": 4,
                 "name": "sensor",
                 "event_name": "widget added",
                 "attribute": "widget",
@@ -21133,8 +21551,6 @@ top level widget
                 }
               },
               "view": {
-                "frontside_width": 116,
-                "frontside_height": 98,
                 "frontside_left": null,
                 "frontside_top": null,
                 "saved_width": 116,
@@ -21146,7 +21562,7 @@ top level widget
           {
             "widget": {
               "semantic": {
-                "type": "robot", "speed": 1,
+                "type": "robot",
                 "frontside_conditions": {
                   "semantic": {
                     "type": "box",
@@ -21209,7 +21625,8 @@ top level widget
                       "type": "robot_action",
                       "action_name": "drop it on",
                       "path": {
-                        "type": "path.top_level_backside"
+                        "type": "path.top_level_backside",
+                        "removing_widget": true
                       },
                       "additional_info": {
                         "left_offset_fraction": 0.07421253974562798,
@@ -21244,8 +21661,8 @@ top level widget
                             "height"
                           ],
                           "attribute_values": [
-                            0,
-                            0,
+                            8,
+                            483.188,
                             0,
                             0
                           ],
@@ -21266,7 +21683,8 @@ top level widget
                       "type": "robot_action",
                       "action_name": "drop it on",
                       "path": {
-                        "type": "path.top_level_backside"
+                        "type": "path.top_level_backside",
+                        "removing_widget": true
                       },
                       "additional_info": {
                         "left_offset_fraction": 0.8060413354531002,
@@ -21277,6 +21695,7 @@ top level widget
                   ]
                 },
                 "name": "#5",
+                "speed": 1,
                 "running": true
               },
               "view": {

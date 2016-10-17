@@ -1141,6 +1141,7 @@ window.TOONTALK.robot = (function (TT) {
                     }
                 }
             });
+        TT.UTILITIES.set_css(frontside_element, {'font-size': this.name_font_size()});
     };
     
     robot.add_newly_created_widget = function (new_widget) {
@@ -1339,6 +1340,11 @@ window.TOONTALK.robot = (function (TT) {
         }
         return "Drop a robot here who will try to run when I can't.";
     };
+
+    robot.get_name_height = function (height) {
+        // nests have more room than default 50% for displaying their name
+        return .4*(height || this.get_height());
+    };
     
     robot.get_json = function (json_history, callback, start_time) {
         var frontside_conditions = this.get_frontside_conditions();
@@ -1527,10 +1533,10 @@ window.TOONTALK.robot_backside =
         var condition_element_div_parent = document.createElement('div');
         var scale_element = function () {
                                 var css;
+                                $(condition_element).parent().addClass("toontalk-conditions-container");
                                 if (!condition_widget.visible()) {
                                     return;
                                 }
-                                $(condition_element).parent().addClass("toontalk-conditions-container");
                                 condition_widget.update_display();
                                 // need to add the class before checking width and height
                                 css = {width:  $(condition_element_div_parent).width(),

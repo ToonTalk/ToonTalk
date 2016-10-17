@@ -150,7 +150,7 @@ window.TOONTALK.bird = (function (TT) {
                     }
                     if (temporary_bird) {
                         this.remove();
-                    } else if (this.visible()) {
+                    } else { 
                         become_static = function () {
                             $(bird_frontside_element).removeClass("toontalk-bird-morph-to-static");
                             $(bird_frontside_element).addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
@@ -598,6 +598,7 @@ window.TOONTALK.bird = (function (TT) {
             } else {
                 $(frontside_element).children(".toontalk-side").remove();
             }
+            TT.UTILITIES.set_css(frontside_element, {'font-size': this.name_font_size()});
         };
         new_bird.set_function_name = function (new_name) {
             if (nest && nest.is_function_nest() && nest.set_function_name(new_name)) {
@@ -630,7 +631,11 @@ window.TOONTALK.bird = (function (TT) {
             new_bird.set_name = function (new_value, update_display, train) {
                 return nest.set_name(new_value, update_display, train);
             };
-        }   
+        }
+        new_bird.has_name_font_size(new_bird);
+        new_bird.get_name_height = function (height) {
+            return .3*(height || this.get_height());
+        };
         new_bird.add_standard_widget_functionality(new_bird);
         new_bird.add_speech_listeners({descriptions_acceptable: true,
                                        names_acceptable: true});
@@ -1263,7 +1268,7 @@ window.TOONTALK.nest = (function (TT) {
                         backside_where_bird_goes.widget_side_dropped_on_me(bird, event);
                     }
                     $(frontside_element).removeClass("toontalk-hatch-egg")
-                                        .addClass(this.get_class_name_with_color("toontalk-empty-nest"))
+                                        .addClass("toontalk-empty-nest " + this.get_class_name_with_color("toontalk-empty-nest"))
                                         // rely upon toontalk-empty-nest for dimensions (or other classes)
                                         // problem this addresses is nest otherwise is too tall since it needed that
                                         // height while bird was hatching
@@ -1394,7 +1399,7 @@ window.TOONTALK.nest = (function (TT) {
                         }.bind(this),
                         2); // TODO: see if 0 works here
                 }
-                if ( $(frontside_element).parent().is(".toontalk-box-hole") &&
+                if ($(frontside_element).parent().is(".toontalk-box-hole") &&
                     !$(frontside_element).parent().is(".toontalk-scale-half")) {
                     // contents should display as though they were directly in the box hole (but not scale pans)
                     frontside_element.parentElement.appendChild(top_contents_element);
@@ -1402,7 +1407,7 @@ window.TOONTALK.nest = (function (TT) {
                 } else {
                     frontside_element.appendChild(top_contents_element);
                 }
-                $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
+                $(frontside_element).addClass("toontalk-empty-nest " + this.get_class_name_with_color("toontalk-empty-nest"));
                 if (contents[0].is_backside()) {
                     top_contents.set_parent_of_backside(this);
                 } else {
@@ -1412,10 +1417,11 @@ window.TOONTALK.nest = (function (TT) {
                 frontside_element.setAttribute('toontalk_name', this.get_name());
                 if (guid) {
                     $(frontside_element).removeClass(this.get_class_name_with_color("toontalk-nest-with-egg"));
-                    $(frontside_element).addClass(this.get_class_name_with_color("toontalk-empty-nest"));
+                    $(frontside_element).addClass("toontalk-empty-nest " + this.get_class_name_with_color("toontalk-empty-nest"));
                 } else {
                     TT.UTILITIES.add_animation_class(frontside_element, this.get_class_name_with_color("toontalk-nest-with-egg"));
                 }
+                TT.UTILITIES.set_css(frontside_element, {'font-size': this.name_font_size()});
             }
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             $(frontside_element).addClass("toontalk-nest");
@@ -1548,6 +1554,14 @@ window.TOONTALK.nest = (function (TT) {
             return TT.UTILITIES.strip_trailling_digits(name).trim() + " " + name_counter;
         };
         new_nest.has_name(new_nest);
+        new_nest.get_name_width = function (width) {
+            // nests have more room than default 50% for displaying their name
+            return .8*(width || this.get_width());
+        };
+        new_nest.get_name_height = function (height) {
+            // nests leave 25% above and below their name
+            return .5*(height || this.get_height());
+        };
         generic_set_name = new_nest.set_name;
         new_nest.set_name = function (new_value, update_display, train) {
             var old_name = this.get_name();
@@ -1557,15 +1571,17 @@ window.TOONTALK.nest = (function (TT) {
             if (update_display) {
                 // also re-render any birds
                 $(".toontalk-bird").each(function () {
+                    var bird;
                     if (this.getAttribute('toontalk_name') === old_name) {
                         // if some happen to have the same name (e.g. are in different backsides)
                         // then just some time wasted re-rendering them
-                        TT.UTILITIES.widget_side_of_element(this).rerender();
+                        bird = TT.UTILITIES.widget_side_of_element(this);
+                        TT.UTILITIES.set_css(bird.get_element(), {'font-size': TT.UTILITIES.font_size(new_value, .4*bird.get_width(), {height: .6*bird.get_height()})});
+                        bird.rerender();
                     }
                 });
             }
         };
-        new_nest.set_name(name);
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest.add_standard_widget_functionality(new_nest);
@@ -1578,6 +1594,7 @@ window.TOONTALK.nest = (function (TT) {
                 this.set_locked(false);
             }
         };
+        new_nest.set_name(name);
         new_nest.set_description(description);
         if (TT.debugging) {
             new_nest._debug_id = TT.UTILITIES.generate_unique_id();

@@ -22,6 +22,9 @@ window.TOONTALK.robot_action =
             return true;
          },
          "pick up": function (widget, robot, additional_info) {
+             if (widget.get_infinite_stack()) {
+                 return unwatched_run_functions["pick up a copy of"](widget, robot);
+             }
              if (!additional_info || !additional_info.running_watched) {
                  // don't set this if running watched since animated version takes care of this
                  widget.set_parent(undefined);

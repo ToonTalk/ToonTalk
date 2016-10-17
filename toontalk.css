@@ -1387,10 +1387,11 @@ html {
 }
 .toontalk-robot::after {
  	content: attr(toontalk_name);
- 	position: relative;	
-    top: 40%;
-    color: rgb(240, 240, 117);
-    text-shadow: 1px 1px 2px yellow;
+ 	position: relative;
+ 	top: 35%;
+ 	left: -10%; /* I don't know why but this centers the label on the robot */
+ 	color: rgb(240, 240, 117);
+ 	text-shadow: 1px 1px 2px yellow;
 }
 .toontalk-robot-being-trained-by-robot {
 	transform-origin: left top;
@@ -1638,15 +1639,12 @@ body > .toontalk-local-alert {
 }
 .toontalk-plain-text-element {
 	background-color: white;
-	font-size: 80%;
 }
 .toontalk-nest > .toontalk-plain-text-element {
    /* font-size: 100%; */
 }
 .toontalk-box-hole > .toontalk-plain-text-element {
-/* 	looks better with a smaller font when scaled to fit in a hole */
-   font-size: 80%;
-}
+/* 	looks better with a smaller font when scaled to fit in a hole */font-size: 80%;}
 .toontalk-element-frontside > .toontalk-plain-text-element {
 	background-color: transparent;
 }
@@ -1655,21 +1653,21 @@ body > .toontalk-local-alert {
 }
 .toontalk-box-hole {
 	position: absolute;
-/*     width:  100%;
+	/*     width:  100%;
 	height: 100%; */
-    background-image: url("images/hole-tile-quarter-size.png");
-    background-repeat: round;
-    text-align: center;
+	background-image: url("images/hole-tile-quarter-size.png");
+	background-repeat: round;
+	text-align: center;
+	font-size: 11pt;
 }
 .toontalk-box-hole::after {
  	content: attr(toontalk_name);
- 	position: relative;	
-    top: 90%;
- 	color: rgb(246, 237, 237);
- 	text-shadow: 1px 1px 2px red;
+ 	position: relative;
+ 	top: 98%;
+ 	border-radius: 5px;
  	background-color: rgb(67, 67, 211);
-    font-size: 11pt;
-	border-radius: 5px;
+ 	color: #FFF176;
+ 	text-shadow: 4px 4px 8px navy;
 /* 	padding looked nice but was there even when there was no toontalk_name */
  	/* padding-left: 4px; */
  	/* padding-right: 4px; */
@@ -1715,7 +1713,9 @@ body > .toontalk-local-alert {
 	width: 100%;
 	height: 100%;
 	text-align: center;
-	display: inline-block;
+	display: flex;
+	justify-content:center;
+	align-items:center;
 }
 .toontalk-integer, .toontalk-top-level-decimal {
 	line-height: 125%;
@@ -2330,14 +2330,14 @@ background-image: url("images/dusty-morph.png");
 	width: 116px;
 	height: 98px;
 	text-align: center;
+    font-size: 18pt;
 }
 .toontalk-sensor-nest::after {
  	content: attr(toontalk_name);
  	position: relative;	
     top: 30%;
- 	color: white;
- 	text-shadow: 1px 1px 2px black;
-    font-size: 18pt;
+    color: white;
+    text-shadow: 1px 1px 2px black;
 }
 .toontalk-sensor-inactive-nest {
     background-image: url("images/sensor-nest-inactive.png");
@@ -2346,6 +2346,7 @@ background-image: url("images/dusty-morph.png");
 	width: 116px;
 	height: 98px;
 	text-align: center;
+    font-size: 18pt;
 }
 .toontalk-sensor-inactive-nest::after {
  	content: attr(toontalk_name);
@@ -2353,7 +2354,6 @@ background-image: url("images/dusty-morph.png");
     top: 30%;
     color: white;
     text-shadow: 1px 1px 2px black;
-    font-size: 18pt;
 }
 .toontalk-backside-of-sensor {
 	background: linear-gradient(to bottom, rgb(248, 228, 210), rgb(233, 177, 127));
@@ -2388,46 +2388,20 @@ background-image: url("images/dusty-morph.png");
 	width: 116px;
 	height: 98px;
 	text-align: center;
-}
-.toontalk-empty-nest-yellow {
-	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-	text-align: center;
-}
-.toontalk-empty-nest-magenta {
-	background-image: url("images/empty-nest-magenta-transparent.png"), url("images/empty-nest.png");
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 116px;
-	height: 98px;
-	text-align: center;
+    font-size: 18pt;
 }
 .toontalk-empty-nest::after {
  	content: attr(toontalk_name);
- 	position: relative;	
-    top: 30%;
-    color: navy;
-    text-shadow: 1px 1px 2px white;
-    font-size: 18pt;
+ 	position: relative;
+ 	top: 20%;
+ 	color: navy;
+ 	text-shadow: 1px 1px 2px white;
 }
-.toontalk-empty-nest-yellow::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 30%;
-    color: navy;
-    text-shadow: 1px 1px 2px white;
-    font-size: 18pt;
+.toontalk-empty-nest-yellow {
+	background-image: url("images/empty-nest-yellow-transparent.png"), url("images/empty-nest.png");
 }
-.toontalk-empty-nest-magenta::after {
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 30%;
-    color: navy;
-    text-shadow: 1px 1px 2px white;
-    font-size: 18pt;
+.toontalk-empty-nest-magenta {
+	background-image: url("images/empty-nest-magenta-transparent.png"), url("images/empty-nest.png");
 }
 /* could make this 14 steps and change -1744 to 1628 */
 .toontalk-hatch-egg {
@@ -2537,34 +2511,25 @@ background-image: url("images/dusty-morph.png");
 	width:  70px;
     height: 102px;
     text-align: center;
+	font-size: 12pt;
+}
+/* 	::before isntead of ::after in case bird is holding something 
+	in which case her name ends up below the thing */
+.toontalk-bird-static::before {
+	content: attr(toontalk_name);
+	position: relative;
+	top: 45%;
+	color: #432707;
+	text-shadow: 1px 1px 2px #E7D9A8;
+	font-weight: bold;
 }
 .toontalk-bird-static-magenta {
     background-image: url("images/bird-static-magenta-transparent.png"), url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width:  70px;
-    height: 102px;
-    text-align: center;
 }
 .toontalk-bird-static-yellow {
     background-image: url("images/bird-static-yellow-transparent.png"), url("images/bird-static.png");
-    background-repeat: no-repeat;
-	background-size: contain;
-	width:  70px;
-    height: 102px;
-    text-align: center;
 }
-.toontalk-bird-static::before {
-/* 	::before isntead of ::after in case bird is holding something 
-	in which case her name ends up below the thing */
- 	content: attr(toontalk_name);
- 	position: relative;	
-    top: 50%;
- 	color: #432707; 
- 	text-shadow: 1px 1px 2px #E7D9A8;
- 	font-weight: bold;
-    font-size: 12pt;
-}
+
 /* Couldn't get the following to work -- tried to define new bird-morph-from-static keyframes but didn't help */
 /* .toontalk-bird-morph-from-static {
     width:  88px;

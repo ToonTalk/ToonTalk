@@ -65,8 +65,20 @@ window.TOONTALK.DISPLAY_UPDATES =
                                         function (pending_update) {
                                             var element = pending_update.get_element && pending_update.get_element();
                                             var $parent_side_element, z_index, parent_z_index, backside;
+                                            if (!element) {
+                                                return;
+                                            }
                                             if (!pending_update.visible() && !$(element).is(".toontalk-top-level-resource")) {
                                                 // became invisible after being queued
+                                                return;
+                                            }
+                                            if ($(element).is(".toontalk-has-attached-callback")) {
+                                                if (element.parentElement && element.toontalk_attached_callback) {
+                                                    // is already attached
+                                                    element.toontalk_attached_callback();
+                                                    element.toontalk_attached_callback = undefined;
+                                                }
+                                                // will be updated when attached
                                                 return;
                                             }
                                             // if window was hidden and then shown elements might be stuck hidden

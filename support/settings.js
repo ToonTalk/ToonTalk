@@ -171,7 +171,32 @@ window.TOONTALK.SETTINGS =
                                                              "Edit this to change the name of your program", 
                                                              "docs/manual/settings.html");
           var close_button         = TT.UTILITIES.create_close_button(close_handler, "Click to close the settings panel.");
-          var heading              = TT.UTILITIES.create_text_element("How should your program be saved?");
+          var reload_with_speech   = TT.UTILITIES.create_check_box(false, 
+                                                                   "toontalk-url-parameter-setting",
+                                                                   TT.speak ? (TT.CHROME_APP ? "Turn off spoken help" : "Reload with speaking turned off")
+                                                                            : (TT.CHROME_APP ? "Turn on spoken help" : "Reload with spoken help"),
+                                                                   TT.speak ? "Check this if you no longer want spoken help."
+                                                                            : "Check this if you would like ToonTalk to speak to you.");
+          var reload_with_balloons = TT.UTILITIES.create_check_box(false, 
+                                                                   "toontalk-url-parameter-setting",
+                                                                   TT.balloons ? (TT.CHROME_APP ? "Turn off help balloons" : "Reload with no balloon help")
+                                                                               : (TT.CHROME_APP ? "Turn on help balloons" : "Reload with balloon help"),
+                                                                   TT.balloons ? "Check this if you no longer want ToonTalk to display balloons giving tips and help."
+                                                                               : "Check this if you would like ToonTalk to display balloons giving tips and help.");                                                                            
+          var reload_with_listen   = TT.UTILITIES.create_check_box(false, 
+                                                                   "toontalk-url-parameter-setting",
+                                                                   TT.listen ? (TT.CHROME_APP ? "Turn off voice commands" : "Reload with voice commands turned off")
+                                                                             : (TT.CHROME_APP ? "Turn on voice commands"
+                                                                                              : "Reload with <a href='docs/manual/voice-commands.html' target = '_blank'>voice commands</a> turned on"),
+                                                                   TT.listen ? "Check this if you no longer want ToonTalk to listen to voice commands."
+                                                                             : "Check this if you would like ToonTalk to listen for voice commadns."); 
+          var reload_with_translate = TT.UTILITIES.create_check_box(false, 
+                                                                   "toontalk-url-parameter-setting",
+                                                                   TT.TRANSLATION_ENABLED ? (TT.CHROME_APP ? "Turn off translation from English" : "Reload with no translation from English")
+                                                                                          : (TT.CHROME_APP ? "Turn on translation" : "Reload with over one hundred languages that ToonTalk can be translated to"),
+                                                                   TT.TRANSLATION_ENABLED ? "Check this if you no longer want ToonTalk to display a choice of languages."
+                                                                                          : "Check this if you would like ToonTalk to display a menu of languages for the interface to be translated to."); 
+          var heading              = TT.UTILITIES.create_text_element("Saving and loading options");
           var save_to_dropbox      = TT.UTILITIES.create_check_box(widget.get_setting('save_to_dropbox'), 
                                                              "toontalk-save-setting",
                                                              "When saving to the cloud use my Dropbox account",
@@ -289,6 +314,23 @@ window.TOONTALK.SETTINGS =
                         });
           };
           var publish_and_as_workspace = TT.UTILITIES.create_vertical_table(publish, as_workspace.container);
+          var reload_listener_function = function (parameter_name, current_value) {
+              return function () {
+                         window.location.assign(TT.UTILITIES.add_URL_parameter(window.location.href, parameter_name, current_value ? '0' : '1'));    
+              };                         
+          }
+          var change_setting_listener_function = function (parameter) {
+              return function () {
+                  TT.UTILITIES.set_parameter(parameter, !TT[parameter]);
+              }
+          };
+          var setting_listener_function = function (url_parameter, toontalk_parameter) {
+              if (TT.CHROME_APP) {
+                  return change_setting_listener_function(toontalk_parameter);
+              } else {
+                  return reload_listener_function(url_parameter, TT[toontalk_parameter]);
+              }
+          }
           var $row = $(program_name.container).children("tr");
           $(settings_panel).addClass("toontalk-settings-panel")
                            .css({width:  $(widget_element).width() +29,
@@ -299,6 +341,10 @@ window.TOONTALK.SETTINGS =
                                 "z-index": 9999999});
           settings_panel.appendChild(close_button);
           program_name.button.addEventListener('change', program_name_changed);
+          reload_with_speech.button   .addEventListener('click', setting_listener_function('speak',     'speak'));
+          reload_with_listen.button   .addEventListener('click', setting_listener_function('listen',    'listen'));
+          reload_with_balloons.button .addEventListener('click', setting_listener_function('balloons',  'balloons'));
+          reload_with_translate.button.addEventListener('click', setting_listener_function('translate', 'TRANSLATION_ENABLED'));
           save_to_google_drive.button.addEventListener('click', 
                                                function (event) {
                                                    // if turning off auto-saving save one last time
@@ -376,14 +422,24 @@ window.TOONTALK.SETTINGS =
           $(heading).css({"font-weight": 'bold',
                           "font-size": 24,
                           "color": "navy"});
+          contents_div.appendChild(reload_with_speech.container);
+          contents_div.appendChild(reload_with_balloons.container);
+          if (!TT.CHROME_APP) {
+              // not clear why the following didn't work in Chrome App -- no results when speaking -- permissions documention doesn't metnion this
+              contents_div.appendChild(reload_with_listen.container);
+              // got various security errors trying to enable translate in Chrome App
+              contents_div.appendChild(reload_with_translate.container);
+          }
           contents_div.appendChild(heading);
           contents_div.appendChild(program_name.container);
-          contents_div.appendChild(save_to_google_drive.container);
+          if (!TT.CHROME_APP) {
+              contents_div.appendChild(save_to_google_drive.container);
           // commented out until https://www.dropbox.com/developers/documentation/javascript is ready since saving
           // is only possible using the deprecated version 1 SDK
 //           contents_div.appendChild(save_to_dropbox.container);
-          contents_div.appendChild(auto_save_to_cloud.container);
-          contents_div.appendChild(local_storage.container);
+              contents_div.appendChild(auto_save_to_cloud.container);
+              contents_div.appendChild(local_storage.container);
+          }
           save_to_google_drive.container.appendChild(TT.UTILITIES.create_space());
           save_to_google_drive.container.appendChild(save_now_cloud);
           save_to_dropbox.container.appendChild(TT.UTILITIES.create_space());

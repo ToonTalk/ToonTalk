@@ -21,11 +21,6 @@
     var THREE_HUNDRED_AND_SIXTY        = bigrat.fromInteger(360);
     var TWO_PI                         = bigrat.fromDecimal(2*Math.PI);
 
-    // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
-    // the aspect ratio of monospace fonts varies from .43 to .55
-    // .55 'worst' aspect ratio -- add a little extra
-    var FONT_ASPECT_RATIO           = 0.64;
-
     // Math.log10 not defined in IE11
     var log10 = Math.log10 ? Math.log10 : function (x) { return Math.log(x)/LOG_10 };
 
@@ -572,8 +567,18 @@ window.TOONTALK.number = (function () {
         return this.set_value(bigrat_from_values(numerator, this.get_value()[1].toString()));
     };
 
+    number.set_numerator_to_float = function (new_numerator_as_float) {
+        // called if a robot was trained to change the numerator to a non-integer
+        return this.set_value(bigrat.divide(this.get_value(), bigrat.fromDecimal(new_numerator_as_float), this.denominator()), true);
+    };
+
     number.set_denominator = function (denominator) {
         return this.set_value(bigrat_from_values(this.get_value()[0].toString(), denominator));
+    };
+
+    number.set_denominator_to_float = function (new_denominator_as_float) {
+        // called if a robot was trained to change the denominator to a non-integer
+        return this.set_value(bigrat.divide(this.get_value(), this.numerator(), bigrat.fromDecimal(new_denominator_as_float)), true);
     };
 
     number.ONE = function () {
@@ -688,8 +693,11 @@ window.TOONTALK.number = (function () {
             }
         } else {
             if ($dimensions_holder.length > 0) {
-                client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
-                client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
+                client_width  = $dimensions_holder.width();
+                client_height = $dimensions_holder.height();
+                // when $dimensions_holder is a box hole in a box in a box then the following sometimes produces larger incorrect numbers
+//                 client_width  = TT.UTILITIES.element_width($dimensions_holder.get(0));
+//                 client_height = TT.UTILITIES.element_height($dimensions_holder.get(0));
             }
             if (client_width === 0 || client_height === 0 || $dimensions_holder.length === 0) {
                 if (TT.logging && TT.logging.indexOf('display') >= 0 && $dimensions_holder.length > 0) {
@@ -729,7 +737,7 @@ window.TOONTALK.number = (function () {
         }
         font_height = (client_height-border_size*2);
 //      font_size = TT.UTILITIES.get_style_numeric_property(frontside, "font-size");
-        font_width = font_height * FONT_ASPECT_RATIO; 
+        font_width = font_height * TT.FONT_ASPECT_RATIO; 
         // could find the font name and use the precise value
         max_decimal_places = client_width / font_width;
         new_HTML = this.to_HTML(max_decimal_places, client_width, client_height, font_height, this.get_format(), true, this.get_operator(), size_unconstrained_by_container);
@@ -864,7 +872,7 @@ window.TOONTALK.number = (function () {
                 } else {
                     exponent_string = "";
                 }
-                font_size = Math.min(font_size, client_width / (FONT_ASPECT_RATIO * digits_needed));
+                font_size = Math.min(font_size, client_width / (TT.FONT_ASPECT_RATIO * digits_needed));
                 return '<div class="toontalk-number toontalk-approximate-number' + extra_class + '" style="font-size: ' + font_size + 'px;">' +
                        operator_HTML + '<div style="margin-top: ' + (client_height-font_size)/2 + 'px">' + value_as_string + '</div>' + exponent_string + '</div>';
             }
@@ -1008,6 +1016,7 @@ window.TOONTALK.number = (function () {
                  }
                  if (this.number_dropped_on_me_semantics(side_of_other_number, event, robot) && robot) {
                      // will stop if drop signaled an error
+                     this.rerender();
                      robot.run_next_step();
                  }
                  if (event) {
@@ -1452,12 +1461,12 @@ window.TOONTALK.number_backside =
                     // why not use $(...).is(...)?
                     first_class_name = event.srcElement.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
-                        number.robot_in_training().edited(number, {setter_name: "set_denominator",
+                        number.robot_in_training().edited(number, {setter_name: denominator_as_fraction ? "set_denominator_to_float" : "set_denominator",
                                                                    argument_1: denominator,
                                                                    toString: "by changing the value of the denominator to " + denominator,
                                                                    button_selector: "." + first_class_name});
                     } else {
-                        number.robot_in_training().edited(number, {setter_name: "set_numerator",
+                        number.robot_in_training().edited(number, {setter_name: numerator_as_fraction ? "set_numerator_to_float" : "set_numerator",
                                                                    argument_1: numerator,
                                                                    toString: "by changing the value of the numerator to " + numerator,
                                                                    button_selector: "." + first_class_name});

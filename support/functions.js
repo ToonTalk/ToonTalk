@@ -53,7 +53,7 @@ window.TOONTALK.create_function_table =
         // then the response might still be considered as a child of the obsolete nest
         // only the first hole is re-used in responses
         if (message.get_size() > 1) {
-            message.get_hole_contents(1).remove(event, true);
+            message.get_hole_contents(1).remove(event, true, true);
         }
         this.process_response(response, box_size_and_bird.bird, message, event, robot);
         return response;

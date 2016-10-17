@@ -103,6 +103,8 @@ window.TOONTALK.box = (function (TT) {
                     $hole_element.get(0).appendChild(content_element);
                 }
                 update_css_of_hole_contents(new_content, content_element, hole_dimensions.width, hole_dimensions.height);
+                // subtract 20 since that is the top border of toontalk-iframe-container
+                $(content_element).find("iframe").attr('width', hole_dimensions.width).attr('height', hole_dimensions.height-20);
                 new_content.rerender();
             }
             this.rerender();
@@ -523,6 +525,7 @@ window.TOONTALK.box = (function (TT) {
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var size = this.get_size();
+        var z_index = TT.UTILITIES.get_style_numeric_property(frontside_element, 'z-index');
         var update_hole = function (hole_element, hole, index) {
             var contents = hole.get_contents();
             var content_element = (contents || hole).get_element(true);
@@ -568,7 +571,8 @@ window.TOONTALK.box = (function (TT) {
                                  {left:   left,
                                   top:    top,
                                   width:  new_width,
-                                  height: new_height});
+                                  height: new_height,
+                                  "z-index": typeof z_index === 'number' && z_index+size-index});
             if (hole_labels[index]) {
                 hole_element.setAttribute("toontalk_name", hole_labels[index]);
             }                                         
@@ -590,6 +594,9 @@ window.TOONTALK.box = (function (TT) {
                 // checked if contents still in hole since this was delayed and things may have changed
                 // save dimensions first?
                 update_css_of_hole_contents(contents, content_element, new_width, new_height);
+                // if contents is an iframe then set its attributes
+                // subtract 20 since that is the top border of toontalk-iframe-container
+                $(hole.element).find("iframe").attr("width", new_width).attr("height", new_height-20);
                 hole_element.appendChild(content_element);
                 // tried to delay the following until the changes to this box in the DOM have settled down
                 // but the hole's contents may have changed
@@ -599,6 +606,9 @@ window.TOONTALK.box = (function (TT) {
                 css = {width:  new_width,
                        height: new_height};
                 hole_contents = hole.get_contents();
+                if (hole_contents.is_plain_text_element()) {
+                    css['font-size'] = TT.UTILITIES.font_size(hole_contents.get_text(), new_width, {height: new_height});
+                }        
                 $(hole_contents.get_frontside_element()).css(css);
                 hole_contents = hole_contents.dereference();
                 hole_contents.set_size_attributes(new_width, new_height, true);
@@ -809,6 +819,22 @@ window.TOONTALK.box = (function (TT) {
     box.get_index_of = function (part) {
         // parent should be a hole
         return part.get_parent_of_frontside() && part.get_parent_of_frontside().get_index && part.get_parent_of_frontside().get_index();
+    };
+
+    box.name_font_size = function (width, height) {
+        var size_due_to_width  = 0;
+        var size_due_to_height = 0;
+        if (this.get_size() === 0) {
+            return 0;
+        }
+        if (this.get_horizontal()) {
+            size_due_to_height = (height || this.get_height())/6;
+            size_due_to_width  = (width  || this.get_width())/(8*this.get_size()); // 8 characters is a reasonable long label
+        } else {
+            size_due_to_height = (height || this.get_height())/(6*this.get_size());
+            size_due_to_width  = (width  || this.get_width())/8;
+        }
+        return Math.min(size_due_to_width, size_due_to_height);
     };
     
     box.removed_from_container = function (part_side, event) {
@@ -1177,6 +1203,22 @@ window.TOONTALK.box_hole =
                     return "empty holes";
                 }
                 return "empty hole";
+            };
+//             hole.get_name = function () {
+//                 // not currently used but might be worth keeping around
+//                 var hole_names = this.get_box().get_name();
+//                 var index;
+//                 if (!hole_names) {
+//                     return;
+//                 }
+//                 hole_names = hole_names.split(';');
+//                 index = this.get_index();
+//                 if (index < hole_names.length) {
+//                     return hole_names[index];
+//                 }
+//             };
+            hole.name_font_size = function () {
+                return this.get_box().name_font_size();
             };
             hole.is_of_type = function (type_name) {
                 if (contents) {
