@@ -1663,11 +1663,11 @@ body > .toontalk-local-alert {
 .toontalk-box-hole::after {
  	content: attr(toontalk_name);
  	position: relative;
- 	top: 100%;
+ 	top: 98%;
  	border-radius: 5px;
  	background-color: rgb(67, 67, 211);
- 	color: rgb(246, 237, 237);
- 	text-shadow: 1px 1px 2px red;
+ 	color: #FFF176;
+ 	text-shadow: 4px 4px 8px navy;
 /* 	padding looked nice but was there even when there was no toontalk_name */
  	/* padding-left: 4px; */
  	/* padding-right: 4px; */
@@ -2393,7 +2393,7 @@ background-image: url("images/dusty-morph.png");
 .toontalk-empty-nest::after {
  	content: attr(toontalk_name);
  	position: relative;
- 	top: 30%;
+ 	top: 20%;
  	color: navy;
  	text-shadow: 1px 1px 2px white;
 }
@@ -2518,7 +2518,7 @@ background-image: url("images/dusty-morph.png");
 .toontalk-bird-static::before {
 	content: attr(toontalk_name);
 	position: relative;
-	top: 50%;
+	top: 45%;
 	color: #432707;
 	text-shadow: 1px 1px 2px #E7D9A8;
 	font-weight: bold;

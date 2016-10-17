@@ -4324,20 +4324,19 @@ window.TOONTALK.UTILITIES =
        utilities.set_css = function (element, css) {
            // this is mostly useful debugging computed CSS problems since can break here
            var widget_side, widget_side_dereferenced;
-           if (!css) {
+           if (!css || !element) {
                return;
            }
            widget_side = utilities.widget_side_of_element(element);
            if (widget_side) {
                widget_side_dereferenced = widget_side.dereference();
-               if (css.width) {
+               if (css.width && !css['font-size']) {
                    if (widget_side.is_hole()) {
-                       css['font-size'] = widget_side.label_font_size();
-                   } else if (widget_side_dereferenced.get_name && widget_side_dereferenced.get_name() && !css['font-size']) {
+                       css['font-size'] = widget_side.name_font_size(css.width, css.height);
+                   } else if (widget_side_dereferenced.name_font_size) {
                        // change font size so text fits (unless explicitly set)
                        // margin to leave space on both sides of the label 
-                       css['font-size'] = utilities.font_size(widget_side_dereferenced.get_name(), css.width, {margin: 2,
-                                                                                                               height: css.height});
+                       css['font-size'] = widget_side_dereferenced.name_font_size(css.width, css.height);
                    }
                }
                if ($(element).is(".toontalk-temporarily-set-down")) {
@@ -4382,8 +4381,10 @@ window.TOONTALK.UTILITIES =
            words = string.split(" ");
            maximum_word_length = words.map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
            font_size = width / (TT.FONT_ASPECT_RATIO * (maximum_word_length+(options.margin || 0)));
-           if (words.length === 1 || !options.height) {
-               // single line or don't care how tall it is
+           if (words.length === 1) { // single line
+               if (options.height) {
+                   return Math.min(font_size, options.height);
+               }
                return font_size;
            }
            // make sure there is enough height for multiple lines

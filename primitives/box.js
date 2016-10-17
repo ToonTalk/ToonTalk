@@ -821,18 +821,18 @@ window.TOONTALK.box = (function (TT) {
         return part.get_parent_of_frontside() && part.get_parent_of_frontside().get_index && part.get_parent_of_frontside().get_index();
     };
 
-    box.label_font_size = function () {
+    box.name_font_size = function (width, height) {
         var size_due_to_width  = 0;
         var size_due_to_height = 0;
         if (this.get_size() === 0) {
             return 0;
         }
         if (this.get_horizontal()) {
-            size_due_to_height = this.get_height()/8;
-            size_due_to_width  = this.get_width()/(12*this.get_size()); // 12 characters is a reasonable long label
+            size_due_to_height = (height || this.get_height())/6;
+            size_due_to_width  = (width  || this.get_width())/(8*this.get_size()); // 8 characters is a reasonable long label
         } else {
-            size_due_to_height = this.get_height()/(6*this.get_size());
-            size_due_to_width  = this.get_width()/8;
+            size_due_to_height = (height || this.get_height())/(6*this.get_size());
+            size_due_to_width  = (width  || this.get_width())/8;
         }
         return Math.min(size_due_to_width, size_due_to_height);
     };
@@ -1217,8 +1217,8 @@ window.TOONTALK.box_hole =
 //                     return hole_names[index];
 //                 }
 //             };
-            hole.label_font_size = function () {
-                return this.get_box().label_font_size();
+            hole.name_font_size = function () {
+                return this.get_box().name_font_size();
             };
             hole.is_of_type = function (type_name) {
                 if (contents) {

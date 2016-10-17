@@ -161,16 +161,6 @@ window.TOONTALK.widget = (function (TT) {
                         };
                     };
             }
-            if (!widget.get_width) {
-               widget.get_width = function () {
-                   return TT.UTILITIES.get_element_width(widget.get_frontside_element());
-               }
-            }
-            if (!widget.get_height) {
-               widget.get_height = function () {
-                   return TT.UTILITIES.get_element_height(widget.get_frontside_element());
-               }
-            }
             if ((TT.debugging || TT.logging) && !widget.to_debug_string) {
                 widget.to_debug_string = function (max_length) {
                     var parent = this.get_parent_widget_of_frontside();
@@ -278,6 +268,12 @@ window.TOONTALK.widget = (function (TT) {
                        this.saved_height = undefined;
                     }
                 };
+                widget.get_width = function () {
+                    return TT.UTILITIES.get_element_width(widget.get_frontside_element());
+                }
+                widget.get_height = function () {
+                    return TT.UTILITIES.get_element_height(widget.get_frontside_element());
+                }
             }
             if (!widget.get_backside) {
                 widget.get_backside = function (create) {
@@ -847,9 +843,9 @@ window.TOONTALK.widget = (function (TT) {
                         return false;
                     }
                     name = new_value;
+                    // name change may cause font size change
+                    TT.UTILITIES.set_css(this.get_element(), {'font-size': this.name_font_size()});
                     if (update_display) {
-                        // name change may cause font size change
-                        TT.UTILITIES.set_css(this.get_element(), {'font-size': TT.UTILITIES.font_size(new_value, this.get_name_width(), {height: this.get_name_height()})});
                         this.rerender();
                     }
                     if (train && this.robot_in_training()) {
@@ -862,14 +858,25 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 };         
             }
+            this.has_name_font_size(widget);
+        },
+
+        has_name_font_size: function (widget) {
             if (!widget.get_name_width) {
-                widget.get_name_width = function () {
-                    return .5*this.get_width();
+                widget.get_name_width = function (width) {
+                    return .5*(width || this.get_width());
                 };
             }
             if (!widget.get_name_height) {
-                widget.get_name_height = function () {
-                    return .5*this.get_height();
+                widget.get_name_height = function (height) {
+                    return .5*(height || this.get_height());
+                };
+            }
+            if (!widget.name_font_size) {
+                widget.name_font_size = function (width, height) {
+                    // font size so text fits
+                    // width and height might be provided as the soon to be new dimensions 
+                    return TT.UTILITIES.font_size(this.get_name(), this.get_name_width(width), {height: this.get_name_height(height)});
                 };
             }
         },
