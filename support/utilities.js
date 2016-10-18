@@ -3601,7 +3601,7 @@ window.TOONTALK.UTILITIES =
                 return parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0;
             };
             var check_if_dimensions_known;
-            if (!recompute && $(element).width() && not_in_a_hole(original_parent)) {
+            if (!recompute && $(element).width() && (not_in_a_hole(original_parent) || $(element).is(".toontalk-element-frontside"))) {
                 // already known -- delaying it fixes problems with elements in box holes not computing the right scaling
                 // but size in a box hole is should not count
                 setTimeout(function () {

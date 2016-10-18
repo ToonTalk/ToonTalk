@@ -607,9 +607,12 @@ window.TOONTALK.box = (function (TT) {
                        height: new_height};
                 hole_contents = hole.get_contents();
                 if (hole_contents.is_plain_text_element()) {
-                    css['font-size'] = TT.UTILITIES.font_size(hole_contents.get_text(), new_width, {height: new_height});
-                }        
-                $(hole_contents.get_frontside_element()).css(css);
+                    $(hole_contents.get_frontside_element()).css({'font-size': TT.UTILITIES.font_size(hole_contents.get_text(), new_width, {height: new_height}),
+                                                                  width:  '',
+                                                                  height: ''});
+                } else {     
+                    $(hole_contents.get_frontside_element()).css(css);
+                }
                 hole_contents = hole_contents.dereference();
                 hole_contents.set_size_attributes(new_width, new_height, true);
                 // hole element needs to know its dimensions (at least when an element is on a nest in a box hole)
@@ -672,9 +675,13 @@ window.TOONTALK.box = (function (TT) {
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = TT.UTILITIES.element_width(containing_element)  || this.saved_width  || TT.box.get_default_width();
+                box_width = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.element_width(containing_element))
+                            || this.saved_width
+                            || TT.box.get_default_width();
             }
-            box_height    = TT.UTILITIES.element_height(containing_element) || this.saved_height || TT.box.get_default_height();
+            box_height    = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.element_height(containing_element))
+                            || this.saved_height ||
+                            TT.box.get_default_height();
             if (horizontal) {
                 if (size === 0) {
                     hole_width = 0;
