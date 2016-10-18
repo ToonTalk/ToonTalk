@@ -1577,13 +1577,13 @@ window.TOONTALK.number.function =
         // delays by the amount in the second hole in seconds and give the bird the number of seconds since receiving the box 
         var start = Date.now();
         var box_size_and_bird = functions.check_message(message);
-        var delay;
+        var delay, error;
         if (!box_size_and_bird) {
             return;
         }
         if (box_size_and_bird.size < 2) {
-            Tmessage.display_message("Delay function birds need a number in the second hole.");
-            return;
+            error = message.display_message("Delay function birds need a number in the second hole saying how long to wait.");
+            return TT.element.create(error);
         }
         delay = message.get_hole_contents(1).to_float();
         setTimeout(function () {     

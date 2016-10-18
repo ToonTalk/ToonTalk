@@ -3780,7 +3780,7 @@ window.TOONTALK.UTILITIES =
                 if (messages_displayed.indexOf(message) < 0) {
                     messages_displayed.push(message);
                 } else {
-                    return;
+                    return message;
                 }
             }
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
@@ -3816,6 +3816,7 @@ window.TOONTALK.UTILITIES =
                 }
             }
             setTimeout(remove_handler, options.duration);
+            return message;
         };
 
         utilities.display_tooltip = function ($element) {

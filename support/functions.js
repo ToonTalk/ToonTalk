@@ -59,7 +59,8 @@ window.TOONTALK.create_function_table =
         return response;
     },
     type_check: function (type, widget, function_name, index) {
-        var top_contents;
+        // returns a string describing the error if there is one
+        var top_contents, error;
         if (widget.is_nest() && !widget.has_contents()) {
             // throw empty nest so can suspend this until nest is covered
             if (TT.sounds) {
@@ -69,20 +70,18 @@ window.TOONTALK.create_function_table =
         }
         if (!type) {
             // any type is fine
-            return true;
+            return;
         }
         if (!widget) {
-            TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " 
-                                          + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
-            return false;
+            return TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " 
+                                                + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
         }
         if (widget.dereference().is_of_type(type)) {
-            return true;
+            return;
         }
-        widget.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
-                               + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index)
-                               + " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
-        return false;
+        return widget.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
+                                      + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index)
+                                      + " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
     },
     number_check: function (widget, function_name, index) {
         return this.type_check('number', widget, function_name, index);
@@ -90,23 +89,22 @@ window.TOONTALK.create_function_table =
     n_ary_widget_function: function (message, zero_ary_value_function, binary_operation, function_name, event, robot) { 
         // binary_operation is a function of two widgets that updates the first
         var compute_response = function (bird, box_size) {
-            var next_widget, index, response;
-            var is_number_or_nest;
+            var next_widget, index, response, error;
             if (box_size === 1) {
                 return zero_ary_value_function();
             }
             index = 1;
             response =  message.get_hole_contents(index).dereference();
-            is_number_or_nest = this.number_check(response, function_name, index);
-            if (!is_number_or_nest) {
-                return;
+            error = this.number_check(response, function_name, index);
+            if (is_number_or_nest) {
+                return TT.element.create(error);
             }
             index++;
             while (index < box_size) {
                 next_widget = message.get_hole_contents(index).dereference();
-                is_number_or_nest = this.number_check(next_widget, function_name, index);
-                if (!is_number_or_nest) {
-                    return;
+                error = this.number_check(next_widget, function_name, index);
+                if (error) {
+                    return TT.element.create(error);
                 }
                 binary_operation.call(response, next_widget);
                 index++;
@@ -117,7 +115,7 @@ window.TOONTALK.create_function_table =
     },
     n_ary_function: function (message, operation, minimum_arity, function_name, event, robot) { 
         var compute_response = function (bird, box_size) {
-            var next_widget, index, args, is_number_or_nest, any_approximate_arguments, response;
+            var next_widget, index, args, error, any_approximate_arguments, response;
             if (box_size < minimum_arity+1) { // one for the bird
                 message.display_message("Birds for the " + function_name + " function can only respond to boxes with at least "
                                         + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
@@ -127,9 +125,9 @@ window.TOONTALK.create_function_table =
             index = 1;
             while (index < box_size) {
                 next_widget = message.get_hole_contents(index).dereference();
-                is_number_or_nest = this.number_check(next_widget, function_name, index);
-                if (!is_number_or_nest) {
-                    return;
+                error = this.number_check(next_widget, function_name, index);
+                if (error) {
+                    return TT.element.create(error);;
                 }
                 if (next_widget.get_approximate && next_widget.get_approximate()) {
                     any_approximate_arguments = true;
@@ -150,7 +148,7 @@ window.TOONTALK.create_function_table =
     typed_bird_function: function (message, bird_function, types, arity, function_name, event, robot) {
         // if arity is undefined then no limit to the number of repetitions of the last type
         var compute_response = function (bird, box_size) {
-            var next_widget, index, args, type;
+            var next_widget, index, args, type, error;
             if (arity >= 0 && box_size != arity+1) { // one for the bird
                 message.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
                 return;
@@ -162,8 +160,9 @@ window.TOONTALK.create_function_table =
                 if (index <= types.length) {
                     type = types[index-1];
                 }
-                if (!this.type_check(type, next_widget, function_name, index)) {
-                    return;
+                error = this.type_check(type, next_widget, function_name, index)
+                if (error) {
+                    return TT.element.create(error);
                 }
                 args.push(next_widget);
                 index++;
