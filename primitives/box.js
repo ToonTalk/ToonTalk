@@ -1475,19 +1475,20 @@ window.TOONTALK.box.function =
         function (message, event, robot) {
             var get_hole_contents = function (number, box) {
                 var n = Math.round(number.to_float());
+                var error;
                 if (n < 1) {
-                    message.display_message("The box hole function bird cannot accept " + number + ". She only accepts positive numbers.");
-                    return;
+                    error = message.display_message("The box hole function bird cannot find the " + TT.UTILITIES.ordinal(number) + " hole. She only accepts positive numbers.");
+                    return TT.element.create(error);
                 }
                 if (n > box.get_size()) {
-                    message.display_message("The box hole function bird cannot accept " + number + ". The box only has " + box.get_size() + " holes.");
-                    return;
+                    error = message.display_message("The box hole function bird cannot cannot find the " + TT.UTILITIES.ordinal(number) + " hole. The box only has " + box.get_size() + " holes.");
+                    return TT.element.create(error);
                 };
                 return box.get_hole_contents(n-1);
             };
             return functions.typed_bird_function(message, get_hole_contents, ['number', 'box'], 2, 'box hole', event, robot);
         },
-        "The bird will return with what is in a hole of the box. The number determines which hole's contents are returned. 1 for the first hole.",
+        "The bird will return with what is in a hole of the box. The number determines which hole's contents are returned. Use 1 for the first hole.",
         "hole",
         ['number', 'box']);
     functions.add_function_object(
@@ -1506,9 +1507,10 @@ window.TOONTALK.box.function =
         function (message, event, robot) {
             var set_hole_contents = function (number, box, new_contents) {
                 var n = Math.round(number.to_float());
+                var error;
                 if (n < 1) {
-                    message.display_message("The fill hole function bird cannot accept " + number + ". She only accepts positive numbers.");
-                    return;
+                    error = message.display_message("The fill hole function bird cannot fill the " + TT.UTILITIES.ordinal(number) + " hole. She only accepts positive numbers.");
+                    return TT.element.create(error);
                 }
                 if (n > box.get_size()) {
                     box.set_size(n);
@@ -1540,13 +1542,14 @@ window.TOONTALK.box.function =
                     box.set_size(n);
                     return TT.box.create(2, false, [box, box2]);
                 };
+                var error;
                 if (n < 0) {
-                    message.display_message("The box split function bird cannot accept " + number + ". She only accepts zero or positive numbers.");
-                    return;
+                    error = message.display_message("The box split function bird cannot split the box after " + number + " holes. She only accepts zero or positive numbers.");
+                    return TT.element.create(error);
                 }
                 if (n > box_size) {
-                    message.display_message("The box split function bird cannot accept " + number + ". The box only has " + box_size + " holes.");
-                    return;
+                    error = message.display_message("The box split function bird cannot split the box after " + number + " holes. The box only has " + box_size + " holes.");
+                    return TT.element.create(error);
                 }
                 return box_of_boxes();
             };
@@ -1609,7 +1612,7 @@ window.TOONTALK.box.function =
                 if (value === undefined) {
                     message = "Error no value for " + full_path();
                     TT.UTILITIES.display_message(message);
-                    return TT.element.create(message); // is this reasonable?
+                    return TT.element.create(message);
                 }
                 if (typeof value === 'number') {
                     return TT.number.create(value);
@@ -1663,7 +1666,7 @@ window.TOONTALK.box.function =
                 }
                 if (message) {
                     TT.UTILITIES.display_message(message);
-                    return TT.element.create(message); // is this reasonable?
+                    return TT.element.create(message);
                 }
                 return new_value_as_widget;
             };

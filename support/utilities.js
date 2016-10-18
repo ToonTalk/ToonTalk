@@ -3786,7 +3786,7 @@ window.TOONTALK.UTILITIES =
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
             if (TT.debugging) {
                 console.log(options.plain_text || message);
-//                 console.trace();
+                console.trace();
             }
             if (options.element || options.second_choice_element) {
                 $backside = $(options.element).closest(".toontalk-backside");

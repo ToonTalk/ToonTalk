@@ -1656,6 +1656,7 @@ window.TOONTALK.widget = (function (TT) {
                options.element = this.get_frontside_element();
             }
             TT.UTILITIES.display_message(message, options);
+            return message;
         },
 
         // defined here in order to share between element and number functions
