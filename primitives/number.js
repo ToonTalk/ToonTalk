@@ -1576,21 +1576,21 @@ window.TOONTALK.number.function =
     var delay_function = function (message, event, robot) {
         // delays by the amount in the second hole in seconds and give the bird the number of seconds since receiving the box 
         var start = Date.now();
-        var box_size_and_bird = functions.check_message(message);
+        var message_properties = functions.check_message(message);
         var delay, error;
-        if (!box_size_and_bird) {
+        if (typeof message_properties === 'string') {
             return;
         }
-        if (box_size_and_bird.size < 2) {
-            error = message.display_message("Delay function birds need a number in the second hole saying how long to wait.");
-            return TT.element.create(error);
+        if (message_properties.box_size < 2) {
+            functions.report_error("Delay function birds need a number in the second hole saying how long to wait.", message_properties);
+            return;
         }
         delay = message.get_hole_contents(1).to_float();
         setTimeout(function () {     
                        var response = TT.number.ZERO(TT.number.function_bird_results_default_format);
                        response.set_value_from_decimal((Date.now()-start)/1000);
                        response.set_approximate(true);
-                       functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                       functions.process_response(response, message_properties, message, event, robot);
                    },
                    delay*1000);
         return true;                 
@@ -1621,13 +1621,13 @@ window.TOONTALK.number.function =
                              return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.multiply, 'product', event, robot);
                         },
                         "The bird will return with the product of the numbers in the box.",
-                        "×");
+                        "ÃƒÆ’Ã¢â‚¬â€");
     functions.add_function_object('division', 
                         function (message, event, robot) {
                              return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.divide, 'division', event, robot);
                         },
                         "The bird will return with the result of dividing the numbers into the first number in the box.",
-                        "÷"); // CSS can't contain HTML -- see http://www.evotech.net/blog/2007/04/named-html-entities-in-numeric-order/
+                        "ÃƒÆ’Ã‚Â·"); // CSS can't contain HTML -- see http://www.evotech.net/blog/2007/04/named-html-entities-in-numeric-order/
     functions.add_function_object('modulo', 
                         function (message, event, robot) {
                             return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(modulo), 2, 'modulo', event, robot);

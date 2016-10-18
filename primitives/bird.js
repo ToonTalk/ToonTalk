@@ -135,7 +135,8 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.animate_delivery_to = function (message_side, target_side, nest_recieving_message, starting_left, starting_top, after_delivery_continuation, event, robot) {
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
-            var temporary_bird = !!nest_recieving_message;
+            // is temporarily if not triggered by user or robot -- e.g. a function bird response 
+            var temporary_bird = !!nest_recieving_message || (!event && !robot);
             var parent = this.get_parent_of_frontside();
             var bird_frontside_element = this.get_frontside_element(true);
             var bird_position = $(bird_frontside_element).position();
@@ -635,6 +636,9 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.has_name_font_size(new_bird);
         new_bird.get_name_height = function (height) {
             return .3*(height || this.get_height());
+        };
+        new_bird.is_nest_visible = function () {
+            return nest && nest.visible();
         };
         new_bird.add_standard_widget_functionality(new_bird);
         new_bird.add_speech_listeners({descriptions_acceptable: true,

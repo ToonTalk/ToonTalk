@@ -2121,7 +2121,7 @@ window.TOONTALK.widget = (function (TT) {
                                 loaded_callback();
                             }
                         } catch (e) {
-                            TT.UTILITIES.display_message("Error encountered loading " + program_name + ": " + e);
+                            TT.UTILITIES.display_message("Error encountered loading " + ": " + e);
                         }
                     } else if (nothing_to_load_callback) {
                         nothing_to_load_callback();
