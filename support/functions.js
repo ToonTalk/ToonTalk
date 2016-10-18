@@ -73,13 +73,13 @@ window.TOONTALK.create_function_table =
             return;
         }
         if (!widget) {
-            return TT.UTILITIES.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " 
+            return TT.UTILITIES.display_message("The '" + function_name + "' bird can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " 
                                                 + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.");
         }
         if (widget.dereference().is_of_type(type)) {
             return;
         }
-        return widget.display_message("Birds for the " + function_name + " function can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
+        return widget.display_message("'" + function_name + "' birds can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
                                       + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index)
                                       + " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."));
     },
@@ -117,7 +117,7 @@ window.TOONTALK.create_function_table =
         var compute_response = function (bird, box_size) {
             var next_widget, index, args, error, any_approximate_arguments, response;
             if (box_size < minimum_arity+1) { // one for the bird
-                message.display_message("Birds for the " + function_name + " function can only respond to boxes with at least "
+                message.display_message("'" + function_name + "' birds can only respond to boxes with at least "
                                         + (minimum_arity+1) + " holes. Not " + box_size + " holes.");
                 return;
             }
@@ -150,12 +150,15 @@ window.TOONTALK.create_function_table =
         var compute_response = function (bird, box_size) {
             var next_widget, index, args, type, error;
             if (arity >= 0 && box_size != arity+1) { // one for the bird
-                message.display_message("Birds for the " + function_name + " function can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
+                message.display_message("The '" + function_name + "' bird can only respond to boxes with " + (arity+1) + " holes. Not " + box_size + " holes.");
                 return;
             }
             args = [];
             index = 1;
             while (index < box_size) {
+                if (!message.get_hole_contents(index)) {
+                    return TT.element.create(TT.UTILITIES.display_message("The '" + function_name + "' bird found nothing in the " + TT.UTILITIES.ordinal(index) + " hole."));
+                }
                 next_widget = message.get_hole_contents(index).dereference();
                 if (index <= types.length) {
                     type = types[index-1];
