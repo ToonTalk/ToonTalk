@@ -1976,6 +1976,7 @@ window.TOONTALK.UTILITIES =
                         console.error("window.localStorage in IE11 not available with file://...: " + message);
                     } else {
                         utilities.display_message(message);
+                        console.error(error.stack);
                     }
                 }
             } else {
