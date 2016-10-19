@@ -1680,14 +1680,24 @@ window.TOONTALK.box.function =
                     var path = "window";
                     var i;
                     for (i = 0; i < stop; i++) {
-                        path += "." + box.get_hole_contents(i).get_text().trim();
+                        contents = box.get_hole_contents(i);
+                        if (!contents || !contents.get_text) {
+                            functions.report_error("The 'set window property' bird could not get the text of the " + TT.UTILITIES.ordinal(i) + " hole.", message_properties);
+                            return;
+                        }
+                        path += "." + contents.get_text().trim();
                     }
                     return path;
                 };
-                var i, new_value, message;
+                var i, new_value, message, contents;
                 for (i = 0; i < size-1; i++) {
+                    contents = box.get_hole_contents(i);
+                    if (!contents || !contents.get_text) {
+                        functions.report_error("The 'set window property' bird could not get the text of the " + TT.UTILITIES.ordinal(i) + " hole.", message_properties);
+                        return;
+                    }
                     try {
-                        properties = properties[box.get_hole_contents(i).get_text().trim()];
+                        properties = properties[contents.get_text().trim()];
                     } catch (exception) {
                         functions.report_error("Error trying to find the property of " + full_path(size-1) + ". " + exception, message_properties);
                         return;
@@ -1699,13 +1709,18 @@ window.TOONTALK.box.function =
                 if (!message) {
                     try {
                         if (new_value_as_widget.to_float) {
-                             new_value = new_value_as_widget.to_float();
+                            new_value = new_value_as_widget.to_float();
                         } else if (new_value_as_widget.get_text) {
-                             new_value = new_value_as_widget.get_text();
+                            new_value = new_value_as_widget.get_text();
                         } else {
                             new_value = new_value_as_widget.toString();
                         }
-                        properties[box.get_hole_contents(size-1).get_text().trim()] = new_value;
+                        contents = box.get_hole_contents(size-1);
+                        if (!contents || !contents.get_text) {
+                            functions.report_error("The 'set window property' bird could not get the text of the " + TT.UTILITIES.ordinal(i) + " hole.", message_properties);
+                            return;
+                        }
+                        properties[contents.get_text().trim()] = new_value;
                     } catch (exception) {
                         message = "Unable to set the value of " + full_path(size) + " to value of " + new_value_as_widget;
                     }
