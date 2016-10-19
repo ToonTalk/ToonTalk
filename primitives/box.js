@@ -1499,6 +1499,9 @@ window.TOONTALK.box.function =
                                            message_properties);
                     return;
                 }
+                if (message_properties.message_return_bird) {
+                    return contents.copy();
+                }
                 return contents;
             };
             return functions.typed_bird_function(message, get_hole_contents, ['number', 'box'], 2, 'box hole', event, robot);
@@ -1558,6 +1561,10 @@ window.TOONTALK.box.function =
                     for (i = 0; i < box2_size; i++) {
                         box2.set_hole(i, box.get_hole_contents(i+n));
                     }
+                     if (message_properties.message_return_bird) {
+                        // avoid sharing any elements
+                        box = box.copy();
+                    }
                     // reduce original to n holes
                     box.set_size(n);
                     return TT.box.create(2, false, [box, box2]);
@@ -1571,10 +1578,6 @@ window.TOONTALK.box.function =
                     functions.report_error("The box split function bird cannot split the box after " + number + " holes. The box only has " + box_size + " holes.",
                                            message_properties);
                     return;
-                }
-                if (message_properties.message_return_bird) {
-                    // don't clobber original message if it is being returned
-                    box = box.copy();
                 }
                 return box_of_boxes();
             };
