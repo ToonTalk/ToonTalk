@@ -2227,9 +2227,15 @@ window.TOONTALK.element.function =
     functions.add_function_object(
         'part of text', 
         function (message, event, robot) {
-            var substring = function (element_or_number, start_widget, end_widget) {
-                var start = Math.round(start_widget.to_float()-1);
-                var end   = end_widget && Math.round(end_widget.to_float()-1);
+            var substring = function (element_or_number, start_widget, end_widget, message_properties) {
+                var start, end;
+                if (!start_widget || !start_widget.to_float) {
+                    functions.report_error("The 'part of text' bird is unable to find the text in the second hole. ", (message_properties || end_widget));
+                    return;
+                }
+                start = Math.round(start_widget.to_float()-1);
+                // last widget is the message_properties so if no end widget provided (box size is 3) then leave it undefined (meaning the rest of the string)
+                end = end_widget && end_widget.to_float && Math.round(end_widget.to_float()-1);
                 return TT.element.create(element_or_number.get_text().substring(start, end));
             };
             // arity undefined since if end is specified it is the rest of the string
