@@ -218,14 +218,15 @@ window.TOONTALK.create_function_table =
         // if arity is undefined then no limit to the number of repetitions of the last type
         var compute_response = function (message_properties) {
             var next_widget, index, args, type;
-            if (arity >= 0 && message_properties.box_size != arity+1) { // one for the bird
-                this.report_error("The '" + function_name + "' bird can only respond to boxes with " + (arity+1) + " holes. Not " + message_properties.box_size + " holes.",
+            if (arity >= 0 && message_properties.box_size < arity+1) { // one for the bird
+                this.report_error("The '" + function_name + "' bird can only respond to boxes with " + (arity+1) + " or more holes. Not " + message_properties.box_size + " holes.",
                                   message_properties);
                 return;
             }
             args = [];
             index = 1;
-            while (index < message_properties.box_size) {
+            while (index < arity+1) {
+                // ignores any holes after the arity+1
                 if (!message.get_hole_contents(index)) {
                     this.report_error("The '" + function_name + "' bird found nothing in the " + TT.UTILITIES.ordinal(index) + " hole.",
                                       message_properties);
