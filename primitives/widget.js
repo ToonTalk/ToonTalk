@@ -1665,13 +1665,8 @@ window.TOONTALK.widget = (function (TT) {
             var speak = function (widget) {
                 var text, speech_utterance, when_finished;
                 if (!widget) {
-                    TT.UTILITIES.display_message("Speaking birds need something in the second box hole.");
+                    functions.report_error("Speaking birds need something in the second box hole that they can speak.", message_properties);
                     return;
-                }
-                if (!window.speechSynthesis) {
-                    // ignore this
-                    widget.display_message("This browser doesn't support speech output. Try another browser such as Chrome.");
-                    return true;
                 }
                 widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text(true) : widget.toString();
@@ -1694,7 +1689,7 @@ window.TOONTALK.widget = (function (TT) {
                 } else {
                     when_finished = function (event) {
                         var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
-                        functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                        functions.process_response(response, message_properties, message, event, robot);
                     };
                     TT.UTILITIES.speak(text,
                                        {when_finished: when_finished, 
@@ -1704,13 +1699,18 @@ window.TOONTALK.widget = (function (TT) {
                                         voice_number: voice_number});
                 }
             };
-            var box_size_and_bird = functions.check_message(message);
-            var volume, pitch, rate, voice_number;
-            if (!box_size_and_bird) {
+            var message_properties, volume, pitch, rate, voice_number;
+            if (!window.speechSynthesis) {
+                // ignore this
+                functions.report_error("This browser doesn't support speech output. Try another browser such as Chrome.", message_properties);
                 return;
             }
-            if (box_size_and_bird.size < 2) {
-                TT.UTILITIES.display_message("Speaking birds need a box with two or more holes.");
+            message_properties = functions.check_message(message); 
+            if (typeof message_properties === 'string') {
+                return;
+            }
+            if (message_properties.box_size < 2) {
+                functions.report_error("Speaking birds need a box with two or more holes.", message_properties);
                 return;
             }
             volume = message.get_hole_contents(2);
