@@ -662,6 +662,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
                     if (!this.location_constrained_by_container()) {
                         this.plain_text_dimensions();
+                    } else {
+                        $(frontside_element).css({width:  '',
+                                                  height: ''});
                     }
                 } else {
                     $(frontside_element).addClass("toontalk-non-plain-text-element");
@@ -686,8 +689,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             original_height = height || 32;
             this.saved_width  = original_width;
             this.saved_height = original_height;
-            this.add_to_css('width', original_width);
-            this.add_to_css('height', original_height);
+            if (!this.location_constrained_by_container()) {
+                this.add_to_css('width', original_width);
+                this.add_to_css('height', original_height);
+            }
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
@@ -2264,8 +2269,9 @@ window.TOONTALK.element.function =
         function (message, event, robot) {
             var text_to_number = function (text_widget, message_properties) {
                 var text, number;
-                if (!text_widget.get_text) {
+                if (!text_widget || !text_widget.get_text) {
                     functions.report_error("The 'text as number' bird could not turn " + describe(text_widget) + " into a text to turn it into a number.", message_properties);
+                    return;
                 } 
                 text = text_widget.get_text();              
                 var slashIndex = text.indexOf('/');
