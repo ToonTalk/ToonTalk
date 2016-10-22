@@ -1167,6 +1167,9 @@ window.TOONTALK.box_hole =
                         $(dropped_element).removeClass("toontalk-animating-element");
                         box.render();
                         this.set_contents(dropped);
+                        if (event) {
+                            box.backup_all(); 
+                        }
                     }.bind(this);
                     setTimeout(finished_animating, (is_plain_text || TT.UTILITIES.has_animating_image(dropped_element)) ? 0 : 1200);
                     if (box.robot_in_training()) {
