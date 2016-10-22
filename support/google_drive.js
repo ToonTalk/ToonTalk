@@ -308,6 +308,10 @@ window.TOONTALK.google_drive =
            if (read_write) {
                return "https://www.googleapis.com/drive/v2/files/" + id + "?alt=media";
            }
+           if (typeof TT.cross_origin_url_function === 'function') {
+               return TT.cross_origin_url_function("https://drive.google.com/uc?id=" + id);
+           }
+           // if the cross origin proxy server isn't available then dowload the page locally
            return "https://drive.google.com/uc?export=download&id=" + id;
        },
 
@@ -327,9 +331,8 @@ window.TOONTALK.google_drive =
          var request = gapi.client.drive.properties.insert({'fileId': file_id,
                                                             'resource': body});
          request.execute(function (response) { 
-//              console.log(response);
          });
-    }
+     }
     
    };
 

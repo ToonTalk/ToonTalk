@@ -5431,6 +5431,17 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                            TT.DISPLAY_UPDATES.update_display();
                        },
                        100);
+            if (typeof TT.cross_origin_url_function === 'undefined') {
+                // might have been set explicitly in index.html or the like
+                utilities.download_file("http://crossorigin.me/https://drive.google.com/uc?id=0B0taMM6vlEqQaWprd2d1ZnlmQWs",
+                                        function (contents) {
+                                            if (contents === "working") {
+                                                TT.cross_origin_url_function = function (url) {
+                                                    return "http://crossorigin.me/" + url;
+                                                };
+                                            }
+                                        });
+            }
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
         }
