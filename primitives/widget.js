@@ -1677,7 +1677,7 @@ window.TOONTALK.widget = (function (TT) {
                                            function (translated_text) {
                                                when_finished = function (event) {
                                                    var response = TT.element.create(translated_text, [], "a response to speaking '" + text + "'");
-                                                   functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                                                   functions.process_response(response, message_properties, message, event, robot);
                                                };
                                                TT.UTILITIES.speak(translated_text, 
                                                                  {when_finished: when_finished,
@@ -1795,16 +1795,13 @@ window.TOONTALK.widget = (function (TT) {
             };
         },
         get_description_function: function (functions) {
+          // displays the text or description of the widget in second hole in the message
           return function (message, event, robot) {
-            var describe = function (widget) {
+            var describe = function (widget) {   
                 var text, speech_utterance, respond;
-                if (!widget) {
-                    TT.UTILITIES.display_message("Description birds need something in the second box hole.");
-                    return;
-                }
                 respond = function (description) {
                     var response = TT.element.create(description, [], widget.toString());
-                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                    functions.process_response(response, message_properties, message, event, robot);
                 };
                 widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text(true) : widget.toString();
@@ -1819,12 +1816,12 @@ window.TOONTALK.widget = (function (TT) {
                     respond(text);
                 }
             };
-            var box_size_and_bird = functions.check_message(message);
-            if (!box_size_and_bird) {
-                return;
+            var message_properties = functions.check_message(message);
+            if (typeof message_properties === 'string') {
+               return;
             }
-            if (box_size_and_bird.size < 2) {
-                message.display_message("Description birds need a box with two holes containing a bird and a widget.");
+            if (message_properties.box_size < 1) {
+                functions.report_error("Listening birds need a box with two holes.", message_properties);
                 return;
             }
             describe(message.get_hole_contents(1));
