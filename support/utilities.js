@@ -4366,6 +4366,10 @@ window.TOONTALK.UTILITIES =
            }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
                widget_side_dereferenced && widget_side_dereferenced.use_scaling_transform) {
+               if (widget_side !== widget_side_dereferenced) {
+                   // e.g. element is a box hole and its position is being set by the css
+                   $(element).css(css);
+               }
                // leave CSS width and height alone and recompute scaling transform
                // following will call set_css again with modified css
                widget_side_dereferenced.use_scaling_transform(css);
