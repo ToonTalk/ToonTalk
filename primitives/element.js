@@ -313,10 +313,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, current_pending_css, new_dimensions;
-            if (!pending_css && !transform_css) {
-                return;
-            }
+            var frontside_element, current_pending_css, new_dimensions, dimensions_from_parent;
             frontside_element = this.get_frontside_element();
             if (!frontside_element) {
                 return;
@@ -328,6 +325,44 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (!jQuery.contains(window.document, frontside_element)) {
                 // not yet visible so postpone
                 TT.UTILITIES.when_attached(frontside_element, this.apply_css.bind(this));
+                return;
+            }
+            if (this.is_plain_text_element()) {
+                if (!pending_css) {
+                    pending_css = {};
+                }
+                if (current_width || current_height) {
+                    this.plain_text_dimensions(current_width, current_height);
+                }
+                dimensions_from_parent = this.get_parent() && (this.get_parent().is_nest() || this.get_parent().is_hole());
+                if (dimensions_from_parent) {
+                    new_dimensions = {width:  $(this.get_parent().get_frontside_element()).width(),
+                                      height: $(this.get_parent().get_frontside_element()).height()};
+                    current_width  = new_dimensions.width;
+                    current_height = new_dimensions.height;
+                } else if (current_width) {
+                    new_dimensions = {width:  current_width,
+                                      height: current_height};
+                } else {
+                    new_dimensions = {width:  TT.UTILITIES.get_element_width(frontside_element),
+                                      height: TT.UTILITIES.get_element_height(frontside_element)};
+                }
+                // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
+                // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length) 
+                pending_css['font-size'] = Math.min(TT.UTILITIES.font_size(this.get_text(),
+                                                                           new_dimensions.width, 
+                                                                           {height: new_dimensions.height}), 
+                                                    new_dimensions.height*TT.FONT_ASPECT_RATIO);
+                if (dimensions_from_parent) {
+                    pending_css.width     = new_dimensions.width;
+                    pending_css.height    = new_dimensions.height;
+                    pending_css.transform = '';
+                    $(frontside_element).css(pending_css);
+                    pending_css = undefined;
+                    return;
+                 }
+            }
+            if (!pending_css && !transform_css) {
                 return;
             }
             if (pending_css) {
@@ -358,20 +393,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
             };
             if (current_width || current_height) {
-                if (this.is_plain_text_element()) {
-                    this.plain_text_dimensions(current_width, current_height);
-                    // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
-                    // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length)
-                    pending_css['font-size'] = Math.min(TT.UTILITIES.font_size(this.get_text(),
-                                                                               current_width || this.get_width(), 
-                                                                               {height: current_height || this.get_height()}), 
-                                                        (current_height || this.get_height())*TT.FONT_ASPECT_RATIO);
-                    if (!this.location_constrained_by_container()) {
-                        $(frontside_element).css(pending_css);
-                        return;
-                    }
-                }
                 $(frontside_element).css({width: '', height: ''});
+                if (!this.location_constrained_by_container()) {
+                    $(frontside_element).css(pending_css);
+                    return;
+                }
                 current_pending_css = pending_css;
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                        function (original_parent) {
@@ -668,15 +694,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.plain_text_dimensions = function (width, height) {
             // this is to scale the element (and its font) properly
             // TODO: fix this in a principled manner
+            if (this.location_constrained_by_container()) {
+                return;
+            }
             var frontside_element = this.get_frontside_element();
             original_width  = width  || 12*this.get_text().length;
             original_height = height || 32;
             this.saved_width  = original_width;
             this.saved_height = original_height;
-            if (!this.location_constrained_by_container()) {
-                this.add_to_css('width', original_width);
-                this.add_to_css('height', original_height);
-            }
+            this.add_to_css('width', original_width);
+            this.add_to_css('height', original_height);
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 

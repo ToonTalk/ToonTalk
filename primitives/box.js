@@ -1133,6 +1133,12 @@ window.TOONTALK.box_hole =
                 // doubles as its own frontside
                 return this;
             };
+            hole.get_width = function () {
+                return $(this.get_element()).width();
+            };
+            hole.get_height = function () {
+                return $(this.get_element()).height();
+            };
             hole.widget_side_dropped_on_me = function (dropped, event, robot) {
                 var box = this.get_parent_of_frontside();
                 var contents = this.get_contents();

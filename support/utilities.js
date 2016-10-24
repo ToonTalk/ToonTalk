@@ -4388,7 +4388,7 @@ window.TOONTALK.UTILITIES =
            if (!options) {
                options = {};
            }
-           words = string.split(" ");
+           words = string.split(/[\ \.\,\!\?\-\_]/ );
            maximum_word_length = words.map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
            font_size = width / (TT.FONT_ASPECT_RATIO * (maximum_word_length+(options.margin || 0)));
            if (words.length === 1) { // single line
