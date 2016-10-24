@@ -1778,7 +1778,7 @@ window.TOONTALK.widget = (function (TT) {
                 } else {
                     success_callback = function (text) {
                         var response = TT.element.create(text, [], "what was spoken");
-                        functions.process_response(response, message.get_hole_contents(0), message, event, robot);
+                        functions.process_response(response, message_properties, message, event, robot);
                         TT.UTILITIES.stop_listening_for_speech();
                     };  
                 }
@@ -1787,7 +1787,7 @@ window.TOONTALK.widget = (function (TT) {
                     TT.UTILITIES.stop_listening_for_speech();
                 }
                 TT.UTILITIES.listen_for_speech({commands:           expected_phrases, 
-                                                confidence:         confidence,
+                                                minimum_confidence: confidence,
                                                 numbers_acceptable: numbers_only,
                                                 success_callback:   success_callback, 
                                                 fail_callback:      fail_callback});

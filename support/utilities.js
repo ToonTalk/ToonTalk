@@ -5136,6 +5136,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 
         speech_recognition.onerror = function (event) {
             if (event.error !== 'no-speech') {
+                // hiding errors other than no speech
 //              console.log('no speech');
             } else if (options.fail_callback) {
                 options.fail_callback(event);
