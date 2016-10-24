@@ -1807,8 +1807,7 @@ window.TOONTALK.number.function =
     functions.add_function_object('listen for a number', 
                                   TT.widget.get_listen_function(functions, true),
                                   "The bird will cause the browser to listen to the next number said and give the number to the bird in the first hole. "
-                                  + "If there is an error and there is a bird in the second hole it will be given the error message. "
-                                  + "If you put a number between 0 and 1 in the third hole then only recognitions with at least that confidence will be considered. ",
+                                  + "If you put a number between 0 and 1 in the second hole then only recognitions with at least that confidence will be considered. ",
                                   "listen",
                                   []);
     return functions.get_function_table();

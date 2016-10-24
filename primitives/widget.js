@@ -1734,21 +1734,21 @@ window.TOONTALK.widget = (function (TT) {
         }},
         get_listen_function: function (functions, numbers_only) {
             return function (message, event, robot) {
-                var box_size_and_bird = functions.check_message(message);
-                var success_callback, fail_callback, confidence, expected_phrases;
-                if (!box_size_and_bird) {
-                    return;
-                }
-                if (box_size_and_bird.size < 1) {
-                    TT.UTILITIES.display_message("Listening birds need a box with one or more holes.");
-                    return;
-                }
+                var message_properties, success_callback, fail_callback, confidence, expected_phrases;
                 if (!window.webkitSpeechRecognition && !window.SpeechRecognition) {
                     // ignore this
-                    widget.display_message("This browser doesn't support speech input. Try another browser such as Chrome.");
-                    return true;
+                    functions.report_error("A listening bird can't listen because this browser doesn't support speech input. Try another browser such as Chrome.", message_properties);
+                    returns;
                 }
-                confidence = message.get_hole_contents(2);
+                message_properties = functions.check_message(message); 
+                if (typeof message_properties === 'string') {
+                   return;
+                }
+                if (message_properties.box_size < 1) {
+                    functions.report_error("Listening birds need a box with one or two holes.", message_properties);
+                    return;
+                }
+                confidence = message.get_hole_contents(1);
                 if (confidence) {
                     confidence = confidence && confidence.to_float && confidence.to_float();
                     if (confidence < 0) {
@@ -1758,7 +1758,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                 }
                 if (!numbers_only) {
-                    expected_phrases = message.get_hole_contents(3);
+                    expected_phrases = message.get_hole_contents(2);
                     if (expected_phrases) {
                         expected_phrases = expected_phrases.get_text();
                     }
@@ -1771,7 +1771,7 @@ window.TOONTALK.widget = (function (TT) {
                             // otherwise ignore it
                             response = TT.number.create_from_bigrat(bigrat.fromDecimal(number));
                             response.set_description("a number that was heard");
-                            functions.process_response(response, message.get_hole_contents(0), message, event, robot);
+                            functions.process_response(response, message_properties, message, event, robot);
                             TT.UTILITIES.stop_listening_for_speech();
                         }
                     };   
@@ -1781,16 +1781,11 @@ window.TOONTALK.widget = (function (TT) {
                         functions.process_response(response, message.get_hole_contents(0), message, event, robot);
                         TT.UTILITIES.stop_listening_for_speech();
                     };  
-                }  
+                }
                 fail_callback = function (event) {
-                    var response;
-                    if (box_size_and_bird.size > 1 && message.get_hole_contents(1)) {
-                        // if no failure bird then ignore it
-                        response = TT.element.create(event.error, [], "description of a problem listening to speech");
-                        functions.process_response(response, message.get_hole_contents(1), message, event, robot);
-                    }
+                    functions.report_error(event.error, message_properties);
                     TT.UTILITIES.stop_listening_for_speech();
-                };
+                }
                 TT.UTILITIES.listen_for_speech({commands:           expected_phrases, 
                                                 confidence:         confidence,
                                                 numbers_acceptable: numbers_only,
