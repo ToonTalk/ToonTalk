@@ -141,7 +141,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var sound_effect, video_object;
         var source_URL;
         var html, text, initialized, original_width, original_height, current_width, current_height,
-            pending_css, transform_css, on_update_display_handlers, $image_element, widget_set_running, widget_can_run;
+            pending_css, transform_css, on_update_display_handlers, widget_set_running, widget_can_run;
         if (!style_attributes) {
             style_attributes = ['left', 'top', 'width', 'height'];
         }
@@ -358,12 +358,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
             };
             if (current_width || current_height) {
-                // if it contains an image then change it too (needed only for width and height)
-                // TODO: is the following still needed?
-                if ($image_element) {
-                    $image_element.css({width:  original_width,
-                                        height: original_height});
-                }
                 if (this.is_plain_text_element()) {
                     this.plain_text_dimensions(current_width, current_height);
                     // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
@@ -430,18 +424,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     });   
             }
         };
-        new_element.get_image_element = function () {
-            return $image_element;
-        };
-        new_element.set_image_element = function (element, frontside_element) {
-            $image_element = $(element).find("img");
-            if ($image_element.length === 0) {
-                $image_element = undefined;
-            } else {
-                // make sure that the front side has the same dimensions as its image
-                $(frontside_element).width( $image_element.width());
-                $(frontside_element).height($image_element.height());
-            }
+        new_element.is_image_element = function () {
+            return $(this.get_frontside_element()).find("img").length > 0;
         };
         new_element.get_additional_classes = function () {
             return additional_classes;
@@ -565,7 +549,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var frontside_element = this.get_frontside_element(true);
             var backside = this.get_backside();
             var element_description = function (element) {
-                if (this.get_image_element()) {
+                if (this.is_image_element()) {
                     return "image";
                 }
                 if ($(element).is(".toontalk-plain-text-element")) {
@@ -1504,7 +1488,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            };
            var first_space, iframe_index;
            if (html.length > 1 && html.charAt(0) === '<') {
-                if (this.get_image_element() ) {
+                if (this.is_image_element() ) {
                     // if an image then scale it
                     style = "style='width: 60px; height: 40px;'";
                 } else if (html.indexOf("<img ") === 0) {
@@ -1929,7 +1913,7 @@ window.TOONTALK.element_backside =
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
-            if (text.length > 0 && !element_widget.get_image_element()) {
+            if (text.length > 0 && !element_widget.is_image_element()) {
                 drop_handler = function (event) {
                     var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget), element_widget);
                     if (dropped && element_widget.robot_in_training()) {
