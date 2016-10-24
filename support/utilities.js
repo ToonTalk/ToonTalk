@@ -1548,6 +1548,7 @@ window.TOONTALK.UTILITIES =
                         // if different origin likely to get blocked by browser's same origin policy and permission to include in iframes
                         if (error_callback) {
                             error_callback("Could not determine the contents type of the url");
+                            error_callback = function () {}; // ignore subsequent errors
                         }
                         request.removeEventListener('readystatechange', response_handler);
                         return;
@@ -1581,6 +1582,7 @@ window.TOONTALK.UTILITIES =
                if (error_callback) {
                    // TODO: deterine if it makes sense to conflate this error and error event listener
                    error_callback(e);
+                   error_callback = function () {}; // ignore subsequent errors
                }
                widget_callback();
             }
@@ -1593,6 +1595,7 @@ window.TOONTALK.UTILITIES =
        request.onerror = function (e) {
            if (error_callback) {
                error_callback(e);
+               error_callback = function () {}; // ignore subsequent errors
            } else {
                utilities.display_message("Error trying to GET " + url + " " + e);
                console.error(e.stack);
