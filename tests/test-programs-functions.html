@@ -12637,8 +12637,8 @@ top level widget
   ]
 }</div></div>
 <p>Merge some boxes</p>
-<div class='toontalk-json'>
-This will be replaced by a work area containing 5 things: a box, a bird, a robot, a nest, and a nest.
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a work area containing 4 things: a box, a bird, a robot, and a scale.
 top level widget
 <div style='display:none;'>{
   "semantic": {
@@ -12651,151 +12651,152 @@ top level widget
             "size": 5,
             "contents": [
               {
-                "semantic": {
-                  "type": "bird",
-                  "nest": {
-                    "shared_widget_index": 0
-                  }
-                },
-                "view": {
-                  "saved_width": 88,
-                  "saved_height": 119,
-                  "backside": false
-                },
-                "version": 1
-              },
-              {
-                "semantic": {
-                  "type": "box",
-                  "size": 3,
-                  "contents": [
-                    {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "1",
-                        "denominator": "1",
-                        "format": "mixed_number"
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    },
-                    {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "2",
-                        "denominator": "1",
-                        "format": "mixed_number"
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    },
-                    {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "3",
-                        "denominator": "1",
-                        "format": "mixed_number"
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
+                "widget": {
+                  "semantic": {
+                    "type": "bird",
+                    "nest": {
+                      "shared_widget_index": 0
                     }
-                  ],
-                  "horizontal": true,
-                  "name": ";;"
-                },
-                "view": {
-                  "backside": false
-                },
-                "version": 1
+                  },
+                  "view": {
+                    "saved_width": 88,
+                    "saved_height": 119
+                  },
+                  "version": 1
+                }
               },
               {
-                "semantic": {
-                  "type": "box",
-                  "size": 2,
-                  "contents": [
-                    {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "4",
-                        "denominator": "1",
-                        "format": "mixed_number"
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 3,
+                    "contents": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "1",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
                       },
-                      "view": {
-                        "backside": false
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "2",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
                       },
-                      "version": 1
-                    },
-                    {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "5",
-                        "denominator": "1",
-                        "format": "mixed_number"
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    }
-                  ],
-                  "horizontal": true,
-                  "name": ";;"
-                },
-                "view": {
-                  "backside": false
-                },
-                "version": 1
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "3",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {},
+                  "version": 1
+                }
               },
               {
-                "semantic": {
-                  "type": "box",
-                  "size": 0,
-                  "contents": [],
-                  "horizontal": true,
-                  "name": ";;"
-                },
-                "view": {
-                  "backside": false
-                },
-                "version": 1
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "4",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      },
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "5",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {},
+                  "version": 1
+                }
               },
               {
-                "semantic": {
-                  "type": "box",
-                  "size": 1,
-                  "contents": [
-                    {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "6",
-                        "denominator": "1",
-                        "format": "mixed_number"
-                      },
-                      "view": {
-                        "backside": false
-                      },
-                      "version": 1
-                    }
-                  ],
-                  "horizontal": true,
-                  "name": ";;"
-                },
-                "view": {
-                  "backside": false
-                },
-                "version": 1
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 0,
+                    "contents": [],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {},
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 1,
+                    "contents": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "6",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {},
+                  "version": 1
+                }
               }
             ],
             "horizontal": true,
@@ -12807,8 +12808,7 @@ top level widget
             "frontside_left": 127,
             "frontside_top": 43,
             "saved_width": 353,
-            "saved_height": 68,
-            "backside": false
+            "saved_height": 68
           },
           "version": 1
         }
@@ -12823,9 +12823,7 @@ top level widget
                 "function_type": "box",
                 "function_name": "merge boxes"
               },
-              "view": {
-                "backside": false
-              },
+              "view": {},
               "version": 1
             }
           },
@@ -12835,8 +12833,7 @@ top level widget
             "frontside_left": 26,
             "frontside_top": 45,
             "saved_width": 70,
-            "saved_height": 102,
-            "backside": false
+            "saved_height": 102
           },
           "version": 1
         }
@@ -12844,7 +12841,7 @@ top level widget
       {
         "widget": {
           "semantic": {
-            "type": "robot", "speed": 1,
+            "type": "robot",
             "frontside_conditions": {
               "type": "top_level"
             },
@@ -12886,8 +12883,7 @@ top level widget
             "frontside_left": 571,
             "frontside_top": 51,
             "saved_width": 66,
-            "saved_height": 110,
-            "backside": false
+            "saved_height": 110
           },
           "version": 1
         }
@@ -12895,8 +12891,14 @@ top level widget
       {
         "widget": {
           "semantic": {
-            "type": "nest",
+            "type": "scale",
+            "size": 2,
             "contents": [
+              {
+                "widget": {
+                  "shared_widget_index": 0
+                }
+              },
               {
                 "widget": {
                   "semantic": {
@@ -12904,130 +12906,119 @@ top level widget
                     "size": 6,
                     "contents": [
                       {
-                        "semantic": {
-                          "type": "number",
-                          "operator": "+",
-                          "numerator": "1",
-                          "denominator": "1",
-                          "format": "mixed_number"
-                        },
-                        "view": {
-                          "backside": false
-                        },
-                        "version": 1
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "1",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
                       },
                       {
-                        "semantic": {
-                          "type": "number",
-                          "operator": "+",
-                          "numerator": "2",
-                          "denominator": "1",
-                          "format": "mixed_number"
-                        },
-                        "view": {
-                          "backside": false
-                        },
-                        "version": 1
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "2",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
                       },
                       {
-                        "semantic": {
-                          "type": "number",
-                          "operator": "+",
-                          "numerator": "3",
-                          "denominator": "1",
-                          "format": "mixed_number"
-                        },
-                        "view": {
-                          "backside": false
-                        },
-                        "version": 1
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "3",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
                       },
                       {
-                        "semantic": {
-                          "type": "number",
-                          "operator": "+",
-                          "numerator": "4",
-                          "denominator": "1",
-                          "format": "mixed_number"
-                        },
-                        "view": {
-                          "backside": false
-                        },
-                        "version": 1
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "4",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
                       },
                       {
-                        "semantic": {
-                          "type": "number",
-                          "operator": "+",
-                          "numerator": "5",
-                          "denominator": "1",
-                          "format": "mixed_number"
-                        },
-                        "view": {
-                          "backside": false
-                        },
-                        "version": 1
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "5",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
                       },
                       {
-                        "semantic": {
-                          "type": "number",
-                          "operator": "+",
-                          "numerator": "6",
-                          "denominator": "1",
-                          "format": "mixed_number"
-                        },
-                        "view": {
-                          "backside": false
-                        },
-                        "version": 1
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": "6",
+                            "denominator": "1",
+                            "format": "mixed_number"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
                       }
                     ],
                     "horizontal": true,
                     "name": ";;"
                   },
                   "view": {
-                    "saved_width": 379,
-                    "saved_height": 96,
-                    "backside": false
+                    "saved_width": 100,
+                    "saved_height": 82
                   },
                   "version": 1
                 }
               }
             ],
-            "guid": "toontalk_id_1433771370562",
-            "serial_number": 1,
-            "name": "#1"
+            "horizontal": true,
+            "name": ""
           },
           "view": {
-            "frontside_width": 116,
-            "frontside_height": 98,
-            "frontside_left": 186,
-            "frontside_top": 307,
-            "saved_width": 116,
-            "saved_height": 98,
-            "backside": false
+            "frontside_width": 123,
+            "frontside_height": 91,
+            "frontside_left": 164.391,
+            "frontside_top": 181.75,
+            "saved_width": 123,
+            "saved_height": 91
           },
           "version": 1
-        }
-      },
-      {
-        "widget": {
-          "shared_widget_index": 0
         }
       }
     ]
   },
   "view": {
-    "background_color": "rgb(245, 240, 240)",
-    "backside_width": 1173,
-    "backside_height": 474,
+    "background_color": "rgba(0, 0, 0, 0)",
+    "backside_width": 748,
+    "backside_height": 373,
     "backside_left": 8,
-    "backside_top": 184.1875,
-    "saved_width": 146,
-    "saved_height": 50.5,
-    "backside": true,
-    "drag_x_offset": 536,
-    "drag_y_offset": 305.8125
+    "backside_top": 182.1875,
+    "drag_x_offset": 537,
+    "drag_y_offset": 289.8125
   },
   "version": 1,
   "shared_widgets": [
@@ -13040,13 +13031,10 @@ top level widget
         "name": "#1"
       },
       "view": {
-        "frontside_width": 116,
-        "frontside_height": 98,
         "frontside_left": 99,
         "frontside_top": 216,
         "saved_width": 116,
-        "saved_height": 98,
-        "backside": false
+        "saved_height": 98
       },
       "version": 1
     }
