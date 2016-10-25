@@ -4368,8 +4368,9 @@ window.TOONTALK.UTILITIES =
                css.height  = '';
            }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
+               widget_side_dereferenced && 
                !(widget_side_dereferenced.is_plain_text_element() && widget_side_dereferenced.location_constrained_by_container()) &&
-               widget_side_dereferenced && widget_side_dereferenced.use_scaling_transform) {
+               widget_side_dereferenced.use_scaling_transform) {
                if (widget_side !== widget_side_dereferenced) {
                    // e.g. element is a box hole and its position is being set by the css
                    $(element).css(css);
