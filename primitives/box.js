@@ -1622,7 +1622,7 @@ window.TOONTALK.box.function =
                 for (i = 1; i < arguments.length-1; i++) {
                     box_size = arguments[i].get_size();
                     for (j = 0; j < box_size; j++) {
-                        contents =  arguments[i].get_hole_contents(j);
+                        contents = arguments[i].get_hole_contents(j);
                         if (contents) {
                             if (message_properties.message_return_bird) {
                                 contents = contents.copy();

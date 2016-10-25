@@ -226,7 +226,7 @@ window.TOONTALK.create_function_table =
             }
             args = [];
             index = 1;
-            stop_index = max_arity ? max_arity : message_properties.box_size;
+            stop_index = max_arity ? max_arity : message_properties.box_size-1;
             while (index < stop_index+1) {
                 // ignores any holes after the stop_index+1
                 contents = message.get_hole_contents(index);
