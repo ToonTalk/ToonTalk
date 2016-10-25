@@ -1400,6 +1400,7 @@ window.TOONTALK.nest = (function (TT) {
                                 // e.g. element widgets need to update their attributes
                                 top_contents.set_size_attributes(contents_dimension.width, contents_dimension.height);
                             }
+                            top_contents.render();
                         }.bind(this),
                         2); // TODO: see if 0 works here
                 }

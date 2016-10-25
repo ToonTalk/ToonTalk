@@ -3602,11 +3602,13 @@ window.TOONTALK.UTILITIES =
 
         utilities.run_when_dimensions_known = function (element, callback, recompute) {
             var original_parent = element.parentElement;
-            var not_in_a_hole = function (parent_element) {
-                return parent_element && parent_element.className.indexOf("toontalk-box-hole") < 0;
+            var not_in_a_hole_or_nest = function (parent_element) {
+                return parent_element && 
+                       parent_element.className.indexOf("toontalk-box-hole") < 0 &&
+                       !$(parent_element).is(".toontalk-nest");
             };
             var check_if_dimensions_known;
-            if (!recompute && $(element).width() && (not_in_a_hole(original_parent) || $(element).is(".toontalk-element-frontside"))) {
+            if (!recompute && $(element).width() && (not_in_a_hole_or_nest(original_parent) || $(element).is(".toontalk-element-frontside"))) {
                 // already known -- delaying it fixes problems with elements in box holes not computing the right scaling
                 // but size in a box hole is should not count
                 setTimeout(function () {
@@ -3620,11 +3622,12 @@ window.TOONTALK.UTILITIES =
                                var width  = $(element).width();
                                var height = $(element).height();
                                if (width && height) {
-                                   if (not_in_a_hole(element.parentElement)) {
+                                   if (not_in_a_hole_or_nest(element.parentElement)) {
                                        $(element).removeClass("toontalk-not-observable");
                                        callback(original_parent);
                                        if (original_parent) {
                                            original_parent.appendChild(element);
+                                           TT.UTILITIES.widget_side_of_element(element).rerender();
                                        } else if (element.parentElement === document.body) {
                                            $(element).remove();
                                        }    
@@ -4365,6 +4368,7 @@ window.TOONTALK.UTILITIES =
                css.height  = '';
            }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
+               !(widget_side_dereferenced.is_plain_text_element() && widget_side_dereferenced.location_constrained_by_container()) &&
                widget_side_dereferenced && widget_side_dereferenced.use_scaling_transform) {
                if (widget_side !== widget_side_dereferenced) {
                    // e.g. element is a box hole and its position is being set by the css

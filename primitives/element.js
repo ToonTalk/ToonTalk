@@ -340,6 +340,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                       height: $(this.get_parent().get_frontside_element()).height()};
                     current_width  = new_dimensions.width;
                     current_height = new_dimensions.height;
+                    pending_css.left = '';
+                    pending_css.top  = '';
                 } else if (current_width) {
                     new_dimensions = {width:  current_width,
                                       height: current_height};

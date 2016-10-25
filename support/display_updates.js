@@ -72,6 +72,11 @@ window.TOONTALK.DISPLAY_UPDATES =
                                                 // became invisible after being queued
                                                 return;
                                             }
+                                            if ($(element).is(".toontalk-not-observable")) {
+                                                // will render again when this class is removed
+                                                TT.DISPLAY_UPDATES.pending_update(pending_update);
+                                                return;
+                                            }
                                             if ($(element).is(".toontalk-has-attached-callback")) {
                                                 if (element.parentElement && element.toontalk_attached_callback) {
                                                     // is already attached
