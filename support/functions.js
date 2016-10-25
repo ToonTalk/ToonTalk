@@ -214,31 +214,38 @@ window.TOONTALK.create_function_table =
         }.bind(this);
         return this.process_message(message, compute_response, event, robot);
     },
-    typed_bird_function: function (message, bird_function, types, arity, function_name, event, robot) {
-        // if arity is undefined then no limit to the number of repetitions of the last type
+    typed_bird_function: function (message, bird_function, types, function_name, event, robot, min_arity, max_arity) {
+        // if min_arity is undefined then no limit to the number of repetitions of the last type
+        // if max_arity is undefined then every hole in the message is processed otherwise those beyond max_arity are ignored
         var compute_response = function (message_properties) {
-            var next_widget, index, args, type;
-            if (arity >= 0 && message_properties.box_size < arity+1) { // one for the bird
-                this.report_error("The '" + function_name + "' bird can only respond to boxes with " + (arity+1) + " or more holes. Not " + message_properties.box_size + " holes.",
+            var next_widget, index, stop_index, args, type, contents;
+            if (min_arity >= 0 && message_properties.box_size < min_arity+1) { // one for the bird
+                this.report_error("The '" + function_name + "' bird can only respond to boxes with " + (min_arity+1) + " or more holes. Not " + message_properties.box_size + " holes.",
                                   message_properties);
                 return;
             }
             args = [];
             index = 1;
-            while (index < arity+1) {
-                // ignores any holes after the arity+1
-                if (!message.get_hole_contents(index)) {
+            stop_index = max_arity ? max_arity : message_properties.box_size;
+            while (index < stop_index+1) {
+                // ignores any holes after the stop_index+1
+                contents = message.get_hole_contents(index);
+                if (index <= min_arity && !contents) {
                     this.report_error("The '" + function_name + "' bird found nothing in the " + TT.UTILITIES.ordinal(index) + " hole.",
                                       message_properties);
                     return;
                 }
-                next_widget = message.get_hole_contents(index).dereference();
-                if (index <= types.length) {
-                    type = types[index-1];
+                if (contents) {
+                    next_widget = contents.dereference();
+                    if (index <= types.length) {
+                        type = types[index-1];
+                    }
+                    if (this.type_check(type, next_widget, function_name, index, message_properties) !== true) {
+                        // error already reported
+                        return;
+                    }
                 }
-                if (this.type_check(type, next_widget, function_name, index, message_properties) !== true) {
-                    return;
-                }
+                // push undefined if hole is empty
                 args.push(next_widget);
                 index++;
             }
