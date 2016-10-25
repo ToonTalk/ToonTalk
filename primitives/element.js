@@ -336,12 +336,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 dimensions_from_parent = this.get_parent() && (this.get_parent().is_nest() || this.get_parent().is_hole());
                 if (dimensions_from_parent) {
-                    new_dimensions = {width:  $(this.get_parent().get_frontside_element()).width(),
-                                      height: $(this.get_parent().get_frontside_element()).height()};
+                    new_dimensions = this.get_parent().get_contents_dimensions();
                     current_width  = new_dimensions.width;
                     current_height = new_dimensions.height;
-                    pending_css.left = '';
-                    pending_css.top  = '';
+                    if (!this.get_parent().get_parent_of_frontside().is_scale()) {
+                        // TODO: make scale pans act more like holes so this isn't needed
+                        pending_css.left = '';
+                        pending_css.top  = '';
+                    }
                 } else if (current_width) {
                     new_dimensions = {width:  current_width,
                                       height: current_height};
@@ -349,20 +351,22 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     new_dimensions = {width:  TT.UTILITIES.get_element_width(frontside_element),
                                       height: TT.UTILITIES.get_element_height(frontside_element)};
                 }
-                // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
-                // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length) 
-                pending_css['font-size'] = Math.min(TT.UTILITIES.font_size(this.get_text(),
-                                                                           new_dimensions.width, 
-                                                                           {height: new_dimensions.height}), 
-                                                    new_dimensions.height*TT.FONT_ASPECT_RATIO);
-                if (dimensions_from_parent) {
-                    pending_css.width     = new_dimensions.width;
-                    pending_css.height    = new_dimensions.height;
-                    pending_css.transform = '';
-                    $(frontside_element).css(pending_css);
-                    pending_css = undefined;
-                    return;
-                 }
+                if (new_dimensions.width) {
+                    // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
+                    // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length) 
+                    pending_css['font-size'] = Math.min(TT.UTILITIES.font_size(this.get_text(),
+                                                                               new_dimensions.width, 
+                                                                               {height: new_dimensions.height}), 
+                                                        new_dimensions.height*TT.FONT_ASPECT_RATIO);
+                    if (dimensions_from_parent) {
+                        pending_css.width     = new_dimensions.width;
+                        pending_css.height    = new_dimensions.height;
+                        pending_css.transform = '';
+                        $(frontside_element).css(pending_css);
+                        pending_css = undefined;
+                        return;
+                     }
+                }
             }
             if (!pending_css && !transform_css) {
                 return;
@@ -606,9 +610,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).removeClass() // remove them all
                                     .empty()
                                     .addClass("toontalk-erased-element toontalk-side")
-                                    .css({width:  width,
-                                          height: height,
-                                          position: '',    // no longer absolute (maybe shouldn't have been since is presumably a condition)
+                                    .css({width:     width,
+                                          height:    height,
+                                          position:  '',    // no longer absolute (maybe shouldn't have been since is presumably a condition)
                                           transform: ''}); // remove any transformations
                 if ($(frontside_element).parent(".toontalk-conditions-container").is("*")) {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an element that has been erased. It will match any element.");

@@ -1302,6 +1302,10 @@ window.TOONTALK.box_hole =
                     this._debug_string = this.to_debug_string();
                 }
             };
+            hole.get_contents_dimensions = function () {
+                return {width:  $(this.get_frontside_element()).width(),
+                        height: $(this.get_frontside_element()).height()};
+            };
             hole.visible = function () {
                 // if box is visible then hole is
                 return this.get_parent_of_frontside().visible(); 

@@ -12,6 +12,9 @@
 window.TOONTALK.scale = (function (TT) {
     "use strict";
 
+    var PAN_FRACTION_OF_WIDTH  = 0.4;
+    var PAN_FRACTION_OF_HEIGHT = 0.4;
+
     var scale = Object.create(TT.widget);
 
     scale.create = function (initial_contents, description, new_scale, inactive_state, name) {
@@ -21,7 +24,10 @@ window.TOONTALK.scale = (function (TT) {
         var aspect_ratio = full_size_width/full_size_height;
         var contents_listener = function () {
                                     new_scale.rerender();
-        };
+                                };
+        var get_contents_dimensions_function = function () {
+                return new_scale.get_contents_dimensions();
+            };
         var box_get_json, box_copy, box_get_path_to, previous_state;
         // new_scale is bound when copying a scale
         if (!new_scale) {
@@ -164,8 +170,8 @@ window.TOONTALK.scale = (function (TT) {
                     } else {
                         contents_top = scale_height*0.2;
                     }
-                    contents_width  = scale_width *0.4;
-                    contents_height = scale_height*0.4;
+                    contents_width  = scale_width  * PAN_FRACTION_OF_WIDTH;
+                    contents_height = scale_height * PAN_FRACTION_OF_HEIGHT;
                     $(content_element).css({left:   contents_left,
                                             top:    contents_top,
                                             width:  contents_width,
@@ -184,6 +190,8 @@ window.TOONTALK.scale = (function (TT) {
                         contents.render();
                     }
                     hole_element.appendChild(content_element); // no-op if already there
+                    // holes are really pans and their dimensions are different from box holes
+                    hole.get_contents_dimensions = get_contents_dimensions_function;
                 }                                          
             };
             var state, class_name, scales;
@@ -244,6 +252,18 @@ window.TOONTALK.scale = (function (TT) {
             if (TT.debugging) {
                 this._debug_string = this.to_debug_string();
             } 
+        };
+        new_scale.get_contents_dimensions = function () {
+            // dimensions of widgets in either pan
+            var frontside_element = this.get_frontside_element(true);
+            var $parent = $(frontside_element).parent();
+            var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ? 
+                                    frontside_element : 
+                                    $parent.get(0);
+            var scale_width  = $(container_element).width()  || $frontside_element.width();
+            var scale_height = $(container_element).height() || $frontside_element.height();
+            return {width:  scale_width  * PAN_FRACTION_OF_WIDTH,
+                    height: scale_height * PAN_FRACTION_OF_HEIGHT};  
         };
         new_scale.render = function () {
             // do standard behaviour -- not what boxes do
