@@ -680,8 +680,8 @@ window.TOONTALK.box = (function (TT) {
                             || TT.box.get_default_width();
             }
             box_height    = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.element_height(containing_element))
-                            || this.saved_height ||
-                            TT.box.get_default_height();
+                            || this.saved_height
+                            || TT.box.get_default_height();
             if (horizontal) {
                 if (size === 0) {
                     hole_width = 0;

@@ -176,6 +176,8 @@ window.TOONTALK.scale = (function (TT) {
                                             top:    contents_top,
                                             width:  contents_width,
                                             height: contents_height});
+                    $(hole_element)   .css({width:  contents_width,
+                                            height: contents_height});
                     if (contents) {
                         if (contents.set_location_attributes) {
                             contents.set_location_attributes(contents_left, contents_top);
