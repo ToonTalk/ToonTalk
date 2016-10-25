@@ -687,21 +687,24 @@ window.TOONTALK.bird = (function (TT) {
         var bird_position = $(frontside_element).position();
         var full_continuation = function () {
             $(frontside_element).removeClass(direction);
-            if (delay) {
+            if (delay && this.visible()) {
                 setTimeout(continuation, robot ? robot.transform_step_duration(delay) : delay);
             } else {
                 continuation();
             };
         }.bind(this);
-        // this timeout fixes the problem that the bird's name is displayed incorrectly while she is flying
-        setTimeout(function () {
-                       $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
-                       TT.UTILITIES.add_animation_class(frontside_element, direction);
-                       // duration is proportional to distance
-                       // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
-                       this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
-                   }.bind(this),
-                   1);
+        var fly_to_function = 
+            function () {
+                 $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
+                 TT.UTILITIES.add_animation_class(frontside_element, direction);
+                 // duration is proportional to distance
+                 // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
+                 this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+             }.bind(this);
+         if (this.visible()) {
+         } else {
+             fly_to_function();
+         }
     };
     
     bird.get_type_name = function (plural, detailed) {
