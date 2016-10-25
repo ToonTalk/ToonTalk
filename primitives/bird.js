@@ -193,6 +193,9 @@ window.TOONTALK.bird = (function (TT) {
                     if (after_delivery_continuation) {
                         after_delivery_continuation();
                     }
+                    if (event) {
+                        this.backup_all(); 
+                    }
                 }.bind(this);
             var bird_return_continuation = 
                 function () {

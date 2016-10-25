@@ -5305,16 +5305,16 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                    {"background": "cyan"});
         };
         var unload_listener = function (event) {
-                try {
-                    window.speechSynthesis.cancel();
-                } catch (e) {
-                    // ignore error    
-                }
-                try {
-                    utilities.backup_all_top_level_widgets(true);
-                } catch (error) {
-                    TT.UTILITIES.report_internal_error(error);
-                }
+            try {
+                window.speechSynthesis.cancel();
+            } catch (e) {
+                // ignore error    
+            }
+            try {
+                utilities.backup_all_top_level_widgets(true);
+            } catch (error) {
+                TT.UTILITIES.report_internal_error(error);
+            }
         };
         var continue_initialization = function () {
             document_click =
