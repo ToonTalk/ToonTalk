@@ -702,6 +702,7 @@ window.TOONTALK.bird = (function (TT) {
                  this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
              }.bind(this);
          if (this.visible()) {
+             setTimeout(fly_to_function, 1);
          } else {
              fly_to_function();
          }
