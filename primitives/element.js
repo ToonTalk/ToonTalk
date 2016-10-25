@@ -339,7 +339,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     new_dimensions = this.get_parent().get_contents_dimensions();
                     current_width  = new_dimensions.width;
                     current_height = new_dimensions.height;
-                    if (!this.get_parent().get_parent_of_frontside().is_scale()) {
+                    if (this.get_parent().is_scale_pan && this.get_parent().is_scale_pan()) {
                         // TODO: make scale pans act more like holes so this isn't needed
                         pending_css.left = '';
                         pending_css.top  = '';

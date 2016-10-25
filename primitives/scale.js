@@ -192,6 +192,7 @@ window.TOONTALK.scale = (function (TT) {
                     hole_element.appendChild(content_element); // no-op if already there
                     // holes are really pans and their dimensions are different from box holes
                     hole.get_contents_dimensions = get_contents_dimensions_function;
+                    hole.is_scale_pan = function () { return true; };
                 }                                          
             };
             var state, class_name, scales;
