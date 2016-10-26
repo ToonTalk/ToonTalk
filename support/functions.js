@@ -244,9 +244,10 @@ window.TOONTALK.create_function_table =
                         // error already reported
                         return;
                     }
+                    args.push(next_widget);
+                } else {
+                    args.push(undefined); // for the empty hole
                 }
-                // push undefined if hole is empty
-                args.push(next_widget);
                 index++;
             }
             args.push(message_properties);
