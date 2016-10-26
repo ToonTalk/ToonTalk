@@ -3779,6 +3779,7 @@ window.TOONTALK.UTILITIES =
             var alert_element = utilities.create_alert_element(message);
             var remove_handler = function () {
                                      $(alert_element).remove();
+                                     $(".toontalk-help-link").css({opacity: ''});
                                  };
             var $backside;
             if (!options) {
@@ -3807,6 +3808,7 @@ window.TOONTALK.UTILITIES =
                 }
             } 
             if (!options.element || $backside.length === 0) {
+                $(".toontalk-help-link").css({opacity: 0}); // these get in the way of alerts
                 document.body.insertBefore(alert_element, document.body.firstChild);
             }
             if (TT.speak) {
