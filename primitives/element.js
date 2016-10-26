@@ -2354,7 +2354,7 @@ window.TOONTALK.element.function =
                     TT.UTILITIES.display_message(element_text.get_text(), options);
                 }
             };
-            return functions.typed_bird_function(message, display_message, ['element'], 'show message', event, robot, 1, 2);
+            return functions.typed_bird_function(message, display_message, ['element', 'number'], 'show message', event, robot, 1, 2);
         },
         "The bird will cause what is in the second box hole to be displayed. The third hole can be a number indicating how many seconds the message should be displayed.",
         "display",
