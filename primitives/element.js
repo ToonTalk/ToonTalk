@@ -2341,7 +2341,7 @@ window.TOONTALK.element.function =
         function (message, event, robot) {
             var display_message = function (element_text, duration, message_properties) {
                 var options;
-                if (duration.to_float) {
+                if (duration && duration.to_float) {
                     // duration option is milliseconds but users probably prefer seconds
                     options = {duration: duration.to_float()*1000};
                 }
