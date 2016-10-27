@@ -1038,14 +1038,14 @@ window.TOONTALK.number = (function () {
                          TT.UTILITIES.animate_to_absolute_position(bammer_element,
                                                                    target_absolute_position,
                                                                    bammer_gone_continuation,
-                                                                   robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed)); 
+                                                                   robot && robot.transform_animation_speed(TT.animation_settings.BAMMER_ANIMATION_SPEED)); 
                          $(bammer_element).css({opacity: 0.01});
                      });
              }.bind(this);
              TT.UTILITIES.animate_to_absolute_position(bammer_element,
                                                        target_absolute_position,
                                                        hit_number_continuation,
-                                                       robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+                                                       robot && robot.transform_animation_speed(TT.animation_settings.BAMMER_ANIMATION_SPEED));
              $(bammer_element).css({opacity: 1.0,
                                     // ensure that Bammer is on top of everything
                                     "z-index": TT.UTILITIES.next_z_index()+100});

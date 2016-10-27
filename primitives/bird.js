@@ -699,7 +699,9 @@ window.TOONTALK.bird = (function (TT) {
                  TT.UTILITIES.add_animation_class(frontside_element, direction);
                  // duration is proportional to distance
                  // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
-                 this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+                 this.animate_to_absolute_position(target_offset,
+                                                   full_continuation,
+                                                   robot && robot.transform_animation_speed(TT.animation_settings.BIRD_ANIMATION_SPEED));
              }.bind(this);
          if (this.visible()) {
              setTimeout(fly_to_function, 1);
@@ -1329,7 +1331,7 @@ window.TOONTALK.nest = (function (TT) {
                     bird.animate_to_absolute_position({left: resting_left+top_level_backside_position.left,
                                                        top:  resting_top +top_level_backside_position.top},
                                                       bird_fly_continuation,
-                                                      robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+                                                      robot && robot.transform_animation_speed(TT.animation_settings.BIRD_ANIMATION_SPEED));
                     this.rerender();
                 }.bind(this);
                 TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 2000, hatching_finished_handler);

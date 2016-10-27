@@ -159,8 +159,7 @@ window.TOONTALK.actions =
             var saved_parent_element = frontside_element.parentElement;
             var first_robot = robot.get_first_in_team();
             var restore_after_last_event = function () {
-                var first_robot_still_visible = first_robot.visible() && 
-                                                first_robot.get_maximum_step_duration() !== 0;
+                var first_robot_still_visible = first_robot.visible();
                 var continuation = function () {
                     // robot was added to top-level backside so z-index will work as desired (robot on top of everything)
                     // the following restores it
@@ -193,7 +192,7 @@ window.TOONTALK.actions =
                     TT.UTILITIES.animate_to_absolute_position(frontside_element,
                                                               robot_home,
                                                               continuation,
-                                                              robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+                                                              robot && robot.transform_animation_speed(TT.animation_settings.ROBOT_ANIMATION_SPEED));
                 } else {
                     robot.set_animating(false);
                     continuation();
@@ -300,7 +299,7 @@ window.TOONTALK.actions =
                                 robot.run_body_finished_listeners();     
                             }
                         },
-                        robot.transform_step_duration(50));
+                        robot.transform_step_duration(TT.animation_settings.PAUSE_BETWEEN_STEPS));
                 } else {
                    // e.g. user hid the robot while running the final step
                    robot.set_running_or_in_run_queue(false);

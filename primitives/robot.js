@@ -48,8 +48,6 @@ window.TOONTALK.robot = (function (TT) {
         var first_in_team;
         // if not the first_in_team then the robot just before this one
         var previous_robot;
-        // if set specifies the maximum duration of any watched step
-        var maximum_step_duration;
         // callbacks to run at the end of each cycle
         var body_finished_listeners = [];
         // when running watched runs these after each step
@@ -247,19 +245,13 @@ window.TOONTALK.robot = (function (TT) {
             this.set_thing_in_hand(undefined);
         }
         new_robot.finish_cycle_immediately = function (do_at_end_of_cycle) {
-            var stored_maximum_step_duration = maximum_step_duration;
             var continuation = function () {
-                maximum_step_duration = stored_maximum_step_duration;
                 this.set_visible(false);
                 if (do_at_end_of_cycle) {
                     do_at_end_of_cycle();
                 }
             }.bind(this);
-            maximum_step_duration = 0;
             this.add_body_finished_listener(continuation);
-        };
-        new_robot.get_maximum_step_duration = function () {
-            return maximum_step_duration;
         };
         new_robot.get_context = function () {
             return context;
@@ -298,39 +290,37 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.animate_consequences_of_actions = function () {
-            return this.visible() && maximum_step_duration !== 0;
+            return this.visible();
         };
         new_robot.transform_step_duration = function (duration) {
-            if (duration === undefined && maximum_step_duration === 0) {
-                return 0;
-            }
             if (!this.visible()) {
                 // was watched but window hidden or robot's context closed
                 return 0;
             }
-            if (watched_speed && duration) {
-                return duration/watched_speed;
-            }
-            // TODO: decide if maximum_step_duration is obsolete
-            if (typeof maximum_step_duration === 'number') {
-                return Math.min(duration, maximum_step_duration);
-            }
-            return duration;
-        };
-        new_robot.transform_original_step_duration = function (duration) {
-            // no watched speed means the original durations (if known)
-            // when duration isn't available the speed will be used
             if (context && !context.get_backside()) { // context is undefined if being trained (by another robot)
                 // was watched but no longer
                 return 0;
             }
+            if (duration && watched_speed !== 0) {
+                return duration/watched_speed;
+            }
+            return duration;
+        };
+        new_robot.transform_original_step_duration = function (original_duration) {
+            // no watched speed means the original durations (if known)
+            // when duration isn't available the speed will be used
             if (!this.visible()) {
                 // was watched but window hidden or robot's context closed
                 return 0;
             }
-            if (!watched_speed) {
-                return duration;
+            if (context && !context.get_backside()) { // context is undefined if being trained (by another robot)
+                // was watched but no longer
+                return 0;
             }
+            if (watched_speed === 0) {
+                return original_duration;
+            }
+            // otherwise undefined
         };
         new_robot.transform_animation_speed = function (speed) {
             if (context && !context.get_backside()) {

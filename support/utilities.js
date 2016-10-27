@@ -2613,9 +2613,6 @@ window.TOONTALK.UTILITIES =
                 },
                 maximum_wait);
         };
-
-        // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
-        utilities.default_animation_speed = .5;
         
         utilities.animate_to_absolute_position = function (source_element, target_absolute_position, continuation, speed, more_animation_follows, duration) {
             var source_absolute_position = $(source_element).offset();
@@ -2632,7 +2629,7 @@ window.TOONTALK.UTILITIES =
             // ensure that the animated element is "on top"
             $(source_element).css({"z-index": utilities.next_z_index()});
             if (!duration) {
-                duration = Math.round(distance/(speed || utilities.default_animation_speed));
+                duration = Math.round(distance/(speed || TT.animation_settings.ANIMATION_SPEED));
             }
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = duration+"ms";
@@ -5352,6 +5349,17 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // the aspect ratio of monospace fonts varies from .43 to .55
             // .55 'worst' aspect ratio -- adding a little extra here
             TT.FONT_ASPECT_RATIO = 0.64;
+            if (!TT.animation_settings) {
+                TT.animation_settings = {BIRD_ANIMATION_SPEED:   .50, // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
+                                         ROBOT_ANIMATION_SPEED:  .25, // robots move at 1/4 pixel per millisecond for clarity
+                                         BAMMER_ANIMATION_SPEED: .75,
+                                         ANIMATION_SPEED:        .50, // miscellenous moving widget
+                                         OPEN_BACKSIDE_DURATION: 500, // milliseconds
+                                         CHANGE_SIZE_DURATION:  1000,
+                                         BUTTON_USE_DELAY:       200,
+                                         STOP_TRAINING_DELAY:   1500,
+                                         PAUSE_BETWEEN_STEPS:     50};
+            }
             utilities.process_json_elements();
             // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
             // clicking on a running widget may not work since its HTML may be changing constantly
