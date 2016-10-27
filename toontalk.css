@@ -2299,9 +2299,6 @@ background-image: url("images/dusty-morph.png");
     width: 100%;
     height: 100%;
 }
-.toontalk-carried-by-bird.toontalk-plain-text-element, .toontalk-temporarily-set-down.toontalk-plain-text-element {
-	font-size: 60px;
-}
 .toontalk-nest-with-egg {
     background-image: url("images/nest-with-egg.png");
     background-repeat: no-repeat;

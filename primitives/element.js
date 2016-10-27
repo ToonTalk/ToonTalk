@@ -330,15 +330,13 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.is_plain_text_element()) {
                 if (!pending_css) {
                     pending_css = {};
-                }
-                if (current_width || current_height) {
-                    this.plain_text_dimensions(current_width, current_height);
-                }
+                }                   
                 dimensions_from_parent = this.get_parent() && (this.get_parent().is_nest() || this.get_parent().is_hole());
                 if (dimensions_from_parent) {
                     new_dimensions = this.get_parent().get_contents_dimensions();
                     current_width  = new_dimensions.width;
                     current_height = new_dimensions.height;
+                    this.plain_text_dimensions(current_width, current_height);
                 } else if (current_width) {
                     new_dimensions = {width:  current_width,
                                       height: current_height};
@@ -346,22 +344,25 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     new_dimensions = {width:  TT.UTILITIES.get_element_width(frontside_element),
                                       height: TT.UTILITIES.get_element_height(frontside_element)};
                 }
-                if (new_dimensions.width) {
+                if (new_dimensions.width && dimensions_from_parent) {
                     // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
                     // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length) 
                     pending_css['font-size'] = Math.min(TT.UTILITIES.font_size(this.get_text(),
                                                                                new_dimensions.width, 
                                                                                {height: new_dimensions.height}), 
                                                         new_dimensions.height*TT.FONT_ASPECT_RATIO);
-                    if (dimensions_from_parent) {
-                        pending_css.width     = new_dimensions.width;
-                        pending_css.height    = new_dimensions.height;
-                        pending_css.transform = '';
-                        $(frontside_element).css(pending_css);
-                        pending_css = undefined;
-                        return;
-                     }
+                    pending_css.width     = new_dimensions.width;
+                    pending_css.height    = new_dimensions.height;
+                    pending_css.transform = '';
+                    $(frontside_element).css(pending_css);
+                    pending_css = undefined;
+                    return;
                 }
+                // not constrained by parent so remove any font-size set while so constrained
+                $(frontside_element).css({"font-size": '',
+                                          width:       '',
+                                          height:      ''});
+                return;
             }
             if (!pending_css && !transform_css) {
                 return;
@@ -657,11 +658,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             frontside_element = this.get_frontside_element();
             if (frontside_element) {
                 resize_handles = $(frontside_element).children(".ui-resizable-handle");
-                html =  this.get_HTML();
+                html = this.get_HTML();
                 is_plain_text = this.is_plain_text_element();
-                // the introduction of non-breaking spaces is necessary for plain text elements
-                // so that when placed in boxes they don't change shape
-//                 frontside_element.innerHTML = is_plain_text ? html.replace(/ /g, "&nbsp;") : html;
                 frontside_element.innerHTML = html;
                 $(frontside_element).addClass("toontalk-element-frontside");
                 if (is_plain_text) {
@@ -703,8 +701,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             original_height = height || 32;
             this.saved_width  = original_width;
             this.saved_height = original_height;
-            this.add_to_css('width', original_width);
-            this.add_to_css('height', original_height);
+//             this.add_to_css('width', original_width);
+//             this.add_to_css('height', original_height);
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 

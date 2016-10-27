@@ -271,7 +271,7 @@ window.TOONTALK.backside =
                                             } else {
                                                 widget_HTML = widget.toString({inside_tool_tip: true}); 
                                                 new_title = "You are pointing to the back of " + TT.UTILITIES.add_a_or_an(widget_HTML) + 
-                                                            ". You can put robots on the back to make it come 'alive'."; 
+                                                            " You can put robots on the back to make it come 'alive'."; 
                                             }
                                             TT.UTILITIES.give_tooltip(backside_element, new_title);
                                        });
