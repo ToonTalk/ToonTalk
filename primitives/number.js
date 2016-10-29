@@ -1046,9 +1046,11 @@ window.TOONTALK.number = (function () {
                                                        target_absolute_position,
                                                        hit_number_continuation,
                                                        robot && robot.transform_animation_speed(TT.animation_settings.BAMMER_ANIMATION_SPEED));
+             $(side_of_other_number.get_frontside_element(true))
+                              .css({"z-index": TT.UTILITIES.next_z_index()});
              $(bammer_element).css({opacity: 1.0,
-                                    // ensure that Bammer is on top of everything
-                                    "z-index": TT.UTILITIES.next_z_index()+100});
+                                   // ensure that Bammer is on top of everything
+                                   "z-index": TT.UTILITIES.next_z_index()+100});
              return this;             
          } else {
              return this.number_dropped_on_me_semantics(side_of_other_number, event, robot);
