@@ -1531,6 +1531,13 @@ window.TOONTALK.UTILITIES =
         if (key === "id_of_tree_replace_once_task") {
            return undefined;
         }
+        if (key === "left_offset_fraction" ||
+            key === "top_offset_fraction" ||
+            key === "drag_x_offset" ||
+            key === "drag_y_offset") {
+            // no point filling up the JSON with unneeded precision
+            return parseFloat(value.toPrecision(3));
+        }
         return value;
     };
 
