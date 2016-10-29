@@ -1213,7 +1213,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return "a number that is the " + this.attribute + " of " + this.get_attribute_owner().toString({plain_text: true}) + ".";
             };
             attribute_widget.get_custom_title_prefix = function () {
-                return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner({inside_tool_tip: true}) + " \n" +
+                return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner().toString({inside_tool_tip: true}) + " \n" +
                        "Drop a number on me or edit my backside to change my value. My backside has an info button to learn more.";
             };
             attribute_widget.equals = function (other) {

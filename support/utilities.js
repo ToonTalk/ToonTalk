@@ -751,7 +751,7 @@ window.TOONTALK.UTILITIES =
         var widget, json, element_HTML, json_object;
         reader.onloadend = function () {
             if (image_file) {
-                widget = TT.element.create("<img src='" + reader.result + "' alt='" + file.name + "'/>");
+                widget = TT.element.create("<img src='" + reader.result + "' class = 'toontalk-image' alt='" + file.name + "'/>");
             } else if (audio_file) {
                  widget = TT.element.create(file.name + " sound");
                  widget.set_sound_effect(new Audio(reader.result));
@@ -1566,7 +1566,7 @@ window.TOONTALK.UTILITIES =
                     widget = TT.element.create(url);
                     widget.set_sound_effect(new Audio(url));
                 } else if (type.indexOf("image") === 0) {
-                    widget = TT.element.create("<img src='" + url + "'>");
+                    widget = TT.element.create("<img src='" + url + "' class = 'toontalk-image' alt='" + url + "'/>");
                 } else if (type.indexOf("video") === 0) {
                     widget = TT.element.create("<video src='" + url + " ' width='320' height='240'>");
                 } else if (type.indexOf("text") === 0 && type.indexOf("text/html") < 0) {
