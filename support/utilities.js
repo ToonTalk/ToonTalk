@@ -1962,43 +1962,32 @@ window.TOONTALK.UTILITIES =
                 !TT.reset && // if reset=1 then just use the JSON on the page itself
                 json.load_most_recent_program) {
                 // perhaps local storage will be used instead of the current json
-               try {
-                    key_callback = function (toontalk_last_key) {
-                                       var create_widget = function () {
-                                           try {
-                                               widget = utilities.create_from_json(json);   
-                                           } catch (error) {
-                                               console.error(error);
-                                               utilities.report_internal_error("An error occurred loading the saved state. Please report this. Error is " + error);
-                                               widget = TT.widget.create_top_level_widget();
-                                           }
-                                           process_widget_callback();
-                                       };  
-                                       if (toontalk_last_key) {
-                                           utilities.retrieve_object(toontalk_last_key,
-                                                                     function (json_from_storage) {
-                                                                         if (json_from_storage) {
-                                                                             // create the top-level widget with the additional info stored here:
-                                                                             // json is a closure variable that is updated here
-                                                                             json = json_from_storage;
-                                                                             create_widget();
-                                                                         }
-                                                                      });
-                                        } else {
-                                            create_widget();
-                                        }                            
-                                   };
-                    utilities.retrieve_string('toontalk-last-key', key_callback);
-               } catch (error) {
-                    message = "Error reading previous state. Error message is " + error;
-                    if (utilities.is_internet_explorer()) {
-                        // TODO: determine what the problem is with IE11 and local storage
-                        console.error("window.localStorage in IE11 not available with file://...: " + message);
-                    } else {
-                        utilities.display_message(message);
-                        console.error(error.stack);
-                    }
-                }
+                key_callback = function (toontalk_last_key) {
+                                   var create_widget = function () {
+                                       try {
+                                           widget = utilities.create_from_json(json);   
+                                       } catch (error) {
+                                           console.error(error.stack);
+                                           utilities.report_internal_error("An error occurred loading the saved state. Sorry. Please report this. Error is " + error);
+                                           widget = TT.widget.create_top_level_widget();
+                                       }
+                                       process_widget_callback();
+                                   };  
+                                   if (toontalk_last_key) {
+                                       utilities.retrieve_object(toontalk_last_key,
+                                                                 function (json_from_storage) {
+                                                                     if (json_from_storage) {
+                                                                         // create the top-level widget with the additional info stored here:
+                                                                         // json is a closure variable that is updated here
+                                                                         json = json_from_storage;
+                                                                         create_widget();
+                                                                     }
+                                                                  });
+                                    } else {
+                                        create_widget();
+                                    }                            
+                               };
+                utilities.retrieve_string('toontalk-last-key', key_callback);
             } else {
                 widget = utilities.create_from_json(json);
                 process_widget_callback()
