@@ -4401,7 +4401,6 @@ window.TOONTALK.UTILITIES =
            if (!options) {
                options = {};
            }
-           words = string.split(/[\ \.\,\!\?\-\_]/ );
            maximum_word_length = words.map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
            font_size = width / (TT.FONT_ASPECT_RATIO * (maximum_word_length+(options.margin || 0)));
            if (words.length === 1) { // single line
@@ -4412,7 +4411,7 @@ window.TOONTALK.UTILITIES =
            }
            // make sure there is enough height for multiple lines
            line_count = Math.ceil(string.length/maximum_word_length);
-           if (font_size*line_count > options.height) {
+           if (font_size*line_count > options.height*.9) {
                // square root since as the font size is adjusted so is the line count
                font_size *= Math.sqrt(options.height/(font_size*line_count));
                // testing shows the font is just a bit too big
