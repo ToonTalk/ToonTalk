@@ -301,7 +301,7 @@ window.TOONTALK.robot = (function (TT) {
                 // was watched but no longer
                 return 0;
             }
-            if (duration && watched_speed !== 0) {
+            if (duration && watched_speed) {
                 return duration/watched_speed;
             }
             return duration;

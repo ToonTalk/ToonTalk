@@ -253,7 +253,7 @@ window.TOONTALK.robot_action =
                 robot.original_animation_top_offset = [];
             }
             animation_left_offset = additional_info.left_offset_fraction*widget_bounding_box.width;
-            animation_top_offset  = additional_info.top_offset_fraction*widget_bounding_box.height;
+            animation_top_offset  = additional_info.top_offset_fraction *widget_bounding_box.height;
             if (thing_in_hand) {
                 thing_in_hand_element = thing_in_hand.get_element();
                 if (TT.UTILITIES.visible_element(thing_in_hand_element)) {
