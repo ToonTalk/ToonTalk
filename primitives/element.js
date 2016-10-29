@@ -396,7 +396,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             };
             if (current_width || current_height) {
                 $(frontside_element).css({width: '', height: ''});
-                if (!this.constrained_by_container()) {
+                if (!this.constrained_by_container() && !transform) {
                     $(frontside_element).css(pending_css);
                     return;
                 }
@@ -453,7 +453,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         };
         new_element.is_image_element = function () {
-            return $(this.get_frontside_element()).find("img").length > 0;
+            return $(this.get_frontside_element()).children("img").length > 0;
         };
         new_element.get_additional_classes = function () {
             return additional_classes;
@@ -1213,7 +1213,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return "a number that is the " + this.attribute + " of " + this.get_attribute_owner().toString({plain_text: true}) + ".";
             };
             attribute_widget.get_custom_title_prefix = function () {
-                return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner() + ".\n" +
+                return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner({inside_tool_tip: true}) + " \n" +
                        "Drop a number on me or edit my backside to change my value. My backside has an info button to learn more.";
             };
             attribute_widget.equals = function (other) {
@@ -2099,7 +2099,7 @@ window.TOONTALK.element_backside =
                     $advanced_settings_table.get(0).appendChild(react_to_pointer_checkbox.container);
                     $advanced_settings_table.get(0).appendChild(attributes_chooser);
                     $advanced_settings_table.get(0).appendChild(show_attributes_chooser);
-                    if (!element_widget.is_plain_text_element()) {
+                    if (html_input && !element_widget.is_plain_text_element()) {
                         $advanced_settings_table.get(0).appendChild(html_input.container); 
                     }
                 }
