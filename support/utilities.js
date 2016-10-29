@@ -1963,7 +1963,17 @@ window.TOONTALK.UTILITIES =
                 json.load_most_recent_program) {
                 // perhaps local storage will be used instead of the current json
                try {
-                    key_callback = function (toontalk_last_key) {    
+                    key_callback = function (toontalk_last_key) {
+                                       var create_widget = function () {
+                                           try {
+                                               widget = utilities.create_from_json(json);   
+                                           } catch (error) {
+                                               console.error(error);
+                                               utilities.report_internal_error("An error occurred loading the saved state. Please report this. Error is " + error);
+                                               widget = TT.widget.create_top_level_widget();
+                                           }
+                                           process_widget_callback();
+                                       };  
                                        if (toontalk_last_key) {
                                            utilities.retrieve_object(toontalk_last_key,
                                                                      function (json_from_storage) {
@@ -1971,13 +1981,11 @@ window.TOONTALK.UTILITIES =
                                                                              // create the top-level widget with the additional info stored here:
                                                                              // json is a closure variable that is updated here
                                                                              json = json_from_storage;
-                                                                             widget = utilities.create_from_json(json);
-                                                                             process_widget_callback();
+                                                                             create_widget();
                                                                          }
                                                                       });
                                         } else {
-                                            widget = utilities.create_from_json(json);
-                                            process_widget_callback();
+                                            create_widget();
                                         }                            
                                    };
                     utilities.retrieve_string('toontalk-last-key', key_callback);
@@ -5354,7 +5362,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 TT.speak = false;
                 utilities.display_message("This browser doesn't support speech output. speak=1 in URL ignored.");
             }
-            TT.balloons                      = utilities.get_current_url_boolean_parameter('balloons', true);           
+            TT.balloons                      = utilities.get_current_url_boolean_parameter('balloons', true);
+            TT.TRANSLATION_ENABLED           = utilities.get_current_url_boolean_parameter("translate", false);          
             // according to http://www.webspaceworks.com/resources/fonts-web-typography/43/
             // the aspect ratio of monospace fonts varies from .43 to .55
             // .55 'worst' aspect ratio -- adding a little extra here
@@ -5383,7 +5392,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 window.addEventListener('beforeunload', unload_listener);
             }
-            TT.TRANSLATION_ENABLED           = utilities.get_current_url_boolean_parameter("translate", false);
             if (TT.TRANSLATION_ENABLED) {
                 enable_translation();
             } else {
