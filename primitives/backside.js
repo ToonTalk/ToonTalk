@@ -1423,7 +1423,7 @@ window.TOONTALK.backside =
             return false;
         },
 
-        location_constrained_by_container: function () {
+        constrained_by_container: function () {
             return false;
         },
 
