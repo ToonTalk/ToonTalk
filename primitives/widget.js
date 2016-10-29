@@ -517,17 +517,17 @@ window.TOONTALK.widget = (function (TT) {
                     return widget_element;
                 };
                 widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset, more_animation_follows, duration, robot) {
-                    // delay for DOM to settle down in case target_widget is brand new
                     var new_continuation = 
                         function () {
                              this.animate_to_element(find_widget_element(target_widget, robot), continuation, speed, left_offset, top_offset, more_animation_follows, duration && Math.max(0, duration-100));
                              this.rerender();
                          }.bind(this);
-                    if (duration === 0) {
-                        new_continuation();
-                    } else {
-                        // why 100ms? and what if duration is undefined should it wait at all?
+                    if (duration) {
+                        // delay for DOM to settle down in case target_widget is brand new
                         setTimeout(new_continuation, 100);
+                    } else {
+                        // no delay
+                        new_continuation();
                     }           
                 };
             }
