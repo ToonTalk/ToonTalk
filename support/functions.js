@@ -124,7 +124,7 @@ window.TOONTALK.create_function_table =
         if (widget.dereference().is_of_type(type)) {
             return true;
         }
-        return this.report_error("'" + function_name + "' birds can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
+        return this.report_error("The '" + function_name + "' bird can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
                                   + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index)
                                   + " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."),
                                  message_properties);
@@ -175,7 +175,7 @@ window.TOONTALK.create_function_table =
         var compute_response = function (message_properties) {
             var next_widget, index, args, any_approximate_arguments, response;
             if (message_properties.box_size < minimum_arity+1) { // one for the bird
-                this.report_error("'" + function_name + "' birds can only respond to boxes with at least "
+                this.report_error("The '" + function_name + "' bird can only respond to boxes with at least "
                                    + (minimum_arity+1) + " holes. Not " + message_properties.box_size + " holes.",
                                   message_properties);
                 return;
