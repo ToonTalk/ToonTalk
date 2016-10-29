@@ -1531,10 +1531,11 @@ window.TOONTALK.UTILITIES =
         if (key === "id_of_tree_replace_once_task") {
            return undefined;
         }
-        if (key === "left_offset_fraction" ||
-            key === "top_offset_fraction" ||
-            key === "drag_x_offset" ||
-            key === "drag_y_offset") {
+        if (typeof value === 'number' &&
+            (key === "left_offset_fraction" ||
+             key === "top_offset_fraction" ||
+             key === "drag_x_offset" ||
+             key === "drag_y_offset")) {
             // no point filling up the JSON with unneeded precision
             return parseFloat(value.toPrecision(3));
         }
@@ -2627,6 +2628,7 @@ window.TOONTALK.UTILITIES =
             var distance = utilities.distance(target_absolute_position, source_absolute_position);
             var left, top;
             if (duration === 0 || speed === 0) {
+                // 0 value means do immediately
                 utilities.set_absolute_position(source_element, target_absolute_position);
                 if (continuation) {
                     continuation();

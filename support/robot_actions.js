@@ -282,24 +282,25 @@ window.TOONTALK.actions =
                     // $(context_backside.get_element()).is(":visible") true (test-programs.html has an example)
                     // pause between steps and give the previous step a chance to update the DOM     
                     setTimeout(function () {
-                            robot.run_watched_step_end_listeners();
-                            if (step_number < steps.length && !robot.stopped()) {
-                                var step = steps[step_number];
-                                step_number++;
-                                if (TT.logging && TT.logging.indexOf('event') >= 0) {           
-                                    console.log(step + " (watched)");
-                                }
-                                step.run_watched(robot);
-                            } else {
-                                robot.set_running_or_in_run_queue(false);
-                                // restore position
-                                restore_after_last_event();
-                                // following may finally close backside if close during cycle
-                                // so best to restore position first
-                                robot.run_body_finished_listeners();     
-                            }
-                        },
-                        robot.transform_step_duration(TT.animation_settings.PAUSE_BETWEEN_STEPS));
+                                   var step;
+                                   robot.run_watched_step_end_listeners();
+                                   if (step_number < steps.length && !robot.stopped()) {
+                                        step = steps[step_number];
+                                        step_number++;
+                                        if (TT.logging && TT.logging.indexOf('event') >= 0) {           
+                                            console.log(step + " (watched)");
+                                        }
+                                        step.run_watched(robot);
+                                    } else {
+                                        robot.set_running_or_in_run_queue(false);
+                                        // restore position
+                                        restore_after_last_event();
+                                        // following may finally close backside if close during cycle
+                                        // so best to restore position first
+                                        robot.run_body_finished_listeners();     
+                                    }
+                               },
+                               robot.transform_step_duration(TT.animation_settings.PAUSE_BETWEEN_STEPS));
                 } else {
                    // e.g. user hid the robot while running the final step
                    robot.set_running_or_in_run_queue(false);
