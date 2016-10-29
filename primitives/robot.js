@@ -394,7 +394,7 @@ window.TOONTALK.robot = (function (TT) {
                     console.log(this.to_debug_string(50) + " now has in his hand " + (new_value ? new_value.to_debug_string(50) : "nothing"));
                 }
             }
-            if (new_value && !new_value.location_constrained_by_container()) {
+            if (new_value && !new_value.constrained_by_container()) {
                 // if location is constrained by container than so is size so don't save this
                 new_value.save_dimensions();
             }

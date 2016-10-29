@@ -1594,7 +1594,7 @@ window.TOONTALK.widget = (function (TT) {
             $(this.get_frontside_element()).hide();
         },
 
-        location_constrained_by_container: function () {
+        constrained_by_container: function () {
             var parent;
             if (this.is_nest()) {
                 // nests are displayed proportionately and are offset to be centered
@@ -2126,7 +2126,7 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.render = function () {
                 // ignore
             };
-            top_level_widget.location_constrained_by_container = function () {
+            top_level_widget.constrained_by_container = function () {
                 return false;
             };
             top_level_widget.dereference = function () {

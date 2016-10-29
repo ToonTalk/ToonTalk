@@ -4214,7 +4214,7 @@ window.TOONTALK.UTILITIES =
                                                   false, false, false, 0, null);
                     touch.target.dispatchEvent(simulatedEvent);
                     // if it was slightly moved put it back
-                    if (widget && widget.location_constrained_by_container()) {
+                    if (widget && widget.constrained_by_container()) {
                         $(element).css({left: '',
                                         top:  ''});
                     } else {
@@ -4349,9 +4349,10 @@ window.TOONTALK.UTILITIES =
                widget_side_dereferenced = widget_side.dereference();
                if (css.width && !css['font-size']) {
                    if (widget_side.is_hole()) {
+                       // font size for box labels
                        css['font-size'] = widget_side.name_font_size(css.width, css.height);
                    } else if (widget_side_dereferenced.name_font_size) {
-                       // change font size so text fits (unless explicitly set)
+                       // change font size so name fits (unless explicitly set)
                        // margin to leave space on both sides of the label 
                        css['font-size'] = widget_side_dereferenced.name_font_size(css.width, css.height);
                    }
@@ -4359,7 +4360,7 @@ window.TOONTALK.UTILITIES =
                if ($(element).is(".toontalk-temporarily-set-down")) {
                    // leave the CSS alone
                    // TODO: make this more modular/cleaner
-               } else if (widget_side.location_constrained_by_container()) {
+               } else if (widget_side.constrained_by_container()) {
                    // widget_side_dereferenced could be contents of a box or scale and widget_side is the hole itself
                    css.left   = '';
                    css.top    = '';
@@ -4377,7 +4378,7 @@ window.TOONTALK.UTILITIES =
            }
            if (!css.transform && typeof css.width === 'number' && typeof css.height === 'number' &&
                widget_side_dereferenced && 
-               !(widget_side_dereferenced.is_plain_text_element() && widget_side_dereferenced.location_constrained_by_container()) &&
+               !(widget_side_dereferenced.is_plain_text_element() && widget_side_dereferenced.constrained_by_container()) &&
                widget_side_dereferenced.use_scaling_transform) {
                if (widget_side !== widget_side_dereferenced) {
                    // e.g. element is a box hole and its position is being set by the css
@@ -4401,6 +4402,7 @@ window.TOONTALK.UTILITIES =
            if (!options) {
                options = {};
            }
+           words = string.split(/[\s\-]/ ); // white space or a hyphen since that is where words are split by the browser
            maximum_word_length = words.map(function (word) { return word.length;}).reduce(function (x, y) { return Math.max(x, y);}, -Infinity);
            font_size = width / (TT.FONT_ASPECT_RATIO * (maximum_word_length+(options.margin || 0)));
            if (words.length === 1) { // single line

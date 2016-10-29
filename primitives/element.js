@@ -396,7 +396,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             };
             if (current_width || current_height) {
                 $(frontside_element).css({width: '', height: ''});
-                if (!this.location_constrained_by_container()) {
+                if (!this.constrained_by_container()) {
                     $(frontside_element).css(pending_css);
                     return;
                 }
@@ -410,7 +410,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                                current_width  = $(frontside_element.parentElement).width();
                                                                current_height = $(frontside_element.parentElement).height();
                                                            } 
-                                                           if (this.ok_to_set_dimensions() || this.location_constrained_by_container()) {
+                                                           if (this.ok_to_set_dimensions() || this.constrained_by_container()) {
                                                                TT.UTILITIES.scale_element(frontside_element,
                                                                                           current_width,
                                                                                           current_height,
@@ -669,7 +669,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         $(frontside_element).addClass(additional_classes);
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
-                    if (!this.location_constrained_by_container()) {
+                    if (!this.constrained_by_container()) {
                         this.plain_text_dimensions();
                     } else {
                         $(frontside_element).css({width:  '',
@@ -693,7 +693,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.plain_text_dimensions = function (width, height) {
             // this is to scale the element (and its font) properly
             // TODO: fix this in a principled manner
-            if (this.location_constrained_by_container()) {
+            if (this.constrained_by_container()) {
                 return;
             }
             var frontside_element = this.get_frontside_element();
@@ -1108,7 +1108,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                    toString: "change the '" + attribute + "' style to " + new_value + " of",
                                                    button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
-        if (!(this.location_constrained_by_container())) {
+        if (!(this.constrained_by_container())) {
             this.add_to_css(attribute, new_value);
             if (add_to_style_attributes) {
                 style_attributes = this.get_style_attributes();
@@ -1229,7 +1229,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     if (owner.get_parent_of_frontside() && 
                         owner.get_parent_of_frontside().is_element() && 
                         !owner.being_dragged &&
-                        !owner.location_constrained_by_container()) {
+                        !owner.constrained_by_container()) {
                         // owner is part of an element so use its value to determine the CSS of this child
                         css = {};
                         decimal_value = bigrat.toDecimal(this.get_value());
