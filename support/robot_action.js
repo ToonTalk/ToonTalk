@@ -286,8 +286,8 @@ window.TOONTALK.robot_action =
                                            });
             } else {
                 robot.original_animation_left_offset.push(animation_left_offset);
-                if (robot.original_animation_top_offset .indexOf(animation_top_offset) < 0) {
-                    robot.original_animation_top_offset .push(animation_top_offset);
+                if (robot.original_animation_top_offset.indexOf(animation_top_offset) < 0) {
+                    robot.original_animation_top_offset.push(animation_top_offset);
                 }
                 robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width (thing_in_hand_element);
                 robot.max_thing_in_hand_height = TT.UTILITIES.get_element_height(thing_in_hand_element);
@@ -448,15 +448,7 @@ window.TOONTALK.robot_action =
             }
             setTimeout(function () {
                            $(button_element).removeClass("ui-state-active");
-                           // following hide the backside even when robot didn't open it
-//                            if (!button_visible && widget.get_backside()) {
-//                                // restore things at cycle end
-//                                robot.add_body_finished_listener(function () {
-//                                    if (widget.get_backside()) {
-//                                        widget.get_backside().hide_backside();
-//                                    }
-//                                });         
-//                            }
+                           TT.UTILITIES.remove_highlight();
                            robot.run_next_step(true);
                       },
                       delay);
@@ -474,6 +466,7 @@ window.TOONTALK.robot_action =
                                      0, 0, true,
                                      robot.transform_original_step_duration(additional_info && additional_info.time));
         }
+        TT.UTILITIES.highlight_element(widget.get_frontside_element());
         if (!button_visible && widget.open_backside && robot.animate_consequences_of_actions()) {
             if (widget.open_backside(animation_continuation, robot.transform_step_duration(TT.animation_settings.OPEN_BACKSIDE_DURATION))) {
                 // open_backside returns backside only if it really opened it (not already open)
