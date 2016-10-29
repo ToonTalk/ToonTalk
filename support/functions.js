@@ -10,17 +10,11 @@ window.TOONTALK.create_function_table =
   return function () {
     var function_table = {};
     var return_the_message = function (message_properties) {
-        var bird_copy;
         if (!message_properties) {
             return;
         }
         if (message_properties.message_return_bird) {
-            if (message_properties.message_return_bird.is_nest_visible()) {
-                bird_copy = message_properties.message_return_bird.add_copy_to_container()
-                bird_copy.widget_side_dropped_on_me(message_properties.message);
-            } else {
-                message_properties.message_return_bird.widget_side_dropped_on_me(message_properties.message);
-            }
+            message_properties.message_return_bird.widget_side_dropped_on_me(message_properties.message);
         }
     }
     return {

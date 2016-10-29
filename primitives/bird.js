@@ -598,6 +598,11 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this));
             }
             if (this.element_to_display_when_flying) {
+                if (this.has_ancestor(TT.UTILITIES.widget_side_of_element(this.element_to_display_when_flying))) {
+                    // this bird is in the message_side
+                    // remove the bird element and add to top_level backside
+                    this.top_level_widget().get_backside_element().appendChild(frontside_element);
+                }
                 frontside_element.appendChild(this.element_to_display_when_flying);
             } else {
                 $(frontside_element).children(".toontalk-side").remove();

@@ -1968,6 +1968,7 @@ window.TOONTALK.UTILITIES =
                                            widget = utilities.create_from_json(json);   
                                        } catch (error) {
                                            console.error(error.stack);
+                                           console.trace();
                                            utilities.report_internal_error("An error occurred loading the saved state. Sorry. Please report this. Error is " + error);
                                            widget = TT.widget.create_top_level_widget();
                                        }
