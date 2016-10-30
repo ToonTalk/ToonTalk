@@ -2296,7 +2296,7 @@ background-image: url("images/dusty-morph.png");
 	margin-left: -10000px;
 }
 .toontalk-image {
-	so img elements part of element widgets size follows the size of the widget
+/* 	so img elements part of element widgets size follows the size of the widget */
 	width:  100%;
 	height: 100%;
 }
