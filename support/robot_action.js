@@ -100,6 +100,8 @@ window.TOONTALK.robot_action =
          },
          "restore": function (widget, robot) {
              robot.add_to_top_level_backside(widget);
+             // the following property was reset when the widget was removed
+             widget.get_element().toontalk_widget_side = widget;
              return true;
          },
          "change whether erased": function (widget, robot, additional_info) {

@@ -116,7 +116,8 @@ window.TOONTALK.frontside =
             // but when running unwatched might never have been attached
             var element = this.get_element();
             $(element).remove();
-            element.toontalk_widget_side = null; // free the memory
+            // free the memory (tested and without the following memory footprint grows faster)
+            element.toontalk_widget_side = null;
         }
 
     };
