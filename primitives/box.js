@@ -567,12 +567,14 @@ window.TOONTALK.box = (function (TT) {
                     top += border_size*(index-1);
                 }
             }
-            TT.UTILITIES.set_css(hole_element,
-                                 {left:   left,
-                                  top:    top,
-                                  width:  new_width,
-                                  height: new_height,
-                                  "z-index": typeof z_index === 'number' && z_index+size-index});
+            setTimeout(function () {
+                        TT.UTILITIES.set_css(hole_element,
+                                             {left:   left,
+                                              top:    top,
+                                              width:  new_width,
+                                              height: new_height,
+                                              "z-index": typeof z_index === 'number' && z_index+size-index});                
+                        });
             if (hole_labels[index]) {
                 hole_element.setAttribute("toontalk_name", hole_labels[index]);
             }                                         
