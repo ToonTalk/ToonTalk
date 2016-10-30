@@ -1931,7 +1931,7 @@ table.toontalk-documentation-table {
 /* 	adding a border as above caused multi-line rich text elements to display badly
 	this is only way I could think of to change the appearance of any rich text */
 	transition: 2s;
-    opacity: .8;
+    opacity: .6;
 }
 .toontalk-highlight.toontalk-plain-text-element {
 /* 	a border might be scaled and can look terrible so use color change instead to highlight */
