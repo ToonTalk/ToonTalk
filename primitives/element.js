@@ -1067,7 +1067,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (attribute_widgets) {
                 // first one is the master copy
                 // calling set_value causes infinite recursion
-                attribute_widgets[0].set_value_from_sub_classes(bigrat.fromDecimal(new_value));
+                attribute_widgets.forEach(function (attribute_widget) {
+                    attribute_widget.set_value_from_sub_classes(bigrat.fromDecimal(new_value));
+                });
             }
         }.bind(this);
         var current_value, new_value_number;
