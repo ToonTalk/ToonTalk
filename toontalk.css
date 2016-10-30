@@ -1919,9 +1919,19 @@ table.toontalk-documentation-table {
 	border-color: rgb(185, 113, 141);
 	border-radius: 10px;
 }
-.toontalk-highlight.toontalk-robot, .toontalk-highlight.toontalk-nest, .toontalk-highlight.toontalk-bird, .toontalk-highlight.toontalk-scale,
-                                    .toontalk-highlight.toontalk-non-plain-text-element, .toontalk-highlight.toontalk-backside {
+.toontalk-highlight.toontalk-robot,
+.toontalk-highlight.toontalk-nest,
+.toontalk-highlight.toontalk-bird,
+.toontalk-highlight.toontalk-scale,
+.toontalk-highlight.toontalk-backside,
+.toontalk-highlight.toontalk-image-element {
 	border: solid 4px white;
+}
+.toontalk-highlight.toontalk-non-plain-text-element {
+/* 	adding a border as above caused multi-line rich text elements to display badly
+	this is only way I could think of to change the appearance of any rich text */
+	transition: 2s;
+    opacity: .8;
 }
 .toontalk-highlight.toontalk-plain-text-element {
 /* 	a border might be scaled and can look terrible so use color change instead to highlight */

@@ -675,6 +675,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         $(frontside_element).css({width:  '',
                                                   height: ''});
                     }
+                } else if (this.is_image_element()) {
+                    $(frontside_element).addClass("toontalk-image-element");
                 } else {
                     $(frontside_element).addClass("toontalk-non-plain-text-element");
                 }
