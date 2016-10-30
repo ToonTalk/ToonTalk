@@ -115,7 +115,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                        parent_of_frontside.get_height();
                     if (css.top < widget_height/-2 ||
                         css.top > container_height+widget_height/2) {
-                        // if center if above top or below bottom
+                        // if center is above top or below bottom
                         if (container_height > 0) {
                             top = ((css.top%container_height)+container_height)%container_height;
                         } else {
@@ -1062,6 +1062,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var css = {};
+        var update_attribute_widgets = function (new_value) {
+            var attribute_widgets = this.get_original_copies()[attribute];
+            if (attribute_widgets) {
+                // first one is the master copy
+                // calling set_value causes infinite recursion
+                attribute_widgets[0].set_value_from_sub_classes(bigrat.fromDecimal(new_value));
+            }
+        }.bind(this);
         var current_value, new_value_number;
         var adjustment, style_attributes;
         if (!frontside_element) {
@@ -1102,6 +1110,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 console.log("Attribute " + attribute + " set to " + new_value_number + " was " + current_value + " at " + Date.now() + " for " + this);  
             }
             new_value = new_value_number;
+            if (attribute === 'left' || attribute === 'top') {
+                update_attribute_widgets(new_value);
+            }
         }
         if (handle_training && this.robot_in_training()) {
             this.robot_in_training().edited(this, {setter_name: "set_attribute",
