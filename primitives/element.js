@@ -1346,6 +1346,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     var copies = this_element_widget.get_original_copies()[attribute_name];
                     var decimal_value = typeof new_value === 'number' ? new_value : bigrat.toDecimal(new_value);
                     var value_approximation = bigrat.fromDecimal(decimal_value);
+                    // tried decimal_value.toPrecision(5) but a robot might be adding 1/1000000 each time and it be lost then
                     if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
                         // if the new_value is different from the current value
                         copies.forEach(function (copy, index) {
@@ -2171,7 +2172,12 @@ window.TOONTALK.element_backside =
             }
             backside.update_style_attribute_chooser();
             update_style_attributes_table(attribute_table, element_widget, backside);
-            backside_element.appendChild(attribute_table);
+            if (element_widget.get_style_attributes().length > 0) {
+                backside_element.appendChild(attribute_table);
+            } else if (!element_widget.is_plain_text_element()) {
+                // neither the HTML nor the attributes are displayed
+                backside_element.appendChild(TT.UTILITIES.create_text_element("No attributes enabled. Click the '<' below to see the advanced options."))
+            }
             backside_element.appendChild(advanced_settings_button);
             $(attributes_chooser).hide();
             $(attributes_chooser).addClass("toontalk-attributes-chooser");
