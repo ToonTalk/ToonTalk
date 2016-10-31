@@ -1243,6 +1243,7 @@ window.TOONTALK.widget = (function (TT) {
                                                             backside_widget.set_parent_of_frontside(this, true);
                                                         }
                                                         if (backside_visible) {
+                                                            // TODO: determine if this should be unconditional
                                                             backside_widget.set_visible(backside_visible);
                                                         }
                                                     }.bind(this)); 

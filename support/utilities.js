@@ -1918,9 +1918,9 @@ window.TOONTALK.UTILITIES =
                        frontside_element = widget.get_frontside_element(true);
                        if (frontside_element) {
                            $(frontside_element).addClass("toontalk-top-level-resource")
-                                                .css({position: 'relative', // should this be part of the CSS instead?
-                                                      width:  widget.saved_width,
-                                                      height: widget.saved_height});
+                                               .css({position: 'relative', // should this be part of the CSS instead?
+                                                     width:  widget.saved_width,
+                                                     height: widget.saved_height});
                             element.toontalk_widget_side = widget;
                             element.appendChild(frontside_element);
                         }
@@ -1929,9 +1929,7 @@ window.TOONTALK.UTILITIES =
                        // sensor resources shouldn't run -- currently they are only ones support set_active
                        widget.set_active(false);
                    }
-                   if (widget.set_visible) {
-                       widget.set_visible(true);
-                   }
+                   // this used to make the widget visible here -- TODO: determine why and if it should be restored
                    // delay until geometry settles down
                    setTimeout(function () {
                                   if (widget.update_display) {
