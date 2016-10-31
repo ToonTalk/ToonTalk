@@ -2189,6 +2189,7 @@ window.TOONTALK.UTILITIES =
             }
             // make sure it is completely inside the parent
             return 100*Math.min(($(parent_element).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width,
+                                 1-($(element).width()/parent_rectangle.width)) + "%";
         };
 
         utilities.top_as_percent = function (top, element, parent_element) {
@@ -2208,6 +2209,7 @@ window.TOONTALK.UTILITIES =
             }
             // make sure it is completely inside the parent
             return 100*Math.min(($(parent_element).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height,
+                                1-($(element).height()/parent_rectangle.height)) + "%";
         };
         utilities.adjust_left_if_scaled = function (left, element) {
             var widget = utilities.widget_side_of_element(element);
