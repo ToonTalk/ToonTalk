@@ -754,6 +754,11 @@ window.TOONTALK.number = (function () {
             $(frontside_element).css({width: '',
                                       height: ''});
         }
+        if ($(frontside_element).is(".toontalk-conditions-contents")) {
+            // leave room for borders
+            $(frontside_element).css({width:  240-border_size*2,
+                                      height: 60 -border_size*2});
+        }
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
     };
 

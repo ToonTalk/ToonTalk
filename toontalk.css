@@ -1826,11 +1826,11 @@ padding-bottom:  8%;}
 }
 .toontalk-conditions-contents {
 	width:  240px;
-	height: 60px;
+	height:  60px;
 }
 .toontalk-conditions-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
-/* if dimensions change then change utilities.element_width and utilities.element_height */
+/* if dimensions change then change utilities.element_width and utilities.element_height and number.js */
 	width: 240px;
 	height: 60px;
 	border: 1px black solid;
