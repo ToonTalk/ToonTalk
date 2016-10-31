@@ -140,6 +140,7 @@ window.TOONTALK.vacuum = (function (TT) {
                                         do_not_remove_children: true});
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
+                TT.tool.set_last_event_type(event.type);
                 if (mode === 'suck') {
                     if (widget_side.remove && !widget_side.get_widget().is_top_level()) {
                         remove_widget(widget_side);
