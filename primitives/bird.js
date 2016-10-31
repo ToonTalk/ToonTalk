@@ -328,7 +328,10 @@ window.TOONTALK.bird = (function (TT) {
             if (target_side && target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_offset = $(target_frontside_element).offset();
-                $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-backside-of-top-level");   
+                if (nest_recieving_message.get_frontside_element) {
+                    // function nests don't have a frontside_element
+                    $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-backside-of-top-level");
+                }  
             }
             if (!$top_level_backside_element || !$top_level_backside_element.is("*")) {
                 // target (e.g. nest) isn't contributing its top-level backside so use this bird's
