@@ -949,15 +949,19 @@ window.TOONTALK.widget = (function (TT) {
             return string;
         },
         
-        remove: function (event, do_not_remove_children, do_not_remove_frontside) {
+        remove: function (options) {
+            // options include event, do_not_remove_children, do_not_remove_frontside, remove_backside
             var backside  = this.get_backside();
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
-            if (backside && this.get_parent_of_backside() && this.get_parent_of_backside().is_top_level()) {
+            if (!options) {
+                options = {};
+            }
+            if (backside && (options.remove_backside || (this.get_parent_of_backside() && this.get_parent_of_backside().is_top_level()))) {
                 // remove both front and back if backside is on the top level backside
                 backside.hide_backside();
             }
-            if (frontside && !do_not_remove_frontside) {
+            if (frontside && !options.do_not_remove_frontside) {
                 frontside.remove(); 
             } 
             if (parent_of_frontside) {
@@ -967,7 +971,7 @@ window.TOONTALK.widget = (function (TT) {
                 this.set_running(false);
             }
             this.set_visible(false); // in case robot vacuumed the widget while it was animating
-            if (this.walk_children && !do_not_remove_children) {
+            if (this.walk_children && !options.do_not_remove_children) {
                 this.walk_children(function (child) {
                                        if (child.remove) {
                                            child.remove();

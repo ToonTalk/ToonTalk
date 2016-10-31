@@ -83,7 +83,7 @@ window.TOONTALK.create_function_table =
             return_the_message(message_properties);
         }
         if (!message_properties.message_return_bird) {
-            message.remove(undefined, true);
+            message.remove({do_not_remove_children: true});
         }
     },  
     process_message: function (message, compute_response, event, robot) {
@@ -98,7 +98,9 @@ window.TOONTALK.create_function_table =
         // then the response might still be considered as a child of the obsolete nest
         // only the first hole is re-used in responses
         if (!message_properties.message_return_bird && message.get_size() > 1 && message.get_hole_contents(1)) {
-            message.get_hole_contents(1).remove(event, true, true);
+            message.get_hole_contents(1).remove({event: event,
+                                                 do_not_remove_children: true, 
+                                                 do_not_remove_frontside: true});
         }
         this.process_response(response, message_properties, message, event, robot);
         return response;

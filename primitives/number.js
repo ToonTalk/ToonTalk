@@ -1069,7 +1069,7 @@ window.TOONTALK.number = (function () {
         if (other_number.get_approximate()) {
             this.set_approximate(true);
         }
-        other_number.remove();
+        other_number.remove({remove_backside: true});
         switch (other_number.get_operator()) {
         case '+':
             return this.add(other_number);
