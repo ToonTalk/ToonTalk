@@ -1545,6 +1545,7 @@ window.TOONTALK.robot_backside =
                                                                undefined,
                                                                css);
                                 }
+                                if (!$(condition_element).is(".toontalk-box") && !$(condition_element).is(".toontalk-image-element")) {
                                     // if custom CSS wasn't generated set it here
                                     $(condition_element).css(css);
                                 }
