@@ -1213,6 +1213,9 @@ window.TOONTALK.backside =
                                 }
                             }
                             $element.remove();
+                            if (event) {
+                                widget.backup_all();
+                            }
                         }.bind(this);
                     if (!TT.UTILITIES.visible_element($element)) {
                         // robot may have opened the backside and then removed the widget itself

@@ -40,6 +40,7 @@ window.TOONTALK.frontside =
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().backside_opened(widget);
                     }
+                    widget.backup_all();
                 }
                 event.stopPropagation();
             };
