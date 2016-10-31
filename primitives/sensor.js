@@ -232,7 +232,7 @@ window.TOONTALK.sensor = (function (TT) {
                     title += " On my back you can change which kind of events and attributes I receive.";
                 }
             } else {
-                title += " But I'm deactivated and can't receive anything until the 'Listening to events' check box on my back is ticked.";
+                title += " But I'm deactivated and can't receive anything until the green flag <span class='toontalk-green-flag-icon'></span> is clicked or the 'Listening to events' check box on my back is ticked.";
             }
             return title;
         };
