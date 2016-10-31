@@ -9,12 +9,16 @@ window.TOONTALK.create_function_table =
   "use strict";
   return function () {
     var function_table = {};
-    var return_the_message = function (message_properties) {
+    var return_the_message = function (message_properties, event, robot) {
         if (!message_properties) {
             return;
         }
         if (message_properties.message_return_bird) {
-            message_properties.message_return_bird.widget_side_dropped_on_me(message_properties.message);
+            message_properties.message_return_bird.widget_side_dropped_on_me(message_properties.message,
+                                                                             message_properties.message_return_bird,
+                                                                             undefined,
+                                                                             event,
+                                                                             robot);
         }
     }
     return {
@@ -79,8 +83,8 @@ window.TOONTALK.create_function_table =
             // it used to be that this also called add_newly_created_widget
             // this wasn't necessary and for the delay function bird meant this could happen at the wrong step
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
-            message_properties.bird.widget_side_dropped_on_me(response, undefined, robot, true, true);
-            return_the_message(message_properties);
+            message_properties.bird.widget_side_dropped_on_me(response, event, robot, true, true);
+            return_the_message(message_properties, event, robot);
         }
         if (!message_properties.message_return_bird) {
             message.remove({do_not_remove_children: true});
