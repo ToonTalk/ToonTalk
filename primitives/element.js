@@ -394,6 +394,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
             };
+            if ($(frontside_element).is(".toontalk-conditions-contents") && this.is_image_element()) {
+                // if an image is in a condition then make it as tall as the condition area
+                // and no wider than the condition area
+                $(frontside_element).children("img").css({"max-width": "100%",
+                                                          height:      "100%"});
+                $(frontside_element).css({transform: ''}); // remove any transforms
+                pending_css = undefined;
+                return;
+            }
             if (current_width || current_height) {
                 $(frontside_element).css({width: '', height: ''});
                 if (!this.constrained_by_container() && !transform) {
