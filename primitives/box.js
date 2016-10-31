@@ -540,7 +540,7 @@ window.TOONTALK.box = (function (TT) {
             var left, top, new_width, new_height, hole_contents, css;
             if (horizontal) {
                 top = 0;
-                if ($parents.length > 0) {
+                if ($parents.length > 0 || $(frontside_element).is(".toontalk-conditions-contents")) {
                     new_width  = hole_width -2*border_size/size;
                     new_height = hole_height-2*border_size;
                 } else {
@@ -554,7 +554,7 @@ window.TOONTALK.box = (function (TT) {
                 }
             } else {
                 left = 0;
-                if ($parents.length > 0) {
+                if ($parents.length > 0 || $(frontside_element).is(".toontalk-conditions-contents")) {
                     new_width  = hole_width -2*border_size;
                     new_height = hole_height-2*border_size/size;
                 } else {
@@ -632,10 +632,14 @@ window.TOONTALK.box = (function (TT) {
                         TT.UTILITIES.set_css(frontside_element,
                                              {width:  '',
                                               height: ''});
+                    } else if ($(frontside_element).is(".toontalk-conditions-contents")){
+                        TT.UTILITIES.set_css(frontside_element,
+                                             {width:  box_width -2*border_size,
+                                              height: box_height-2*border_size});
                     } else {
                         TT.UTILITIES.set_css(frontside_element,
                                              {width:  box_width,
-                                              height: box_height});
+                                              height: box_height});           
                     }
                 }
                 if ($box_hole_elements.length === size) {

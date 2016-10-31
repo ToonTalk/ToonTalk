@@ -1545,7 +1545,9 @@ window.TOONTALK.robot_backside =
                                                                undefined,
                                                                css);
                                 }
-                                $(condition_element).css(css);
+                                    // if custom CSS wasn't generated set it here
+                                    $(condition_element).css(css);
+                                }
                                 condition_widget.rerender();
                             };
         var conditions_panel;
