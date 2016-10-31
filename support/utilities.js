@@ -2187,7 +2187,8 @@ window.TOONTALK.UTILITIES =
             } else {
                 left = utilities.adjust_left_if_scaled(left, element);
             }
-            return 100*($(parent_element).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width + "%";
+            // make sure it is completely inside the parent
+            return 100*Math.min(($(parent_element).offset().left-window.pageXOffset+left-parent_rectangle.left)/parent_rectangle.width,
         };
 
         utilities.top_as_percent = function (top, element, parent_element) {
@@ -2205,9 +2206,9 @@ window.TOONTALK.UTILITIES =
             } else {
                 top = utilities.adjust_top_if_scaled(top, element);
             }
-            return 100*($(parent_element).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height + "%";
+            // make sure it is completely inside the parent
+            return 100*Math.min(($(parent_element).offset().top+-window.pageYOffset+top-parent_rectangle.top)/parent_rectangle.height,
         };
-
         utilities.adjust_left_if_scaled = function (left, element) {
             var widget = utilities.widget_side_of_element(element);
             var original_width;
