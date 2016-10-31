@@ -330,8 +330,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (this.is_plain_text_element()) {
                 if (!pending_css) {
                     pending_css = {};
-                }                   
-                dimensions_from_parent = this.get_parent() && (this.get_parent().is_nest() || this.get_parent().is_hole());
+                }
+                parent = this.get_parent();       
+                dimensions_from_parent = parent && (parent.is_nest() || parent.is_hole() || parent.is_robot());
                 if (dimensions_from_parent) {
                     new_dimensions = this.get_parent().get_contents_dimensions();
                     current_width  = new_dimensions.width;
@@ -347,10 +348,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (new_dimensions.width && dimensions_from_parent) {
                     // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
                     // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length) 
-                    pending_css['font-size'] = Math.min(TT.UTILITIES.font_size(this.get_text(),
-                                                                               new_dimensions.width, 
-                                                                               {height: new_dimensions.height}), 
-                                                        new_dimensions.height*TT.FONT_ASPECT_RATIO);
+                    pending_css['font-size'] = TT.UTILITIES.font_size(this.get_text(),
+                                                                      new_dimensions.width, 
+                                                                      {height: new_dimensions.height});
                     pending_css.width     = new_dimensions.width;
                     pending_css.height    = new_dimensions.height;
                     pending_css.transform = '';
@@ -358,11 +358,21 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css = undefined;
                     return;
                 }
-                // not constrained by parent so remove any font-size set while so constrained
-                $(frontside_element).css({"font-size": '',
-                                          width:       '',
-                                          height:      ''});
-                return;
+                if (!pending_css.width && !pending_css.height) {
+                    // not constrained by parent and not explicitly set so remove any font-size set while so constrained
+                    pending_css["font-size"] = '';
+                    pending_css["width"]     = '';
+                    pending_css["height"]    = '';
+                } else {
+                    pending_css['font-size'] = TT.UTILITIES.font_size(this.get_text(),
+                                                                      (pending_css.width || new_dimensions.width), 
+                                                                      {height: pending_css.height || new_dimensions.height});                  
+                }
+                if (!transform_css) {
+                    $(frontside_element).css(pending_css);
+                    return;
+                }
+                // continue processing (e.g. for transformations) 
             }
             if (!pending_css && !transform_css) {
                 return;
@@ -405,7 +415,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             if (current_width || current_height) {
                 $(frontside_element).css({width: '', height: ''});
-                if (!this.constrained_by_container() && !transform) {
+                wrap_location(this, pending_css);
+                if (transform) {
+                    TT.UTILITIES.add_transform_to_css(transform, "", pending_css, frontside_element.parentElement.className.indexOf("toontalk-box-hole") < 0);
+                }
+                if (!this.constrained_by_container()) {
                     $(frontside_element).css(pending_css);
                     return;
                 }

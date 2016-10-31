@@ -1336,6 +1336,12 @@ window.TOONTALK.robot = (function (TT) {
         // nests have more room than default 50% for displaying their name
         return .4*(height || this.get_height());
     };
+
+    robot.get_contents_dimensions = function () {
+        // dimensions of condition areas
+        return {width:  240,
+                height:  60};
+    };
     
     robot.get_json = function (json_history, callback, start_time) {
         var frontside_conditions = this.get_frontside_conditions();
