@@ -126,7 +126,7 @@ window.TOONTALK.bird = (function (TT) {
             } else if (robot && !robot.visible()) {
                 message_side.remove();
             } else {
-                console.error("Drop on a nestless bird should have been handled.");
+                this.animate_delivery_to(message_side);
             }
             if (event && this.robot_in_training()) {
                 this.robot_in_training().dropped_on(message_side, this);
@@ -136,7 +136,7 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.animate_delivery_to = function (message_side, target_side, nest_recieving_message, starting_left, starting_top, after_delivery_continuation, event, robot) {
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
             // is temporarily if not triggered by user or robot -- e.g. a function bird response 
-            var temporary_bird = !!nest_recieving_message || (!event && !robot);
+            var temporary_bird = target_side && (!!nest_recieving_message || (!event && !robot));
             var parent = this.get_parent_of_frontside();
             var bird_frontside_element = this.get_frontside_element(true);
             var bird_position = $(bird_frontside_element).position();
@@ -148,6 +148,10 @@ window.TOONTALK.bird = (function (TT) {
                     var become_static, current_non_empty_listeners;
                     if (TT.sounds) {
                         TT.sounds.bird_fly.pause();
+                    }
+                    if (!nest_recieving_message) {
+                        // no nest so bird is a "sink"
+                        message_side.remove();
                     }
                     if (temporary_bird) {
                         this.remove();
@@ -199,25 +203,27 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this);
             var bird_return_continuation = 
                 function () {
-                    try {
-                        nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
-                    } catch (nest_or_error) {
-                        if (nest_or_error.wait_for_nest_to_receive_something) {
-                            // e.g. this is a function bird and it received a box with empty nests inside
-                            nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(bird_return_continuation, this);
-                            if (after_delivery_continuation) {
-                                // e.g. a robot is running this and the robot shouldn't wait to run the next step
-                                after_delivery_continuation();
-                                after_delivery_continuation = undefined;
+                    if (nest_recieving_message) {
+                        try {
+                            nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
+                        } catch (nest_or_error) {
+                            if (nest_or_error.wait_for_nest_to_receive_something) {
+                                // e.g. this is a function bird and it received a box with empty nests inside
+                                nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(bird_return_continuation, this);
+                                if (after_delivery_continuation) {
+                                    // e.g. a robot is running this and the robot shouldn't wait to run the next step
+                                    after_delivery_continuation();
+                                    after_delivery_continuation = undefined;
+                                }
+                                return;
+                            } else {
+                                // is an error -- this isn't the place to deal with it
+                                if (TT.sounds) {
+                                    TT.sounds.bird_fly.pause();
+                                }
+                                console.error(nest_or_error.stack);
+                                throw nest_or_error;
                             }
-                            return;
-                        } else {
-                            // is an error -- this isn't the place to deal with it
-                            if (TT.sounds) {
-                                TT.sounds.bird_fly.pause();
-                            }
-                            console.error(nest_or_error.stack);
-                            throw nest_or_error;
                         }
                     }
                     stop_carrying_element($(bird_frontside_element).offset());
@@ -286,9 +292,6 @@ window.TOONTALK.bird = (function (TT) {
                         if (parent && !parent.is_backside()) {
                             parent.rerender();
                             // don't understand why parentless widgets should be made visible
-//                         } else {
-//                             message_side.set_visible(true);
-//                             message_side.render();
                         }
                     } else {
                         $(this.element_to_display_when_flying).remove();
@@ -304,13 +307,16 @@ window.TOONTALK.bird = (function (TT) {
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
+            $(bird_frontside_element).removeClass("toontalk-bird-gimme")
             message_element = message_side.get_element(true);
             carry_element(message_element, message_side);
-            if (!target_side.is_function_nest()) {
+            if (target_side && !target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
             }
-            if ((!target_side.visible() && !this.visible()) || (!target_side.is_function_nest() && !TT.UTILITIES.visible_element(target_frontside_element))) {
+            if (target_side && // if there is no target then there shouldn't be a nest_recieving_message
+                ((!target_side.visible() && !this.visible()) || 
+                 (!target_side.is_function_nest() && !TT.UTILITIES.visible_element(target_frontside_element)))) {
                 // neither are visible so just add contents to nest
                 nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
                 return;
@@ -319,7 +325,7 @@ window.TOONTALK.bird = (function (TT) {
                 TT.sounds.bird_fly.play();
             }
             $(bird_frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
-            if (!target_side.is_function_nest()) {
+            if (target_side && target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_offset = $(target_frontside_element).offset();
                 $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-backside-of-top-level");   
@@ -374,8 +380,10 @@ window.TOONTALK.bird = (function (TT) {
                            (starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top) + 
                             " to " + target_offset.left + ", " + target_offset.top);
             }
-            nest_contents_frontside_element = nest_recieving_message.get_contents_element &&
-                                              nest_recieving_message.get_contents_element();
+            if (nest_recieving_message) {
+                nest_contents_frontside_element = nest_recieving_message.get_contents_element &&
+                                                  nest_recieving_message.get_contents_element();
+            }
             if (nest_contents_frontside_element && nest_recieving_message.visible() &&
                 (!robot || robot.animate_consequences_of_actions())) {
                 // just fly to nest and return if unwatched robot caused this
