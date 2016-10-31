@@ -1530,11 +1530,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            };
            var first_space, iframe_index;
            if (html.length > 1 && html.charAt(0) === '<') {
-                if (this.is_image_element() ) {
+                if (html.indexOf("<img ") === 0) {
+                    return "<img width='60' height='40' " + html.substring(4);
+                } else if (this.is_image_element() ) {
                     // if an image then scale it
                     style = "style='width: 60px; height: 40px;'";
-                } else if (html.indexOf("<img ") === 0) {
-                    return "<img width='60' height='40' " + html.substring(4);
                 } else if (html.indexOf("<iframe ") >= 0) {
                     iframe_index = html.indexOf("<iframe ");
                     return replace_attribute('width', replace_attribute('height', html, "'60'"), "'80'");
