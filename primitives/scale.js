@@ -27,8 +27,8 @@ window.TOONTALK.scale = (function (TT) {
                                 };
         var get_contents_dimensions_function = function () {
                 return new_scale.get_contents_dimensions();
-            };
-        var box_get_json, box_copy, box_get_path_to, previous_state;
+        };
+        var box_get_json, box_copy, box_get_path_to, previous_state, set_visible_as_box;
         // new_scale is bound when copying a scale
         if (!new_scale) {
             new_scale = TT.box.create(2, undefined, initial_contents, description, name || "");
@@ -442,15 +442,6 @@ window.TOONTALK.scale = (function (TT) {
         new_scale.generate_name = function () {
             return "";
         };
-        // following should only be done when first becoming visible (and removed when becoming hidden)
-        new_scale.get_hole(0).add_listener('value_changed', contents_listener);
-        new_scale.get_hole(1).add_listener('value_changed', contents_listener);
-        if (new_scale.get_hole_contents(0)) {
-            new_scale.get_hole_contents(0).add_listener('value_changed', contents_listener);
-        }
-        if (new_scale.get_hole_contents(1)) {
-            new_scale.get_hole_contents(1).add_listener('value_changed', contents_listener);
-        }
         new_scale.get_custom_title_prefix = function () {
             var state = this.get_state();
             var left_contents  = this.get_hole_contents(0);
@@ -474,6 +465,33 @@ window.TOONTALK.scale = (function (TT) {
         };
         new_scale.get_default_description = function () {
             return "a scale for comparing things.";
+        };
+        set_visible_as_box = new_scale.set_visible;
+        new_scale.set_visible = function (new_value) {
+            var pan_change_listener = function (event) {
+                 if (event.new_value) {
+                     event.new_value.add_listener('value_changed', contents_listener);    
+                 }
+                 if (event.old_value) {
+                     event.old_value.remove_listener('value_changed', contents_listener, true);   
+                 }  
+            }
+            set_visible_as_box.call(this, new_value);
+            if (new_value) {
+                // need to rerender the scale when its pans change
+                new_scale.get_hole(0).add_listener('contents_or_properties_changed', pan_change_listener);
+                new_scale.get_hole(1).add_listener('contents_or_properties_changed', pan_change_listener);
+            } else {
+                // no need to do this if not watched
+                new_scale.get_hole(0).remove_listener('contents_or_properties_changed', pan_change_listener, true);
+                new_scale.get_hole(1).remove_listener('contents_or_properties_changed', pan_change_listener, true);   
+            }
+            if (new_scale.get_hole_contents(0)) {
+                new_scale.get_hole_contents(0).add_listener('value_changed', contents_listener);
+            }
+            if (new_scale.get_hole_contents(1)) {
+                new_scale.get_hole_contents(1).add_listener('value_changed', contents_listener);
+            }
         };
         new_scale.set_name = undefined; // unlike boxes which re-use name for labels
         if (TT.debugging) {
