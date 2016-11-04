@@ -568,12 +568,15 @@ window.TOONTALK.box = (function (TT) {
                 }
             }
             setTimeout(function () {
-                        TT.UTILITIES.set_css(hole_element,
-                                             {left:   left,
-                                              top:    top,
-                                              width:  new_width,
-                                              height: new_height,
-                                              "z-index": typeof z_index === 'number' && z_index+size-index});                
+                           TT.UTILITIES.set_css(hole_element,
+                                                {left:   left,
+                                                 top:    top,
+                                                 width:  new_width,
+                                                 height: new_height,
+                                                 "z-index": typeof z_index === 'number' && z_index+size-index});
+                           if (contents) {
+                               contents.render();
+                           }              
                         });
             if (hole_labels[index]) {
                 hole_element.setAttribute("toontalk_name", hole_labels[index]);
@@ -1174,8 +1177,8 @@ window.TOONTALK.box_hole =
                     dropped_element.style.top  = (hole_position.top -parent_position.top) +"px";
                     finished_animating = function () {
                         $(dropped_element).removeClass("toontalk-animating-element");
-                        box.render();
                         this.set_contents(dropped);
+                        box.render();
                         if (event) {
                             box.backup_all(); 
                         }
