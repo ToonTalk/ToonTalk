@@ -326,7 +326,7 @@ window.TOONTALK.bird = (function (TT) {
                 TT.sounds.bird_fly.play();
             }
             $(bird_frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
-            if (target_side && target_side.is_function_nest()) {
+            if (target_side && !target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_offset = $(target_frontside_element).offset();
                 if (nest_recieving_message.get_frontside_element) {
