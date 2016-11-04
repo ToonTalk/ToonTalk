@@ -315,7 +315,8 @@ window.TOONTALK.bird = (function (TT) {
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
             }
             if (target_side && // if there is no target then there shouldn't be a nest_recieving_message
-                ((!target_side.visible() && !this.visible()) || 
+                !this.visible() &&
+                (!target_side.visible() || 
                  (!target_side.is_function_nest() && !TT.UTILITIES.visible_element(target_frontside_element)))) {
                 // neither are visible so just add contents to nest
                 nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
@@ -958,7 +959,7 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.animate_bird_delivery = function (message_side, bird, continuation, event, robot) {
             var start_position, bird_parent_element, visible;
-            if (this.get_parent_of_frontside() === undefined) {
+            if (this.get_parent_of_frontside() === undefined && !bird.visible()) {
                 // is acting like a sink for messages
                 message_side.remove();
                 if (continuation) {
