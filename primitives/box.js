@@ -719,7 +719,6 @@ window.TOONTALK.box = (function (TT) {
         }
         $(frontside_element).removeClass("toontalk-box-erased");
         update_dimensions();
-        // hole width or box width???
         border_size = this.get_border_size(hole_width, hole_height);
         if (border_size === 4) {
             border_class = "toontalk-box-eighth-size-border";
@@ -755,13 +754,11 @@ window.TOONTALK.box = (function (TT) {
         if (width === 0) {
             // i.e. a zero-hole box
             frontside_width =  $(this.get_frontside_element()).width();
+            // border size has been doubled since it was so hard to pick up a full box
             if (frontside_width <= 16) {
-                return 4;
-            }
-            if (frontside_width <= 32) {
                 return 8;
             }
-            if (frontside_width <= 64) {
+            if (frontside_width <= 32) {
                 return 16;
             }
             return 32;
