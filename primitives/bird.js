@@ -955,6 +955,9 @@ window.TOONTALK.nest = (function (TT) {
                 widget_side.hide();
                 widget_side.set_visible(false);
             }
+            if (event) {
+                this.backup_all();
+            }
             this.rerender();
         };
         new_nest.animate_bird_delivery = function (message_side, bird, continuation, event, robot) {
