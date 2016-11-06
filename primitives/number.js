@@ -973,15 +973,15 @@ window.TOONTALK.number = (function () {
         return "a number.";
     };
 
-    number.drop_on = function (side_of_other, event, robot) {
+    number.drop_on = function (side_of_other, options) {
         if (!side_of_other.number_dropped_on_me) {
             if (side_of_other.widget_side_dropped_on_me) {
-                return side_of_other.widget_side_dropped_on_me(this, event, robot);
+                return side_of_other.widget_side_dropped_on_me(this, options);
             }
             console.log("No handler for drop of '" + this + "' on '" + side_of_other + "'");
             return;
         }
-        side_of_other.number_dropped_on_me(this, event, robot);
+        side_of_other.number_dropped_on_me(this, options);
         return true;
     };
     
@@ -1092,11 +1092,11 @@ window.TOONTALK.number = (function () {
         }
     };
     
-    number.widget_side_dropped_on_me = function (side_of_other, event, robot) {
+    number.widget_side_dropped_on_me = function (side_of_other, options) {
         var frontside_element_of_other;
         if (side_of_other.number_dropped_on_me) {
             // this can happen if this number is on a nest
-            return this.number_dropped_on_me(side_of_other, event, robot);
+            return this.number_dropped_on_me(side_of_other, options);
         }
         frontside_element_of_other = side_of_other.get_frontside_element();
         if (frontside_element_of_other) {
@@ -1246,6 +1246,10 @@ window.TOONTALK.number = (function () {
     };
     
     TT.creators_from_json["number"] = function (json) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        }
         return number.create(json.numerator, json.denominator, json.operator, json.format, json.description, json.approximate);
     };
 

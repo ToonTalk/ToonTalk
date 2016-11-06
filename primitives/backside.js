@@ -396,33 +396,33 @@ window.TOONTALK.backside =
                     this.remove_backside_widget(side_of_other, ignore_if_not_on_backside);
                 }
             };
-            backside.drop_on = function (side_of_other, event, robot) {
-                return side_of_other.widget_side_dropped_on_me && side_of_other.widget_side_dropped_on_me(this, event, robot);
+            backside.drop_on = function (side_of_other, options) {
+                return side_of_other.widget_side_dropped_on_me && side_of_other.widget_side_dropped_on_me(this, options);
             };
             backside.widget_side_dropped_on_me = 
-                function (side_of_other, event, robot, ignore_training) {
-                    // event serves 2 functions: info for adjusting for scrolling and whether to update the display
+                function (side_of_other, options) {
+                    // options.event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     // undefined if this is done by a robot
                     var other, side_of_other_element, backside_of_other, widget_offset;
-                    if (robot && !robot.visible() && !this.visible()) {
+                    if (options.robot && options.robot.visible() && !this.visible()) {
                         this.add_backside_widget(side_of_other);
                         if (side_of_other.dropped_on_other) {
-                            side_of_other.dropped_on_other(this, event, robot);
+                            side_of_other.dropped_on_other(this, options);
                         }
                         return; 
                     }
                     if (this.visible()) {
-                        if (TT.sounds && event) {
+                        if (TT.sounds && options.event) {
                             TT.sounds.drop.play();
                         }
                         side_of_other_element = side_of_other.get_element(this.visible());
                         side_of_other.rerender();
-                        if (event) {
+                        if (options.event) {
                             backside_element.appendChild(side_of_other_element);
-                            TT.UTILITIES.set_position_is_absolute(side_of_other_element, true, event); // when on the backside
+                            TT.UTILITIES.set_position_is_absolute(side_of_other_element, true, options.event); // when on the backside
                         } else {
-                            if (robot) {
-                                widget_offset = $(robot.get_frontside_element()).offset();
+                            if (options.robot) {
+                                widget_offset = $(options.robot.get_frontside_element()).offset();
                             }
                             if (!widget_offset) {
                                 // no robot or robot not visible
@@ -435,19 +435,19 @@ window.TOONTALK.backside =
                         }
                     }
                     if (this.get_widget().is_top_level()) {
-                        if (robot && !robot.visible()) {
+                        if (options.robot && !options.robot.visible()) {
                             // TODO: determine if this is not visible when side_of_other_element is undefined
                             $(side_of_other_element).addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
-                        if (event && !side_of_other.is_backside() && !side_of_other.is_sensor()) {
+                        if (options.event && !side_of_other.is_backside() && !side_of_other.is_sensor()) {
                             window.dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
                                                                                             here: 'back'}));
                         }
                     }
-                    if (widget.robot_in_training() && !ignore_training && event) {
+                    if (widget.robot_in_training() && !options.ignore_training && options.event) {
                         // delay this so it can record where the other was dropped
                         setTimeout(function () {
-                             widget.robot_in_training().dropped_on(side_of_other, this, event); 
+                             widget.robot_in_training().dropped_on(side_of_other, options); 
                         }.bind(this)) ;      
                     }
                     if (side_of_other.is_backside() && side_of_other.get_widget().is_element() && widget.is_element()) {
@@ -459,14 +459,14 @@ window.TOONTALK.backside =
                         other.set_backside(undefined); // don't remove side_of_other
                         // following does too much if the widget knows its backside
                         // so temporarily removed
-                        other.remove(event);
+                        other.remove(options.event);
                         other.set_backside(side_of_other);
                     }
                     this.add_backside_widget(side_of_other);
                     if (side_of_other.dropped_on_other) {
-                        side_of_other.dropped_on_other(this, event, robot);
+                        side_of_other.dropped_on_other(this, options);
                     }
-                    if (event && side_of_other.get_body && side_of_other.get_body().is_empty() && !side_of_other.being_trained) {
+                    if (options.event && side_of_other.get_body && side_of_other.get_body().is_empty() && !side_of_other.being_trained) {
                         // automate the start of training
                         // delayed so position settles down (needed for touch events)
                         setTimeout(function () {
@@ -480,7 +480,7 @@ window.TOONTALK.backside =
                         this.get_frontside_element().dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
                                                                                                               where: 'back'}));
                     }
-                    if (event) {
+                    if (options.event) {
                         side_of_other.get_widget().backup_all();
                     }
 //                     if (this.get_widget().is_ok_to_run() && !this.get_widget().get_running() && !this.get_widget().is_top_level()) {
@@ -493,7 +493,7 @@ window.TOONTALK.backside =
                         this.get_widget().set_running(true);
                     }
                     return true;
-                };
+            };
             backside.add_backside_widget = function (widget_side) {
                 return this.get_widget().add_backside_widget(widget_side);
             };
@@ -1253,7 +1253,7 @@ window.TOONTALK.backside =
                 // frontside needs to be added to backside container
                 container_widget = TT.UTILITIES.widget_side_of_jquery($backside_container);
                 if (container_widget && !(widget.is_robot() && container_widget.get_widget().is_robot() && widget.get_first_in_team() === container_widget.get_widget().get_first_in_team())) {
-                    container_widget.widget_side_dropped_on_me(widget);
+                    container_widget.widget_side_dropped_on_me(widget, {event: event});
                     widget.render();
                 }
             }

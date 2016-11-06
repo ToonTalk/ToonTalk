@@ -67,46 +67,46 @@ window.TOONTALK.scale = (function (TT) {
             }
             return path;
         };
-        new_scale.drop_on = function (side_of_other, event, robot) {
+        new_scale.drop_on = function (side_of_other, options) {
             if (side_of_other.widget_side_dropped_on_me) {
-                return side_of_other.widget_side_dropped_on_me(this, event, robot);
+                return side_of_other.widget_side_dropped_on_me(this, options);
             }
         };
-        new_scale.widget_side_dropped_on_me = function (dropped, event, robot) {
+        new_scale.widget_side_dropped_on_me = function (dropped, options) {
             var left_contents  = this.get_hole_contents(0);
             var right_contents = this.get_hole_contents(1); 
             var hole_index;
             if (dropped.dropped_on_other) {
                 // e.g. so egg can hatch from nest drop
-                dropped.dropped_on_other(this, event, robot);
+                dropped.dropped_on_other(this, options);
             }
             if (left_contents && !right_contents) {
-                this.get_hole(1).widget_side_dropped_on_me(dropped, event, robot);
+                this.get_hole(1).widget_side_dropped_on_me(dropped, options);
                 return true;
             }
-            if (!left_contents && (right_contents || !event)) {
+            if (!left_contents && (right_contents || !options.event)) {
                 // if a robot drops a scale on a scale with empty pans it goes in left pan
-                this.get_hole(0).widget_side_dropped_on_me(dropped, event, robot);
+                this.get_hole(0).widget_side_dropped_on_me(dropped, options);
                 return true;
             }
-            hole_index = this.which_hole(event, false);
+            hole_index = this.which_hole(options.event, false);
             if (hole_index === 0) {
                 if (left_contents) {
                     if (left_contents.drop_on) {
-                        return dropped.drop_on(left_contents, event, robot);
+                        return dropped.drop_on(left_contents, options);
                     }
                     return; // not much can be done if contents doesn't accept drop_one
                 }
             } else {
                 if (right_contents) {
                     if (right_contents.drop_on) {
-                        return dropped.drop_on(right_contents, event, robot);
+                        return dropped.drop_on(right_contents, options);
                     }
                     return; // not much can be done
                 }
             }
             // hole was empty so fill it
-            this.get_hole(hole_index).widget_side_dropped_on_me(dropped, event, robot); 
+            this.get_hole(hole_index).widget_side_dropped_on_me(dropped, options); 
             return true;
         };
         new_scale.which_hole = function (event, or_entire_thing) {
@@ -502,6 +502,10 @@ window.TOONTALK.scale = (function (TT) {
     };
 
     TT.creators_from_json["scale"] = function (json, additional_info) {
+       if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        }
         return scale.create(TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description, undefined, json.inactive_state, json.name);
     };
 

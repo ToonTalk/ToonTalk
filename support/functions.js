@@ -15,10 +15,10 @@ window.TOONTALK.create_function_table =
         }
         if (message_properties.message_return_bird) {
             message_properties.message_return_bird.widget_side_dropped_on_me(message_properties.message,
-                                                                             message_properties.message_return_bird,
-                                                                             undefined,
-                                                                             event,
-                                                                             robot);
+                                                                             {event: event,
+                                                                              robot: robot,
+                                                                              do_not_run_next_step: true,
+                                                                              by_function_bird: true});
         }
     }
     return {
@@ -73,7 +73,7 @@ window.TOONTALK.create_function_table =
         TT.UTILITIES.display_message(error);
         if (message_properties && 
             (message_properties.error_bird || message_properties.bird)) {
-            (message_properties.error_bird || message_properties.bird).widget_side_dropped_on_me(TT.element.create(error));
+           (message_properties.error_bird || message_properties.bird).widget_side_dropped_on_me(TT.element.create(error), {});
         }
         return_the_message(message_properties);
         return error;
@@ -83,7 +83,12 @@ window.TOONTALK.create_function_table =
             // it used to be that this also called add_newly_created_widget
             // this wasn't necessary and for the delay function bird meant this could happen at the wrong step
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
-            message_properties.bird.widget_side_dropped_on_me(response, event, robot, true, true);
+            message_properties.bird.widget_side_dropped_on_me(response, {event: event,
+                                                                         robot: robot,
+                                                                         do_not_run_next_step: true,
+                                                                         by_function_bird: true,
+                                                                         // bird is "lost" unless message is returned
+                                                                         temporary_bird: !message_properties.return_the_message});
             return_the_message(message_properties, event, robot);
         }
         if (!message_properties.message_return_bird) {

@@ -52,7 +52,7 @@ window.TOONTALK.robot_action =
                             // so thing dropped on top-level backside should be removed from DOM
                             $(thing_in_hand.get_frontside_element()).remove();
                          }
-                         thing_in_hand.drop_on(target, undefined, robot);
+                         thing_in_hand.drop_on(target, {robot: robot});
                          robot.set_thing_in_hand(undefined);
                          target.rerender();
                          robot.add_newly_created_widget_if_new(thing_in_hand);
@@ -156,7 +156,7 @@ window.TOONTALK.robot_action =
                  widget.update_display(); // so it has width and height for the following
                  TT.UTILITIES.set_position_relative_to_top_level_backside($(widget_frontside_element), robot_location, true);
              } else {
-                 widget.drop_on(robot.get_context().get_backside(true), undefined, robot, true);
+                 widget.drop_on(robot.get_context().get_backside(true), {robot: robot});
              }
              return true;
          },

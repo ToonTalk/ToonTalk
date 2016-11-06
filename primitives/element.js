@@ -1025,7 +1025,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
     };
 
-    element.widget_side_dropped_on_me = function (side_of_other, event, robot) {
+    element.widget_side_dropped_on_me = function (side_of_other, options) {
         // TODO: involve Bammer the Mouse if being watched
         // TODO: use erased widgets for type coercion
         if (side_of_other.is_backside()) {
@@ -1512,6 +1512,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
 
     TT.creators_from_json["attribute_widget"] = function (json, additional_info) {
+        if (!json) {
+            // cyclic references handled in another manner so don't split its creation into two phases
+            // TODO: determine if it is better to rely upon this and remove the special support for cycles caused by attribute widgets
+            return;
+        }
         var element_widget = TT.UTILITIES.create_from_json(json.element, additional_info);
         return element_widget.create_attribute_widget(json.attribute_name, additional_info);
     };
@@ -1695,6 +1700,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        }
         var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html && additional_info.shared_html[json.html.shared_html_index]);
         var children, is_child, ignore_attributes, reconstructed_element, error_message;
         if (json.children) {

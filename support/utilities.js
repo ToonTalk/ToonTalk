@@ -666,7 +666,7 @@ window.TOONTALK.UTILITIES =
             }
             // widget_side_dropped_on_me needed here to get geometry right
             if (source_widget_side) {
-                target_widget_side.widget_side_dropped_on_me(source_widget_side, event);
+                target_widget_side.widget_side_dropped_on_me(source_widget_side, {event: event});
             } else {
                 utilities.report_internal_error("No source_widget");
             }
@@ -724,15 +724,16 @@ window.TOONTALK.UTILITIES =
                    top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)};
             utilities.set_css($source, css);
             source_widget_side.remove_from_parent_of_frontside(event);
-            if (source_widget_side.drop_on && source_widget_side.drop_on(target_widget_side, event)) {
-            } else if (target_widget_side.widget_side_dropped_on_me && target_widget_side.widget_side_dropped_on_me(source_widget_side, event)) {
+            if (source_widget_side.drop_on && source_widget_side.drop_on(target_widget_side, {event: event})) {
+            } else if (target_widget_side.widget_side_dropped_on_me &&
+                       target_widget_side.widget_side_dropped_on_me(source_widget_side, {event: event})) {
             } else {
                 // ignore the current target and replace with the backside it is on
                 new_target = $target.closest(".toontalk-backside-of-top-level");
                 if (new_target.length > 0) {
                     target_widget_side = utilities.widget_side_of_jquery(new_target);
                     if (target_widget_side) {
-                        target_widget_side.widget_side_dropped_on_me(source_widget_side, event);
+                        target_widget_side.widget_side_dropped_on_me(source_widget_side, {event: event});
                     }
                 }
             }

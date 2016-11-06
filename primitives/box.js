@@ -518,6 +518,10 @@ window.TOONTALK.box = (function (TT) {
     };
     
     TT.creators_from_json['box'] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        }
         return box.create(json.size, json.horizontal, TT.UTILITIES.create_array_from_json(json.contents, additional_info), json.description, json.name);
     };
     
@@ -791,17 +795,17 @@ window.TOONTALK.box = (function (TT) {
         return "Each hole label is followed by a ';'. Yoou may enter as many hole labels as there are holes.";
     };
     
-    box.drop_on = function (side_of_other, event, robot) {
+    box.drop_on = function (side_of_other, options) {
         var result;
         if (!side_of_other.box_dropped_on_me) {
             if (side_of_other.widget_side_dropped_on_me) {
-                return side_of_other.widget_side_dropped_on_me(this, event, robot);
+                return side_of_other.widget_side_dropped_on_me(this, options);
             }
             console.log("No handler for drop of " + this + " on " + side_of_other);
             return;
         }
-        result = side_of_other.box_dropped_on_me && side_of_other.box_dropped_on_me(this, event, robot);
-        if (event) {
+        result = side_of_other.box_dropped_on_me && side_of_other.box_dropped_on_me(this, options);
+        if (options.event) {
             side_of_other.rerender();
         }
         if (result) {
@@ -815,16 +819,16 @@ window.TOONTALK.box = (function (TT) {
         return false;
     };
 
-    box.widget_side_dropped_on_me = function (side_of_other, event, robot) {
-        var hole_index = this.which_hole(event);
+    box.widget_side_dropped_on_me = function (side_of_other, options) {
+        var hole_index = this.which_hole(options.event);
         var hole_contents, hole;
         if (hole_index >= 0) {
             hole = this.get_hole(hole_index);
             hole_contents = hole.get_contents();
             if (hole_contents) {
-                return side_of_other.drop_on(hole_contents, event, robot);
+                return side_of_other.drop_on(hole_contents, options);
             } 
-            return hole.widget_side_dropped_on_me(side_of_other, event, robot);  
+            return hole.widget_side_dropped_on_me(side_of_other, options);  
         }
         TT.UTILITIES.report_internal_error(side_of_other + " dropped on " + this + " but no event was provided.");
     };
@@ -1145,18 +1149,18 @@ window.TOONTALK.box_hole =
             hole.get_height = function () {
                 return $(this.get_element()).height();
             };
-            hole.widget_side_dropped_on_me = function (dropped, event, robot) {
+            hole.widget_side_dropped_on_me = function (dropped, options) {
                 var box = this.get_parent_of_frontside();
                 var contents = this.get_contents();
                 var hole_element, hole_position, parent_position, dropped_element, finished_animating, is_plain_text;
                 if (contents) {
-                    return contents.widget_side_dropped_on_me && contents.widget_side_dropped_on_me(dropped, event, robot);
+                    return contents.widget_side_dropped_on_me && contents.widget_side_dropped_on_me(dropped, options);
                 }
                 if (dropped.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
-                    dropped.dropped_on_other(this, event, robot);
+                    dropped.dropped_on_other(this, options);
                 }
-                if (event) {
+                if (options.event) {
                     if (TT.sounds) {
                         TT.sounds.fall_inside.play();
                     }
@@ -1167,8 +1171,8 @@ window.TOONTALK.box_hole =
                     parent_position = $(dropped_element.parentElement).offset();
                     hole_position   = $(hole_element).offset(); 
                     if (!is_plain_text) {
-                        dropped_element.style.left = (event.pageX-parent_position.left)+"px";
-                        dropped_element.style.top  = (event.pageY-parent_position.top) +"px";
+                        dropped_element.style.left = (options.event.pageX-parent_position.left)+"px";
+                        dropped_element.style.top  = (options.event.pageY-parent_position.top) +"px";
                         $(dropped_element).addClass("toontalk-animating-element");
                     }
                     dropped_element.style.width  = hole_element.style.width;
@@ -1179,7 +1183,7 @@ window.TOONTALK.box_hole =
                         $(dropped_element).removeClass("toontalk-animating-element");
                         this.set_contents(dropped);
                         box.render();
-                        if (event) {
+                        if (options.event) {
                             box.backup_all(); 
                         }
                     }.bind(this);

@@ -242,7 +242,7 @@ window.TOONTALK.robot = (function (TT) {
             if (!thing_in_hand) {
                 return;
             }
-            thing_in_hand.drop_on(this.top_level_widget(), undefined, this);
+            thing_in_hand.drop_on(this.top_level_widget(), {robot: this});
             this.set_thing_in_hand(undefined);
         }
         new_robot.finish_cycle_immediately = function (do_at_end_of_cycle) {
@@ -1060,6 +1060,7 @@ window.TOONTALK.robot = (function (TT) {
             // this limits training to two levels -- could have more but must limit it
             this.robot_training_this_robot().trained(this, step);
         }
+        console.log(step+"");
     };
     
     robot.update_display = function () {
@@ -1391,6 +1392,10 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     TT.creators_from_json["robot"] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        }
         var next_robot, thing_in_hand, frontside_conditions, backside_conditions, robot;
         if (json.thing_in_hand) {
             thing_in_hand = TT.UTILITIES.create_from_json(json.thing_in_hand, additional_info);

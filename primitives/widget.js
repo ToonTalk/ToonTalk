@@ -469,9 +469,9 @@ window.TOONTALK.widget = (function (TT) {
 
         droppable: function (widget) {
             if (!widget.drop_on) {
-                widget.drop_on = function (side_of_other, event, robot) {
+                widget.drop_on = function (side_of_other, options) {
                     if (side_of_other.widget_side_dropped_on_me) {
-                        return side_of_other.widget_side_dropped_on_me(this, event, robot);
+                        return side_of_other.widget_side_dropped_on_me(this, options);
                     }
                     console.log("No handler for drop of '" + this + "' on '" + side_of_other + "'");
                     return;
@@ -1937,9 +1937,9 @@ window.TOONTALK.widget = (function (TT) {
                    this.remove_backside_widget(side_of_other, true);
                 };
             };
-            top_level_widget.widget_side_dropped_on_me = function (side_of_other, event, robot, ignore_training) {
+            top_level_widget.widget_side_dropped_on_me = function (side_of_other, options) {
                 // why is this the default behaviour?
-                return this.get_backside().widget_side_dropped_on_me(side_of_other, event, robot, ignore_training);
+                return this.get_backside().widget_side_dropped_on_me(side_of_other, options);
             };
             top_level_widget.get_element = function () {
                 return this.get_backside().get_element();

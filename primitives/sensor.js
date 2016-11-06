@@ -289,7 +289,11 @@ window.TOONTALK.sensor = (function (TT) {
         return new_sensor;
     };
     
-    TT.creators_from_json["sensor"] = function (json, additional_info) {   
+    TT.creators_from_json["sensor"] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        } 
         var sensor = TT.sensor.create(json.event_name,
                                       json.attribute,
                                       json.description, 
