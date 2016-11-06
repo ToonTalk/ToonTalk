@@ -992,8 +992,9 @@ window.TOONTALK.UTILITIES =
                             false); // don't capture events
     observer.observe(window.document, {childList: true,
                                        subtree:   true});
+    // following only used by "old format" robots -- kept for backwards compatibility
     utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];   
-    utilities.create_from_json = function (json, additional_info, delay_backside_widgets) {
+    utilities.create_from_json = function (json, additional_info, delay_backside_widgets, uninitialised_widget) {
             var handle_delayed_backside_widgets = function (widget, additional_info, shared_widget_index) {
                 additional_info.shared_widgets[shared_widget_index] = widget;
                 if (widget && widget.finish_create_from_json_continuation) {
@@ -1039,10 +1040,13 @@ window.TOONTALK.UTILITIES =
                 }
                 // otherwise create it from the JSON and store it
                 json_of_shared_widget = additional_info.json_of_shared_widgets[json.shared_widget_index];
-                widget_side = utilities.create_from_json(json_of_shared_widget, additional_info, true);
-                // following is to deal with reconstructing cyclic references
-                // but not needed anymore 
-//              additional_info.shared_widgets[json.shared_widget_index] = widget_side;
+                // to deal with reconstructing cyclic references first create the uninitialised widget
+                // add it to the shared_widgets and then initialise it
+                // call the following with no arguments to create the uninitialised widget
+                widget_side = TT.creators_from_json[json_of_shared_widget.semantic.type]();
+                // widget_side might be undefined if there is no change of cyclic references 
+                additional_info.shared_widgets[json.shared_widget_index] = widget_side;
+                widget_side = utilities.create_from_json(json_of_shared_widget, additional_info, true, widget_side);
                 return handle_delayed_backside_widgets(widget_side, additional_info, json.shared_widget_index);
             }
             json_semantic = json.semantic;
@@ -1056,7 +1060,7 @@ window.TOONTALK.UTILITIES =
                     utilities.report_internal_error("JSON refers to shared widgets but they can't be found. Sorry.");
                     return;
                 }
-                widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, true);
+                widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, true, uninitialised_widget);
                 return handle_delayed_backside_widgets(widget_side, additional_info, json_semantic.shared_widget_index);
             } else if (TT.creators_from_json[json_semantic.type]) {
                 if (!additional_info) {
@@ -1069,10 +1073,10 @@ window.TOONTALK.UTILITIES =
                 }
                 if (TT.debugging) {
                     // much easier to debug since JQuery has plenty of caught exceptions
-                    widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
+                    widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info, uninitialised_widget);
                 } else {
                     try {
-                        widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info);
+                        widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info, uninitialised_widget);
                     } catch (e) {
                         console.error(e.stack);
                         utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e); 
@@ -1132,6 +1136,7 @@ window.TOONTALK.UTILITIES =
                 }
                 if (json_semantic.backside_widgets) {
                     if (delay_backside_widgets) {
+                        // TODO: determine if this is still needed now that there is a more general mechanism
                         // caller will call this 
                         widget_side.finish_create_from_json_continuation = function () {
                             this.add_backside_widgets_from_json(widget_side, json_semantic.backside_widgets, additional_info);  

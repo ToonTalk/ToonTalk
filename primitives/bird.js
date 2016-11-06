@@ -49,10 +49,12 @@ window.TOONTALK.bird = (function (TT) {
         backside_element.insertBefore(select_menu.container, backside_element.firstChild);
     };
     
-    bird.create = function (nest, description) {
-        var new_bird = Object.create(bird);
+    bird.create = function (nest, description, new_bird) {
         var non_empty_listeners = [];
         var waiting_widgets     = [];
+        if (!new_bird) {
+            new_bird = Object.create(bird);
+        }
         new_bird.set_nest = function (new_value, old_nest) {
             // ability to set the nest of a bird is private to the bird and its nest
             // hence the check that this is authorised
@@ -566,7 +568,7 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.toString = function (to_string_info) {
             if (nest) {
-                if (nest.is_function_nest()) {
+                if (nest.is_function_nest && nest.is_function_nest()) {
                     return nest.get_function_object().toString();
                 }
                 return "bird";
@@ -753,8 +755,12 @@ window.TOONTALK.bird = (function (TT) {
         }
     };
         
-    TT.creators_from_json["bird"] = function (json, additional_info) {
-        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), json.description);
+    TT.creators_from_json["bird"] = function (json, additional_info, new_bird) {
+        if (!json) {
+            // just an unitialised bird to handle cycle references
+            return Object.create(bird);
+        }
+        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info, new_bird), json.description);
     };
     
     return bird;
@@ -796,13 +802,15 @@ window.TOONTALK.nest = (function (TT) {
     // nest capacity - enforced only for unwatched robots when robot_removed_contents_since_empty
     nest.default_maximum_capacity = 10;
     nest.maximum_capacity = nest.default_maximum_capacity;
-    nest.create = function (description, contents, guid, original_nest, serial_number, name) { 
-        var new_nest = Object.create(nest);
+    nest.create = function (description, contents, guid, original_nest, serial_number, name, new_nest) { 
         var non_empty_listeners           = [];
         var nest_under_capacity_listeners = [];
         var waiting_widgets               = [];
-        var robot_removed_contents_since_empty           = false; // has any of its contents been removed since this was empty -- needed for maximum_capacity
+        var robot_removed_contents_since_empty = false; // has any of its contents been removed since this was empty -- needed for maximum_capacity
         var nest_copies, generic_set_name, generic_set_visible;
+        if (!new_nest) {
+            new_nest = Object.create(nest);
+        }
         if (!contents) {
             contents = [];
         }
@@ -1725,9 +1733,12 @@ window.TOONTALK.nest = (function (TT) {
         }
         return function_nest;
     };
-
         
     TT.creators_from_json["function_nest"] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation
+            return;
+        }
         return TT.nest.create_function(json.description, json.function_type, json.function_name);
     };
     
@@ -1772,19 +1783,26 @@ window.TOONTALK.nest = (function (TT) {
         return "Drop something on my bird and she'll take it here.";
     };
     
-    TT.creators_from_json["nest"] = function (json, additional_info) {
+    TT.creators_from_json["nest"] = function (json, additional_info, new_nest) {
         // don't share the nest if this is a copy
-        var nest = !json.original_nest && json.guid && additional_info && additional_info.guid_to_nest_table && additional_info.guid_to_nest_table[json.guid];
-        if (!nest) {
-            nest = TT.nest.create(json.description, 
-                                  TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
+        if (!json) {
+            // just an unitialised nest to handle cycle references
+            return Object.create(nest);
+        }
+        if (!new_nest) {
+            new_nest = !json.original_nest && json.guid && additional_info && additional_info.guid_to_nest_table && additional_info.guid_to_nest_table[json.guid];            
+        }
+        new_nest = TT.nest.create(json.description, 
+                                  [], 
                                   json.guid,
                                   json.original_nest && TT.UTILITIES.create_from_json(json.original_nest, additional_info),
                                   json.serial_number,
-                                  json.name);
-            additional_info.guid_to_nest_table[json.guid] = nest;                 
-        }
-        return nest;
+                                  json.name,
+                                  new_nest);
+        // this is done after the nest is created since it may be an unitialised widget that is initialised above
+        new_nest.set_contents(TT.UTILITIES.create_array_from_json(json.contents, additional_info));
+        additional_info.guid_to_nest_table[json.guid] = new_nest;                 
+        return new_nest;
     };
 
     // the following were 0.8 for a long time with the idea that it made it clear there was a nest there

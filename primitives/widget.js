@@ -133,7 +133,7 @@ window.TOONTALK.widget = (function (TT) {
                 widget.is_function_nest = return_false;
             }
             if (!widget.is_plain_text_element) {
-               widget.is_plain_text_element = return_false;
+                widget.is_plain_text_element = return_false;
             }
             if (!widget.is_attribute_widget) {
                 widget.is_attribute_widget = return_false;
