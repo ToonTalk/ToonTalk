@@ -447,7 +447,7 @@ window.TOONTALK.backside =
                     if (widget.robot_in_training() && !options.ignore_training && options.event) {
                         // delay this so it can record where the other was dropped
                         setTimeout(function () {
-                             widget.robot_in_training().dropped_on(side_of_other, options); 
+                             widget.robot_in_training().dropped_on(side_of_other, this, options.event); 
                         }.bind(this)) ;      
                     }
                     if (side_of_other.is_backside() && side_of_other.get_widget().is_element() && widget.is_element()) {
