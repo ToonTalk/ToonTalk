@@ -4373,8 +4373,10 @@ window.TOONTALK.UTILITIES =
                    // widget_side_dereferenced could be contents of a box or scale and widget_side is the hole itself
                    css.left   = '';
                    css.top    = '';
-               } else if (widget_side_dereferenced.is_plain_text_element()) {
+               } else if (widget_side.is_plain_text_element() ||
+                          (widget_side.is_nest() && widget_side_dereferenced.is_plain_text_element()) ) {
                    // see Robot dropping text to change element text: test case
+                   // need to test for nest before using dereferenced widget since this is inappropriate for holes
                    css.width  = '';
                    css.height = '';
                }              
