@@ -314,20 +314,22 @@ window.TOONTALK.number = (function () {
     var scientific_notation_exponent = function (rational_number) {
         var absolute_value = bigrat.abs(bigrat.create(), rational_number);
         var negative_exponent = bigrat.isLessThan(absolute_value, bigrat.ONE);
-        var integer_approximation, integer_approximation_as_string;
+        var reciprocal, integer_approximation, integer_approximation_as_string;
         if (bigrat.equals(rational_number, bigrat.ZERO)) {
             return 0;
         }
         if (negative_exponent) {
             // use reciprocal to compute exponent
-            integer_approximation = bigrat.toBigInteger(bigrat.divide(bigrat.create(), bigrat.ONE, absolute_value));
+            reciprocal = bigrat.divide(bigrat.create(), bigrat.ONE, absolute_value);
+            integer_approximation = bigrat.toBigInteger(reciprocal);
         } else {
             integer_approximation = bigrat.toBigInteger(absolute_value);
         }
         integer_approximation_as_string = integer_approximation.toString();
         if (negative_exponent) {
-            if (remove_trailing_zeroes(integer_approximation_as_string) === '1') {
+            if (reciprocal[1].compare(BigInteger.ONE) === 0) {
                 // 1/10 has 10 as a reciprocal but is -1 not -2 exponent
+                // so adjust the exponent for 1/(10^n)
                 return -integer_approximation_as_string.length+1;
             }
             return -integer_approximation_as_string.length;
@@ -1489,7 +1491,6 @@ window.TOONTALK.number_backside =
                 var selected = TT.UTILITIES.selected_radio_button(decimal_format, mixed_number_format, improper_format, scientific_format);
                 var format = selected.button.value;
                 number.set_format(format, true, true);
-//                 number.rerender();
             };
             var update_operator = function () {
                 var selected = TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, set);
