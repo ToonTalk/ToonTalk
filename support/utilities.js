@@ -5449,11 +5449,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 if (document.hidden) {
                     utilities.mute_audio_objects_playing();
                 } else {
-//                     // make sure all widgets are redisplayed
-//                     // first add to DOM element of any widgets that have been created but never rendered
-//                     utilities.each_top_level_widget(function (top_level_widget) {
-//                         top_level_widget.update_display();
-//                     });
+                    // make sure all widgets are redisplayed
                     utilities.rerender_all();
                     utilities.restore_audio_volumes();
                 }

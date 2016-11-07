@@ -1159,7 +1159,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return true;
     };
     
-    element.dropped_on_style_attribute = function (dropped, attribute_name, event, robot) {
+    element.dropped_on_style_attribute = function (dropped, attribute_name, options) {
         var widget_string, widget_number, attribute_name, attribute_value, attribute_numerical_value, new_value;
         if (!dropped) {
             return;
@@ -1203,14 +1203,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             // following doesn't handle training since is handled below
             this.set_attribute(attribute_name, new_value, false);
-            if (event || (robot && robot.visible())) {
+            if (options.event || (options.robot && options.robot.visible())) {
                 this.get_backside().render();
             }
         }
         if (!dropped.get_infinite_stack()) {
             dropped.remove();
         }
-        if (event && this.robot_in_training()) {
+        if (options.event && this.robot_in_training()) {
             this.robot_in_training().dropped_on(dropped, this.create_attribute_widget(attribute_name));
         }
     };
@@ -2273,7 +2273,7 @@ window.TOONTALK.element.function =
     }
     functions.add_function_object(
         'join text', 
-        function (message, event, robot) {
+        function (message, options) {
             var join = function () {
                 var message_properties = arguments[arguments.length-1]; // last arg 
                 for (i = 0; i < arguments.length-1; i++) {
@@ -2286,14 +2286,14 @@ window.TOONTALK.element.function =
                 return TT.element.create(joined_text);
             };
             var joined_text = "";
-            return functions.typed_bird_function(message, join, [undefined], 'join', event, robot);
+            return functions.typed_bird_function(message, join, [undefined], 'join', options);
         },
         "The bird will return with a new element that is made by joining all the elements and numbers.",
         "join",
         ['any number of numbers or elements']);
     functions.add_function_object(
         'part of text', 
-        function (message, event, robot) {
+        function (message, options) {
             var substring = function (element_or_number, start_widget, end_widget, message_properties) {
                 var start, end;
                 if (!start_widget || !start_widget.to_float) {
@@ -2306,14 +2306,14 @@ window.TOONTALK.element.function =
                 return TT.element.create(element_or_number.get_text().substring(start, end));
             };
             // arity is 2 to 3 since if end is missing it is the rest of the string
-            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], 'part of text', event, robot, 2, 3);
+            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], 'part of text', options, 2, 3);
         },
         "The bird will return with a new element whose text is the part of the text of the first element (or number) beginning with the first number ending with the second number. 1 is for the first letter.",
         "part",
         ['an element followed by two postive numbers']);
      functions.add_function_object(
         'length of text', 
-        function (message, event, robot) {
+        function (message, options) {
             var length = function (text_widget, message_properties) {
                 if (!text_widget.get_text) {
                     functions.report_error("The 'length of text' bird could not turn " + describe(text_widget) + " into a text to find its length.", message_properties);
@@ -2321,14 +2321,14 @@ window.TOONTALK.element.function =
                 }
                 return TT.number.create(text_widget.get_text().length);
             };
-            return functions.typed_bird_function(message, length, [undefined], 'length of text', event, robot, 1);
+            return functions.typed_bird_function(message, length, [undefined], 'length of text', options, 1);
         },
         "The bird will return with a number that is length of the text of the first element (or number).",
         "length",
         ['an element or number']);
     functions.add_function_object(
         'text as number', 
-        function (message, event, robot) {
+        function (message, options) {
             var text_to_number = function (text_widget, message_properties) {
                 var text, number;
                 if (!text_widget || !text_widget.get_text) {
@@ -2345,14 +2345,14 @@ window.TOONTALK.element.function =
                 }
                 return number;
             };
-            return functions.typed_bird_function(message, text_to_number, [undefined], 'text as number', event, robot, 1, 1);
+            return functions.typed_bird_function(message, text_to_number, [undefined], 'text as number', options, 1, 1);
         },
         "The bird will return with a number that has the same text as the element. Arithmetic can be done on the result unlike the original text.",
         "text as number",
         ['an element']);
     functions.add_function_object(
         'go to page', 
-        function (message, event, robot) {
+        function (message, options) {
             var go_to_URL = function (element_url, message_properties) {
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
                     robot.display_message("Robot trained to replace current URL.");
@@ -2365,7 +2365,7 @@ window.TOONTALK.element.function =
                 }
             };
             // type checking should be extended so can say below any number of elements or numbers
-            return functions.typed_bird_function(message, go_to_URL, ['element'], 'replace page', event, robot, 1, 1);
+            return functions.typed_bird_function(message, go_to_URL, ['element'], 'replace page', options, 1, 1);
         },
         "The bird will cause the current page to be replaced by the new URL. The back button should return to the current page.",
         "page",
@@ -2389,7 +2389,7 @@ window.TOONTALK.element.function =
     functions.add_function_object(
         'show message',
         // might this make sense to also be able to display non-text elements?
-        function (message, event, robot) {
+        function (message, options) {
             var display_message = function (element_text, duration, message_properties) {
                 var options;
                 if (duration && duration.to_float) {
@@ -2405,7 +2405,7 @@ window.TOONTALK.element.function =
                     TT.UTILITIES.display_message(element_text.get_text(), options);
                 }
             };
-            return functions.typed_bird_function(message, display_message, ['element', 'number'], 'show message', event, robot, 1, 2);
+            return functions.typed_bird_function(message, display_message, ['element', 'number'], 'show message', options, 1, 2);
         },
         "The bird will cause what is in the second box hole to be displayed. The third hole can be a number indicating how many seconds the message should be displayed.",
         "display",

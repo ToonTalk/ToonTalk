@@ -15,10 +15,6 @@ window.TOONTALK.create_function_table =
         }
         if (message_properties.message_return_bird) {
             message_properties.message_return_bird.widget_side_dropped_on_me(message_properties.message, options);
-//                                                                              {event: event,
-//                                                                               robot: robot,
-//                                                                               do_not_run_next_step: true,
-//                                                                               by_function_bird: true});
         }
     }
     return {
@@ -96,7 +92,7 @@ window.TOONTALK.create_function_table =
             message.remove({do_not_remove_children: true});
         }
     },  
-    process_message: function (message, compute_response, event, robot) {
+    process_message: function (message, compute_response, options) {
         var response;
         var message_properties = this.check_message(message);
         if (typeof message_properties === 'string') {
@@ -108,11 +104,11 @@ window.TOONTALK.create_function_table =
         // then the response might still be considered as a child of the obsolete nest
         // only the first hole is re-used in responses
         if (!message_properties.message_return_bird && message.get_size() > 1 && message.get_hole_contents(1)) {
-            message.get_hole_contents(1).remove({event: event,
+            message.get_hole_contents(1).remove({event: options.event,
                                                  do_not_remove_children: true, 
                                                  do_not_remove_frontside: true});
         }
-        this.process_response(response, message_properties, message, event, robot);
+        this.process_response(response, message_properties, message, options);
         return response;
     },
     type_check: function (type, widget, function_name, index, message_properties) {
@@ -144,7 +140,7 @@ window.TOONTALK.create_function_table =
     number_check: function (widget, function_name, index, message_properties) {
         return this.type_check('number', widget, function_name, index, message_properties);
     },
-    n_ary_widget_function: function (message, zero_ary_value_function, binary_operation, function_name, event, robot) { 
+    n_ary_widget_function: function (message, zero_ary_value_function, binary_operation, function_name, options) { 
         // binary_operation is a function of two widgets that updates the first
         var compute_response = function (message_properties) {
             var next_widget, index, response;
@@ -181,9 +177,9 @@ window.TOONTALK.create_function_table =
             }
             return response;
         }.bind(this);
-        return this.process_message(message, compute_response, event, robot);
+        return this.process_message(message, compute_response, options);
     },
-    n_ary_function: function (message, operation, minimum_arity, function_name, event, robot) { 
+    n_ary_function: function (message, operation, minimum_arity, function_name, options) { 
         var compute_response = function (message_properties) {
             var next_widget, index, args, any_approximate_arguments, response;
             if (message_properties.box_size < minimum_arity+1) { // one for the bird
@@ -218,9 +214,9 @@ window.TOONTALK.create_function_table =
             }
             return response;
         }.bind(this);
-        return this.process_message(message, compute_response, event, robot);
+        return this.process_message(message, compute_response, options);
     },
-    typed_bird_function: function (message, bird_function, types, function_name, event, robot, min_arity, max_arity) {
+    typed_bird_function: function (message, bird_function, types, function_name, options, min_arity, max_arity) {
         // if min_arity is undefined then no limit to the number of repetitions of the last type
         // if max_arity is undefined then every hole in the message is processed otherwise those beyond max_arity are ignored
         var compute_response = function (message_properties) {
@@ -259,7 +255,7 @@ window.TOONTALK.create_function_table =
             args.push(message_properties);
             return bird_function.apply(message, args);
         }.bind(this);
-        return this.process_message(message, compute_response, event, robot);
+        return this.process_message(message, compute_response, options);
     },
     numeric_javascript_function_to_widget_function: function (decimal_function, approximate, toDecimal) {
         // takes a function that returns a JavaScript number and

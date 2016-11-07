@@ -1502,7 +1502,7 @@ window.TOONTALK.box.function =
     var functions = TT.create_function_table();
     functions.add_function_object(
         'box hole', 
-        function (message, event, robot) {
+        function (message, options) {
             var get_hole_contents = function (number, box, message_properties) {
                 var n = Math.round(number.to_float());
                 var contents;
@@ -1527,25 +1527,25 @@ window.TOONTALK.box.function =
                 }
                 return contents;
             };
-            return functions.typed_bird_function(message, get_hole_contents, ['number', 'box'], 'box hole', event, robot, 2, 2);
+            return functions.typed_bird_function(message, get_hole_contents, ['number', 'box'], 'box hole', options, 2, 2);
         },
         "The bird will return with what is in a hole of the box. The number determines which hole's contents are returned. Use 1 for the first hole.",
         "hole",
         ['number', 'box']);
     functions.add_function_object(
         'count holes', 
-        function (message, event, robot) {
+        function (message, options) {
             var get_size = function (box) {
                 return TT.number.create(box.get_size());
             };
-            return functions.typed_bird_function(message, get_size, ['box'], 'count holes', event, robot, 1, 1);
+            return functions.typed_bird_function(message, get_size, ['box'], 'count holes', options, 1, 1);
         },
         "The bird will return with the number of holes the box has.",
         "count holes",
         ['box']);
     functions.add_function_object(
         'fill hole', 
-        function (message, event, robot) {
+        function (message, options) {
             var set_hole_contents = function (number, box, new_contents, message_properties) {
                 var n = Math.round(number.to_float());
                 if (n < 1) {
@@ -1564,14 +1564,14 @@ window.TOONTALK.box.function =
                 box.set_hole(n-1, new_contents);
                 return box;
             };
-            return functions.typed_bird_function(message, set_hole_contents, ['number', 'box', undefined], 'fill hole', event, robot, 3, 3);
+            return functions.typed_bird_function(message, set_hole_contents, ['number', 'box', undefined], 'fill hole', options, 3, 3);
         },
         "The bird will return with the box where one of its holes has been filled by whatever is in the fourth hole. The number determines which hole's contents are changed. 1 for the first hole.",
         "fill hole",
         ['number', 'box', undefined]);
     functions.add_function_object(
         'split box', 
-        function (message, event, robot) {
+        function (message, options) {
             var split_box = function (number, box, message_properties) {
                 var n = Math.round(number.to_float());
                 var box_size = box.get_size();
@@ -1604,14 +1604,14 @@ window.TOONTALK.box.function =
                 }
                 return box_of_boxes();
             };
-            return functions.typed_bird_function(message, split_box, ['number', 'box'], 'split box', event, robot, 2, 2);
+            return functions.typed_bird_function(message, split_box, ['number', 'box'], 'split box', options, 2, 2);
         },
         "The bird will return with a box with the original box split in two. The number determines where the split is. 1 for after the first hole.",
         "split",
         ['number', 'box']);
     functions.add_function_object(
         'merge boxes', 
-        function (message, event, robot) {
+        function (message, options) {
             var merge_box = function () {
                 var new_box_size = 0;
                 var i, j, merged_box, merged_box_hole_index, box_size, contents, message_properties;
@@ -1644,14 +1644,14 @@ window.TOONTALK.box.function =
                 }
                 return merged_box;
             };
-            return functions.typed_bird_function(message, merge_box, ['box'], 'merge boxes', event, robot);
+            return functions.typed_bird_function(message, merge_box, ['box'], 'merge boxes', options);
         },
         "The bird will return with a box that joins together all the boxes.",
         "merge",
         ['any number of boxes']);
     functions.add_function_object(
         'get window property', 
-        function (message, event, robot) {
+        function (message, options) {
             var get_value = function (box, message_properties) {
                 var value = window;
                 var size = box.get_size();
@@ -1691,14 +1691,14 @@ window.TOONTALK.box.function =
                 }
                 return TT.element.create(value.toString());
             };
-            return functions.typed_bird_function(message, get_value, ['box'], 'window property', event, robot, 1, 1);
+            return functions.typed_bird_function(message, get_value, ['box'], 'window property', options, 1, 1);
         },
         "The bird will return with the value of the property accessed by each of the property names in the box.",
         "win prop",
         ['box']);
     functions.add_function_object(
         'set window property', 
-        function (message, event, robot) {
+        function (message, options) {
             var set_value = function (box, new_value_as_widget, message_properties) {
                 var properties = window;
                 var size = box.get_size();
@@ -1757,7 +1757,7 @@ window.TOONTALK.box.function =
                 }
                 return new_value_as_widget;
             };
-            return functions.typed_bird_function(message, set_value, ['box', undefined], 'set window property', event, robot, 2, 2);
+            return functions.typed_bird_function(message, set_value, ['box', undefined], 'set window property', options, 2, 2);
         },
         "The bird will set the value of the property accessed by each of the property names in the box in the second hole to the value of the widget in the third hole.",
         "set win prop",

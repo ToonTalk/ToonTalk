@@ -985,20 +985,20 @@ window.TOONTALK.number = (function () {
         return true;
     };
     
-    number.number_dropped_on_me = function (side_of_other_number, event, robot) {
+    number.number_dropped_on_me = function (side_of_other_number, options) {
          var bammer_element, $top_level_backside_element, target_absolute_position, 
              this_frontside_element, hit_number_continuation, bammer_gone_continuation;
          if (side_of_other_number.is_backside()) {
              return;
          }
-         if (side_of_other_number.visible() && this.visible() && (event || robot)) {
+         if (side_of_other_number.visible() && this.visible() && (options.event || options.robot)) {
              // do this if number is visible and user did the drop or a visible robot did it
-             if (robot) {
-                 if (!robot.animate_consequences_of_actions()) {
-                     return this.number_dropped_on_me_semantics(side_of_other_number, event, robot);
+             if (options.robot) {
+                 if (!options.robot.animate_consequences_of_actions()) {
+                     return this.number_dropped_on_me_semantics(side_of_other_number, options);
                  }
                  // robot should wait for this
-                 side_of_other_number.robot_waiting_before_next_step = robot;
+                 side_of_other_number.robot_waiting_before_next_step = options.robot;
              }
              bammer_element = document.createElement("div");
              $(bammer_element).addClass("toontalk-bammer-down");
@@ -1019,12 +1019,12 @@ window.TOONTALK.number = (function () {
                  if (TT.sounds) {
                      TT.sounds.bammer_hammer.play();
                  }
-                 if (this.number_dropped_on_me_semantics(side_of_other_number, event, robot) && robot) {
+                 if (this.number_dropped_on_me_semantics(side_of_other_number, options) && options.robot) {
                      // will stop if drop signaled an error
                      this.rerender();
-                     robot.run_next_step();
+                     options.robot.run_next_step();
                  }
-                 if (event) {
+                 if (options.event) {
                      this.backup_all();
                  }
                  $(bammer_element).removeClass("toontalk-bammer-down");
@@ -1043,14 +1043,14 @@ window.TOONTALK.number = (function () {
                          TT.UTILITIES.animate_to_absolute_position(bammer_element,
                                                                    target_absolute_position,
                                                                    bammer_gone_continuation,
-                                                                   robot && robot.transform_animation_speed(TT.animation_settings.BAMMER_ANIMATION_SPEED)); 
+                                                                   options.robot && options.robot.transform_animation_speed(TT.animation_settings.BAMMER_ANIMATION_SPEED)); 
                          $(bammer_element).css({opacity: 0.01});
                      });
              }.bind(this);
              TT.UTILITIES.animate_to_absolute_position(bammer_element,
                                                        target_absolute_position,
                                                        hit_number_continuation,
-                                                       robot && robot.transform_animation_speed(TT.animation_settings.BAMMER_ANIMATION_SPEED));
+                                                       options.robot && options.robot.transform_animation_speed(TT.animation_settings.BAMMER_ANIMATION_SPEED));
              $(side_of_other_number.get_frontside_element(true))
                               .css({"z-index": TT.UTILITIES.next_z_index()});
              $(bammer_element).css({opacity: 1.0,
@@ -1058,12 +1058,12 @@ window.TOONTALK.number = (function () {
                                    "z-index": TT.UTILITIES.next_z_index()+100});
              return this;             
          } else {
-             return this.number_dropped_on_me_semantics(side_of_other_number, event, robot);
+             return this.number_dropped_on_me_semantics(side_of_other_number, options);
          }
      };
 
-    number.number_dropped_on_me_semantics = function (other_number, event, robot) { 
-        if (event && this.robot_in_training()) {
+    number.number_dropped_on_me_semantics = function (other_number, options) { 
+        if (options.event && this.robot_in_training()) {
             this.robot_in_training().dropped_on(other_number, this);
         }
         if (other_number.get_approximate()) {
@@ -1616,60 +1616,60 @@ window.TOONTALK.number.function =
         return true;
     };
     functions.add_function_object('sum', 
-                        function (message, event, robot) {
-                            return functions.n_ary_widget_function(message, TT.number.ZERO, TT.number.add, 'sum', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_widget_function(message, TT.number.ZERO, TT.number.add, 'sum', options);
                         },
                         "The bird will return with the sum of the numbers in the box.",
                         "+");
     functions.add_function_object('difference', 
-                        function (message, event, robot) {
-                             return functions.n_ary_widget_function(message, TT.number.ZERO, TT.number.subtract, 'difference', event, robot);
+                        function (message, options) {
+                             return functions.n_ary_widget_function(message, TT.number.ZERO, TT.number.subtract, 'difference', options);
                         },
                         "The bird will return with the result of subtracting the numbers in the box from the first number.",
                         "-");
     functions.add_function_object('product', 
-                        function (message, event, robot) {
-                             return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.multiply, 'product', event, robot);
+                        function (message, options) {
+                             return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.multiply, 'product', options);
                         },
                         "The bird will return with the product of the numbers in the box.",
                         "ÃƒÆ’Ã¢â‚¬â€");
     functions.add_function_object('division', 
-                        function (message, event, robot) {
-                             return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.divide, 'division', event, robot);
+                        function (message, options) {
+                             return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.divide, 'division', options);
                         },
                         "The bird will return with the result of dividing the numbers into the first number in the box.",
                         "ÃƒÆ’Ã‚Â·"); // CSS can't contain HTML -- see http://www.evotech.net/blog/2007/04/named-html-entities-in-numeric-order/
     functions.add_function_object('modulo', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(modulo), 2, 'modulo', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(modulo), 2, 'modulo', options);
                         },
                         "The bird will return with the first number modulo the second number. For positive numbers this is like the remainder after division.",
                         "mod");
     functions.add_function_object('minimum', 
-                        function (message, event, robot) {
-                            return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.minimum, 'minimum', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.minimum, 'minimum', options);
                         },
                         "The bird will return with the smallest of the numbers in the box.",
                         "min");
     functions.add_function_object('maximum', 
-                        function (message, event, robot) {
-                            return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.maximum, 'maximum', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_widget_function(message, TT.number.ONE, TT.number.maximum, 'maximum', options);
                         },
                         "The bird will return with the largest of the numbers in the box.",
                         "max");
     functions.add_function_object('absolute value', 
-                        function (message, event, robot) {
+                        function (message, options) {
                             var absolute_value = function (rational_number) {
                                 var number_widget = TT.number.ZERO(message.get_hole_contents(1).get_format());
                                 bigrat.abs(number_widget.get_value(), rational_number);
                                 return number_widget;
                             }
-                            return functions.n_ary_function(message, absolute_value, 1, 'absolute value', event, robot);
+                            return functions.n_ary_function(message, absolute_value, 1, 'absolute value', options);
                         },
                         "The bird will return with the positive version of the number.",
                         "abs"); 
     functions.add_function_object('power', 
-                        function (message, event, robot) {
+                        function (message, options) {
                             var power_function = function (bigrat_base, bigrat_power) {
                                 var to_numerator = bigrat.power(bigrat.create(), bigrat_base, bigrat_power[0].valueOf());
                                 var denominator_power = bigrat_power[1].valueOf();
@@ -1683,25 +1683,25 @@ window.TOONTALK.number.function =
                                 // args[1] is power and args[1][1] is its denominator
                                 return args[1][1].compare(BigInteger.ONE) !== 0;
                             };
-                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(power_function, approximate_if_power_is_not_integer), 2, 'power', event, robot);
+                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(power_function, approximate_if_power_is_not_integer), 2, 'power', options);
                         },
                         "The bird will return with the first number to the power of the second number.");
     functions.add_function_object('logarithm', 
-                        function (message, event, robot) {
+                        function (message, options) {
                             var logarithm = function () {
                                 if (arguments.length === 1) {
                                     return Math.log(arguments[0]);
                                 }
                                 return Math.log(arguments[0])/Math.log(arguments[1]);
                             };
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(logarithm, always_approximate), 1, 'logarithm', event, robot);
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(logarithm, always_approximate), 1, 'logarithm', options);
                         },
                         "The bird will return an approximation of the logarithm number of the first number.\n" +
                         "If a second number is provided then it is used as the base of the logarithm.\n" +
                         "If there is no second number the logarithm is natural (the base is e).",
                         "log");                    
     functions.add_function_object('random', 
-                        function (message, event, robot) {
+                        function (message, options) {
                             var random = function () {
                                 if (arguments.length === 0) {
                                     return Math.random();
@@ -1714,25 +1714,25 @@ window.TOONTALK.number.function =
                                 }
                                 return Math.random()*(arguments[0]-arguments[1])+arguments[1];
                             };
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(random), 0, 'random', event, robot);
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(random), 0, 'random', options);
                         },
                         "The bird will return a random number between the first and second numbers.\n" +
                         "If the second number isn't provided a number less than the first number is returned.\n" +
                         "If no numbers are given then the bird returns with a number between 0 and 1.",
                         "rand");           
     functions.add_function_object('round', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(round), 1, 'round', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(round), 1, 'round', options);
                         },
                         "The bird will return the number rounded to the nearest integer.");
     functions.add_function_object('floor', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(floor), 1, 'floor', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(floor), 1, 'floor', options);
                         },
                         "The bird will return the largest integer less than or equal to the number.");                       
     functions.add_function_object('ceiling', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(ceiling), 1, 'ceiling', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, functions.bigrat_function_to_widget_function(ceiling), 1, 'ceiling', options);
                         },
                         "The bird will return the smallest integer greater than or equal to the number.",
                         "ceil");
@@ -1740,68 +1740,68 @@ window.TOONTALK.number.function =
                         delay_function,
                         "The bird will return after waiting the number of seconds in the second hole. She will return with the exact amount of time since she received the box.");  
     functions.add_function_object('integer and fraction parts', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, box_with_integer_and_fraction, 1, 'integer and fraction parts', options);
                         },
                         "The bird will return with a box containing the integer part and the fraction.",
                         "parts");
     functions.add_function_object('sine', 
-                        function (message, event, robot) {
+                        function (message, options) {
                             var sin = function (degrees) {
                                           return Math.sin(degrees/RADIAN);
                                       };
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(sin, true, degrees_to_decimal), 1, 'sine', event, robot);
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(sin, true, degrees_to_decimal), 1, 'sine', options);
                         },
                         "The bird will return with an approximation of the sine of the number (in degrees).",
                         "sin");                  
     functions.add_function_object('cosine', 
-                        function (message, event, robot) {
+                        function (message, options) {
                             var cos = function (degrees) {
                                           return Math.cos(degrees/RADIAN);
                                       };
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(cos, true, degrees_to_decimal), 1, 'cosine', event, robot);
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(cos, true, degrees_to_decimal), 1, 'cosine', options);
                         },
                         "The bird will return with an approximation of the cosine of the number (in degrees).",
                         "cos");
     functions.add_function_object('arc tangent', 
-                        function (message, event, robot) {
+                        function (message, options) {
                             var atan_in_degrees = function (x) {
                                                       return RADIAN*Math.atan(x);
                             };
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(atan_in_degrees, true), 1, 'arc tangent', event, robot);
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(atan_in_degrees, true), 1, 'arc tangent', options);
                         },
                         "The bird will return with an approximation of the arc tangent (in degrees) of the number.",
                         "atan");
     functions.add_function_object('arc tangent of y and x', 
-                        function (message, event, robot) {
+                        function (message, options) {
                             var atan_in_degrees = function (x, y) {
                                                       return RADIAN*Math.atan2(x, y);
                             };
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(atan_in_degrees, true), 2, 'arc tangent of y and x', event, robot);
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(atan_in_degrees, true), 2, 'arc tangent of y and x', options);
                         },
                         "The bird will return with an approximation of the arc tangent (in degrees) of the point where the first number is the y coordinate and the second one is the x.",
                         "atan2");
     functions.add_function_object('sine (in radians)', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(Math.sin, true, radians_to_decimal), 1, 'sine (in radians)', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(Math.sin, true, radians_to_decimal), 1, 'sine (in radians)', options);
                         },
                         "The bird will return with an approximation of the sine of the number (in radians).",
                         "sin rad");                  
     functions.add_function_object('cosine (in radians)', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(Math.cos, true, radians_to_decimal), 1, 'cosine (in radians)', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(Math.cos, true, radians_to_decimal), 1, 'cosine (in radians)', options);
                         },
                         "The bird will return with an approximation of the cosine of the number (in radians).",
                         "cos rad");
     functions.add_function_object('arc tangent (in radians)', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(Math.atan, true), 1, 'arc tangent (in radians)', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(Math.atan, true), 1, 'arc tangent (in radians)', options);
                         },
                         "The bird will return with an approximation of the arc tangent (in radians) of the number.",
                         "atan rad");
     functions.add_function_object('arc tangent of y and x (in radians)', 
-                        function (message, event, robot) {
-                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(Math.atan2, true), 2, 'arc tangent of y and x (in radians)', event, robot);
+                        function (message, options) {
+                            return functions.n_ary_function(message, functions.numeric_javascript_function_to_widget_function(Math.atan2, true), 2, 'arc tangent of y and x (in radians)', options);
                         },
                         "The bird will return with an approximation of the arc tangent (in radians) of the point where the first number is the y coordinate and the second one is the x.",
                         "atan2 rad");
