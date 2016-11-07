@@ -1395,21 +1395,12 @@ window.TOONTALK.UTILITIES =
             object.id_of_tree_replace_once_task = id;
             var keys = Object.keys(object);
             var value;
-//             var messages = [];
-            keys.forEach(function (property) {
+            keys.some(function (property) {
                     value = object[property];
-//                     console.log("tree_replace_once: " + property + " = " + value);
-//                     messages[0] = "Replaced " + JSON.stringify(replace);
-//                     messages[1] = "with " + JSON.stringify(replacement);
-//                     messages[2] = "in " + JSON.stringify(object);
-                    if (!value) {
+                    if (value === null) {
                         // ignore it
                     } else if (value === replace) {
                         object[property] = replacement;
-//                         messages.forEach(function (message) {
-//                             console.log(message);
-//                         });
-//                         console.log("Object is now " + JSON.stringify(object));
                         return true;
                     } else if (property === 'shared_widget_index') {
                         if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
