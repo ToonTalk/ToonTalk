@@ -323,7 +323,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             }
             if (!jQuery.contains(window.document, frontside_element)) {
-                // not yet visible so postpone
+                // not yet attached so postpone
                 TT.UTILITIES.when_attached(frontside_element, this.apply_css.bind(this));
                 return;
             }
@@ -414,15 +414,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             }
             if (current_width || current_height) {
-                $(frontside_element).css({width: '', height: ''});
                 wrap_location(this, pending_css);
                 if (transform) {
                     TT.UTILITIES.add_transform_to_css(transform, "", pending_css, frontside_element.parentElement.className.indexOf("toontalk-box-hole") < 0);
                 }
-                if (!this.constrained_by_container()) {
+                if (!this.constrained_by_container() && !this.is_image_element()) {
                     $(frontside_element).css(pending_css);
                     return;
                 }
+                $(frontside_element).css({width: '', height: ''});
                 current_pending_css = pending_css;
                 TT.UTILITIES.run_when_dimensions_known(frontside_element,
                                                        function (original_parent) {
