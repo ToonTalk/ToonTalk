@@ -104,9 +104,9 @@ window.TOONTALK.create_function_table =
         // then the response might still be considered as a child of the obsolete nest
         // only the first hole is re-used in responses
         if (!message_properties.message_return_bird && message.get_size() > 1 && message.get_hole_contents(1)) {
-            message.get_hole_contents(1).remove({event: options.event,
-                                                 do_not_remove_children: true, 
-                                                 do_not_remove_frontside: true});
+            options.do_not_remove_children  = true;
+            options.do_not_remove_frontside = true;
+            message.get_hole_contents(1).remove(options);
         }
         this.process_response(response, message_properties, message, options);
         return response;

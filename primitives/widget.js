@@ -965,7 +965,7 @@ window.TOONTALK.widget = (function (TT) {
                 frontside.remove(); 
             } 
             if (parent_of_frontside) {
-                this.remove_from_parent_of_frontside(event);
+                this.remove_from_parent_of_frontside(options.event);
             }
             if (this.get_running()) {
                 this.set_running(false);
@@ -1666,7 +1666,7 @@ window.TOONTALK.widget = (function (TT) {
 
         // defined here in order to share between element and number functions
         get_speak_function: function (functions) {
-          return function (message, event, robot) {
+          return function (message, options) {
             var speak = function (widget) {
                 var text, speech_utterance, when_finished;
                 if (!widget) {
@@ -1682,7 +1682,8 @@ window.TOONTALK.widget = (function (TT) {
                                            function (translated_text) {
                                                when_finished = function (event) {
                                                    var response = TT.element.create(translated_text, [], "a response to speaking '" + text + "'");
-                                                   functions.process_response(response, message_properties, message, event, robot);
+                                                   options.event = event;
+                                                   functions.process_response(response, message_properties, message, options);
                                                };
                                                TT.UTILITIES.speak(translated_text, 
                                                                  {when_finished: when_finished,
@@ -1694,7 +1695,8 @@ window.TOONTALK.widget = (function (TT) {
                 } else {
                     when_finished = function (event) {
                         var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
-                        functions.process_response(response, message_properties, message, event, robot);
+                        options.event = event;
+                        functions.process_response(response, message_properties, message, options);
                     };
                     TT.UTILITIES.speak(text,
                                        {when_finished: when_finished, 
@@ -1738,7 +1740,7 @@ window.TOONTALK.widget = (function (TT) {
             return true;
         }},
         get_listen_function: function (functions, numbers_only) {
-            return function (message, event, robot) {
+            return function (message, options) {
                 var message_properties, success_callback, fail_callback, confidence, expected_phrases;
                 if (!window.webkitSpeechRecognition && !window.SpeechRecognition) {
                     // ignore this
@@ -1776,14 +1778,14 @@ window.TOONTALK.widget = (function (TT) {
                             // otherwise ignore it
                             response = TT.number.create_from_bigrat(bigrat.fromDecimal(number));
                             response.set_description("a number that was heard");
-                            functions.process_response(response, message_properties, message, event, robot);
+                            functions.process_response(response, message_properties, message, options);
                             TT.UTILITIES.stop_listening_for_speech();
                         }
                     };   
                 } else {
                     success_callback = function (text) {
                         var response = TT.element.create(text, [], "what was spoken");
-                        functions.process_response(response, message_properties, message, event, robot);
+                        functions.process_response(response, message_properties, message, options);
                         TT.UTILITIES.stop_listening_for_speech();
                     };  
                 }
@@ -1801,12 +1803,12 @@ window.TOONTALK.widget = (function (TT) {
         },
         get_description_function: function (functions) {
           // displays the text or description of the widget in second hole in the message
-          return function (message, event, robot) {
+          return function (message, options) {
             var describe = function (widget) {   
                 var text, speech_utterance, respond;
                 respond = function (description) {
                     var response = TT.element.create(description, [], widget.toString());
-                    functions.process_response(response, message_properties, message, event, robot);
+                    functions.process_response(response, message_properties, message, options);
                 };
                 widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text(true) : widget.toString();

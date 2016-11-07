@@ -1059,7 +1059,6 @@ window.TOONTALK.robot = (function (TT) {
             // this limits training to two levels -- could have more but must limit it
             this.robot_training_this_robot().trained(this, step);
         }
-        console.log(step+"");
     };
     
     robot.update_display = function () {

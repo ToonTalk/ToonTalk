@@ -1065,7 +1065,7 @@ window.TOONTALK.number = (function () {
      };
 
     number.number_dropped_on_me_semantics = function (other_number, options) { 
-        if (options.event && this.robot_in_training()) {
+        if (options && options.event && this.robot_in_training()) {
             this.robot_in_training().dropped_on(other_number, this);
         }
         if (other_number.get_approximate()) {

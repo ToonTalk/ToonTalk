@@ -935,6 +935,9 @@ window.TOONTALK.nest = (function (TT) {
             var current_non_empty_listeners, widget_side_copy;
             var stack_size = contents.push(widget_side);
             var nest_visible = this.visible();
+            if (!options) {
+                options = {};
+            }
             if (stack_size > nest.maximum_capacity && 
                 options.robot && options.robot_removed_contents_since_empty && !options.robot.visible() &&
                 !nest_visible) {
