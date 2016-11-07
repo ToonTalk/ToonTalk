@@ -211,13 +211,13 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_running_or_in_run_queue = function (new_value) {
             running_or_in_run_queue = new_value;
         };
-//         new_robot.set_running = function (new_value) {
-//             running = new_value;
-//         };
         new_robot.stopped = function () {
             return stopped;
         };
         new_robot.set_stopped = function (new_value) {
+            if (stopped) {
+                running_or_in_run_queue = false;
+            }
             if (stopped === new_value) {
                 return;
             }
@@ -232,7 +232,6 @@ window.TOONTALK.robot = (function (TT) {
                     }
                     this.rerender();
                 }
-                running_or_in_run_queue = false;
             }
             if (this.get_next_robot()) {
                 this.get_next_robot().set_stopped(new_value);
