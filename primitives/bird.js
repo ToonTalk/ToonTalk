@@ -67,7 +67,8 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.widget_side_dropped_on_me = function (message_side, options) {
             // options include event, robot, do_not_run_next_step, by_function_bird, temporary_bird
-            var frontside_element, fly_continuation, run_next_step_continuation, add_to_nest_contents_directly;
+            var frontside_element, fly_continuation,
+                run_next_step_continuation, after_delivery_continuation, add_to_nest_contents_directly;
             if (nest) {
                 if (nest.has_ancestor(message_side)) {
                     message_side.display_message("Bird can't take its nest to its nest!");
@@ -97,13 +98,17 @@ window.TOONTALK.bird = (function (TT) {
                         // the following was redundant (but unsure if it alsways is)
 //                      message_side.remove_from_parent_of_frontside();
                         if (options.robot.run_next_step) {
-                            run_next_step_continuation = function () {
+                            run_next_step_continuation = function (continuation) {
+                                if (continuation) {
+                                    continuation();
+                                }
                                 message_side.robot_waiting_before_next_step = undefined;
                                 options.robot.run_next_step();
                             };
                         }
                     }
-                    options.after_delivery_continuation = run_next_step_continuation;
+                    options.after_delivery_continuation = 
+                        TT.UTILITIES.join_continuations(options.after_delivery_continuation, run_next_step_continuation);
                     nest.animate_bird_delivery(message_side, this, options);
                 } else {
                     add_to_nest_contents_directly = function () {
@@ -132,7 +137,7 @@ window.TOONTALK.bird = (function (TT) {
             } else {
                 this.animate_delivery_to(message_side);
             }
-            if (options.event && this.robot_in_training()) {
+            if (options.event && !options.by_function_bird && this.robot_in_training()) {
                 this.robot_in_training().dropped_on(message_side, this);
             }
             return true;
@@ -212,11 +217,31 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this);
             var bird_return_continuation = 
                 function () {
+                    var after_delivery_continuation = function (continuation) {
+                        // return to original location
+                        TT.UTILITIES.set_timeout(function () {
+                            var new_continuation = function () {
+                                                       if (continuation) {
+                                                           continuation();
+                                                       }
+                                                       if (bird_finished_continuation) {
+                                                           bird_finished_continuation();
+                                                       }
+                                                   };
+                            this.fly_to(bird_offset, new_continuation, options); 
+                        }.bind(this));
+                    }.bind(this);
                     if (nest_recieving_message) {
                         try {
                             options.delivery_bird = this;
                             options.ignore_copies = true;
+                            if (this.is_function_bird()) {
+                                options.after_delivery_continuation = after_delivery_continuation;
+                            }
                             nest_recieving_message.add_to_contents(message_side, options);
+                            if (!this.is_function_bird()) {
+                                after_delivery_continuation();
+                            }
                         } catch (nest_or_error) {
                             if (nest_or_error.wait_for_nest_to_receive_something) {
                                 // e.g. this is a function bird and it received a box with empty nests inside
@@ -236,12 +261,10 @@ window.TOONTALK.bird = (function (TT) {
                                 throw nest_or_error;
                             }
                         }
+                    } else if (!this.is_function_bird()) {
+                        after_delivery_continuation();
                     }
                     stop_carrying_element($(bird_frontside_element).offset());
-                    // return to original location
-                    TT.UTILITIES.set_timeout(function () {
-                            this.fly_to(bird_offset, bird_finished_continuation, options); 
-                        }.bind(this));
                 }.bind(this);
             var carry_element = 
                 function (element, widget_side) {

@@ -2602,6 +2602,18 @@ window.TOONTALK.UTILITIES =
                                             return ""; // replace encodings with the empty string
                                         });
         };
+
+        utilities.join_continuations = function (continuation_1, continuation_2) {
+            if (!continuation_1) {
+                return continuation_2;
+            }
+            if (!continuation_2) {
+                return continuation_1;
+            }
+            return function () {
+                continuation_2(continuation_1);
+            };        
+        };
         
         utilities.add_one_shot_event_handler = function (element, event_name, maximum_wait, handler) {
             // could replace the first part of this by http://api.jquery.com/one/

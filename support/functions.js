@@ -9,16 +9,16 @@ window.TOONTALK.create_function_table =
   "use strict";
   return function () {
     var function_table = {};
-    var return_the_message = function (message_properties, event, robot) {
+    var return_the_message = function (message_properties, options) {
         if (!message_properties) {
             return;
         }
         if (message_properties.message_return_bird) {
-            message_properties.message_return_bird.widget_side_dropped_on_me(message_properties.message,
-                                                                             {event: event,
-                                                                              robot: robot,
-                                                                              do_not_run_next_step: true,
-                                                                              by_function_bird: true});
+            message_properties.message_return_bird.widget_side_dropped_on_me(message_properties.message, options);
+//                                                                              {event: event,
+//                                                                               robot: robot,
+//                                                                               do_not_run_next_step: true,
+//                                                                               by_function_bird: true});
         }
     }
     return {
@@ -78,18 +78,19 @@ window.TOONTALK.create_function_table =
         return_the_message(message_properties);
         return error;
     },
-    process_response: function (response, message_properties, message, event, robot) {
+    process_response: function (response, message_properties, message, options) {
         if (response) {
             // it used to be that this also called add_newly_created_widget
             // this wasn't necessary and for the delay function bird meant this could happen at the wrong step
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
-            message_properties.bird.widget_side_dropped_on_me(response, {event: event,
-                                                                         robot: robot,
-                                                                         do_not_run_next_step: true,
-                                                                         by_function_bird: true,
-                                                                         // bird is "lost" unless message is returned
-                                                                         temporary_bird: !message_properties.return_the_message});
-            return_the_message(message_properties, event, robot);
+            options.do_not_run_next_step = true;
+            options.by_function_bird = true;
+            if (!message_properties.message_return_bird) {
+                // bird is "lost" unless message is returned
+                options.temporary_bird = true;
+            }
+            message_properties.bird.widget_side_dropped_on_me(response, options);
+            return_the_message(message_properties, options);
         }
         if (!message_properties.message_return_bird) {
             message.remove({do_not_remove_children: true});

@@ -1584,7 +1584,7 @@ window.TOONTALK.number_backside =
 window.TOONTALK.number.function = 
 (function () {
     var functions = TT.create_function_table();
-    var delay_function = function (message, event, robot) {
+    var delay_function = function (message, options) {
         // delays by the amount in the second hole in seconds and give the bird the number of seconds since receiving the box 
         var start = Date.now();
         var message_properties = functions.check_message(message);
@@ -1601,7 +1601,7 @@ window.TOONTALK.number.function =
                        var response = TT.number.ZERO(TT.number.function_bird_results_default_format);
                        response.set_value_from_decimal((Date.now()-start)/1000);
                        response.set_approximate(true);
-                       functions.process_response(response, message_properties, message, event, robot);
+                       functions.process_response(response, message_properties, message, options);
                    },
                    delay*1000);
         return true;                 
