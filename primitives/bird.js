@@ -88,7 +88,9 @@ window.TOONTALK.bird = (function (TT) {
                         // delay this since removes geometry until recomputed
                         $(frontside_element).removeClass("toontalk-bird-gimme")
                                             .addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
-                        this.get_parent_of_frontside().rerender();
+                        if (this.get_parent_of_frontside()) {
+                            this.get_parent_of_frontside().rerender();
+                        }
                     }.bind(this));
                     message_side.set_visible(nest.visible()); // since nest is
                     if (options.robot && !options.do_not_run_next_step) {
