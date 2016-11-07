@@ -340,7 +340,7 @@ window.TOONTALK.bird = (function (TT) {
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
-            options.delay = 300;  // milliseconds
+            options.delay = TT.animation_settings.PAUSE_BETWEEN_BIRD_STEPS;
             $(bird_frontside_element).removeClass("toontalk-bird-gimme")
             message_element = message_side.get_element(true);
             carry_element(message_element, message_side);

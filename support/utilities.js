@@ -5378,15 +5378,16 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // .55 'worst' aspect ratio -- adding a little extra here
             TT.FONT_ASPECT_RATIO = 0.64;
             if (!TT.animation_settings) {
-                TT.animation_settings = {BIRD_ANIMATION_SPEED:   .50, // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
-                                         ROBOT_ANIMATION_SPEED:  .25, // robots move at 1/4 pixel per millisecond for clarity
-                                         BAMMER_ANIMATION_SPEED: .75,
-                                         ANIMATION_SPEED:        .50, // miscellenous moving widget
-                                         OPEN_BACKSIDE_DURATION: 500, // milliseconds
-                                         CHANGE_SIZE_DURATION:  1000,
-                                         BUTTON_USE_DELAY:       200,
-                                         STOP_TRAINING_DELAY:   1500,
-                                         PAUSE_BETWEEN_STEPS:     50};
+                TT.animation_settings = {BIRD_ANIMATION_SPEED:    .50, // default is a half a pixel per millisecond -- so roughly two seconds to cross a screen
+                                         ROBOT_ANIMATION_SPEED:   .25, // robots move at 1/4 pixel per millisecond for clarity
+                                         BAMMER_ANIMATION_SPEED:  .75,
+                                         ANIMATION_SPEED:         .50, // miscellenous moving widget
+                                         OPEN_BACKSIDE_DURATION:  500, // milliseconds
+                                         CHANGE_SIZE_DURATION:   1000,
+                                         BUTTON_USE_DELAY:        200,
+                                         STOP_TRAINING_DELAY:    1500,
+                                         PAUSE_BETWEEN_STEPS:      50,
+                                         PAUSE_BETWEEN_BIRD_STEPS: 50}; // was 300
             }
             utilities.process_json_elements();
             // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
