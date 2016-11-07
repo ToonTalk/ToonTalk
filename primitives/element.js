@@ -115,7 +115,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                        parent_of_frontside.get_height();
                     if (css.top < widget_height/-2 ||
                         css.top > container_height+widget_height/2) {
-                        // if center if above top or below bottom
+                        // if center is above top or below bottom
                         if (container_height > 0) {
                             top = ((css.top%container_height)+container_height)%container_height;
                         } else {
@@ -141,7 +141,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var sound_effect, video_object;
         var source_URL;
         var html, text, initialized, original_width, original_height, current_width, current_height,
-            pending_css, transform_css, on_update_display_handlers, $image_element, widget_set_running, widget_can_run;
+            pending_css, transform_css, on_update_display_handlers, widget_set_running, widget_can_run;
         if (!style_attributes) {
             style_attributes = ['left', 'top', 'width', 'height'];
         }
@@ -313,10 +313,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, current_pending_css, new_dimensions;
-            if (!pending_css && !transform_css) {
-                return;
-            }
+            var frontside_element, current_pending_css, new_dimensions, dimensions_from_parent;
             frontside_element = this.get_frontside_element();
             if (!frontside_element) {
                 return;
@@ -326,8 +323,58 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return;
             }
             if (!jQuery.contains(window.document, frontside_element)) {
-                // not yet visible so postpone
+                // not yet attached so postpone
                 TT.UTILITIES.when_attached(frontside_element, this.apply_css.bind(this));
+                return;
+            }
+            if (this.is_plain_text_element()) {
+                if (!pending_css) {
+                    pending_css = {};
+                }
+                parent = this.get_parent();       
+                dimensions_from_parent = parent && (parent.is_nest() || parent.is_hole() || parent.is_robot());
+                if (dimensions_from_parent) {
+                    new_dimensions = this.get_parent().get_contents_dimensions();
+                    current_width  = new_dimensions.width;
+                    current_height = new_dimensions.height;
+                    this.plain_text_dimensions(current_width, current_height);
+                } else if (current_width) {
+                    new_dimensions = {width:  current_width,
+                                      height: current_height};
+                } else {
+                    new_dimensions = {width:  TT.UTILITIES.get_element_width(frontside_element),
+                                      height: TT.UTILITIES.get_element_height(frontside_element)};
+                }
+                if (new_dimensions.width && dimensions_from_parent) {
+                    // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
+                    // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length) 
+                    pending_css['font-size'] = TT.UTILITIES.font_size(this.get_text(),
+                                                                      new_dimensions.width, 
+                                                                      {height: new_dimensions.height});
+                    pending_css.width     = new_dimensions.width;
+                    pending_css.height    = new_dimensions.height;
+                    pending_css.transform = '';
+                    $(frontside_element).css(pending_css);
+                    pending_css = undefined;
+                    return;
+                }
+                if (!pending_css.width && !pending_css.height) {
+                    // not constrained by parent and not explicitly set so remove any font-size set while so constrained
+                    pending_css["font-size"] = '';
+                    pending_css["width"]     = '';
+                    pending_css["height"]    = '';
+                } else {
+                    pending_css['font-size'] = TT.UTILITIES.font_size(this.get_text(),
+                                                                      (pending_css.width || new_dimensions.width), 
+                                                                      {height: pending_css.height || new_dimensions.height});                  
+                }
+                if (!transform_css) {
+                    $(frontside_element).css(pending_css);
+                    return;
+                }
+                // continue processing (e.g. for transformations) 
+            }
+            if (!pending_css && !transform_css) {
                 return;
             }
             if (pending_css) {
@@ -357,25 +404,23 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css['transform-origin'] = (transform_css['transform-origin-x'] || 0) + ' ' + (transform_css['transform-origin-y'] || 0);
                 }
             };
+            if ($(frontside_element).is(".toontalk-conditions-contents") && this.is_image_element()) {
+                // if an image is in a condition then make it as tall as the condition area
+                // and no wider than the condition area
+                $(frontside_element).children("img").css({"max-width": "100%",
+                                                          height:      "100%"});
+                $(frontside_element).css({transform: ''}); // remove any transforms
+                pending_css = undefined;
+                return;
+            }
             if (current_width || current_height) {
-                // if it contains an image then change it too (needed only for width and height)
-                // TODO: is the following still needed?
-                if ($image_element) {
-                    $image_element.css({width:  original_width,
-                                        height: original_height});
+                wrap_location(this, pending_css);
+                if (transform) {
+                    TT.UTILITIES.add_transform_to_css(transform, "", pending_css, frontside_element.parentElement.className.indexOf("toontalk-box-hole") < 0);
                 }
-                if (this.is_plain_text_element()) {
-                    this.plain_text_dimensions(current_width, current_height);
-                    // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
-                    // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length)
-                    pending_css['font-size'] = Math.min(TT.UTILITIES.font_size(this.get_text(),
-                                                                               current_width || this.get_width(), 
-                                                                               {height: current_height || this.get_height()}), 
-                                                        (current_height || this.get_height())*TT.FONT_ASPECT_RATIO);
-                    if (!this.location_constrained_by_container()) {
-                        $(frontside_element).css(pending_css);
-                        return;
-                    }
+                if (!this.constrained_by_container() && !this.is_image_element()) {
+                    $(frontside_element).css(pending_css);
+                    return;
                 }
                 $(frontside_element).css({width: '', height: ''});
                 current_pending_css = pending_css;
@@ -388,7 +433,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                                current_width  = $(frontside_element.parentElement).width();
                                                                current_height = $(frontside_element.parentElement).height();
                                                            } 
-                                                           if (this.ok_to_set_dimensions() || this.location_constrained_by_container()) {
+                                                           if (this.ok_to_set_dimensions() || this.constrained_by_container()) {
                                                                TT.UTILITIES.scale_element(frontside_element,
                                                                                           current_width,
                                                                                           current_height,
@@ -430,18 +475,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     });   
             }
         };
-        new_element.get_image_element = function () {
-            return $image_element;
-        };
-        new_element.set_image_element = function (element, frontside_element) {
-            $image_element = $(element).find("img");
-            if ($image_element.length === 0) {
-                $image_element = undefined;
-            } else {
-                // make sure that the front side has the same dimensions as its image
-                $(frontside_element).width( $image_element.width());
-                $(frontside_element).height($image_element.height());
-            }
+        new_element.is_image_element = function () {
+            return $(this.get_frontside_element()).children("img").length > 0;
         };
         new_element.get_additional_classes = function () {
             return additional_classes;
@@ -565,7 +600,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             var frontside_element = this.get_frontside_element(true);
             var backside = this.get_backside();
             var element_description = function (element) {
-                if (this.get_image_element()) {
+                if (this.is_image_element()) {
                     return "image";
                 }
                 if ($(element).is(".toontalk-plain-text-element")) {
@@ -594,9 +629,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).removeClass() // remove them all
                                     .empty()
                                     .addClass("toontalk-erased-element toontalk-side")
-                                    .css({width:  width,
-                                          height: height,
-                                          position: '',    // no longer absolute (maybe shouldn't have been since is presumably a condition)
+                                    .css({width:     width,
+                                          height:    height,
+                                          position:  '',    // no longer absolute (maybe shouldn't have been since is presumably a condition)
                                           transform: ''}); // remove any transformations
                 if ($(frontside_element).parent(".toontalk-conditions-container").is("*")) {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an element that has been erased. It will match any element.");
@@ -646,11 +681,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             frontside_element = this.get_frontside_element();
             if (frontside_element) {
                 resize_handles = $(frontside_element).children(".ui-resizable-handle");
-                html =  this.get_HTML();
+                html = this.get_HTML();
                 is_plain_text = this.is_plain_text_element();
-                // the introduction of non-breaking spaces is necessary for plain text elements
-                // so that when placed in boxes they don't change shape
-//                 frontside_element.innerHTML = is_plain_text ? html.replace(/ /g, "&nbsp;") : html;
                 frontside_element.innerHTML = html;
                 $(frontside_element).addClass("toontalk-element-frontside");
                 if (is_plain_text) {
@@ -660,9 +692,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                         $(frontside_element).addClass(additional_classes);
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
-                    if (!this.location_constrained_by_container()) {
+                    if (!this.constrained_by_container()) {
                         this.plain_text_dimensions();
+                    } else {
+                        $(frontside_element).css({width:  '',
+                                                  height: ''});
                     }
+                } else if (this.is_image_element()) {
+                    $(frontside_element).addClass("toontalk-image-element");
                 } else {
                     $(frontside_element).addClass("toontalk-non-plain-text-element");
                 }
@@ -681,13 +718,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.plain_text_dimensions = function (width, height) {
             // this is to scale the element (and its font) properly
             // TODO: fix this in a principled manner
+            if (this.constrained_by_container()) {
+                return;
+            }
             var frontside_element = this.get_frontside_element();
             original_width  = width  || 12*this.get_text().length;
             original_height = height || 32;
             this.saved_width  = original_width;
             this.saved_height = original_height;
-            this.add_to_css('width', original_width);
-            this.add_to_css('height', original_height);
+//             this.add_to_css('width', original_width);
+//             this.add_to_css('height', original_height);
         };
         new_element.compute_original_dimensions = function (recompute) {
             TT.UTILITIES.original_dimensions(this, 
@@ -985,7 +1025,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
     };
 
-    element.widget_side_dropped_on_me = function (side_of_other, event, robot) {
+    element.widget_side_dropped_on_me = function (side_of_other, options) {
         // TODO: involve Bammer the Mouse if being watched
         // TODO: use erased widgets for type coercion
         if (side_of_other.is_backside()) {
@@ -1045,6 +1085,16 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
         var css = {};
+        var update_attribute_widgets = function (new_value) {
+            var attribute_widgets = this.get_original_copies()[attribute];
+            if (attribute_widgets) {
+                // first one is the master copy
+                // calling set_value causes infinite recursion
+                attribute_widgets.forEach(function (attribute_widget) {
+                    attribute_widget.set_value_from_sub_classes(bigrat.fromDecimal(new_value));
+                });
+            }
+        }.bind(this);
         var current_value, new_value_number;
         var adjustment, style_attributes;
         if (!frontside_element) {
@@ -1085,6 +1135,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 console.log("Attribute " + attribute + " set to " + new_value_number + " was " + current_value + " at " + Date.now() + " for " + this);  
             }
             new_value = new_value_number;
+            if (attribute === 'left' || attribute === 'top') {
+                update_attribute_widgets(new_value);
+            }
         }
         if (handle_training && this.robot_in_training()) {
             this.robot_in_training().edited(this, {setter_name: "set_attribute",
@@ -1093,7 +1146,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                    toString: "change the '" + attribute + "' style to " + new_value + " of",
                                                    button_selector: ".toontalk-element-" + attribute + "-attribute-input"});
         }
-        if (!(this.location_constrained_by_container())) {
+        if (!(this.constrained_by_container())) {
             this.add_to_css(attribute, new_value);
             if (add_to_style_attributes) {
                 style_attributes = this.get_style_attributes();
@@ -1106,7 +1159,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return true;
     };
     
-    element.dropped_on_style_attribute = function (dropped, attribute_name, event, robot) {
+    element.dropped_on_style_attribute = function (dropped, attribute_name, options) {
         var widget_string, widget_number, attribute_name, attribute_value, attribute_numerical_value, new_value;
         if (!dropped) {
             return;
@@ -1150,14 +1203,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             // following doesn't handle training since is handled below
             this.set_attribute(attribute_name, new_value, false);
-            if (event || (robot && robot.visible())) {
+            if (options.event || (options.robot && options.robot.visible())) {
                 this.get_backside().render();
             }
         }
         if (!dropped.get_infinite_stack()) {
             dropped.remove();
         }
-        if (event && this.robot_in_training()) {
+        if (options.event && this.robot_in_training()) {
             this.robot_in_training().dropped_on(dropped, this.create_attribute_widget(attribute_name));
         }
     };
@@ -1198,7 +1251,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return "a number that is the " + this.attribute + " of " + this.get_attribute_owner().toString({plain_text: true}) + ".";
             };
             attribute_widget.get_custom_title_prefix = function () {
-                return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner() + ".\n" +
+                return "I'm the '" + this.attribute + "' attribute of " + this.get_attribute_owner().toString({inside_tool_tip: true}) + " \n" +
                        "Drop a number on me or edit my backside to change my value. My backside has an info button to learn more.";
             };
             attribute_widget.equals = function (other) {
@@ -1214,7 +1267,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     if (owner.get_parent_of_frontside() && 
                         owner.get_parent_of_frontside().is_element() && 
                         !owner.being_dragged &&
-                        !owner.location_constrained_by_container()) {
+                        !owner.constrained_by_container()) {
                         // owner is part of an element so use its value to determine the CSS of this child
                         css = {};
                         decimal_value = bigrat.toDecimal(this.get_value());
@@ -1331,6 +1384,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     var copies = this_element_widget.get_original_copies()[attribute_name];
                     var decimal_value = typeof new_value === 'number' ? new_value : bigrat.toDecimal(new_value);
                     var value_approximation = bigrat.fromDecimal(decimal_value);
+                    // tried decimal_value.toPrecision(5) but a robot might be adding 1/1000000 each time and it be lost then
                     if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
                         // if the new_value is different from the current value
                         copies.forEach(function (copy, index) {
@@ -1458,6 +1512,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
 
     TT.creators_from_json["attribute_widget"] = function (json, additional_info) {
+        if (!json) {
+            // cyclic references handled in another manner so don't split its creation into two phases
+            // TODO: determine if it is better to rely upon this and remove the special support for cycles caused by attribute widgets
+            return;
+        }
         var element_widget = TT.UTILITIES.create_from_json(json.element, additional_info);
         return element_widget.create_attribute_widget(json.attribute_name, additional_info);
     };
@@ -1499,11 +1558,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            };
            var first_space, iframe_index;
            if (html.length > 1 && html.charAt(0) === '<') {
-                if (this.get_image_element() ) {
+                if (html.indexOf("<img ") === 0) {
+                    return "<img width='60' height='40' " + html.substring(4);
+                } else if (this.is_image_element() ) {
                     // if an image then scale it
                     style = "style='width: 60px; height: 40px;'";
-                } else if (html.indexOf("<img ") === 0) {
-                    return "<img width='60' height='40' " + html.substring(4);
                 } else if (html.indexOf("<iframe ") >= 0) {
                     iframe_index = html.indexOf("<iframe ");
                     return replace_attribute('width', replace_attribute('height', html, "'60'"), "'80'");
@@ -1641,6 +1700,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
     
     TT.creators_from_json["element"] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        }
         var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html && additional_info.shared_html[json.html.shared_html_index]);
         var children, is_child, ignore_attributes, reconstructed_element, error_message;
         if (json.children) {
@@ -1924,7 +1987,7 @@ window.TOONTALK.element_backside =
             // need to ensure that it 'knows' its textContent, etc.
             element_widget.initialize_element();
             text = element_widget[getter]().trim();
-            if (text.length > 0 && !element_widget.get_image_element()) {
+            if (text.length > 0 && !element_widget.is_image_element()) {
                 drop_handler = function (event) {
                     var dropped = TT.UTILITIES.input_area_drop_handler(event, element_widget.receive_HTML_from_dropped.bind(element_widget), element_widget);
                     if (dropped && element_widget.robot_in_training()) {
@@ -2084,7 +2147,7 @@ window.TOONTALK.element_backside =
                     $advanced_settings_table.get(0).appendChild(react_to_pointer_checkbox.container);
                     $advanced_settings_table.get(0).appendChild(attributes_chooser);
                     $advanced_settings_table.get(0).appendChild(show_attributes_chooser);
-                    if (!element_widget.is_plain_text_element()) {
+                    if (html_input && !element_widget.is_plain_text_element()) {
                         $advanced_settings_table.get(0).appendChild(html_input.container); 
                     }
                 }
@@ -2156,7 +2219,12 @@ window.TOONTALK.element_backside =
             }
             backside.update_style_attribute_chooser();
             update_style_attributes_table(attribute_table, element_widget, backside);
-            backside_element.appendChild(attribute_table);
+            if (element_widget.get_style_attributes().length > 0) {
+                backside_element.appendChild(attribute_table);
+            } else if (!element_widget.is_plain_text_element()) {
+                // neither the HTML nor the attributes are displayed
+                backside_element.appendChild(TT.UTILITIES.create_text_element("No attributes enabled. Click the '<' below to see the advanced options."))
+            }
             backside_element.appendChild(advanced_settings_button);
             $(attributes_chooser).hide();
             $(attributes_chooser).addClass("toontalk-attributes-chooser");
@@ -2197,54 +2265,77 @@ window.TOONTALK.element_backside =
 window.TOONTALK.element.function = 
 (function (TT) {
     var functions = TT.create_function_table();
+    var describe = function (widget) {
+        if (!widget) {
+            return "an empty hole";
+        }
+        return TT.UTILITIES.add_a_or_an(widget.get_type_name())
+    }
     functions.add_function_object(
         'join text', 
-        function (message, event, robot) {
+        function (message, options) {
             var join = function () {
-                for (i = 0; i < arguments.length; i++) {
+                var message_properties = arguments[arguments.length-1]; // last arg 
+                for (i = 0; i < arguments.length-1; i++) {
+                    if (!arguments[i] || !arguments[i].get_text) {
+                        functions.report_error("The 'join text' bird is unable to turn " + describe(arguments[i]) + " into text to join.", message_properties);
+                        return;
+                    }
                     joined_text += arguments[i].get_text();
                 }
                 return TT.element.create(joined_text);
             };
             var joined_text = "";
-            // type checking should be extended so can say below any number of elements or numbers
-            return functions.typed_bird_function(message, join, [undefined], undefined, 'join', event, robot);
+            return functions.typed_bird_function(message, join, [undefined], 'join', options);
         },
         "The bird will return with a new element that is made by joining all the elements and numbers.",
         "join",
         ['any number of numbers or elements']);
     functions.add_function_object(
         'part of text', 
-        function (message, event, robot) {
-            var substring = function (element_or_number, start_widget, end_widget) {
-                var start = Math.round(start_widget.to_float()-1);
-                var end   = end_widget && Math.round(end_widget.to_float()-1);
+        function (message, options) {
+            var substring = function (element_or_number, start_widget, end_widget, message_properties) {
+                var start, end;
+                if (!start_widget || !start_widget.to_float) {
+                    functions.report_error("The 'part of text' bird is unable to find the text in the second hole. ", (message_properties || end_widget));
+                    return;
+                }
+                start = Math.round(start_widget.to_float()-1);
+                // last widget is the message_properties so if no end widget provided (box size is 3) then leave it undefined (meaning the rest of the string)
+                end = end_widget && end_widget.to_float && Math.round(end_widget.to_float()-1);
                 return TT.element.create(element_or_number.get_text().substring(start, end));
             };
-            // arity undefined since if end is specified it is the rest of the string
-            // TODO: check for arity 2 or 3
-            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], undefined, 'part of text', event, robot);
+            // arity is 2 to 3 since if end is missing it is the rest of the string
+            return functions.typed_bird_function(message, substring, ['element', 'number', 'number'], 'part of text', options, 2, 3);
         },
         "The bird will return with a new element whose text is the part of the text of the first element (or number) beginning with the first number ending with the second number. 1 is for the first letter.",
         "part",
         ['an element followed by two postive numbers']);
      functions.add_function_object(
         'length of text', 
-        function (message, event, robot) {
-            var length = function (element_or_number) {
-                return TT.number.create(element_or_number.get_text().length);
+        function (message, options) {
+            var length = function (text_widget, message_properties) {
+                if (!text_widget.get_text) {
+                    functions.report_error("The 'length of text' bird could not turn " + describe(text_widget) + " into a text to find its length.", message_properties);
+                    return;
+                }
+                return TT.number.create(text_widget.get_text().length);
             };
-            return functions.typed_bird_function(message, length, [undefined], 1, 'length of text', event, robot);
+            return functions.typed_bird_function(message, length, [undefined], 'length of text', options, 1);
         },
         "The bird will return with a number that is length of the text of the first element (or number).",
         "length",
         ['an element or number']);
     functions.add_function_object(
         'text as number', 
-        function (message, event, robot) {
-            var text_to_number = function (element) { 
-                var text = element.get_text();              
-                var number;
+        function (message, options) {
+            var text_to_number = function (text_widget, message_properties) {
+                var text, number;
+                if (!text_widget || !text_widget.get_text) {
+                    functions.report_error("The 'text as number' bird could not turn " + describe(text_widget) + " into a text to turn it into a number.", message_properties);
+                    return;
+                } 
+                text = text_widget.get_text();              
                 var slashIndex = text.indexOf('/');
                 if (slashIndex >= 0) {
                     number = TT.number.create(text.substring(0, slashIndex), text.substring(slashIndex+1, text.length));
@@ -2254,23 +2345,27 @@ window.TOONTALK.element.function =
                 }
                 return number;
             };
-            return functions.typed_bird_function(message, text_to_number, [undefined], 1, 'text as number', event, robot);
+            return functions.typed_bird_function(message, text_to_number, [undefined], 'text as number', options, 1, 1);
         },
         "The bird will return with a number that has the same text as the element. Arithmetic can be done on the result unlike the original text.",
         "text as number",
         ['an element']);
     functions.add_function_object(
         'go to page', 
-        function (message, event, robot) {
-            var go_to_URL = function (element_url) {
+        function (message, options) {
+            var go_to_URL = function (element_url, message_properties) {
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
                     robot.display_message("Robot trained to replace current URL.");
                 } else {
+                    if (!element_url.get_text) {
+                        functions.report_error("The 'go to page' bird could not turn " + describe(element_url) + " into a text to use it as a URL.", message_properties);
+                        return;
+                    }
                     window.location.assign(element_url.get_text());
                 }
             };
             // type checking should be extended so can say below any number of elements or numbers
-            return functions.typed_bird_function(message, go_to_URL, ['element'], 1, 'replace page', event, robot);
+            return functions.typed_bird_function(message, go_to_URL, ['element'], 'replace page', options, 1, 1);
         },
         "The bird will cause the current page to be replaced by the new URL. The back button should return to the current page.",
         "page",
@@ -2287,26 +2382,34 @@ window.TOONTALK.element.function =
         'listen', 
         TT.widget.get_listen_function(functions),
         "The bird will cause the browser to listen to the next thing said and give the words to the bird in the first hole. "
-        + "If there is an error and there is a bird in the second hole it will be given the error message. "
-        + "If you put a number between 0 and 1 in the third hole then only recognitions with at least that confidence will be considered. "
-        + "if you put words or phrases separted by | then the recogniser will expect one of those words or phrases.",
+        + "If you put a number between 0 and 1 in the saecond hole then only recognitions with at least that confidence will be considered. "
+        + "if you put in the third hole words or phrases separted by | then the recogniser will expect one of those words or phrases.",
         "listen",
         []);
     functions.add_function_object(
-        'show message', 
-        function (message, event, robot) {
-            var display_message = function (element_text) {
+        'show message',
+        // might this make sense to also be able to display non-text elements?
+        function (message, options) {
+            var display_message = function (element_text, duration, message_properties) {
+                var options;
+                if (duration && duration.to_float) {
+                    // duration option is milliseconds but users probably prefer seconds
+                    options = {duration: duration.to_float()*1000};
+                }
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
-                    robot.display_message("Robot trained to display: " + element_text.get_text());
+                    robot.display_message("Robot trained to display: " + element_text.get_text(), options);
                 } else {
-                    TT.UTILITIES.display_message(element_text.get_text());
+                    if (!element_text.get_text) {
+                        functions.report_error("The 'show message' bird could not turn " + describe(element_text) + " into a text to display it.", message_properties);
+                    }
+                    TT.UTILITIES.display_message(element_text.get_text(), options);
                 }
             };
-            return functions.typed_bird_function(message, display_message, ['element'], 1, 'show message', event, robot);
+            return functions.typed_bird_function(message, display_message, ['element', 'number'], 'show message', options, 1, 2);
         },
-        "The bird will cause what is in the second box hole to be displayed.",
+        "The bird will cause what is in the second box hole to be displayed. The third hole can be a number indicating how many seconds the message should be displayed.",
         "display",
-        ['a widget']);
+        ['a widget', 'number']);
     return functions.get_function_table();
 
 }(window.TOONTALK));

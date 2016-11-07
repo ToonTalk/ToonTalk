@@ -1826,11 +1826,11 @@ padding-bottom:  8%;}
 }
 .toontalk-conditions-contents {
 	width:  240px;
-	height: 60px;
+	height:  60px;
 }
 .toontalk-conditions-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
-/* if dimensions change then change utilities.element_width and utilities.element_height */
+/* if dimensions change then change utilities.element_width and utilities.element_height and number.js */
 	width: 240px;
 	height: 60px;
 	border: 1px black solid;
@@ -1919,9 +1919,19 @@ table.toontalk-documentation-table {
 	border-color: rgb(185, 113, 141);
 	border-radius: 10px;
 }
-.toontalk-highlight.toontalk-robot, .toontalk-highlight.toontalk-nest, .toontalk-highlight.toontalk-bird, .toontalk-highlight.toontalk-scale,
-                                    .toontalk-highlight.toontalk-non-plain-text-element, .toontalk-highlight.toontalk-backside {
+.toontalk-highlight.toontalk-robot,
+.toontalk-highlight.toontalk-nest,
+.toontalk-highlight.toontalk-bird,
+.toontalk-highlight.toontalk-scale,
+.toontalk-highlight.toontalk-backside,
+.toontalk-highlight.toontalk-image-element {
 	border: solid 4px white;
+}
+.toontalk-highlight.toontalk-non-plain-text-element {
+/* 	adding a border as above caused multi-line rich text elements to display badly
+	this is only way I could think of to change the appearance of any rich text */
+	transition: 2s;
+    opacity: .6;
 }
 .toontalk-highlight.toontalk-plain-text-element {
 /* 	a border might be scaled and can look terrible so use color change instead to highlight */
@@ -2285,6 +2295,8 @@ background-image: url("images/dusty-morph.png");
 .toontalk-not-observable {
 	margin-left: -10000px;
 }
+.toontalk-image {
+/* 	so img elements part of element widgets size follows the size of the widget *//* width:  100%; *//* height: 100%; */}
 /* .toontalk-ignore-events {
 	pointer-events: none;
 } */
@@ -2298,9 +2310,6 @@ background-image: url("images/dusty-morph.png");
     transform: scale(0.8, 0.4);
     width: 100%;
     height: 100%;
-}
-.toontalk-carried-by-bird.toontalk-plain-text-element, .toontalk-temporarily-set-down.toontalk-plain-text-element {
-	font-size: 60px;
 }
 .toontalk-nest-with-egg {
     background-image: url("images/nest-with-egg.png");
@@ -2518,7 +2527,7 @@ background-image: url("images/dusty-morph.png");
 .toontalk-bird-static::before {
 	content: attr(toontalk_name);
 	position: relative;
-	top: 45%;
+	top: 50%;
 	color: #432707;
 	text-shadow: 1px 1px 2px #E7D9A8;
 	font-weight: bold;

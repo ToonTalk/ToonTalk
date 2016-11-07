@@ -48,8 +48,6 @@ window.TOONTALK.robot = (function (TT) {
         var first_in_team;
         // if not the first_in_team then the robot just before this one
         var previous_robot;
-        // if set specifies the maximum duration of any watched step
-        var maximum_step_duration;
         // callbacks to run at the end of each cycle
         var body_finished_listeners = [];
         // when running watched runs these after each step
@@ -213,13 +211,13 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.set_running_or_in_run_queue = function (new_value) {
             running_or_in_run_queue = new_value;
         };
-//         new_robot.set_running = function (new_value) {
-//             running = new_value;
-//         };
         new_robot.stopped = function () {
             return stopped;
         };
         new_robot.set_stopped = function (new_value) {
+            if (stopped) {
+                running_or_in_run_queue = false;
+            }
             if (stopped === new_value) {
                 return;
             }
@@ -227,13 +225,13 @@ window.TOONTALK.robot = (function (TT) {
             if (stopped) {
                 if (this.visible()) {
                     $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
+                    this.set_animating(false);
                     if (this.get_thing_in_hand()) {
                         $(this.get_thing_in_hand().get_element()).removeClass("toontalk-held-by-robot");
                         this.drop_thing_in_hand();
                     }
                     this.rerender();
                 }
-                running_or_in_run_queue = false;
             }
             if (this.get_next_robot()) {
                 this.get_next_robot().set_stopped(new_value);
@@ -243,23 +241,17 @@ window.TOONTALK.robot = (function (TT) {
             if (!thing_in_hand) {
                 return;
             }
-            thing_in_hand.drop_on(this.top_level_widget(), undefined, this);
+            thing_in_hand.drop_on(this.top_level_widget(), {robot: this});
             this.set_thing_in_hand(undefined);
         }
         new_robot.finish_cycle_immediately = function (do_at_end_of_cycle) {
-            var stored_maximum_step_duration = maximum_step_duration;
             var continuation = function () {
-                maximum_step_duration = stored_maximum_step_duration;
                 this.set_visible(false);
                 if (do_at_end_of_cycle) {
                     do_at_end_of_cycle();
                 }
             }.bind(this);
-            maximum_step_duration = 0;
             this.add_body_finished_listener(continuation);
-        };
-        new_robot.get_maximum_step_duration = function () {
-            return maximum_step_duration;
         };
         new_robot.get_context = function () {
             return context;
@@ -298,39 +290,37 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.animate_consequences_of_actions = function () {
-            return this.visible() && maximum_step_duration !== 0;
+            return this.visible();
         };
         new_robot.transform_step_duration = function (duration) {
-            if (duration === undefined && maximum_step_duration === 0) {
-                return 0;
-            }
             if (!this.visible()) {
                 // was watched but window hidden or robot's context closed
                 return 0;
             }
-            if (watched_speed && duration) {
-                return duration/watched_speed;
-            }
-            // TODO: decide if maximum_step_duration is obsolete
-            if (typeof maximum_step_duration === 'number') {
-                return Math.min(duration, maximum_step_duration);
-            }
-            return duration;
-        };
-        new_robot.transform_original_step_duration = function (duration) {
-            // no watched speed means the original durations (if known)
-            // when duration isn't available the speed will be used
             if (context && !context.get_backside()) { // context is undefined if being trained (by another robot)
                 // was watched but no longer
                 return 0;
             }
+            if (duration && watched_speed) {
+                return duration/watched_speed;
+            }
+            return duration;
+        };
+        new_robot.transform_original_step_duration = function (original_duration) {
+            // no watched speed means the original durations (if known)
+            // when duration isn't available the speed will be used
             if (!this.visible()) {
                 // was watched but window hidden or robot's context closed
                 return 0;
             }
-            if (!watched_speed) {
-                return duration;
+            if (context && !context.get_backside()) { // context is undefined if being trained (by another robot)
+                // was watched but no longer
+                return 0;
             }
+            if (watched_speed === 0) {
+                return original_duration;
+            }
+            // otherwise undefined
         };
         new_robot.transform_animation_speed = function (speed) {
             if (context && !context.get_backside()) {
@@ -404,7 +394,7 @@ window.TOONTALK.robot = (function (TT) {
                     console.log(this.to_debug_string(50) + " now has in his hand " + (new_value ? new_value.to_debug_string(50) : "nothing"));
                 }
             }
-            if (new_value && !new_value.location_constrained_by_container()) {
+            if (new_value && !new_value.constrained_by_container()) {
                 // if location is constrained by container than so is size so don't save this
                 new_value.save_dimensions();
             }
@@ -1345,6 +1335,12 @@ window.TOONTALK.robot = (function (TT) {
         // nests have more room than default 50% for displaying their name
         return .4*(height || this.get_height());
     };
+
+    robot.get_contents_dimensions = function () {
+        // dimensions of condition areas
+        return {width:  240,
+                height:  60};
+    };
     
     robot.get_json = function (json_history, callback, start_time) {
         var frontside_conditions = this.get_frontside_conditions();
@@ -1394,6 +1390,10 @@ window.TOONTALK.robot = (function (TT) {
     };
     
     TT.creators_from_json["robot"] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        }
         var next_robot, thing_in_hand, frontside_conditions, backside_conditions, robot;
         if (json.thing_in_hand) {
             thing_in_hand = TT.UTILITIES.create_from_json(json.thing_in_hand, additional_info);
@@ -1554,7 +1554,12 @@ window.TOONTALK.robot_backside =
                                                                undefined,
                                                                css);
                                 }
-                                $(condition_element).css(css);
+                                if (!$(condition_element).is(".toontalk-box") && 
+                                    !$(condition_element).is(".toontalk-image-element") &&
+                                    !$(condition_element).is(".toontalk-number")) {
+                                    // if custom CSS wasn't generated set it here
+                                    $(condition_element).css(css);
+                                }
                                 condition_widget.rerender();
                             };
         var conditions_panel;
@@ -1614,14 +1619,19 @@ window.TOONTALK.robot_backside =
                     }
                     area_class_name = "toontalk-backside-" + type + "-conditions-area";
                     if (type === 'bird') {
-                        condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
+                        if ($(backside_element).find(".toontalk-bird-on-back-condition").length === 0) {
+                            condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
+                            $(condition_element).addClass("toontalk-bird-on-back-condition");
+                        }
                     } else {
                         condition_element = create_conditions_area("And if " + TT.UTILITIES.add_a_or_an(type) + " matches: ", 
                                                                    backside_condition, 
                                                                    robot,
                                                                    area_class_name);
                     }
-                    backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
+                    if (condition_element) {
+                        backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
+                    }
                     backside_condition.set_visible(robot_visible);
                     backside_condition.rerender();
                 }

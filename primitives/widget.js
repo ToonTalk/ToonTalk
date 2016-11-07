@@ -133,7 +133,7 @@ window.TOONTALK.widget = (function (TT) {
                 widget.is_function_nest = return_false;
             }
             if (!widget.is_plain_text_element) {
-               widget.is_plain_text_element = return_false;
+                widget.is_plain_text_element = return_false;
             }
             if (!widget.is_attribute_widget) {
                 widget.is_attribute_widget = return_false;
@@ -469,9 +469,9 @@ window.TOONTALK.widget = (function (TT) {
 
         droppable: function (widget) {
             if (!widget.drop_on) {
-                widget.drop_on = function (side_of_other, event, robot) {
+                widget.drop_on = function (side_of_other, options) {
                     if (side_of_other.widget_side_dropped_on_me) {
-                        return side_of_other.widget_side_dropped_on_me(this, event, robot);
+                        return side_of_other.widget_side_dropped_on_me(this, options);
                     }
                     console.log("No handler for drop of '" + this + "' on '" + side_of_other + "'");
                     return;
@@ -517,17 +517,17 @@ window.TOONTALK.widget = (function (TT) {
                     return widget_element;
                 };
                 widget.animate_to_widget = function (target_widget, continuation, speed, left_offset, top_offset, more_animation_follows, duration, robot) {
-                    // delay for DOM to settle down in case target_widget is brand new
                     var new_continuation = 
                         function () {
                              this.animate_to_element(find_widget_element(target_widget, robot), continuation, speed, left_offset, top_offset, more_animation_follows, duration && Math.max(0, duration-100));
                              this.rerender();
                          }.bind(this);
-                    if (duration === 0) {
-                        new_continuation();
-                    } else {
-                        // why 100ms? and what if duration is undefined should it wait at all?
+                    if (duration) {
+                        // delay for DOM to settle down in case target_widget is brand new
                         setTimeout(new_continuation, 100);
+                    } else {
+                        // no delay
+                        new_continuation();
                     }           
                 };
             }
@@ -949,25 +949,29 @@ window.TOONTALK.widget = (function (TT) {
             return string;
         },
         
-        remove: function (event, do_not_remove_children, do_not_remove_frontside) {
+        remove: function (options) {
+            // options include event, do_not_remove_children, do_not_remove_frontside, remove_backside
             var backside  = this.get_backside();
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
-            if (backside && this.get_parent_of_backside() && this.get_parent_of_backside().is_top_level()) {
+            if (!options) {
+                options = {};
+            }
+            if (backside && (options.remove_backside || (this.get_parent_of_backside() && this.get_parent_of_backside().is_top_level()))) {
                 // remove both front and back if backside is on the top level backside
                 backside.hide_backside();
             }
-            if (frontside && !do_not_remove_frontside) {
+            if (frontside && !options.do_not_remove_frontside) {
                 frontside.remove(); 
             } 
             if (parent_of_frontside) {
-                this.remove_from_parent_of_frontside(event);
+                this.remove_from_parent_of_frontside(options.event);
             }
             if (this.get_running()) {
                 this.set_running(false);
             }
             this.set_visible(false); // in case robot vacuumed the widget while it was animating
-            if (this.walk_children && !do_not_remove_children) {
+            if (this.walk_children && !options.do_not_remove_children) {
                 this.walk_children(function (child) {
                                        if (child.remove) {
                                            child.remove();
@@ -1243,6 +1247,7 @@ window.TOONTALK.widget = (function (TT) {
                                                             backside_widget.set_parent_of_frontside(this, true);
                                                         }
                                                         if (backside_visible) {
+                                                            // TODO: determine if this should be unconditional
                                                             backside_widget.set_visible(backside_visible);
                                                         }
                                                     }.bind(this)); 
@@ -1594,7 +1599,7 @@ window.TOONTALK.widget = (function (TT) {
             $(this.get_frontside_element()).hide();
         },
 
-        location_constrained_by_container: function () {
+        constrained_by_container: function () {
             var parent;
             if (this.is_nest()) {
                 // nests are displayed proportionately and are offset to be centered
@@ -1656,21 +1661,17 @@ window.TOONTALK.widget = (function (TT) {
                options.element = this.get_frontside_element();
             }
             TT.UTILITIES.display_message(message, options);
+            return message;
         },
 
         // defined here in order to share between element and number functions
         get_speak_function: function (functions) {
-          return function (message, event, robot) {
+          return function (message, options) {
             var speak = function (widget) {
                 var text, speech_utterance, when_finished;
                 if (!widget) {
-                    TT.UTILITIES.display_message("Speaking birds need something in the second box hole.");
+                    functions.report_error("Speaking birds need something in the second box hole that they can speak.", message_properties);
                     return;
-                }
-                if (!window.speechSynthesis) {
-                    // ignore this
-                    widget.display_message("This browser doesn't support speech output. Try another browser such as Chrome.");
-                    return true;
                 }
                 widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text(true) : widget.toString();
@@ -1681,7 +1682,8 @@ window.TOONTALK.widget = (function (TT) {
                                            function (translated_text) {
                                                when_finished = function (event) {
                                                    var response = TT.element.create(translated_text, [], "a response to speaking '" + text + "'");
-                                                   functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                                                   options.event = event;
+                                                   functions.process_response(response, message_properties, message, options);
                                                };
                                                TT.UTILITIES.speak(translated_text, 
                                                                  {when_finished: when_finished,
@@ -1693,7 +1695,8 @@ window.TOONTALK.widget = (function (TT) {
                 } else {
                     when_finished = function (event) {
                         var response = TT.element.create(text, [], "a response to speaking '" + text + "'");
-                        functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                        options.event = event;
+                        functions.process_response(response, message_properties, message, options);
                     };
                     TT.UTILITIES.speak(text,
                                        {when_finished: when_finished, 
@@ -1703,13 +1706,18 @@ window.TOONTALK.widget = (function (TT) {
                                         voice_number: voice_number});
                 }
             };
-            var box_size_and_bird = functions.check_message(message);
-            var volume, pitch, rate, voice_number;
-            if (!box_size_and_bird) {
+            var message_properties, volume, pitch, rate, voice_number;
+            if (!window.speechSynthesis) {
+                // ignore this
+                functions.report_error("This browser doesn't support speech output. Try another browser such as Chrome.", message_properties);
                 return;
             }
-            if (box_size_and_bird.size < 2) {
-                TT.UTILITIES.display_message("Speaking birds need a box with two or more holes.");
+            message_properties = functions.check_message(message); 
+            if (typeof message_properties === 'string') {
+                return;
+            }
+            if (message_properties.box_size < 2) {
+                functions.report_error("Speaking birds need a box with two or more holes.", message_properties);
                 return;
             }
             volume = message.get_hole_contents(2);
@@ -1732,22 +1740,22 @@ window.TOONTALK.widget = (function (TT) {
             return true;
         }},
         get_listen_function: function (functions, numbers_only) {
-            return function (message, event, robot) {
-                var box_size_and_bird = functions.check_message(message);
-                var success_callback, fail_callback, confidence, expected_phrases;
-                if (!box_size_and_bird) {
-                    return;
-                }
-                if (box_size_and_bird.size < 1) {
-                    TT.UTILITIES.display_message("Listening birds need a box with one or more holes.");
-                    return;
-                }
+            return function (message, options) {
+                var message_properties, success_callback, fail_callback, confidence, expected_phrases;
                 if (!window.webkitSpeechRecognition && !window.SpeechRecognition) {
                     // ignore this
-                    widget.display_message("This browser doesn't support speech input. Try another browser such as Chrome.");
-                    return true;
+                    functions.report_error("A listening bird can't listen because this browser doesn't support speech input. Try another browser such as Chrome.", message_properties);
+                    returns;
                 }
-                confidence = message.get_hole_contents(2);
+                message_properties = functions.check_message(message); 
+                if (typeof message_properties === 'string') {
+                   return;
+                }
+                if (message_properties.box_size < 1) {
+                    functions.report_error("Listening birds need a box with one or two holes.", message_properties);
+                    return;
+                }
+                confidence = message.get_hole_contents(1);
                 if (confidence) {
                     confidence = confidence && confidence.to_float && confidence.to_float();
                     if (confidence < 0) {
@@ -1757,7 +1765,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                 }
                 if (!numbers_only) {
-                    expected_phrases = message.get_hole_contents(3);
+                    expected_phrases = message.get_hole_contents(2);
                     if (expected_phrases) {
                         expected_phrases = expected_phrases.get_text();
                     }
@@ -1770,28 +1778,23 @@ window.TOONTALK.widget = (function (TT) {
                             // otherwise ignore it
                             response = TT.number.create_from_bigrat(bigrat.fromDecimal(number));
                             response.set_description("a number that was heard");
-                            functions.process_response(response, message.get_hole_contents(0), message, event, robot);
+                            functions.process_response(response, message_properties, message, options);
                             TT.UTILITIES.stop_listening_for_speech();
                         }
                     };   
                 } else {
                     success_callback = function (text) {
                         var response = TT.element.create(text, [], "what was spoken");
-                        functions.process_response(response, message.get_hole_contents(0), message, event, robot);
+                        functions.process_response(response, message_properties, message, options);
                         TT.UTILITIES.stop_listening_for_speech();
                     };  
-                }  
+                }
                 fail_callback = function (event) {
-                    var response;
-                    if (box_size_and_bird.size > 1 && message.get_hole_contents(1)) {
-                        // if no failure bird then ignore it
-                        response = TT.element.create(event.error, [], "description of a problem listening to speech");
-                        functions.process_response(response, message.get_hole_contents(1), message, event, robot);
-                    }
+                    functions.report_error(event.error, message_properties);
                     TT.UTILITIES.stop_listening_for_speech();
-                };
+                }
                 TT.UTILITIES.listen_for_speech({commands:           expected_phrases, 
-                                                confidence:         confidence,
+                                                minimum_confidence: confidence,
                                                 numbers_acceptable: numbers_only,
                                                 success_callback:   success_callback, 
                                                 fail_callback:      fail_callback});
@@ -1799,16 +1802,13 @@ window.TOONTALK.widget = (function (TT) {
             };
         },
         get_description_function: function (functions) {
-          return function (message, event, robot) {
-            var describe = function (widget) {
+          // displays the text or description of the widget in second hole in the message
+          return function (message, options) {
+            var describe = function (widget) {   
                 var text, speech_utterance, respond;
-                if (!widget) {
-                    TT.UTILITIES.display_message("Description birds need something in the second box hole.");
-                    return;
-                }
                 respond = function (description) {
                     var response = TT.element.create(description, [], widget.toString());
-                    functions.process_response(response, box_size_and_bird.bird, message, event, robot);
+                    functions.process_response(response, message_properties, message, options);
                 };
                 widget = widget.get_widget(); // either side is fine
                 text = widget.get_text ? widget.get_text(true) : widget.toString();
@@ -1823,12 +1823,12 @@ window.TOONTALK.widget = (function (TT) {
                     respond(text);
                 }
             };
-            var box_size_and_bird = functions.check_message(message);
-            if (!box_size_and_bird) {
-                return;
+            var message_properties = functions.check_message(message);
+            if (typeof message_properties === 'string') {
+               return;
             }
-            if (box_size_and_bird.size < 2) {
-                message.display_message("Description birds need a box with two holes containing a bird and a widget.");
+            if (message_properties.box_size < 1) {
+                functions.report_error("Listening birds need a box with two holes.", message_properties);
                 return;
             }
             describe(message.get_hole_contents(1));
@@ -1939,9 +1939,9 @@ window.TOONTALK.widget = (function (TT) {
                    this.remove_backside_widget(side_of_other, true);
                 };
             };
-            top_level_widget.widget_side_dropped_on_me = function (side_of_other, event, robot, ignore_training) {
+            top_level_widget.widget_side_dropped_on_me = function (side_of_other, options) {
                 // why is this the default behaviour?
-                return this.get_backside().widget_side_dropped_on_me(side_of_other, event, robot, ignore_training);
+                return this.get_backside().widget_side_dropped_on_me(side_of_other, options);
             };
             top_level_widget.get_element = function () {
                 return this.get_backside().get_element();
@@ -2120,7 +2120,7 @@ window.TOONTALK.widget = (function (TT) {
                                 loaded_callback();
                             }
                         } catch (e) {
-                            TT.UTILITIES.display_message("Error encountered loading " + program_name + ": " + e);
+                            TT.UTILITIES.display_message("Error encountered loading " + ": " + e);
                         }
                     } else if (nothing_to_load_callback) {
                         nothing_to_load_callback();
@@ -2133,7 +2133,7 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.render = function () {
                 // ignore
             };
-            top_level_widget.location_constrained_by_container = function () {
+            top_level_widget.constrained_by_container = function () {
                 return false;
             };
             top_level_widget.dereference = function () {

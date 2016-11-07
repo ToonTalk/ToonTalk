@@ -9,6 +9,8 @@
 window.TOONTALK.frontside = 
 (function (TT) {
     "use strict";
+    // following needed due to containment mouse enter of a container from its contents isn't triggered since it has already happened
+    var widgets_entered_stack = [];
     return {
         create: function (widget) {
             // where widget is a ToonTalk widget like a number or a box
@@ -40,11 +42,21 @@ window.TOONTALK.frontside =
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().backside_opened(widget);
                     }
+                    widget.backup_all();
                 }
                 event.stopPropagation();
             };
-            var selection_feedback = function (event) {
-                // note that this highlights the backside if visible even if the widget passes the selection to its parent
+            var mouse_enter_handler = function (event) {
+                selection_feedback(widget);
+                if (widgets_entered_stack.indexOf(widget) >= 0) {
+                    // seems somehow can enter without exiting so this cleans things up in that case
+                    widgets_entered_stack = [];
+                } else {
+                    widgets_entered_stack.push(widget);
+                }      
+            };
+            var selection_feedback = function (widget) {
+                 // note that this highlights the backside if visible even if the widget passes the selection to its parent
                 var backside = widget.get_backside();
                 var wiggling_widget = (widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget).get_selection();
                 var frontside_element = wiggling_widget.get_frontside_element();
@@ -52,12 +64,25 @@ window.TOONTALK.frontside =
                 if (backside) {
                     TT.UTILITIES.highlight_element(backside.get_element());
                 }
+                // remove anything wiggling before adding something new
                 $(".toontalk-wiggle").removeClass("toontalk-wiggle");
                 if (!$selected.is(".toontalk-top-level-resource")) {
                     $selected.addClass("toontalk-wiggle");
                 }
-                event.stopPropagation(); 
-            };
+                event.stopPropagation();   
+            }
+            var mouse_leave_handler = function (event) {
+                var backside = widget.get_backside();
+                var wiggling_widget = widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget;
+                if (backside) {
+                    TT.UTILITIES.remove_highlight();
+                }
+                $(wiggling_widget.get_frontside_element()).removeClass("toontalk-wiggle");
+                widgets_entered_stack.pop();
+                if (widgets_entered_stack.length > 0) {
+                    selection_feedback(widgets_entered_stack[widgets_entered_stack.length-1]);
+                }
+            }
             var visible;
             $(frontside_element).addClass("toontalk-frontside toontalk-side");
             if (widget.get_infinite_stack()) {
@@ -92,15 +117,8 @@ window.TOONTALK.frontside =
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code
             frontside_element.addEventListener('click',      click_handler);
             frontside_element.addEventListener('touchstart', click_handler);
-            frontside_element.addEventListener("mouseenter", selection_feedback);
-            frontside_element.addEventListener("mouseleave", function (event) {
-                var backside = widget.get_backside();
-                var wiggling_widget = widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget;
-                if (backside) {
-                    TT.UTILITIES.remove_highlight();
-                }
-                $(wiggling_widget.get_frontside_element()).removeClass("toontalk-wiggle");
-            });
+            frontside_element.addEventListener("mouseenter", mouse_enter_handler);
+            frontside_element.addEventListener("mouseleave", mouse_leave_handler);
             if (TT.debugging) {
                 frontside_element.id = widget._debug_id;
             }
@@ -116,7 +134,8 @@ window.TOONTALK.frontside =
             // but when running unwatched might never have been attached
             var element = this.get_element();
             $(element).remove();
-            element.toontalk_widget_side = null; // free the memory
+            // free the memory (tested and without the following memory footprint grows faster)
+            element.toontalk_widget_side = null;
         }
 
     };

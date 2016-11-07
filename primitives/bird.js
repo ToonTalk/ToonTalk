@@ -49,10 +49,12 @@ window.TOONTALK.bird = (function (TT) {
         backside_element.insertBefore(select_menu.container, backside_element.firstChild);
     };
     
-    bird.create = function (nest, description) {
-        var new_bird = Object.create(bird);
+    bird.create = function (nest, description, new_bird) {
         var non_empty_listeners = [];
         var waiting_widgets     = [];
+        if (!new_bird) {
+            new_bird = Object.create(bird);
+        }
         new_bird.set_nest = function (new_value, old_nest) {
             // ability to set the nest of a bird is private to the bird and its nest
             // hence the check that this is authorised
@@ -63,18 +65,20 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.is_bird = function () {
             return true;
         };
-        new_bird.widget_side_dropped_on_me = function (message_side, event, robot, do_not_run_next_step, by_function_bird) {
-            var frontside_element, fly_continuation, run_next_step_continuation, add_to_nest_contents_directly;
+        new_bird.widget_side_dropped_on_me = function (message_side, options) {
+            // options include event, robot, do_not_run_next_step, by_function_bird, temporary_bird
+            var frontside_element, fly_continuation,
+                run_next_step_continuation, after_delivery_continuation, add_to_nest_contents_directly;
             if (nest) {
                 if (nest.has_ancestor(message_side)) {
                     message_side.display_message("Bird can't take its nest to its nest!");
                     return false;
                 }
                 if ((nest.visible() || this.visible() || nest.any_nest_copies_visible()) &&
-                    (!robot || !robot.visible() || robot.animate_consequences_of_actions())) {
+                    (!options.robot || !options.robot.visible() || options.robot.animate_consequences_of_actions())) {
                     // if !robot.animate_consequences_of_actions() then finishing watched cycle after context closed
                     // so do it immediately
-                    if (!by_function_bird) {
+                    if (!options.by_function_bird) {
                         // if "dropped" by function bird then geometry isn't relevant 
                         message_side.save_dimensions();
                     }
@@ -84,27 +88,34 @@ window.TOONTALK.bird = (function (TT) {
                         // delay this since removes geometry until recomputed
                         $(frontside_element).removeClass("toontalk-bird-gimme")
                                             .addClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
-                        this.get_parent_of_frontside().rerender();
+                        if (this.get_parent_of_frontside()) {
+                            this.get_parent_of_frontside().rerender();
+                        }
                     }.bind(this));
                     message_side.set_visible(nest.visible()); // since nest is
-                    if (robot && !do_not_run_next_step) {
+                    if (options.robot && !options.do_not_run_next_step) {
                         // robot needs to wait until delivery is finished
-                        message_side.robot_waiting_before_next_step = robot;
+                        message_side.robot_waiting_before_next_step = options.robot;
                         // generalise this with backside support too
                         // the following was redundant (but unsure if it alsways is)
 //                      message_side.remove_from_parent_of_frontside();
-                        if (robot.run_next_step) {
-                            run_next_step_continuation = function () {
+                        if (options.robot.run_next_step) {
+                            run_next_step_continuation = function (continuation) {
+                                if (continuation) {
+                                    continuation();
+                                }
                                 message_side.robot_waiting_before_next_step = undefined;
-                                robot.run_next_step();
+                                options.robot.run_next_step();
                             };
                         }
                     }
-                    nest.animate_bird_delivery(message_side, this, run_next_step_continuation, event, robot);
+                    options.after_delivery_continuation = 
+                        TT.UTILITIES.join_continuations(options.after_delivery_continuation, run_next_step_continuation);
+                    nest.animate_bird_delivery(message_side, this, options);
                 } else {
                     add_to_nest_contents_directly = function () {
                         try {
-                            nest.add_to_contents(message_side, event, robot);
+                            nest.add_to_contents(message_side, options);
                          } catch (nest_or_error) {
                             if (nest_or_error.wait_for_nest_to_receive_something) {
                                 // e.g. this is a function bird and it received a box with empty nests inside
@@ -118,24 +129,30 @@ window.TOONTALK.bird = (function (TT) {
                         }
                     };
                     add_to_nest_contents_directly();
-                    if (robot && robot === message_side.robot_waiting_before_next_step) {
+                    if (options.robot && options.robot === message_side.robot_waiting_before_next_step) {
                         message_side.robot_waiting_before_next_step = undefined;
-                        robot.run_next_step();
+                        options.robot.run_next_step();
                     }
                }
-            } else if (robot && !robot.visible()) {
+            } else if (options.robot && !options.robot.visible()) {
                 message_side.remove();
             } else {
-                console.error("Drop on a nestless bird should have been handled.");
+                this.animate_delivery_to(message_side);
             }
-            if (event && this.robot_in_training()) {
+            if (options.event && !options.by_function_bird && this.robot_in_training()) {
                 this.robot_in_training().dropped_on(message_side, this);
             }
             return true;
         };
-        new_bird.animate_delivery_to = function (message_side, target_side, nest_recieving_message, starting_left, starting_top, after_delivery_continuation, event, robot) {
+        new_bird.animate_delivery_to = function (message_side, target_side, options) {
+            // options include nest_recieving_message, starting_left, starting_top, after_delivery_continuation, event, robot
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
-            var temporary_bird = !!nest_recieving_message;
+            if (!options) {
+                options = {};
+            }
+            // followings options are used so often convenient to make them variables
+            var nest_recieving_message = options.nest_recieving_message;
+            var after_delivery_continuation = options.after_delivery_continuation;
             var parent = this.get_parent_of_frontside();
             var bird_frontside_element = this.get_frontside_element(true);
             var bird_position = $(bird_frontside_element).position();
@@ -148,7 +165,11 @@ window.TOONTALK.bird = (function (TT) {
                     if (TT.sounds) {
                         TT.sounds.bird_fly.pause();
                     }
-                    if (temporary_bird) {
+                    if (!nest_recieving_message) {
+                        // no nest so bird is a "sink"
+                        message_side.remove();
+                    }
+                    if (options.temporary_bird) {
                         this.remove();
                     } else { 
                         become_static = function () {
@@ -192,35 +213,60 @@ window.TOONTALK.bird = (function (TT) {
                     if (after_delivery_continuation) {
                         after_delivery_continuation();
                     }
+                    if (options.event) {
+                        this.backup_all(); 
+                    }
                 }.bind(this);
             var bird_return_continuation = 
                 function () {
-                    try {
-                        nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
-                    } catch (nest_or_error) {
-                        if (nest_or_error.wait_for_nest_to_receive_something) {
-                            // e.g. this is a function bird and it received a box with empty nests inside
-                            nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(bird_return_continuation, this);
-                            if (after_delivery_continuation) {
-                                // e.g. a robot is running this and the robot shouldn't wait to run the next step
+                    var after_delivery_continuation = function (continuation) {
+                        // return to original location
+                        TT.UTILITIES.set_timeout(function () {
+                            var new_continuation = function () {
+                                                       if (continuation) {
+                                                           continuation();
+                                                       }
+                                                       if (bird_finished_continuation) {
+                                                           bird_finished_continuation();
+                                                       }
+                                                   };
+                            this.fly_to(bird_offset, new_continuation, options); 
+                        }.bind(this));
+                    }.bind(this);
+                    if (nest_recieving_message) {
+                        try {
+                            options.delivery_bird = this;
+                            options.ignore_copies = true;
+                            if (this.is_function_bird()) {
+                                options.after_delivery_continuation = after_delivery_continuation;
+                            }
+                            nest_recieving_message.add_to_contents(message_side, options);
+                            if (!this.is_function_bird()) {
                                 after_delivery_continuation();
-                                after_delivery_continuation = undefined;
                             }
-                            return;
-                        } else {
-                            // is an error -- this isn't the place to deal with it
-                            if (TT.sounds) {
-                                TT.sounds.bird_fly.pause();
+                        } catch (nest_or_error) {
+                            if (nest_or_error.wait_for_nest_to_receive_something) {
+                                // e.g. this is a function bird and it received a box with empty nests inside
+                                nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(bird_return_continuation, this);
+                                if (after_delivery_continuation) {
+                                    // e.g. a robot is running this and the robot shouldn't wait to run the next step
+                                    after_delivery_continuation();
+                                    after_delivery_continuation = undefined;
+                                }
+                                return;
+                            } else {
+                                // is an error -- this isn't the place to deal with it
+                                if (TT.sounds) {
+                                    TT.sounds.bird_fly.pause();
+                                }
+                                console.error(nest_or_error.stack);
+                                throw nest_or_error;
                             }
-                            console.error(nest_or_error.stack);
-                            throw nest_or_error;
                         }
+                    } else if (!this.is_function_bird()) {
+                        after_delivery_continuation();
                     }
                     stop_carrying_element($(bird_frontside_element).offset());
-                    // return to original location
-                    TT.UTILITIES.set_timeout(function () {
-                            this.fly_to(bird_offset, bird_finished_continuation, robot); 
-                        }.bind(this));
                 }.bind(this);
             var carry_element = 
                 function (element, widget_side) {
@@ -282,9 +328,6 @@ window.TOONTALK.bird = (function (TT) {
                         if (parent && !parent.is_backside()) {
                             parent.rerender();
                             // don't understand why parentless widgets should be made visible
-//                         } else {
-//                             message_side.set_visible(true);
-//                             message_side.render();
                         }
                     } else {
                         $(this.element_to_display_when_flying).remove();
@@ -292,7 +335,6 @@ window.TOONTALK.bird = (function (TT) {
                     this.element_to_display_when_flying = undefined;
                     this.update_display();
                 }.bind(this);
-            var delay_between_steps = 300; // milliseconds
             var target_offset, bird_offset, target_frontside_element, parent_element, bird_style_position, width, height,
                 $top_level_backside_element, top_level_backside_element_offset, continuation, delivery_continuation, restore_contents,
                 nest_contents_frontside_element, nest_width, nest_height, nest_offset, message_element, 
@@ -300,25 +342,35 @@ window.TOONTALK.bird = (function (TT) {
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
+            options.delay = TT.animation_settings.PAUSE_BETWEEN_BIRD_STEPS;
+            $(bird_frontside_element).removeClass("toontalk-bird-gimme")
             message_element = message_side.get_element(true);
             carry_element(message_element, message_side);
-            if (!target_side.is_function_nest()) {
+            if (target_side && !target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
             }
-            if ((!target_side.visible() && !this.visible()) || (!target_side.is_function_nest() && !TT.UTILITIES.visible_element(target_frontside_element))) {
+            if (target_side && // if there is no target then there shouldn't be a nest_recieving_message
+                !this.visible() &&
+                (!target_side.visible() || 
+                 (!target_side.is_function_nest() && !TT.UTILITIES.visible_element(target_frontside_element)))) {
                 // neither are visible so just add contents to nest
-                nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
+                options.delivery_bird = this;
+                options.ignore_copies = true;
+                nest_recieving_message.add_to_contents(message_side, options);
                 return;
             }
             if (TT.sounds) {
                 TT.sounds.bird_fly.play();
             }
             $(bird_frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
-            if (!target_side.is_function_nest()) {
+            if (target_side && !target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_offset = $(target_frontside_element).offset();
-                $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-backside-of-top-level");   
+                if (nest_recieving_message.get_frontside_element) {
+                    // function nests don't have a frontside_element
+                    $top_level_backside_element = $(nest_recieving_message.get_frontside_element()).closest(".toontalk-backside-of-top-level");
+                }  
             }
             if (!$top_level_backside_element || !$top_level_backside_element.is("*")) {
                 // target (e.g. nest) isn't contributing its top-level backside so use this bird's
@@ -329,9 +381,9 @@ window.TOONTALK.bird = (function (TT) {
                 top_level_backside_element_bounding_box = {left: 0,
                                                            top:  0};
             }
-            if (starting_left) {
-                bird_offset = {left: starting_left+top_level_backside_element_bounding_box.left,
-                               top:  starting_top +top_level_backside_element_bounding_box.top};
+            if (options.starting_left) {
+                bird_offset = {left: options.starting_left+top_level_backside_element_bounding_box.left,
+                               top:  options.starting_top +top_level_backside_element_bounding_box.top};
             } else if (bird_offset.left === 0 && bird_offset.top === 0) {
                 // don't really know where the bird is so put him offscreen
                 bird_offset = {left: -message_element.clientWidth,
@@ -360,20 +412,22 @@ window.TOONTALK.bird = (function (TT) {
                 $top_level_backside_element.get(0).appendChild(bird_frontside_element); // while flying
             }           
             TT.UTILITIES.set_css(bird_frontside_element,
-                                 {left:   starting_left || bird_offset.left-top_level_backside_element_bounding_box.left,
-                                  top:    starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top,
+                                 {left:   options.starting_left || bird_offset.left-top_level_backside_element_bounding_box.left,
+                                  top:    options.starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top,
                                   width:  width,
                                   height: height});
             if (TT.logging && TT.logging.indexOf('bird') >= 0) {
                 console.log(this.to_debug_string(50) + " from " + 
-                           (starting_left || bird_offset.left-top_level_backside_element_bounding_box.left) + ", " + 
-                           (starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top) + 
+                           (options.starting_left || bird_offset.left-top_level_backside_element_bounding_box.left) + ", " + 
+                           (options.starting_top  || bird_offset.top -top_level_backside_element_bounding_box.top) + 
                             " to " + target_offset.left + ", " + target_offset.top);
             }
-            nest_contents_frontside_element = nest_recieving_message.get_contents_element &&
-                                              nest_recieving_message.get_contents_element();
+            if (nest_recieving_message) {
+                nest_contents_frontside_element = nest_recieving_message.get_contents_element &&
+                                                  nest_recieving_message.get_contents_element();
+            }
             if (nest_contents_frontside_element && nest_recieving_message.visible() &&
-                (!robot || robot.animate_consequences_of_actions())) {
+                (!options.robot || options.robot.animate_consequences_of_actions())) {
                 // just fly to nest and return if unwatched robot caused this
                 // head near the nest (southeast) to set down message,
                 // move nest contents,
@@ -397,7 +451,9 @@ window.TOONTALK.bird = (function (TT) {
                         // no other bird should do this once this one begins to fly to the nest to move its contents
                         if (!nest_recieving_message.visible()) {
                             // been hidden since this bird started delivery
-                            nest_recieving_message.add_to_contents(message_side, event, robot, this, true);
+                            options.delivery_bird = this;
+                            options.ignore_copies = true;
+                            nest_recieving_message.add_to_contents(message_side, options);
                             if (after_delivery_continuation) {
                                 after_delivery_continuation();
                                 after_delivery_continuation = undefined;
@@ -405,7 +461,7 @@ window.TOONTALK.bird = (function (TT) {
                             return;
                         }
                         nest_recieving_message.set_locked(true);
-                        this.fly_to(nest_offset, move_nest_contents_continuation, robot, delay_between_steps);
+                        this.fly_to(nest_offset, move_nest_contents_continuation, options);
                     }.bind(this);
                     $(message_element).addClass("toontalk-temporarily-set-down");
                     stop_carrying_element(message_offset);
@@ -419,16 +475,16 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this);
                 var move_nest_contents_continuation = function () {
                     carry_element(nest_contents_frontside_element);
-                    this.fly_to(contents_offset, set_down_contents_continuation, robot, delay_between_steps);
+                    this.fly_to(contents_offset, set_down_contents_continuation, options);
                 }.bind(this);
                 var set_down_contents_continuation = function () {
                     $(nest_contents_frontside_element).addClass("toontalk-temporarily-set-down");
                     stop_carrying_element(contents_offset);
-                    this.fly_to(message_offset, pickup_message_continuation, robot, delay_between_steps);
+                    this.fly_to(message_offset, pickup_message_continuation, options);
                 }.bind(this);
                 var pickup_message_continuation = function () {
                     carry_element(message_element, message_side);
-                    this.fly_to(nest_offset, deliver_message_continuation, robot, delay_between_steps);
+                    this.fly_to(nest_offset, deliver_message_continuation, options);
                 }.bind(this);
                 var deliver_message_continuation = function () {
                     var message_dimensions = nest_recieving_message.get_contents_dimensions();
@@ -439,11 +495,11 @@ window.TOONTALK.bird = (function (TT) {
                     if (!message_side.is_plain_text_element()) {
                         TT.UTILITIES.set_css(message_side.get_element(), message_dimensions);
                     }
-                    this.fly_to(contents_offset, move_contents_back_continuation, robot, delay_between_steps);
+                    this.fly_to(contents_offset, move_contents_back_continuation, options);
                 }.bind(this);
                 var move_contents_back_continuation = function () {
                     carry_element(nest_contents_frontside_element);
-                    this.fly_to(nest_offset, complete_nest_update_continuation, robot, delay_between_steps);
+                    this.fly_to(nest_offset, complete_nest_update_continuation, options);
                 }.bind(this);
                 var complete_nest_update_continuation = function () {
                     $(message_element).removeClass("toontalk-temporarily-set-down");
@@ -452,9 +508,9 @@ window.TOONTALK.bird = (function (TT) {
                     nest_recieving_message.update_display();
                     bird_return_continuation();
                 }.bind(this);
-                this.fly_to(message_offset, set_down_message_continuation, robot, delay_between_steps);
+                this.fly_to(message_offset, set_down_message_continuation, options);
             } else {
-                this.fly_to(target_offset,  bird_return_continuation,      robot, delay_between_steps);
+                this.fly_to(target_offset,  bird_return_continuation,      options);
             }  
         };
         new_bird.get_json = function (json_history, callback, start_time) {
@@ -550,7 +606,7 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.toString = function (to_string_info) {
             if (nest) {
-                if (nest.is_function_nest()) {
+                if (nest.is_function_nest && nest.is_function_nest()) {
                     return nest.get_function_object().toString();
                 }
                 return "bird";
@@ -594,6 +650,11 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this));
             }
             if (this.element_to_display_when_flying) {
+                if (this.has_ancestor(TT.UTILITIES.widget_side_of_element(this.element_to_display_when_flying))) {
+                    // this bird is in the message_side
+                    // remove the bird element and add to top_level backside
+                    this.top_level_widget().get_backside_element().appendChild(frontside_element);
+                }
                 frontside_element.appendChild(this.element_to_display_when_flying);
             } else {
                 $(frontside_element).children(".toontalk-side").remove();
@@ -636,6 +697,9 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.get_name_height = function (height) {
             return .3*(height || this.get_height());
         };
+        new_bird.is_nest_visible = function () {
+            return nest && nest.visible();
+        };
         new_bird.add_standard_widget_functionality(new_bird);
         new_bird.add_speech_listeners({descriptions_acceptable: true,
                                        names_acceptable: true});
@@ -666,7 +730,8 @@ window.TOONTALK.bird = (function (TT) {
         return "matched";
     };
 
-    bird.fly_to = function (target_offset, continuation, robot, delay) {
+    bird.fly_to = function (target_offset, continuation, options) {
+        // options include robot and delay
         // target_offset is page relative coordinates
         // delay if undefined (or zero) means the continuation is run immediately upon reaching the target_offset
         var frontside_element = this.get_frontside_element();
@@ -680,21 +745,27 @@ window.TOONTALK.bird = (function (TT) {
         var bird_position = $(frontside_element).position();
         var full_continuation = function () {
             $(frontside_element).removeClass(direction);
-            if (delay) {
-                setTimeout(continuation, robot ? robot.transform_step_duration(delay) : delay);
+            if (options.delay && this.visible()) {
+                setTimeout(continuation, options.robot ? options.robot.transform_step_duration(options.delay) : options.delay);
             } else {
                 continuation();
             };
         }.bind(this);
-        // this timeout fixes the problem that the bird's name is displayed incorrectly while she is flying
-        setTimeout(function () {
-                       $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
-                       TT.UTILITIES.add_animation_class(frontside_element, direction);
-                       // duration is proportional to distance
-                       // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
-                       this.animate_to_absolute_position(target_offset, full_continuation, robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
-                   }.bind(this),
-                   1);
+        var fly_to_function = 
+            function () {
+                 $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
+                 TT.UTILITIES.add_animation_class(frontside_element, direction);
+                 // duration is proportional to distance
+                 // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
+                 this.animate_to_absolute_position(target_offset,
+                                                   full_continuation,
+                                                   options.robot && options.robot.transform_animation_speed(TT.animation_settings.BIRD_ANIMATION_SPEED));
+             }.bind(this);
+         if (this.visible()) {
+             setTimeout(fly_to_function, 1);
+         } else {
+             fly_to_function();
+         }
     };
     
     bird.get_type_name = function (plural, detailed) {
@@ -717,14 +788,18 @@ window.TOONTALK.bird = (function (TT) {
         return other.get_type_name && other.get_type_name() === this.get_type_name();
     };
     
-    bird.drop_on = function (side_of_other, event, robot) {
+    bird.drop_on = function (side_of_other, options) {
         if (side_of_other.widget_side_dropped_on_me) {
-            return side_of_other.widget_side_dropped_on_me(this, event, robot);
+            return side_of_other.widget_side_dropped_on_me(this, options);
         }
     };
         
-    TT.creators_from_json["bird"] = function (json, additional_info) {
-        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info), json.description);
+    TT.creators_from_json["bird"] = function (json, additional_info, new_bird) {
+        if (!json) {
+            // just an unitialised bird to handle cycle references
+            return Object.create(bird);
+        }
+        return TT.bird.create(TT.UTILITIES.create_from_json(json.nest, additional_info, new_bird), json.description);
     };
     
     return bird;
@@ -766,13 +841,15 @@ window.TOONTALK.nest = (function (TT) {
     // nest capacity - enforced only for unwatched robots when robot_removed_contents_since_empty
     nest.default_maximum_capacity = 10;
     nest.maximum_capacity = nest.default_maximum_capacity;
-    nest.create = function (description, contents, guid, original_nest, serial_number, name) { 
-        var new_nest = Object.create(nest);
+    nest.create = function (description, contents, guid, original_nest, serial_number, name, new_nest) { 
         var non_empty_listeners           = [];
         var nest_under_capacity_listeners = [];
         var waiting_widgets               = [];
-        var robot_removed_contents_since_empty           = false; // has any of its contents been removed since this was empty -- needed for maximum_capacity
+        var robot_removed_contents_since_empty = false; // has any of its contents been removed since this was empty -- needed for maximum_capacity
         var nest_copies, generic_set_name, generic_set_visible;
+        if (!new_nest) {
+            new_nest = Object.create(nest);
+        }
         if (!contents) {
             contents = [];
         }
@@ -855,27 +932,33 @@ window.TOONTALK.nest = (function (TT) {
             this.last_match = other;
             return this;
         };
-        new_nest.add_to_contents = function (widget_side, event, robot, delivery_bird, ignore_copies) {
+        new_nest.add_to_contents = function (widget_side, options) {
+            // options include event, robot, delivery_bird, ignore_copies
             var current_non_empty_listeners, widget_side_copy;
             var stack_size = contents.push(widget_side);
             var nest_visible = this.visible();
-            if (stack_size > nest.maximum_capacity && robot && robot_removed_contents_since_empty && !robot.visible() && !nest_visible) {
+            if (!options) {
+                options = {};
+            }
+            if (stack_size > nest.maximum_capacity && 
+                options.robot && options.robot_removed_contents_since_empty && !options.robot.visible() &&
+                !nest_visible) {
                 // if robot or nest is visible let it keep running even if nest goes over capactity
                 // robot_removed_contents_since_empty ensures that programs to add to top-level nests or nests without robots removing things don't stop
                 if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                     console.log(this.to_debug_string(50) + " postponing addition of " + widget_side.to_debug_string(50) +
-                                " by " + robot.to_debug_string(50) + ". Stack is " + contents.length + " long. " +
+                                " by " + options.robot.to_debug_string(50) + ". Stack is " + contents.length + " long. " +
                                 nest_under_capacity_listeners.length + " previously postponed.");
                 }
                 // stop the robot at the end of this cycle
                 // and let him run again when the nest isn't so full
-                robot.add_body_finished_listener(function () {
-                    robot.set_stopped(true);
+                options.robot.add_body_finished_listener(function () {
+                    options.robot.set_stopped(true);
                     nest_under_capacity_listeners.push(function () {
-                        robot.set_stopped(false);
-                        robot.run_actions();
+                        options.robot.set_stopped(false);
+                        options.robot.run_actions();
                     });
-                })
+                });
             }
             if (TT.logging && TT.logging.indexOf("nest") >= 0) {
                 console.log(this.to_debug_string() + " added " + widget_side.to_debug_string() + " nest now contains " + contents.length + " widgets.");
@@ -885,19 +968,19 @@ window.TOONTALK.nest = (function (TT) {
             } else {
                 widget_side.set_parent_of_frontside(this);
             }
-            if (nest_copies && !ignore_copies) {
-                if (delivery_bird) {
+            if (nest_copies && !options.ignore_copies) {
+                if (options.delivery_bird) {
                     nest_copies.forEach(function (nest_copy) {
                         if (!nest_copy.has_ancestor(widget_side.get_widget())) {
                             // ignore if nest_copy is inside message
-                            nest_copy.animate_bird_delivery(TT.UTILITIES.copy_side(widget_side), delivery_bird, undefined, event, robot);
+                            nest_copy.animate_bird_delivery(TT.UTILITIES.copy_side(widget_side), options.delivery_bird, options);
                         }
                     });                    
                 } else {
                     nest_copies.forEach(function (nest_copy) {
                         if (!nest_copy.has_ancestor(widget_side.get_widget())) {
                             // ignore if nest_copy is inside message
-                            nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side, false, true), event, robot);
+                            nest_copy.add_to_contents(TT.UTILITIES.copy_side(widget_side, false, true), options);
                         }
                     });
                 }
@@ -925,19 +1008,22 @@ window.TOONTALK.nest = (function (TT) {
                 widget_side.hide();
                 widget_side.set_visible(false);
             }
+            if (options.event) {
+                this.backup_all();
+            }
             this.rerender();
         };
-        new_nest.animate_bird_delivery = function (message_side, bird, continuation, event, robot) {
+        new_nest.animate_bird_delivery = function (message_side, bird, options) {
             var start_position, bird_parent_element, visible;
-            if (this.get_parent_of_frontside() === undefined) {
+            if (this.get_parent_of_frontside() === undefined && !bird.visible()) {
                 // is acting like a sink for messages
                 message_side.remove();
-                if (continuation) {
-                    continuation();
+                if (options.after_delivery_continuation) {
+                    options.after_delivery_continuation();
                 }
                 return;
             }
-            bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, event, robot);
+            bird.animate_delivery_to(message_side, this, options);
             if (nest_copies) {
                 // TODO: determine if .closest(":visible") is needed here -- :visible is a JQuery hack to avoid
                 start_position = $(bird.closest_visible_ancestor().get_widget().get_frontside_element()).closest(":visible").position();
@@ -950,12 +1036,15 @@ window.TOONTALK.nest = (function (TT) {
                         // ignore if nest_copy is inside message
                         if (!start_position || (!nest_copy.visible() && !visible)) {
                             // neither are visible so just add contents to nest
-                            nest_copy.add_to_contents(message_copy, undefined, robot);
+                            nest_copy.add_to_contents(message_copy, options);
                         } else {
                             bird_copy = bird.copy({just_value: true});
                             bird_frontside_element = bird_copy.get_frontside_element(true); 
                             bird_parent_element.appendChild(bird_frontside_element);
-                            bird_copy.animate_delivery_to(message_copy, nest_copy, nest_copy, start_position.left, start_position.top, undefined, event, robot);
+                            options.starting_left = start_position.left;
+                            options.starting_top  = start_position.top;
+                            options.nest_recieving_message = nest_copy;
+                            bird_copy.animate_delivery_to(message_copy, nest_copy, options);
                         }
                    }
                });
@@ -1198,7 +1287,7 @@ window.TOONTALK.nest = (function (TT) {
             // this is used by sensors when reconstructing from JSON
             contents = new_contents;
         };
-        new_nest.dropped_on_other = function (side_of_other, event, robot) {
+        new_nest.dropped_on_other = function (side_of_other, options) {
             var bird, frontside_element, bird_frontside_element, nest_position, 
                 hatching_finished_handler, fly_down_finished_handler, bird_fly_continuation;
             if (!guid) {
@@ -1208,16 +1297,16 @@ window.TOONTALK.nest = (function (TT) {
                 }                
                 // create bird now so robot knows about it
                 bird = TT.bird.create(this);
-                if (robot) {
-                    robot.add_newly_created_widget(bird);
+                if (options.robot) {
+                    options.robot.add_newly_created_widget(bird);
                     if (!this.visible()) {
                         return;
                     }
                     // since robot dropped the nest it needs to wait (if watched)
-                    this.robot_waiting_before_next_step = robot;
+                    this.robot_waiting_before_next_step = options.robot;
 //                     console.log("robot_waiting_before_next_step set for " + this + " in new_bird.dropped_on_other");
                 }
-                if (event && this.robot_in_training()) {
+                if (options.event && this.robot_in_training()) {
                     // robot did this so add bird to a newly created widgets of this.robot_in_training()
                     // robot should be undefined since it isn't a running robot
                     this.robot_in_training().add_newly_created_widget(bird);
@@ -1261,11 +1350,12 @@ window.TOONTALK.nest = (function (TT) {
                     TT.UTILITIES.set_css(bird_frontside_element,
                                          {left: nest_position.left,
                                           top:  nest_position.top});
-                    if (event && this.robot_in_training()) {
+                    if (options.event && this.robot_in_training()) {
                         // robot should not add steps for the hatching of the bird - hence true argument
-                        backside_where_bird_goes.widget_side_dropped_on_me(bird, event, undefined, true);
+                        options.ignore_training = true;
+                        backside_where_bird_goes.widget_side_dropped_on_me(bird, options);
                     } else {
-                        backside_where_bird_goes.widget_side_dropped_on_me(bird, event);
+                        backside_where_bird_goes.widget_side_dropped_on_me(bird, options);
                     }
                     $(frontside_element).removeClass("toontalk-hatch-egg")
                                         .addClass("toontalk-empty-nest " + this.get_class_name_with_color("toontalk-empty-nest"))
@@ -1296,13 +1386,13 @@ window.TOONTALK.nest = (function (TT) {
                                     $(bird_frontside_element).removeClass("toontalk-fly-down");
                                     TT.UTILITIES.add_animation_class(bird_frontside_element, "toontalk-bird-morph-to-static");
                                     TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);
-                                    if (robot) {
+                                    if (options.robot) {
 //                                         console.log("reset robot_waiting_before_next_step for " + this);
 //                                         if (this.robot_waiting_before_next_step) {
                                             this.robot_waiting_before_next_step = undefined;
 //                                             console.log("bird run_next_step in fly_down_finished_handler");
 //                                         }
-                                        robot.run_next_step();
+                                        options.robot.run_next_step();
                                     }
                                     // following ensures it listens to drag over events to change CSS class
                                     // perhaps there is a better way
@@ -1318,33 +1408,33 @@ window.TOONTALK.nest = (function (TT) {
                     bird.animate_to_absolute_position({left: resting_left+top_level_backside_position.left,
                                                        top:  resting_top +top_level_backside_position.top},
                                                       bird_fly_continuation,
-                                                      robot && robot.transform_animation_speed(TT.UTILITIES.default_animation_speed));
+                                                      options.robot && options.robot.transform_animation_speed(TT.animation_settings.BIRD_ANIMATION_SPEED));
                     this.rerender();
                 }.bind(this);
                 TT.UTILITIES.add_one_shot_event_handler(frontside_element, "animationend", 2000, hatching_finished_handler);
             }
             return true;
         };
-        new_nest.widget_side_dropped_on_me = function (side_of_other, event, robot) {
+        new_nest.widget_side_dropped_on_me = function (side_of_other, options) {
             if (event && side_of_other.save_dimensions) {
                 side_of_other.save_dimensions();
             }
             if (contents.length === 0) {
-                this.add_to_contents(side_of_other, event, robot);
+                this.add_to_contents(side_of_other, options);
                 if (side_of_other.dropped_on_other) {
                     // e.g. so egg can hatch from nest drop
-                    side_of_other.dropped_on_other(this, event, robot);
-                } else if (event && this.robot_in_training()) {
+                    side_of_other.dropped_on_other(this, options);
+                } else if (options.event && this.robot_in_training()) {
                     this.robot_in_training().dropped_on(side_of_other, this);
                 }
             } else {
-                side_of_other.drop_on(contents[0], event, robot)
+                side_of_other.drop_on(contents[0], options)
             }
             return true;
         };
-        new_nest.drop_on = function (side_of_other, event, robot) {
+        new_nest.drop_on = function (side_of_other, options) {
             if (side_of_other.widget_side_dropped_on_me) {
-                side_of_other.widget_side_dropped_on_me(this, event, robot);
+                side_of_other.widget_side_dropped_on_me(this, options);
                 return true;
             }
             return false;
@@ -1396,6 +1486,7 @@ window.TOONTALK.nest = (function (TT) {
                                 // e.g. element widgets need to update their attributes
                                 top_contents.set_size_attributes(contents_dimension.width, contents_dimension.height);
                             }
+                            top_contents.render();
                         }.bind(this),
                         2); // TODO: see if 0 works here
                 }
@@ -1644,8 +1735,8 @@ window.TOONTALK.nest = (function (TT) {
                     return TT.nest.create_function(description, type_name, function_name);
                 },
             animate_bird_delivery:
-                function (message_side, bird, continuation, event, robot) {
-                    bird.animate_delivery_to(message_side, this, undefined, undefined, undefined, continuation, event, robot);
+                function (message_side, bird, options) {
+                    bird.animate_delivery_to(message_side, this, options);
                 },
             get_json: 
                 function (json_history, callback, start_time) {
@@ -1691,9 +1782,12 @@ window.TOONTALK.nest = (function (TT) {
         }
         return function_nest;
     };
-
         
     TT.creators_from_json["function_nest"] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        }
         return TT.nest.create_function(json.description, json.function_type, json.function_name);
     };
     
@@ -1738,19 +1832,26 @@ window.TOONTALK.nest = (function (TT) {
         return "Drop something on my bird and she'll take it here.";
     };
     
-    TT.creators_from_json["nest"] = function (json, additional_info) {
+    TT.creators_from_json["nest"] = function (json, additional_info, new_nest) {
         // don't share the nest if this is a copy
-        var nest = !json.original_nest && json.guid && additional_info && additional_info.guid_to_nest_table && additional_info.guid_to_nest_table[json.guid];
-        if (!nest) {
-            nest = TT.nest.create(json.description, 
-                                  TT.UTILITIES.create_array_from_json(json.contents, additional_info), 
+        if (!json) {
+            // just an unitialised nest to handle cycle references
+            return Object.create(nest);
+        }
+        if (!new_nest) {
+            new_nest = !json.original_nest && json.guid && additional_info && additional_info.guid_to_nest_table && additional_info.guid_to_nest_table[json.guid];            
+        }
+        new_nest = TT.nest.create(json.description, 
+                                  [], 
                                   json.guid,
                                   json.original_nest && TT.UTILITIES.create_from_json(json.original_nest, additional_info),
                                   json.serial_number,
-                                  json.name);
-            additional_info.guid_to_nest_table[json.guid] = nest;                 
-        }
-        return nest;
+                                  json.name,
+                                  new_nest);
+        // this is done after the nest is created since it may be an unitialised widget that is initialised above
+        new_nest.set_contents(TT.UTILITIES.create_array_from_json(json.contents, additional_info));
+        additional_info.guid_to_nest_table[json.guid] = new_nest;                 
+        return new_nest;
     };
 
     // the following were 0.8 for a long time with the idea that it made it clear there was a nest there

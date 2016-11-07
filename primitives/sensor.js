@@ -217,7 +217,7 @@ window.TOONTALK.sensor = (function (TT) {
             return attributes.join(" ");
         };
         new_sensor.match = function (other) {
-            // TODO:
+            // TODO: decide how this should work
             this.last_match = other;
             return this;
         };
@@ -232,7 +232,7 @@ window.TOONTALK.sensor = (function (TT) {
                     title += " On my back you can change which kind of events and attributes I receive.";
                 }
             } else {
-                title += " But I'm deactivated and can't receive anything until the 'Listening to events' check box on my back is ticked.";
+                title += " But I'm deactivated and can't receive anything until the green flag <span class='toontalk-green-flag-icon'></span> is clicked or the 'Listening to events' check box on my back is ticked.";
             }
             return title;
         };
@@ -289,7 +289,11 @@ window.TOONTALK.sensor = (function (TT) {
         return new_sensor;
     };
     
-    TT.creators_from_json["sensor"] = function (json, additional_info) {   
+    TT.creators_from_json["sensor"] = function (json, additional_info) {
+        if (!json) {
+            // no possibility of cyclic references so don't split its creation into two phases
+            return;
+        } 
         var sensor = TT.sensor.create(json.event_name,
                                       json.attribute,
                                       json.description, 

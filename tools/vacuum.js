@@ -136,9 +136,11 @@ window.TOONTALK.vacuum = (function (TT) {
                     }
                     // don't remove children since then can't restore
                     // tried using a copy and removing but then bird/nest relations were broken
-                    widget_side.remove(event, true);
+                    widget_side.remove({event: event, 
+                                        do_not_remove_children: true});
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
+                TT.tool.set_last_event_type(event.type);
                 if (mode === 'suck') {
                     if (widget_side.remove && !widget_side.get_widget().is_top_level()) {
                         remove_widget(widget_side);

@@ -15,7 +15,7 @@ window.TOONTALK.wand = (function (TT) {
         var held = false;
         var element;
         var wand =
-            {apply_tool: function (widget) {
+            {apply_tool: function (widget, event) {
                             var widget_copy;
                             if (!widget.is_top_level()) {
                                 if (TT.sounds) {
@@ -54,6 +54,7 @@ window.TOONTALK.wand = (function (TT) {
                                                                // it will be removed
                                                                top_level_widget = widget_side_under_tool.top_level_widget();
                                                                this.apply_tool(widget_side_under_tool, event);
+                                                               TT.tool.set_last_event_type(event.type);
                                                                top_level_widget.backup_all();
                                                                listen_for_command(); // listen for next command
                                                            }
