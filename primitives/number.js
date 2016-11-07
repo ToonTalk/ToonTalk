@@ -789,7 +789,8 @@ window.TOONTALK.number = (function () {
         var subtraction_of_negative_number;
         if (this.is_attribute_widget && this.is_attribute_widget()) {
             extra_class += " toontalk-attribute-number";
-        } else if (this.get_approximate()) {
+        } else if (this.get_approximate() && !this.get_erased()) {
+            // while erased it isn't "approximate"
             extra_class += " toontalk-approximate-number";
         }
         if (size_unconstrained_by_container) {
