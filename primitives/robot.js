@@ -1621,14 +1621,19 @@ window.TOONTALK.robot_backside =
                     }
                     area_class_name = "toontalk-backside-" + type + "-conditions-area";
                     if (type === 'bird') {
-                        condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
+                        if ($(backside_element).find(".toontalk-bird-on-back-condition").length === 0) {
+                            condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
+                            $(condition_element).addClass("toontalk-bird-on-back-condition");
+                        }
                     } else {
                         condition_element = create_conditions_area("And if " + TT.UTILITIES.add_a_or_an(type) + " matches: ", 
                                                                    backside_condition, 
                                                                    robot,
                                                                    area_class_name);
                     }
-                    backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
+                    if (condition_element) {
+                        backside_element.insertBefore(condition_element, backside_element.firstChild.nextSibling);
+                    }
                     backside_condition.set_visible(robot_visible);
                     backside_condition.rerender();
                 }
