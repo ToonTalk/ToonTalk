@@ -724,6 +724,7 @@ window.TOONTALK.UTILITIES =
                    top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)};
             utilities.set_css($source, css);
             source_widget_side.remove_from_parent_of_frontside(event);
+            source_widget_side.set_visible(true); // in case removing from parent made it invisible
             if (source_widget_side.drop_on && source_widget_side.drop_on(target_widget_side, {event: event})) {
             } else if (target_widget_side.widget_side_dropped_on_me &&
                        target_widget_side.widget_side_dropped_on_me(source_widget_side, {event: event})) {
