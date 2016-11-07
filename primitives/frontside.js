@@ -48,7 +48,12 @@ window.TOONTALK.frontside =
             };
             var mouse_enter_handler = function (event) {
                 selection_feedback(widget);
-                widgets_entered_stack.push(widget);
+                if (widgets_entered_stack.indexOf(widget) >= 0) {
+                    // seems somehow can enter without exiting so this cleans things up in that case
+                    widgets_entered_stack = [];
+                } else {
+                    widgets_entered_stack.push(widget);
+                }      
             };
             var selection_feedback = function (widget) {
                  // note that this highlights the backside if visible even if the widget passes the selection to its parent
