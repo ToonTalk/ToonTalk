@@ -3411,8 +3411,11 @@ window.TOONTALK.UTILITIES =
                                 },
                                // the corner handles looked bad on element widgets
                                // and generally got in the way
-                               handles: "n,e,s,w"
+                               // too hard to pick up boxes so resize handle only in lower right corner
+                               handles: widget.is_box() ? "se" : "n,e,s,w"
                                });
+             // sometimes the resize handle gets a z-index less than that of widgets
+             $element.children(".ui-resizable-handle").css("z-index", 9999);
         };
         
         utilities.match = function (pattern, widget) {
