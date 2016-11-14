@@ -190,6 +190,7 @@ window.TOONTALK.google_drive =
                                          } else {
                                             console.log(file.error.message);
                                          }
+                                         return;
                                      }
                                      if (TT.debugging) {
                                         console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));

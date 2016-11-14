@@ -3378,10 +3378,12 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.make_resizable = function ($element, widget) {
-            var previous_width, previous_height;
+            var click_listeners, previous_width, previous_height;
+            // don't want click listeners to fire when resize stops
             $element.resizable({start: function (event, ui) {
                                            previous_width  = ui.originalSize.width;
                                            previous_height = ui.originalSize.height;
+                                           click_listeners = $element.get(0).onclick;
                                 },
                                 resize: function (event, ui) {
                                             if ($element.is(".toontalk-element-frontside")) {
@@ -3400,6 +3402,12 @@ window.TOONTALK.UTILITIES =
                                           if (widget.robot_in_training && widget.robot_in_training()) {
                                               widget.robot_in_training().resized_widget(widget, previous_width, previous_height, ui.size.width, ui.size.height);
                                           }
+                                          event.originalEvent.stopPropagation();
+                                          // restore click listeners but wait a little bit
+                                          setTimeout(function () {
+                                                         $element.get(0).onclick = click_listeners;
+                                                     },
+                                                     100);
                                 },
                                // the corner handles looked bad on element widgets
                                // and generally got in the way
