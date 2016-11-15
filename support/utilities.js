@@ -5029,7 +5029,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             return 240;
         }
         if (!$element.is(".toontalk-not-observable")) {
-            return element.getBoundingClientRect().width;
+            // was element.getBoundingClientRect().width but box in second hole was too wide 
+            return $(element).width(); 
         }
     };
     utilities.element_height = function (element) {
@@ -5039,7 +5040,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             return 60;
         }
         if (!$element.is(".toontalk-not-observable")) {
-            return element.getBoundingClientRect().height;
+            return $(element).height();
         }
     };
     utilities.resizable_and_scalable = function (element, resize_callback) {
