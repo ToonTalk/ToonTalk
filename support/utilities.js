@@ -5044,6 +5044,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         }
     };
     utilities.resizable_and_scalable = function (element, resize_callback) {
+        // used by backsides
         var x_scale = 1;
         var y_scale = 1;
         var previous_bounding_box;
@@ -5062,9 +5063,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     x_scale *= bounding_box.width  / previous_bounding_box.width;
                     y_scale *= bounding_box.height / previous_bounding_box.height;
                     resize_callback(x_scale, y_scale);
-//                     console.log("bounding_box: " + bounding_box.width + "x" + bounding_box.height 
-//                               + " previous_bounding_box: " + previous_bounding_box.width + "x" + previous_bounding_box.height
-//                               + " x_scale: " + x_scale + " y_scale: " + y_scale);
                     previous_bounding_box = bounding_box;
                 },
                 handles: "n,e,s,w,se,ne,sw,nw"});

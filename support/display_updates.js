@@ -121,12 +121,18 @@ window.TOONTALK.DISPLAY_UPDATES =
                                             if (element && !$(element).is(".toontalk-top-level-resource, .toontalk-bird, .toontalk-nest, .toontalk-box-hole, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
                                                 // need to delay in order for the DOM to settle down with the changes caused by update_display
                                                 TT.UTILITIES.set_timeout(function () {
+                                                                             var border_size;
                                                                              if ($parent_side_element.is('.toontalk-box-hole') ||
                                                                                  $parent_side_element.is('.toontalk-nest')) {
                                                                                  // not resizable while in a box hole or on a nest
                                                                                  $(element).children(".ui-resizable-handle").hide();
                                                                              } else if (!$(element).is(".ui-resizable")) {
                                                                                  TT.UTILITIES.make_resizable($(element), pending_update);
+                                                                                 if (pending_update.is_box()) {
+                                                                                     border_size = pending_update.get_border_size();
+                                                                                     $(element).children(".ui-resizable-handle").css({right:  -border_size,
+                                                                                                                                      bottom: -border_size});
+                                                                                 }
                                                                              } else {
                                                                                  $(element).children(".ui-resizable-handle").show();
                                                                              }

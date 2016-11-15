@@ -670,6 +670,12 @@ window.TOONTALK.box = (function (TT) {
                         frontside_element.appendChild(hole_element);
                     });
                 };
+                if (!this.constrained_by_container()) {
+                    // unconstrained boxes have a single resize handle in the south east
+                    // whose location needs to be adjusted for borders
+                    $(frontside_element).children(".ui-resizable-handle").css({right:  -border_size,
+                                                                               bottom: -border_size});
+                }
             }.bind(this);
         var update_dimensions = function () {
             var get_containing_hole = function (element) {
@@ -757,7 +763,7 @@ window.TOONTALK.box = (function (TT) {
     };
 
     box.get_border_size = function (width, height) {
-        var frontside_width;
+        var frontside_width, size;
         if (width === 0) {
             // i.e. a zero-hole box
             frontside_width =  $(this.get_frontside_element()).width();
@@ -770,11 +776,23 @@ window.TOONTALK.box = (function (TT) {
             }
             return 32;
         }
-        if (!width) {
+        if (!width && !height) {
+            size = this.get_size();
             width  = $(this.get_frontside_element()).width();
-        }
-        if (!height) {
             height = $(this.get_frontside_element()).height();
+            if (this.get_horizontal()) {
+                if (size === 0) {
+                    width = 0;
+                } else {
+                    width  = width/size;
+                }
+            } else {
+                if (size === 0) {
+                    height = 0;
+                } else {
+                    height = height/this.get_size();
+                }
+            }
         }
         if (width <= 32 || height <= 32) {
             return 4;
