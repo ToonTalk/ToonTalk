@@ -144,7 +144,7 @@ window.TOONTALK.box = (function (TT) {
             return size;
         };
         new_box.set_size = function (new_size, update_display, train) {
-            var i, box_visibility, listeners;
+            var i, box_visibility, listeners, parent;
             if (size === new_size || new_size < 0 || isNaN(new_size)) {
                 // ingore no change, negative or NaN values
                 return false;
@@ -160,7 +160,17 @@ window.TOONTALK.box = (function (TT) {
             }
             size = new_size;
             if (update_display) {
-                this.rerender();
+                if (this.constrained_by_container()) {
+                    // dimensions depend upon parent so rerender it too
+                    // box is grandparent
+                    parent = this.get_parent_of_frontside();
+                    if (parent.is_hole()) {
+                        parent = parent.get_parent_of_frontside();
+                    }
+                    parent.rerender();
+                } else {
+                    this.rerender();
+                }
             }
             listeners = this.get_listeners('contents_or_properties_changed');
             if (listeners) {
