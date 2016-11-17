@@ -2382,7 +2382,7 @@ window.TOONTALK.element.function =
         'listen', 
         TT.widget.get_listen_function(functions),
         "The bird will cause the browser to listen to the next thing said and give the words to the bird in the first hole. "
-        + "If you put a number between 0 and 1 in the saecond hole then only recognitions with at least that confidence will be considered. "
+        + "If you put a number between 0 and 1 in the second hole then only recognitions with at least that confidence will be considered. "
         + "if you put in the third hole words or phrases separted by | then the recogniser will expect one of those words or phrases.",
         "listen",
         []);
