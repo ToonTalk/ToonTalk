@@ -2308,6 +2308,7 @@ window.TOONTALK.UTILITIES =
             if (!element) {
                 return;
             }
+            // element is of a widget its title will be re-computed but set it since might be a tool or button
             element.title = new_title;
             utilities.use_custom_tooltip(element);
         };
@@ -2317,6 +2318,11 @@ window.TOONTALK.UTILITIES =
             // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
             var $element = $(element);
             var maximum_width_if_moved, feedback_horizontal, feedback_vertical;
+            // ensure the most up-to-date tooltip and avoid interference due to translation 
+            if (utilities.widget_side_of_element(element) &&
+                utilities.widget_side_of_element(element).get_title) {
+                element.title = utilities.widget_side_of_element(element).get_title();
+            }
             $element.tooltip(
                 {position: {
                      my: "center bottom-20",
