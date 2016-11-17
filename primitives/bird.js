@@ -237,13 +237,8 @@ window.TOONTALK.bird = (function (TT) {
                         try {
                             options.delivery_bird = this;
                             options.ignore_copies = true;
-                            if (this.is_function_bird()) {
-                                options.after_delivery_continuation = after_delivery_continuation;
-                            }
-                            nest_recieving_message.add_to_contents(message_side, options);
-                            if (!this.is_function_bird()) {
-                                after_delivery_continuation();
-                            }
+                            nest_recieving_message.add_to_contents(message_side, {});
+                            after_delivery_continuation();
                         } catch (nest_or_error) {
                             if (nest_or_error.wait_for_nest_to_receive_something) {
                                 // e.g. this is a function bird and it received a box with empty nests inside

@@ -77,12 +77,12 @@ window.TOONTALK.create_function_table =
     process_response: function (response, message_properties, message, options) {
         if (response) {
             // it used to be that this also called add_newly_created_widget
-            // this wasn't necessary and for the delay function bird meant this could happen at the wrong step
+            // but this wasn't necessary and for the delay function bird meant this could happen at the wrong step
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
             options.do_not_run_next_step = true;
             options.by_function_bird = true;
             if (!message_properties.message_return_bird) {
-                // bird is "lost" unless message is returned
+                // bird in message is "lost" unless message is to be returned
                 options.temporary_bird = true;
             }
             message_properties.bird.widget_side_dropped_on_me(response, options);
