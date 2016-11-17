@@ -67,8 +67,12 @@ window.TOONTALK.bird = (function (TT) {
         };
         new_bird.widget_side_dropped_on_me = function (message_side, options) {
             // options include event, robot, do_not_run_next_step, by_function_bird, temporary_bird
-            var frontside_element, fly_continuation,
+            var frontside_element, fly_continuation, copy,
                 run_next_step_continuation, after_delivery_continuation, add_to_nest_contents_directly;
+            if (this.get_infinite_stack()) {
+                copy = this.add_copy_to_container();
+                return copy.widget_side_dropped_on_me(message_side, options);
+            }
             if (nest) {
                 if (nest.has_ancestor(message_side)) {
                     message_side.display_message("Bird can't take its nest to its nest!");
