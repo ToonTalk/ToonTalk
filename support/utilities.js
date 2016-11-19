@@ -2844,6 +2844,8 @@ window.TOONTALK.UTILITIES =
         };
         
         utilities.create_text_element = function (text, extra_classes) {
+            // note that this can create any kind of element now that it 
+            // treats text as innerHTML
             var div = document.createElement("div");
             div.innerHTML = text;
             $(div).addClass('ui-widget');

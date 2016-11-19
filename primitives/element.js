@@ -2398,14 +2398,13 @@ window.TOONTALK.element.function =
                 }
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
                     robot.display_message("Robot trained to display: " + element_text.get_text(), options);
-                } else {
-                    if (!element_text.get_text) {
-                        functions.report_error("The 'show message' bird could not turn " + describe(element_text) + " into a text to display it.", message_properties);
-                    }
+                } else if (element_text.is_plain_text_element()) {
                     TT.UTILITIES.display_message(element_text.get_text(), options);
+                } else {
+                    TT.UTILITIES.display_message(element_text.get_frontside_element(true).innerHTML, options);
                 }
             };
-            return functions.typed_bird_function(message, display_message, ['element', 'number'], 'show message', options, 1, 2);
+            return functions.typed_bird_function(message, display_message, [undefined, 'number'], 'show message', options, 1, 2);
         },
         "The bird will cause what is in the second box hole to be displayed. The third hole can be a number indicating how many seconds the message should be displayed.",
         "display",
