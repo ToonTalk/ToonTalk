@@ -421,7 +421,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (transform) {
                     TT.UTILITIES.add_transform_to_css(transform, "", pending_css, frontside_element.parentElement.className.indexOf("toontalk-box-hole") < 0);
                 }
-                if (!this.constrained_by_container() && !this.is_image_element()) {
+                if (!this.constrained_by_container() && this.is_plain_text_element()) {
                     $(frontside_element).css(pending_css);
                     return;
                 }
@@ -2393,26 +2393,38 @@ window.TOONTALK.element.function =
         'show message',
         // might this make sense to also be able to display non-text elements?
         function (message, options) {
-            var display_message = function (widget, duration, width, height, message_properties) {
-                var options;
-                if (duration && duration.to_float) {
+            var display_message = function (widget, duration_widget, width_widget, height_widget, message_properties) {
+                var options, frontside_element, width, height;
+                if (duration_widget && duration_widget.to_float) {
                     // duration option is milliseconds but users probably prefer seconds
-                    options = {duration: duration.to_float()*1000};
+                    options = {duration: duration_widget.to_float()*1000};
                 }
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
                     robot.display_message("Robot trained to display: " + widget.get_text(), options);
                 } else if (widget.is_plain_text_element()) {
                     TT.UTILITIES.display_message(widget.get_text(), options);
                 } else {
+                    frontside_element = widget.get_frontside_element();
                     if (widget.is_resizable()) {
                         widget.remove({do_not_remove_children: true});
-                        TT.UTILITIES.set_css(widget.get_frontside_element(),
-                                             {width:  width  ? width.to_float()  : 240,
-                                              height: height ? height.to_float() : 80});
+                        width  = width_widget  ? width_widget.to_float()  : 240;
+                        height = height_widget ? height_widget.to_float() : 80;
+                        TT.UTILITIES.set_css(frontside_element,
+                                             {width:  width,
+                                              height: height,
+                                              left: -1000,
+                                              top:  -1000});
+                        if (widget.set_size_attributes) {
+                            widget.set_size_attributes(width, height);
+                        }
+                        document.body.appendChild(frontside_element);
                     }
                     widget.update_display();
                     setTimeout(function () {
-                                   TT.UTILITIES.display_message(widget.get_frontside_element().outerHTML, options);
+                                   $(frontside_element).css({left: '',
+                                                             top:  ''});
+                                   TT.UTILITIES.display_message(frontside_element.outerHTML, options);
+                                   $(frontside_element).remove();
                                },
                                1000);
                                        
