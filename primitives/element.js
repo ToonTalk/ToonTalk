@@ -2398,6 +2398,8 @@ window.TOONTALK.element.function =
                 if (duration_widget && duration_widget.to_float) {
                     // duration option is milliseconds but users probably prefer seconds
                     options = {duration: duration_widget.to_float()*1000};
+                } else {
+                    options = {duration: 10000}; // ten seconds
                 }
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
                     robot.display_message("Robot trained to display: " + widget.get_text(), options);
