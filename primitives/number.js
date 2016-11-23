@@ -891,7 +891,7 @@ window.TOONTALK.number = (function () {
             improper_fraction_HTML = 
                 '<table class="toontalk-number toontalk-improper-fraction' + extra_class + '"' + table_style + '>' +
                 '<tr class="toontalk-numerator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.numerator_string(), max_characters*2, font_size) + '</td></tr>' +
-                '<tr class="toontalk-fraction-line-as-row"><td  class="toontalk-fraction-line-as-table-entry"><div class="toontalk-fraction-line"></div></tr>' +
+                '<tr class="toontalk-fraction-line-as-row"><td class="toontalk-fraction-line-as-table-entry"><div class="toontalk-fraction-line"></div></tr>' +
                 '<tr class="toontalk-denominator"><td align="center" class="toontalk-number">' + fit_string_to_length(this.denominator_string(), max_characters*2, font_size) + '</td></tr></table>';
             if (operator_HTML === '') {
                 return improper_fraction_HTML;
