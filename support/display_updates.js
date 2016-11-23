@@ -99,24 +99,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                                             setTimeout(function () {
                                                            TT.UTILITIES.use_custom_tooltip(element);
                                                        });
-                                            // ensure that children have higher z-index than parent (unless some children are animating)
                                             $parent_side_element = $(element).parent().closest(".toontalk-side");
-                                            if ($parent_side_element.is('*') && $parent_side_element.find(".toontalk-side-animating, .toontalk-side-appearing").length === 0) {
-                                                z_index = TT.UTILITIES.get_style_numeric_property(element, 'z-index');
-                                                parent_z_index = TT.UTILITIES.get_style_numeric_property($parent_side_element.get(0), "z-index");
-                                                if (!parent_z_index) {
-                                                    parent_z_index = TT.UTILITIES.next_z_index();
-                                                    $parent_side_element.css({'z-index': parent_z_index});
-                                                }
-                                                if (!z_index || $parent_side_element.is(".toontalk-backside-of-top-level")) {
-                                                    z_index = TT.UTILITIES.next_z_index();
-                                                    $(element).css({'z-index': z_index});
-                                                } else if (z_index >= parent_z_index) {
-                                                    z_index = parent_z_index+1;
-                                                    $(element).css({'z-index': z_index});
-                                                }
-                                                ensure_childen_have_higer_z_index(element, z_index);
-                                            }
                                             // ensure that it is resizable if appropriate
                                             if (element && !$(element).is(".toontalk-top-level-resource, .toontalk-bird, .toontalk-nest, .toontalk-box-hole, .toontalk-plain-text-element, .toontalk-conditions-contents, .toontalk-robot, .toontalk-widget, .toontalk-held-by-robot")) {
                                                 // need to delay in order for the DOM to settle down with the changes caused by update_display
