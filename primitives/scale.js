@@ -280,6 +280,9 @@ window.TOONTALK.scale = (function (TT) {
         new_scale.get_help_URL = function () {
             return "docs/manual/scales.html";
         };
+        new_scale.is_resizable = function () {
+            return false;
+        };
         new_scale.toString = function () {
             var left_contents  = this.get_hole_contents(0); 
             var right_contents = this.get_hole_contents(1);
