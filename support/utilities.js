@@ -2853,7 +2853,11 @@ window.TOONTALK.UTILITIES =
 
         utilities.create_alert_element = function (text) {
             var alert_element = utilities.create_text_element(text);
-            $(alert_element).addClass("toontalk-alert-element");
+            if ($(alert_element).children().length === 0) {
+                $(alert_element).addClass("toontalk-alert-element");
+            } else {
+                $(alert_element).children().addClass("toontalk-alert-element");
+            }
             return alert_element;
         };
         
