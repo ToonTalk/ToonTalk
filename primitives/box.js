@@ -518,9 +518,15 @@ window.TOONTALK.box = (function (TT) {
 
     box.walk_children = function (child_action) {
         var size = this.get_size();
-        var i;
+        var i, contents;
         for (i = 0; i < size; i++) {
-            if (!child_action(this.get_hole(i))) {
+            contents = this.get_hole_contents(i);
+            if (contents) {
+                if (!child_action(contents)) {
+                    // aborted
+                    return;
+                }
+            } else if (!child_action(this.get_hole(i))) {
                 // aborted
                 return;
             }
