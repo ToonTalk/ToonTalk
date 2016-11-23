@@ -1036,11 +1036,9 @@ window.TOONTALK.widget = (function (TT) {
                     frontside_element = this.get_frontside_element && this.get_frontside_element();
                     if (frontside_element) {
                         frontside_width = $(frontside_element).width();
-                        if (!$(frontside_element).is(".toontalk-plain-text-element")) {
-                            if (frontside_width !== 0) {
-                                json_view.frontside_width  = $(frontside_element).width();
-                                json_view.frontside_height = $(frontside_element).height();
-                            }
+                        if (frontside_width !== 0 && this.is_resizable() && !$(frontside_element).is(".toontalk-plain-text-element")) {
+                            json_view.frontside_width  = $(frontside_element).width();
+                            json_view.frontside_height = $(frontside_element).height();
                         }
                         if (frontside_width !== 0) {
                             // was using $(frontside_element).position() but then the position of rotated elements wasn't reproduced 
