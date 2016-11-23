@@ -1447,7 +1447,7 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.update_display = function () {
             var frontside = this.get_frontside(true);
             var backside = this.get_backside(); 
-            var frontside_element, top_contents, nest_width, nest_height, top_contents_element;
+            var frontside_element, top_contents, top_contents_element;
             frontside_element = frontside.get_element();  
             if (contents.length > 0) {
                 // don't display nest name if covered
@@ -1464,31 +1464,27 @@ window.TOONTALK.nest = (function (TT) {
                     top_contents_element = contents[0].get_element(true);
                     $(top_contents_element).show();
                 }
-                nest_width  = $(frontside_element).width();
-                nest_height = $(frontside_element).height();
-                if (nest_width > 0 && nest_height > 0) {
-                    // tried to have a CSS class toontalk-widget-on-nest that specified width and height as 80%
-                    // but it didn't work well - especially in FireFox
-                    // timeout needed when loading otherwise something resets the width and height
-                    TT.UTILITIES.set_timeout(function () {
-                            var contents_dimension = this.get_contents_dimensions();
-                            if (!contents_dimension) {
-                                return;
-                            }
-                            TT.UTILITIES.set_css(top_contents_element,
-                                                 {width:  contents_dimension.width,
-                                                  height: contents_dimension.height,
-                                                  // following currently has no effect if element has a translation transform
-                                                  left: nest_width *(1.0-TT.nest.CONTENTS_WIDTH_FACTOR) /2,
-                                                  top:  nest_height*(1.0-TT.nest.CONTENTS_HEIGHT_FACTOR)/2});
-                            if (top_contents.set_size_attributes) {
-                                // e.g. element widgets need to update their attributes
-                                top_contents.set_size_attributes(contents_dimension.width, contents_dimension.height);
-                            }
-                            top_contents.render();
-                        }.bind(this),
-                        2); // TODO: see if 0 works here
-                }
+                TT.UTILITIES.when_attached(top_contents_element,
+                                           function () {
+                                               var contents_dimension = this.get_contents_dimensions();
+                                               var nest_width, nest_height;
+                                               if (!contents_dimension) {
+                                                   return;
+                                               }
+                                               nest_width  = $(frontside_element).width();
+                                               nest_height = $(frontside_element).height();
+                                               TT.UTILITIES.set_css(top_contents_element,
+                                                                    {width:  contents_dimension.width,
+                                                                     height: contents_dimension.height,
+                                                                     // following currently has no effect if element has a translation transform
+                                                                     left: nest_width *(1.0-TT.nest.CONTENTS_WIDTH_FACTOR) /2,
+                                                                     top:  nest_height*(1.0-TT.nest.CONTENTS_HEIGHT_FACTOR)/2});
+                                               if (top_contents.set_size_attributes) {
+                                                   // e.g. element widgets need to update their attributes
+                                                   top_contents.set_size_attributes(contents_dimension.width, contents_dimension.height);
+                                               }
+                                               top_contents.render();
+                                           }.bind(this));
                 if ($(frontside_element).parent().is(".toontalk-box-hole") &&
                     !$(frontside_element).parent().is(".toontalk-scale-half")) {
                     // contents should display as though they were directly in the box hole (but not scale pans)
