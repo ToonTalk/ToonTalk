@@ -2421,13 +2421,13 @@ window.TOONTALK.element.function =
                     }
                     widget.update_display();
                     setTimeout(function () {
+                       // need the time out to be sure the element is fully rendered (including descendants)
                                    $(frontside_element).css({left: '',
                                                              top:  ''});
                                    TT.UTILITIES.display_message(frontside_element.outerHTML, options);
                                    $(frontside_element).remove();
                                },
-                               1000);
-                                       
+                               1000);                
                 }
             };
             return functions.typed_bird_function(message, display_message, [undefined, 'number', 'number', 'number'], 'show message', options, 1, 4);

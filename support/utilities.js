@@ -1951,7 +1951,7 @@ window.TOONTALK.UTILITIES =
                                       widget.set_running(true);
                                   }
                               },
-                              1);
+                              100);
                 } else {
                     utilities.report_internal_error("Could not recreate a widget from this JSON: " + json_string);
                 }
