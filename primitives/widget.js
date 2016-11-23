@@ -215,6 +215,12 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     return frontside;
                 };
+                if (!widget.is_resizable) {
+                    widget.is_resizable = function () {
+                        // default is not resizable
+                        return false;
+                    };
+                }
                 widget.save_dimensions = function () {
                     return this.save_dimensions_of(this);
                 };
@@ -222,6 +228,10 @@ window.TOONTALK.widget = (function (TT) {
                     var width,
                         height, 
                         other_frontside_element;
+                    if (!other.is_resizable()) {
+                        // other widgets are not resizable so shouldn't save their dimensions
+                        return;
+                    }
                     if (other.is_element()) {
                         if (!this.get_original_width()) {
                             return;

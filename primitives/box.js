@@ -815,6 +815,10 @@ window.TOONTALK.box = (function (TT) {
         }
     };
 
+    box.is_resizable = function () {
+        return true;
+    };
+
     box.get_name_input_label = function () {
         return "The labels of my holes are";
     };

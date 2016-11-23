@@ -647,9 +647,11 @@ window.TOONTALK.UTILITIES =
                        top_level_element.appendChild(element_of_backside_widget);
                        position = $(element_of_backside_widget).position();
                        css = {left: position.left+left_offset,
-                              top:  position.top +top_offset,
-                              width:  width,
-                              height: height};
+                              top:  position.top +top_offset};
+                       if (backside_widget_side.is_resizable()) {
+                           css.width  = width;
+                           css.height = height;
+                       }
                        utilities.constrain_css_to_fit_inside(top_level_element, css);
                        utilities.set_css(element_of_backside_widget, css);
                        if (source_widget_side.set_location_attributes) {
@@ -1125,14 +1127,16 @@ window.TOONTALK.UTILITIES =
                                     utilities.set_css(side_element, size_css);
                                 }
                             }
-                        } else if (!json_view.saved_width) {
+                        } else if (!json_view.saved_width && widget_side.is_resizable()) {
                             // save the size until element is created (if this widget_side is ever viewed)
                             widget_side.saved_width =  json_view.frontside_width;
                             widget_side.saved_height = json_view.frontside_height;
                         }
                     }
-                    if (json_view.saved_width) {
-                        widget_side.saved_width =  json_view.saved_width;
+                    if (json_view.saved_width && widget_side.is_resizable()) {
+                        // for backwards compatiblity need to check if is resizable since prior to 23 November 2016
+                        // JSON included saved_width and saved_height for non-resizable widgets
+                        widget_side.saved_width  = json_view.saved_width;
                         widget_side.saved_height = json_view.saved_height;
                     }
                     if (json_view.backside_geometry) {

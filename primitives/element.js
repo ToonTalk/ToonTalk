@@ -148,6 +148,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.is_element = function () {
             return true;
         };
+        new_element.is_resizable = function () {
+            return true;
+        };
         new_element.get_HTML = function () {
             return html;
         };

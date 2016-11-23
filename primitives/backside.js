@@ -284,6 +284,9 @@ window.TOONTALK.backside =
             backside.get_widget = function () {
                 return widget;
             };
+            backside.is_resizable = function () {
+                 return true;
+            };
             backside.visible = function () {
                 if (document.hidden) {
                     // e.g. window is minimised
@@ -561,11 +564,13 @@ window.TOONTALK.backside =
                                                     json_view.frontside_height = '';
                                                 }                                    
                                                 css = {left:   json_view.frontside_left,
-                                                       top:    json_view.frontside_top,
-                                                       // if dimensions set by transforms then don't explicitly set width and height here
-                                                       // perhaps should check that transforms include scaling transforms
-                                                       width:  widget_side_element.style.transform ? "" : (json_view.frontside_width  || json_view.saved_width),
-                                                       height: widget_side_element.style.transform ? "" : (json_view.frontside_height || json_view.saved_height)};
+                                                       top:    json_view.frontside_top};
+                                                if (!widget_side_element.style.transform && backside_widget_side.is_resizable()) {
+                                                    // if dimensions set by transforms then don't explicitly set width and height here
+                                                    // perhaps should check that transforms include scaling transforms
+                                                    css.width =  (json_view.frontside_width  || json_view.saved_width),
+                                                    css.height = (json_view.frontside_height || json_view.saved_height);
+                                                }
                                             }
                                             TT.UTILITIES.constrain_css_to_fit_inside(backside_element, css);
                                             $(widget_side_element).css(css);                              

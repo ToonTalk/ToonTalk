@@ -976,6 +976,10 @@ window.TOONTALK.number = (function () {
         return "a number.";
     };
 
+    number.is_resizable = function () {
+        return true;
+    };
+
     number.drop_on = function (side_of_other, options) {
         if (!side_of_other.number_dropped_on_me) {
             if (side_of_other.widget_side_dropped_on_me) {
