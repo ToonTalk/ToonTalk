@@ -2393,18 +2393,18 @@ window.TOONTALK.element.function =
         'show message',
         // might this make sense to also be able to display non-text elements?
         function (message, options) {
-            var display_message = function (element_text, duration, message_properties) {
+            var display_message = function (widget, duration, message_properties) {
                 var options;
                 if (duration && duration.to_float) {
                     // duration option is milliseconds but users probably prefer seconds
                     options = {duration: duration.to_float()*1000};
                 }
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
-                    robot.display_message("Robot trained to display: " + element_text.get_text(), options);
-                } else if (element_text.is_plain_text_element()) {
-                    TT.UTILITIES.display_message(element_text.get_text(), options);
+                    robot.display_message("Robot trained to display: " + widget.get_text(), options);
+                } else if (widget.is_plain_text_element()) {
+                    TT.UTILITIES.display_message(widget.get_text(), options);
                 } else {
-                    TT.UTILITIES.display_message(element_text.get_frontside_element(true).innerHTML, options);
+                    TT.UTILITIES.display_message(widget.get_frontside_element().outerHTML, options);                   
                 }
             };
             return functions.typed_bird_function(message, display_message, [undefined, 'number'], 'show message', options, 1, 2);
