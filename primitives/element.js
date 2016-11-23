@@ -2393,7 +2393,7 @@ window.TOONTALK.element.function =
         'show message',
         // might this make sense to also be able to display non-text elements?
         function (message, options) {
-            var display_message = function (widget, duration, message_properties) {
+            var display_message = function (widget, duration, width, height, message_properties) {
                 var options;
                 if (duration && duration.to_float) {
                     // duration option is milliseconds but users probably prefer seconds
@@ -2404,12 +2404,23 @@ window.TOONTALK.element.function =
                 } else if (widget.is_plain_text_element()) {
                     TT.UTILITIES.display_message(widget.get_text(), options);
                 } else {
-                    TT.UTILITIES.display_message(widget.get_frontside_element().outerHTML, options);                   
+                    if (widget.is_resizable()) {
+                        widget.remove({do_not_remove_children: true});
+                        TT.UTILITIES.set_css(widget.get_frontside_element(),
+                                             {width:  width  ? width.to_float()  : 240,
+                                              height: height ? height.to_float() : 80});
+                    }
+                    widget.update_display();
+                    setTimeout(function () {
+                                   TT.UTILITIES.display_message(widget.get_frontside_element().outerHTML, options);
+                               },
+                               1000);
+                                       
                 }
             };
-            return functions.typed_bird_function(message, display_message, [undefined, 'number'], 'show message', options, 1, 2);
+            return functions.typed_bird_function(message, display_message, [undefined, 'number', 'number', 'number'], 'show message', options, 1, 4);
         },
-        "The bird will cause what is in the second box hole to be displayed. The third hole can be a number indicating how many seconds the message should be displayed.",
+        "The bird will cause what is in the second box hole to be displayed. The third hole can be a number indicating how many seconds the message should be displayed. The 4th and 5th hole can contain the width and height.",
         "display",
         ['a widget', 'number']);
     return functions.get_function_table();
