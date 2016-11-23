@@ -197,6 +197,11 @@ window.TOONTALK.UTILITIES =
         }
         widget_side = widget_side.get_selection();
         $dragee = $(widget_side.get_element());
+        if (utilities.get_dragee_copy()) {
+            // need to begin rendering the copy now in case it is being given to a function bird that needs to fully rendered widgets
+            // e.g. the 'show message' bird
+            utilities.get_dragee_copy().render();
+        }
         if (widget_side.set_stopped) {
             widget_side.set_stopped(true);
         }
@@ -482,6 +487,7 @@ window.TOONTALK.UTILITIES =
                                               {width:  json_object.view.frontside_width  || width,
                                                height: json_object.view.frontside_height || height});
                         }
+                        source_widget_side.update_display();
                     } else if (container.removed_from_container) {
                         // can be undefined if container is a robot holding something
                         // but probably that should be prevented earlier

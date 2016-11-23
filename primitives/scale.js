@@ -241,8 +241,7 @@ window.TOONTALK.scale = (function (TT) {
                             $(hole_element).addClass("toontalk-right_scale toontalk-scale-half");
                         }
                         frontside_element.appendChild(hole_element);
-                        hole.update_display();
-     
+                        hole.update_display();  
                 });
                 // now that the "pan" widget elements have been created update display again
                 setTimeout(function () {
