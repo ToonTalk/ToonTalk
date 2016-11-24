@@ -223,26 +223,28 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this);
             var bird_return_continuation = 
                 function () {
-                    var after_delivery_continuation = function (continuation) {
-                        // return to original location
-                        TT.UTILITIES.set_timeout(function () {
-                            var new_continuation = function () {
-                                                       if (continuation) {
-                                                           continuation();
-                                                       }
-                                                       if (bird_finished_continuation) {
-                                                           bird_finished_continuation();
-                                                       }
-                                                   };
-                            this.fly_to(bird_offset, new_continuation, options); 
-                        }.bind(this));
-                    }.bind(this);
+//                     var after_delivery_continuation = function (continuation) {
+//                         // return to original location
+//                         TT.UTILITIES.set_timeout(function () {
+//                             var new_continuation = function () {
+//                                                        if (continuation) {
+//                                                            continuation();
+//                                                        }
+//                                                        if (bird_finished_continuation) {
+//                                                            bird_finished_continuation();
+//                                                        }
+//                                                    };
+//                             this.fly_to(bird_offset, new_continuation, options); 
+//                         }.bind(this));
+//                     }.bind(this);
                     if (nest_recieving_message) {
                         try {
                             options.delivery_bird = this;
                             options.ignore_copies = true;
                             nest_recieving_message.add_to_contents(message_side, {});
-                            after_delivery_continuation();
+                            if (after_delivery_continuation) {
+                                after_delivery_continuation();
+                            }
                         } catch (nest_or_error) {
                             if (nest_or_error.wait_for_nest_to_receive_something) {
                                 // e.g. this is a function bird and it received a box with empty nests inside
