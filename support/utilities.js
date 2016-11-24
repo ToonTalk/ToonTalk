@@ -78,6 +78,8 @@ window.TOONTALK.UTILITIES =
                                                                       if ($(added_node.parentElement).is(".toontalk-frontside")) {
                                                                           // if in a box or the like then z-index should come from parent
                                                                           $(added_node).css({"z-index": ''});
+                                                                      } else if ($(added_node.parentElement).is(".toontalk-backside")) {
+                                                                          $(added_node).css({"z-index": utilities.next_z_index()});
                                                                       }
                                                                   }                                                                
                                                               });    
