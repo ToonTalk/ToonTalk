@@ -290,7 +290,7 @@ window.TOONTALK.path =
         },
         to_self: function () {
             return {dereference_path: function (robot, widget) {
-                        return robot;
+                        return robot.get_first_in_team();
                     },
                     toString: function (to_string_info) {
                         return "myself";
