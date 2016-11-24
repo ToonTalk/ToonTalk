@@ -16,6 +16,10 @@ window.TOONTALK.path =
         return TT.path.to_entire_context();
     };
 
+    TT.creators_from_json["path.to_self"] = function (json, additional_info) {
+        return TT.path.to_self();
+    };
+    
     TT.creators_from_json["path.to_thing_in_hand"] = function () {
         return TT.path.to_thing_in_hand();
     };
@@ -77,6 +81,10 @@ window.TOONTALK.path =
                     path = TT.path.to_entire_context();
                     path.is_backside = is_backside;
                     return path;
+                }
+                if (robot === widget) {
+                    // copying itself (probably to recurse)
+                    return TT.path.to_self();
                 }
                 if (robot.get_thing_in_hand() === widget) {
                     return TT.path.to_thing_in_hand();
@@ -279,6 +287,18 @@ window.TOONTALK.path =
                         callback({type: "path.to_entire_context"}, start_time);
                     }
             };
+        },
+        to_self: function () {
+            return {dereference_path: function (robot, widget) {
+                        return robot;
+                    },
+                    toString: function (to_string_info) {
+                        return "myself";
+                    },
+                    get_json: function (json_history, callback, start_time) {
+                        callback({type: "path.to_self"}, start_time);
+                    }
+            }; 
         },
         to_widget_on_nest: function () {
             return {dereference_path: function (robot, widget) {
