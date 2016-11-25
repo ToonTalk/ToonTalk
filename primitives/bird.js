@@ -223,25 +223,26 @@ window.TOONTALK.bird = (function (TT) {
                 }.bind(this);
             var bird_return_continuation = 
                 function () {
-//                     var after_delivery_continuation = function (continuation) {
-//                         // return to original location
-//                         TT.UTILITIES.set_timeout(function () {
-//                             var new_continuation = function () {
-//                                                        if (continuation) {
-//                                                            continuation();
-//                                                        }
-//                                                        if (bird_finished_continuation) {
-//                                                            bird_finished_continuation();
-//                                                        }
-//                                                    };
-//                             this.fly_to(bird_offset, new_continuation, options); 
-//                         }.bind(this));
-//                     }.bind(this);
+                    var fly_back_continuation = function (continuation) {
+                        // return to original location
+                        TT.UTILITIES.set_timeout(function () {
+                            var new_continuation = function () {
+                                                       if (continuation) {
+                                                           continuation();
+                                                       }
+                                                       if (bird_finished_continuation) {
+                                                           bird_finished_continuation();
+                                                       }
+                                                   };
+                            this.fly_to(bird_offset, new_continuation, options); 
+                        }.bind(this));
+                    }.bind(this);
                     if (nest_recieving_message) {
                         try {
                             options.delivery_bird = this;
-                            options.ignore_copies = true;
-                            nest_recieving_message.add_to_contents(message_side, {});
+//                             options.ignore_copies = true;
+                            nest_recieving_message.add_to_contents(message_side, {ignore_copies: true});
+                            fly_back_continuation();
                             if (after_delivery_continuation) {
                                 after_delivery_continuation();
                             }
@@ -1042,10 +1043,15 @@ window.TOONTALK.nest = (function (TT) {
                             bird_copy = bird.copy({just_value: true});
                             bird_frontside_element = bird_copy.get_frontside_element(true); 
                             bird_parent_element.appendChild(bird_frontside_element);
-                            options.starting_left = start_position.left;
-                            options.starting_top  = start_position.top;
-                            options.nest_recieving_message = nest_copy;
-                            bird_copy.animate_delivery_to(message_copy, nest_copy, options);
+                            bird_copy.animate_delivery_to(message_copy, 
+                                                          nest_copy, 
+                                                          {starting_left: start_position.left,
+                                                           starting_top:  start_position.top,
+                                                           nest_recieving_message: nest_copy,
+                                                           after_delivery_continuation: function () {
+                                                                                            bird_copy.remove();
+                                                                                        }
+                                                          });
                         }
                    }
                });
