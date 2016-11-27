@@ -216,6 +216,7 @@ window.TOONTALK.bird = (function (TT) {
                         TT.UTILITIES.add_one_shot_event_handler(bird_frontside_element, "animationend", 1000, become_static);
                     }
                     if (after_delivery_continuation) {
+                        // shouldn't this be after delivery not after return?
                         after_delivery_continuation();
                     }
                     if (options.event) {
@@ -226,6 +227,7 @@ window.TOONTALK.bird = (function (TT) {
                 function () {
                     var fly_back_continuation = function (continuation) {
                         // return to original location
+                        // TODO: determine if timeout still needed
                         TT.UTILITIES.set_timeout(function () {
                             var new_continuation = function () {
                                                        if (continuation) {
@@ -235,7 +237,12 @@ window.TOONTALK.bird = (function (TT) {
                                                            bird_finished_continuation();
                                                        }
                                                    };
-                            this.fly_to(bird_offset, new_continuation, options); 
+                            if (options.temporary_bird) {
+                                // no point returning if temporary
+                                new_continuation();
+                            } else {
+                                this.fly_to(bird_offset, new_continuation, options);
+                            }
                         }.bind(this));
                     }.bind(this);
                     var old_bird_finished_continuation;
