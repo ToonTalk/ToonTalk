@@ -99,7 +99,7 @@ window.TOONTALK.create_function_table =
             // error reported and handled
             return;
         }
-        response = compute_response(message_properties);
+        response = compute_response(message_properties, options);
         // following is typically unneeded but if the message contains covered nests
         // then the response might still be considered as a child of the obsolete nest
         // only the first hole is re-used in responses
@@ -111,12 +111,17 @@ window.TOONTALK.create_function_table =
         this.process_response(response, message_properties, message, options);
         return response;
     },
-    type_check: function (type, widget, function_name, index, message_properties) {
+    type_check: function (type, widget, function_name, index, message_properties, options) {
         // returns a string describing the error if there is one
         if (widget.is_nest() && !widget.has_contents()) {
             // throw empty nest so can suspend this until nest is covered
             if (TT.sounds) {
                 TT.sounds.bird_fly.pause();
+            }
+            if (options && options.make_message_nests_delivery_targets) {
+                // easiest way to ensure bird flies here is to make this nest visible but off screen
+                widget.set_visible(true);
+                TT.UTILITIES.set_css(widget.get_element(), $(message_properties.message.get_element()).offset());
             }
             throw {wait_for_nest_to_receive_something: widget};
         }
@@ -137,12 +142,12 @@ window.TOONTALK.create_function_table =
                                   + " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."),
                                  message_properties);
     },
-    number_check: function (widget, function_name, index, message_properties) {
-        return this.type_check('number', widget, function_name, index, message_properties);
+    number_check: function (widget, function_name, index, message_properties, options) {
+        return this.type_check('number', widget, function_name, index, message_properties, options);
     },
     n_ary_widget_function: function (message, zero_ary_value_function, binary_operation, function_name, options) { 
         // binary_operation is a function of two widgets that updates the first
-        var compute_response = function (message_properties) {
+        var compute_response = function (message_properties, options) {
             var next_widget, index, response;
             if (message_properties.box_size === 1) {
                 return zero_ary_value_function();
@@ -154,7 +159,7 @@ window.TOONTALK.create_function_table =
                 return;
             }
             response = response.dereference()
-            if (this.number_check(response, function_name, index, message_properties) !== true) {
+            if (this.number_check(response, function_name, index, message_properties, options) !== true) {
                 return;
             }
             if (message_properties.message_return_bird) {
@@ -242,7 +247,7 @@ window.TOONTALK.create_function_table =
                     if (index <= types.length) {
                         type = types[index-1];
                     }
-                    if (this.type_check(type, next_widget, function_name, index, message_properties) !== true) {
+                    if (this.type_check(type, next_widget, function_name, index, message_properties, options) !== true) {
                         // error already reported
                         return;
                     }

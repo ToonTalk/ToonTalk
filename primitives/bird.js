@@ -151,6 +151,7 @@ window.TOONTALK.bird = (function (TT) {
         new_bird.animate_delivery_to = function (message_side, target_side, options) {
             // options include nest_recieving_message, starting_left, starting_top, after_delivery_continuation, event, robot
             // starting_left and starting_top are optional and if given are in the coordinate system of the top-level backside
+            // note that target_side can be the nest that a bird copy is flying to due to there being nest copies
             if (!options) {
                 options = {};
             }
@@ -239,17 +240,21 @@ window.TOONTALK.bird = (function (TT) {
                     }.bind(this);
                     if (nest_recieving_message) {
                         try {
-                            options.delivery_bird = this;
-//                             options.ignore_copies = true;
-                            nest_recieving_message.add_to_contents(message_side, {ignore_copies: true});
+                            options.delivery_bird = this; // TODO: determine if this should be passed along below
+                            nest_recieving_message.add_to_contents(message_side, {ignore_copies: true,
+                                                                                  make_message_nests_delivery_targets: nest_recieving_message.is_function_nest()});
                             fly_back_continuation();
-                            if (after_delivery_continuation) {
-                                after_delivery_continuation();
-                            }
                         } catch (nest_or_error) {
                             if (nest_or_error.wait_for_nest_to_receive_something) {
                                 // e.g. this is a function bird and it received a box with empty nests inside
-                                nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(bird_return_continuation, this);
+                                nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(
+                                    function () {
+                                        if (bird_return_continuation) {
+                                            bird_return_continuation();
+                                        }
+                                        nest_or_error.wait_for_nest_to_receive_something.remove();
+                                     },
+                                     this);
                                 if (after_delivery_continuation) {
                                     // e.g. a robot is running this and the robot shouldn't wait to run the next step
                                     after_delivery_continuation();
@@ -360,6 +365,9 @@ window.TOONTALK.bird = (function (TT) {
                 options.delivery_bird = this;
                 options.ignore_copies = true;
                 nest_recieving_message.add_to_contents(message_side, options);
+                if (options.temporary_bird) {
+                    this.remove();
+                }
                 return;
             }
             if (TT.sounds) {
@@ -1048,9 +1056,7 @@ window.TOONTALK.nest = (function (TT) {
                                                           {starting_left: start_position.left,
                                                            starting_top:  start_position.top,
                                                            nest_recieving_message: nest_copy,
-                                                           after_delivery_continuation: function () {
-                                                                                            bird_copy.remove();
-                                                                                        }
+                                                           temporary_bird: true
                                                           });
                         }
                    }
