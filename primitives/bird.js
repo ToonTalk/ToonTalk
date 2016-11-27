@@ -238,6 +238,7 @@ window.TOONTALK.bird = (function (TT) {
                             this.fly_to(bird_offset, new_continuation, options); 
                         }.bind(this));
                     }.bind(this);
+                    var old_bird_finished_continuation;
                     if (nest_recieving_message) {
                         try {
                             options.delivery_bird = this; // TODO: determine if this should be passed along below
@@ -247,14 +248,14 @@ window.TOONTALK.bird = (function (TT) {
                         } catch (nest_or_error) {
                             if (nest_or_error.wait_for_nest_to_receive_something) {
                                 // e.g. this is a function bird and it received a box with empty nests inside
-                                nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(
-                                    function () {
-                                        if (bird_return_continuation) {
-                                            bird_return_continuation();
-                                        }
-                                        nest_or_error.wait_for_nest_to_receive_something.remove();
-                                     },
-                                     this);
+                                nest_or_error.wait_for_nest_to_receive_something.run_when_non_empty(bird_return_continuation, this);
+                                old_bird_finished_continuation = bird_finished_continuation;
+                                bird_finished_continuation = function () {
+                                    if (old_bird_finished_continuation) {
+                                        old_bird_finished_continuation();
+                                    }
+                                    nest_or_error.wait_for_nest_to_receive_something.remove();
+                                };
                                 if (after_delivery_continuation) {
                                     // e.g. a robot is running this and the robot shouldn't wait to run the next step
                                     after_delivery_continuation();
@@ -838,6 +839,7 @@ window.TOONTALK.nest = (function (TT) {
     // and make this not enumerable -- see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
     // could define the following here if TT.UTILITIES is defined before TT.nest
     var add_copy_private_key; // any unique string is fine
+    var widget_remove; // to call widget.remove in nest.remove 
     // following should be updated if CSS is
     var contents_width = function (width) {
         return width *TT.nest.CONTENTS_WIDTH_FACTOR;
@@ -1685,6 +1687,13 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest.add_standard_widget_functionality(new_nest);
+        widget_remove = new_nest.remove;
+        new_nest.remove = function () {
+            widget_remove.call(this);
+            if (original_nest) {
+                remove_nest_copy.call(original_nest, this);
+            }
+        };
         new_nest.add_speech_listeners({descriptions_acceptable: true,
                                        names_acceptable: true});
         generic_set_visible = new_nest.set_visible;
