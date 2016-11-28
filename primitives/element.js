@@ -219,12 +219,17 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 } else if (html.indexOf("data:video") === 0) {
                     html = "<video src='" + html + "'>";
                 }
+                if (html === "") {
+                    // need to have something to see - thin space fills that role
+                    html = "&thinsp;";
+                }
                 // TODO: support data: text, uuencoded text, and HTML
                 return html;
             }.bind(this);
             if (html === new_value) {
                 return false;
             }
+            this.initialize_element();
             html = transform_HTML(new_value);
             text = undefined; // needs to be recomputed
             if (!frontside_element) {
@@ -648,7 +653,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 $(frontside_element).removeClass("toontalk-erased-element");
                 this.restore_dimensions();
             }
-            this.initialize_element();
+            if (!initialized) {
+                this.initialize_element();
+            }
             if (typeof original_width === 'undefined' && frontside_element.parentElement) {
                 // if it doesn't have a parentElement it is too early
                 if (this.is_plain_text_element()) {
@@ -678,9 +685,6 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.initialize_element = function () {
             var frontside_element, resize_handles, additional_classes, is_plain_text, htmnl;
-            if (initialized) {
-                return;
-            }
             frontside_element = this.get_frontside_element();
             if (frontside_element) {
                 resize_handles = $(frontside_element).children(".ui-resizable-handle");
@@ -1716,8 +1720,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             // restore is_child flag
             additional_info.is_child = is_child;
         }
-        if (!html) {
+        if (html === undefined) {
             if (typeof json.html === 'string') {
+                // internal error 
                 error_message = "No json.html recreating an element widget.";
             } else {
                 error_message = "additional_info.shared_html missing while recreating an element widget.";
