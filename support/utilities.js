@@ -4466,7 +4466,8 @@ window.TOONTALK.UTILITIES =
            line_count = Math.ceil(string.length/maximum_word_length);
            if (font_size*line_count > options.height*.9) {
                // square root since as the font size is adjusted so is the line count
-               font_size *= Math.sqrt(options.height/(font_size*line_count));
+               // 1.2 is default line-height -- see https://developer.mozilla.org/en/docs/Web/CSS/line-height
+               font_size *= Math.sqrt(options.height/(font_size*line_count*1.2));
                // testing shows the font is just a bit too big
                font_size *= .9;
            }
