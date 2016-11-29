@@ -1221,6 +1221,7 @@ window.TOONTALK.box_hole =
                         $(dropped_element).removeClass("toontalk-animating-element");
                         this.set_contents(dropped);
                         box.render();
+                        dropped.render();
                         if (options.event) {
                             box.backup_all(); 
                         }

@@ -656,6 +656,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (!initialized) {
                 this.initialize_element();
             }
+            if (this.is_plain_text_element()) {
+                if (!this.constrained_by_container()) {
+                    this.plain_text_dimensions();
+                } else {
+                    $(frontside_element).css({width:  '',
+                                              height: ''});
+                }
+            }
             if (typeof original_width === 'undefined' && frontside_element.parentElement) {
                 // if it doesn't have a parentElement it is too early
                 if (this.is_plain_text_element()) {
@@ -684,27 +692,19 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.set_ignore_pointer_events(this.get_ignore_pointer_events());
         };
         new_element.initialize_element = function () {
-            var frontside_element, resize_handles, additional_classes, is_plain_text, htmnl;
-            frontside_element = this.get_frontside_element();
+            var frontside_element = this.get_frontside_element();
+            var additional_classes, htmnl;
             if (frontside_element) {
-                resize_handles = $(frontside_element).children(".ui-resizable-handle");
                 html = this.get_HTML();
-                is_plain_text = this.is_plain_text_element();
                 frontside_element.innerHTML = html;
                 $(frontside_element).addClass("toontalk-element-frontside");
-                if (is_plain_text) {
+                if (this.is_plain_text_element()) {
                     //  give it a class that will give it a better font and size
                     additional_classes = this.get_additional_classes();
                     if (additional_classes) {
                         $(frontside_element).addClass(additional_classes);
                     }
                     $(frontside_element).addClass("ui-widget toontalk-plain-text-element");
-                    if (!this.constrained_by_container()) {
-                        this.plain_text_dimensions();
-                    } else {
-                        $(frontside_element).css({width:  '',
-                                                  height: ''});
-                    }
                 } else if (this.is_image_element()) {
                     $(frontside_element).addClass("toontalk-image-element");
                 } else {
