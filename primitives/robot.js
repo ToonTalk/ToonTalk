@@ -1747,6 +1747,7 @@ window.TOONTALK.robot_backside =
                 if (frontside_element) {
                     TT.UTILITIES.give_tooltip(frontside_element, robot.get_title());                    
                 }
+                this.change_label_and_title_of_train_button();
                 generic_backside_update();
             };
             TT.UTILITIES.when_attached(backside_element,

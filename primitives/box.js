@@ -1161,8 +1161,6 @@ window.TOONTALK.box_hole =
                     hole_element.className = "toontalk-box-hole toontalk-frontside toontalk-side";
                     hole_element.toontalk_widget_side = hole;
                 }
-                // can only receive drops if empty -- rather than add and remove these listeners use box.element_to_highlight
-//              TT.UTILITIES.can_receive_drops(hole_element);
                 return hole_element;
             };
             hole.get_frontside = function (create) {
