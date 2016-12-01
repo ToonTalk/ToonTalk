@@ -894,11 +894,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             parameters.elements_copied[this.get_guid()] = copy;
         }
-        Object.keys(attribute_widgets_in_backside_table).forEach(function (attribute_name) {
-                                        attribute_widgets_in_backside_table_copy[attribute_name] = attribute_widgets_in_backside_table[attribute_name].copy(parameters);
-                                        attribute_widgets_in_backside_table_copy[attribute_name].set_parent_of_frontside(backside, false, true); // a white lie
-                                        copy.set_attribute(attribute_name, this.get_attribute(attribute_name));
-                                 }.bind(this));
+        Object.keys(attribute_widgets_in_backside_table).forEach(
+                        function (attribute_name) {
+                            attribute_widgets_in_backside_table_copy[attribute_name] = attribute_widgets_in_backside_table[attribute_name].copy(parameters);
+                            attribute_widgets_in_backside_table_copy[attribute_name].set_parent_of_frontside(backside, false, true); // a white lie
+                            copy.set_attribute(attribute_name, this.get_attribute(attribute_name));
+                        }.bind(this));
         copy.set_attribute_widgets_in_backside_table(attribute_widgets_in_backside_table_copy);        
         return this.add_to_copy(copy, parameters);
     };

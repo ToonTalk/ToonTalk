@@ -1336,7 +1336,7 @@ window.TOONTALK.widget = (function (TT) {
         
         add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             var visible = this.visible();
-            var frontside_element, element_of_copy, $container_element, ok_to_set_dimensions, position, container_widget;
+            var frontside_element, element_of_copy, $container_element, ok_to_set_dimensions, position, container_widget, css, left, top;
             if (!widget_copy) {
                 widget_copy = this.copy({});
             }
@@ -1359,13 +1359,19 @@ window.TOONTALK.widget = (function (TT) {
                 if ($container_element.length > 0) {
                     $container_element.get(0).appendChild(element_of_copy);
                 }
-                // plain text should not have its dimensions set
-                TT.UTILITIES.set_css(element_of_copy,
-                                     {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
-                                      height: ok_to_set_dimensions ? $(frontside_element).height() : "",
-                                      left:   position.left+x_offset,
-                                      top:    position.top+y_offset,
-                                      "z-index": TT.UTILITIES.next_z_index()});
+                css =  {width:  ok_to_set_dimensions ? $(frontside_element).width()  : "",
+                        height: ok_to_set_dimensions ? $(frontside_element).height() : "",
+                        "z-index": TT.UTILITIES.next_z_index()};
+                left = position.left+x_offset;
+                top  = position.top +y_offset;
+                if (widget_copy.is_plain_text_element()) {
+                    widget_copy.set_location_attributes(left, top);
+                } else {
+                   // plain text should not have its dimensions set
+                   css.left = left;
+                   css.top  = top;   
+                }           
+                TT.UTILITIES.set_css(element_of_copy, css);
             }
             if (container_widget) {
                 container_widget.add_backside_widget(widget_copy);
