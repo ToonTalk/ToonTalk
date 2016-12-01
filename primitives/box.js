@@ -1346,7 +1346,7 @@ window.TOONTALK.box_hole =
                     if (TT.debugging) {
                         this._debug_string = "A hole containing " + contents.to_debug_string();
                     }
-                    contents.set_visible(visible);
+                    contents.set_visible(this.visible());
                 } else if (TT.debugging) {
                     this._debug_string = this.to_debug_string();
                 }
