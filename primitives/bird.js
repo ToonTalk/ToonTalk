@@ -1046,7 +1046,7 @@ window.TOONTALK.nest = (function (TT) {
             if (nest_copies) {
                 // TODO: determine if .closest(":visible") is needed here -- :visible is a JQuery hack to avoid
                 start_position = $(bird.closest_visible_ancestor().get_widget().get_frontside_element()).closest(":visible").position();
-                bird_parent_element = bird.get_parent_of_frontside().get_element();
+                bird_parent_element = bird.get_parent_of_frontside() && bird.get_parent_of_frontside().get_element();
                 visible = this.visible();
                 nest_copies.forEach(function (nest_copy) {
                     var message_copy = TT.UTILITIES.copy_side(message_side, false, visible);
@@ -1059,7 +1059,9 @@ window.TOONTALK.nest = (function (TT) {
                         } else {
                             bird_copy = bird.copy({just_value: true});
                             bird_frontside_element = bird_copy.get_frontside_element(true); 
-                            bird_parent_element.appendChild(bird_frontside_element);
+                            if (bird_parent_element) {
+                                bird_parent_element.appendChild(bird_frontside_element);
+                            }
                             bird_copy.animate_delivery_to(message_copy, 
                                                           nest_copy, 
                                                           {starting_left: start_position.left,
