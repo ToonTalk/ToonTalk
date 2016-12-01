@@ -1946,6 +1946,7 @@ window.TOONTALK.UTILITIES =
                    }
                    // this used to make the widget visible here -- TODO: determine why and if it should be restored
                    // delay until geometry settles down
+                   // TODO: would this be better using when_attached?
                    setTimeout(function () {
                                   if (widget.update_display) {
                                       widget.update_display();
