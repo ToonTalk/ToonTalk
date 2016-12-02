@@ -1732,7 +1732,9 @@ window.TOONTALK.robot_backside =
                 if (widget && widget.is_robot()) {
                     if (widget.get_body().is_empty()) {
                         backside = widget.open_backside();
-                        $(backside.get_element()).find(".toontalk-train-backside-button").click();
+                        if (backside) {
+                            $(backside.get_element()).find(".toontalk-train-backside-button").click();
+                        }
                     } else {
                         add_to_drop_area(widget, next_robot_area);
                         robot.set_next_robot(widget);
@@ -1805,17 +1807,20 @@ window.TOONTALK.robot_backside =
                     } else {
                         $train_button.button("option", "label", "Re-train " + robot.get_name());
                         TT.UTILITIES.give_tooltip($train_button.get(0), "Click to start training this robot all over again.");
-                    }  
+                    }
                 }
                 if (TT.UTILITIES.visible_element(backside_element)) {
                     add_conditions_area(backside_element, robot);
                 }
             };
-            backside.change_label_and_title_of_train_button(training);
+            setTimeout(function () {
+                // delay this since JQuery UI sometimes otherwise reports cannot call methods on button prior to initialization
+                backside.change_label_and_title_of_train_button(training);
+            });            
             $train_button.get(0).addEventListener('click', train_button_clicked);
             return $train_button.get(0);
         }
-        
+
     };
 }(window.TOONTALK));
 
