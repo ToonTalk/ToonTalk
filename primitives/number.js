@@ -1477,7 +1477,7 @@ window.TOONTALK.number_backside =
                 current_denominator = number.denominator_string();
                 if (number.robot_in_training()) {
                     // why not use $(...).is(...)?
-                    first_class_name = event.srcElement.className.split(" ", 1)[0];
+                    first_class_name = event.target.className.split(" ", 1)[0];
                     if (first_class_name === "toontalk-denominator-input") {
                         number.robot_in_training().edited(number, {setter_name: denominator_as_fraction ? "set_denominator_to_float" : "set_denominator",
                                                                    argument_1: denominator,

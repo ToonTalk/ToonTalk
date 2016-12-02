@@ -4186,9 +4186,9 @@ window.TOONTALK.UTILITIES =
                 element_being_dragged = element;
                 event.preventDefault();
                 // text area input and resize handles work differently
-                if (event.srcElement.tagName === 'TEXTAREA' || 
-                    event.srcElement.tagName === 'INPUT' ||
-                    $(event.srcElement).is(".ui-resizable-handle")) {
+                if (event.target.tagName === 'TEXTAREA' || 
+                    event.target.tagName === 'INPUT' ||
+                    $(event.target).is(".ui-resizable-handle")) {
                     // rewrite using startsWith in ECMAScript version 6
                     if (TT.logging && TT.logging.indexOf('touch') === 0) {
                         add_to_touch_log("touch start ignored due to tag name or class " + element.id);
