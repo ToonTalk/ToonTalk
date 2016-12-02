@@ -1047,7 +1047,7 @@ window.TOONTALK.widget = (function (TT) {
                             if (json_view.frontside_left === undefined) {
                                backside_parent_view_of_this = parent_widget_of_frontside && parent_widget_of_frontside.get_widget().get_backside_widgets_json_views();
                                if (backside_parent_view_of_this) {
-                                   index = this.get_parent_of_frontside().get_widget().get_backside_widgets().indexOf(this);
+                                   index = this.get_parent_of_frontside().get_backside_widgets().indexOf(this);
                                    if (index >= 0 && backside_parent_view_of_this[index]) {
                                        json_view.frontside_left = backside_parent_view_of_this[index].frontside_left;
                                        json_view.frontside_top =  backside_parent_view_of_this[index].frontside_top;

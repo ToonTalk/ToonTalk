@@ -304,7 +304,7 @@ window.TOONTALK.backside =
                 if (!this.is_primary_backside()) {
                     return;
                 }
-                this.get_widget().get_backside_widgets().forEach(function (backside_widget) {
+                this.get_backside_widgets().forEach(function (backside_widget) {
                         if (backside_widget && backside_widget !== this) {
                             backside_widget.set_visible(new_value);
                         }
@@ -345,6 +345,9 @@ window.TOONTALK.backside =
                 return TT.UTILITIES.get_element_height(this.get_element());
             };
             backside.is_widget = true; // perhaps should be renamed is_widget_side
+            backside.get_backside_widgets = function () {
+                return widget.get_backside_widgets();
+            };
             backside.get_parent_of_backside = function () {
                 // the primary backside is the one created by clicking on a widget
                 // in order for robots to run efficiently unwatched some widgets have never created their backside
@@ -634,20 +637,20 @@ window.TOONTALK.backside =
                     $settings_button.html("<");
                     TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to hide the advanced settings.");
                     // hide widgets added to the backside but not those that are element attribute widgets or robot conditions
-                    $(backside_element).find(".toontalk-side").not(".toontalk-element-attribute").not(".toontalk-conditions-contents").hide();
+                    this.get_backside_widgets().forEach(function (widget) {
+                         $(widget.get_element()).hide();
+                    });
                     backside_element.saved_width  = backside_element.style.width;
                     backside_element.saved_height = backside_element.style.height;
-//                 if (backside_element.style.width === this.get_original_width()+"px" && backside_element.style.height === this.get_original_height()+"px") {
-                    // expand to fill contents
-                    // this.get_width() was very different from backside_element.style.width -- not sure why
-                        $(backside_element).css({width:  '',
-                                                 height: ''});
-//                     }
+                    $(backside_element).css({width:  '',
+                                             height: ''});
                 } else {
                     $advanced_settings.hide();
                     $settings_button.html(">");
                     TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to show the advanced settings.");
-                    $(backside_element).find(".toontalk-side").not(".toontalk-element-attribute").not(".toontalk-conditions-contents").show();
+                    this.get_backside_widgets().forEach(function (widget) {
+                         $(widget.get_element()).show();
+                    });
                     $(backside_element).css({width:  backside_element.saved_width,
                                              height: backside_element.saved_height});  
                 }
@@ -803,7 +806,7 @@ window.TOONTALK.backside =
                     // look for new backside widgets that need to be added to DOM tree
                     // filter out only the ones never rendered
                     // yield after every batcvh of widgets processed
-                    TT.UTILITIES.for_each_batch(this.get_widget().get_backside_widgets().filter(function (widget) { return !widget.get_frontside();}), 
+                    TT.UTILITIES.for_each_batch(this.get_backside_widgets().filter(function (widget) { return !widget.get_frontside();}), 
                                                 function (widget) {
                                                     var element = widget.get_element(true);
                                                     widget.set_visible(true);

@@ -628,7 +628,7 @@ window.TOONTALK.UTILITIES =
                    robot_in_training.drop_from_data_transfer(source_widget_side, target_widget_side);  
                }
                // need to copy the array because the function in the forEach updates the list
-               backside_widgets = source_widget_side.get_widget().get_backside_widgets().slice();
+               backside_widgets = source_widget_side.get_backside_widgets().slice();
                TT.UTILITIES.for_each_batch(
                    backside_widgets,
                    function (backside_widget_side, index) {
@@ -738,7 +738,9 @@ window.TOONTALK.UTILITIES =
             css = {left: page_x - (top_level_backside_position.left + drag_x_offset + TT.USABILITY_DRAG_OFFSET.x),
                    top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)};
             utilities.set_css($source, css);
-            source_widget_side.remove_from_parent_of_frontside(event);
+            if (source_widget_side.remove_from_parent_of_frontside) {
+                source_widget_side.remove_from_parent_of_frontside(event);
+            } // other source_widget_side is presumably a backside
             source_widget_side.set_visible(true); // in case removing from parent made it invisible
             if (source_widget_side.drop_on && source_widget_side.drop_on(target_widget_side, {event: event})) {
             } else if (target_widget_side.widget_side_dropped_on_me &&
