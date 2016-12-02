@@ -1364,7 +1364,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 // taking too long so let browser run
                 setTimeout(function () {
-                               widget_side.get_json(json_history, new_callback, Date.now());     
+                               widget_side.get_json(json_history, new_callback, Date.now());
                            });
             }
         };
@@ -4103,6 +4103,9 @@ window.TOONTALK.UTILITIES =
                 if (TT.logging && TT.logging.indexOf('store') >= 0) {
                     console.log("Storing string " + string.substring(0, 100) + "... with key " + key);
                 }
+                if (chrome.runtime.lastError) {
+                    console.error(chrome.runtime.lastError + " caused by store_string " + key);
+                }
             };
             utilities.retrieve_object = function (key, callback) {
                 chrome.storage.local.get(key,
@@ -4142,9 +4145,6 @@ window.TOONTALK.UTILITIES =
                 window.localStorage.setItem(key, string);
                 if (callback) {
                     callback();
-                }
-                if (chrome.runtime.lastError) {
-                    console.error(chrome.runtime.lastError + " caused by setItem " + key);
                 }
             };
             utilities.retrieve_object = function (key, callback) {
