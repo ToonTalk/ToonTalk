@@ -47,7 +47,7 @@ window.TOONTALK.frontside =
                 event.stopPropagation();
             };
             var mouse_enter_handler = function (event) {
-                selection_feedback(widget);
+                selection_feedback(widget, event);
                 if (widgets_entered_stack.indexOf(widget) >= 0) {
                     // seems somehow can enter without exiting so this cleans things up in that case
                     widgets_entered_stack = [];
@@ -55,7 +55,7 @@ window.TOONTALK.frontside =
                     widgets_entered_stack.push(widget);
                 }      
             };
-            var selection_feedback = function (widget) {
+            var selection_feedback = function (widget, event) {
                  // note that this highlights the backside if visible even if the widget passes the selection to its parent
                 var backside = widget.get_backside();
                 var wiggling_widget = (widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget).get_selection();
@@ -80,7 +80,7 @@ window.TOONTALK.frontside =
                 $(wiggling_widget.get_frontside_element()).removeClass("toontalk-wiggle");
                 widgets_entered_stack.pop();
                 if (widgets_entered_stack.length > 0) {
-                    selection_feedback(widgets_entered_stack[widgets_entered_stack.length-1]);
+                    selection_feedback(widgets_entered_stack[widgets_entered_stack.length-1], event);
                 }
             }
             var visible;
