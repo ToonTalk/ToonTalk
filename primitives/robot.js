@@ -1797,6 +1797,11 @@ window.TOONTALK.robot_backside =
                 };
             $train_button.addClass("toontalk-train-backside-button");
             backside.change_label_and_title_of_train_button = function (training_started) {
+                if (!jQuery.contains(window.document, $train_button.get(0))) {
+                    // no longer attached
+                    return;
+                }
+                // delay this since JQuery UI sometimes otherwise reports cannot call methods on button prior to initialization
                 if (training_started) {
                     $train_button.button("option", "label", "Stop training " + robot.get_name());
                     TT.UTILITIES.give_tooltip($train_button.get(0), "Click to stop training this robot.");
@@ -1813,10 +1818,7 @@ window.TOONTALK.robot_backside =
                     add_conditions_area(backside_element, robot);
                 }
             };
-            setTimeout(function () {
-                // delay this since JQuery UI sometimes otherwise reports cannot call methods on button prior to initialization
-                backside.change_label_and_title_of_train_button(training);
-            });            
+            backside.change_label_and_title_of_train_button(training);           
             $train_button.get(0).addEventListener('click', train_button_clicked);
             return $train_button.get(0);
         }
