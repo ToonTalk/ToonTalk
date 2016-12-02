@@ -82,7 +82,7 @@ window.TOONTALK.path =
                     path.is_backside = is_backside;
                     return path;
                 }
-                if (robot === widget) {
+                if (robot === widget || robot.get_first_in_team() === widget) {
                     // copying itself (probably to recurse)
                     return TT.path.to_self();
                 }
