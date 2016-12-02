@@ -1085,7 +1085,7 @@ window.TOONTALK.number = (function () {
         case '*':
             return this.multiply(other_number);
         case '/':
-            return this.divide(other_number);
+            return this.divide(other_number, options);
         case '=':
             return this.set_value(other_number.get_value());
         case '^':
@@ -1132,8 +1132,17 @@ window.TOONTALK.number = (function () {
         return this;
     };
 
-    number.divide = function (other) {
+    number.divide = function (other, options) {
         // other is another rational number
+        var error;
+        if (other.is_zero()) {
+            error = "Can't divide by zero. Operation ignored.";
+            if (options && options.robot) {
+                error += " Caused by " + options.robot;
+            }
+            TT.UTILITIES.display_message(error);
+            return this;
+        }
         this.set_value(bigrat.divide(this.get_value(), this.get_value(), other.get_value()), true);
         return this;
     };
