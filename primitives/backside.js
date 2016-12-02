@@ -1198,7 +1198,7 @@ window.TOONTALK.backside =
             if (robot_in_training && robot_in_training.get_training_context() === widget) {
                // closing the backside of a context while a robot is being trained to work on it
                robot_in_training.hide_backside();
-               $backside_element.find(".toontalk-train-backside-button").click();
+               $(robot_in_training.get_backside_element()).find(".toontalk-train-backside-button").click();
                // firing click also updates the label of the button and also does robot_in_training.training_finished();       
             }
             // create the frontside_element if needed if on the back of a top-level backside
