@@ -731,7 +731,7 @@ window.TOONTALK.robot = (function (TT) {
             $(this.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
             this.rerender();
             if (this.get_next_robot()) {
-                return this.get_next_robot().run();
+                return this.get_next_robot().run(context, context_is_backside, top_level_context, queue);
             }
             return this.match_status;
         }
@@ -744,7 +744,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         });
         if (this.get_next_robot()) {
-            next_robot_match_status = this.get_next_robot().run();
+            next_robot_match_status = this.get_next_robot().run(context, context_is_backside, top_level_context, queue);
             if (next_robot_match_status === 'matched') {
                 return next_robot_match_status;
             } else if (!next_robot_match_status.is_widget) {
@@ -1800,6 +1800,10 @@ window.TOONTALK.robot_backside =
                 if (!jQuery.contains(window.document, $train_button.get(0))) {
                     // no longer attached
                     return;
+                }
+                if (!($train_button.is(".ui-button"))) {
+                    // somehow lost is JQuery UI initialisation
+                    $train_button.button();
                 }
                 // delay this since JQuery UI sometimes otherwise reports cannot call methods on button prior to initialization
                 if (training_started) {
