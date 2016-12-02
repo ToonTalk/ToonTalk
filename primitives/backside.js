@@ -1196,10 +1196,11 @@ window.TOONTALK.backside =
             widget = this.get_widget();
             robot_in_training = widget.robot_in_training();
             if (robot_in_training && robot_in_training.get_training_context() === widget) {
-               // closing the backside of a context while a robot is being trained to work on it
-               robot_in_training.hide_backside();
-               $(robot_in_training.get_backside_element()).find(".toontalk-train-backside-button").click();
-               // firing click also updates the label of the button and also does robot_in_training.training_finished();       
+                // closing the backside of a context while a robot is being trained to work on it
+                robot_in_training.hide_backside();
+                $(robot_in_training.get_backside_element()).find(".toontalk-train-backside-button").click();
+                // firing click also updates the label of the button and also does robot_in_training.training_finished();
+                widget.add_to_top_level_backside(robot_in_training.get_first_in_team());
             }
             // create the frontside_element if needed if on the back of a top-level backside
             frontside_element = widget.get_frontside_element(event && widget.get_parent_of_frontside() && widget.get_parent_of_frontside().is_top_level());
