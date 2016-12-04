@@ -926,7 +926,7 @@ window.TOONTALK.number = (function () {
             negative = bigrat.isNegative(this.get_value());
             exponent = scientific_notation_exponent(this.get_value());
             // 6 for integer_digit, space, and '10x' - divide by 2 since superscript font is smaller
-            exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);  
+            exponent_area = 6+(exponent === 0 ? 1 : Math.ceil(log10(Math.abs(exponent)))/2);
             if (negative) {
                 exponent_area++; // need more room
             }
@@ -940,7 +940,7 @@ window.TOONTALK.number = (function () {
                 shifted_value = bigrat.multiply(bigrat.create(), this.get_value(), ten_to_accurancy_missing);
                 decimal_digits = bigrat.toBigInteger(shifted_value).toString().substring(0, max_decimal_places+1);
             } else {
-                decimal_digits = bigrat.toBigInteger(this.get_value()).toString().substring(0, max_decimal_places+1);     
+                decimal_digits = bigrat.toBigInteger(this.get_value()).toString().substring(0, max_decimal_places+1);
             }
             if (this.is_integer() || this.is_reciprocal_of_integer()) {
                 decimal_digits = remove_trailing_zeroes(decimal_digits);

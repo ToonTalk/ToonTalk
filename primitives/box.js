@@ -1240,7 +1240,7 @@ window.TOONTALK.box_hole =
                     }
                 } else {
                     box.rerender();
-                    this.set_contents(dropped);
+                    this.set_contents(dropped, options);
                 }
                 return true;
             };
@@ -1314,7 +1314,7 @@ window.TOONTALK.box_hole =
             hole.get_contents = function () {
                 return contents;
             };
-            hole.set_contents = function (new_value) {
+            hole.set_contents = function (new_value, options) {
                 var listeners = this.get_listeners('contents_or_properties_changed');
                 if (listeners) {
                     if (contents !== new_value) {
@@ -1344,7 +1344,9 @@ window.TOONTALK.box_hole =
                     if (TT.debugging) {
                         this._debug_string = "A hole containing " + contents.to_debug_string();
                     }
-                    contents.set_visible(this.visible());
+                    if (!options || !options.robot || options.robot.visible()) {
+                        contents.set_visible(this.visible());
+                    }
                 } else if (TT.debugging) {
                     this._debug_string = this.to_debug_string();
                 }

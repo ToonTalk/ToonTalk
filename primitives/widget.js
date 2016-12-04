@@ -1150,7 +1150,7 @@ window.TOONTALK.widget = (function (TT) {
                     // TODO: callers no longer need check if each element is defined since add_backside_widget checks now
                     return backside_widgets;
                 };
-                widget.add_backside_widget = function (widget_side) {
+                widget.add_backside_widget = function (widget_side, options) {
                     var backside;
                     if (!widget_side) {
                         if (TT.debugging) {
@@ -1182,7 +1182,7 @@ window.TOONTALK.widget = (function (TT) {
                     } else {
                         widget_side.set_parent_of_frontside(this, true);
                     }
-                    if (backside.visible()) {
+                    if (backside.visible() && (!options || !options.robot || options.robot.visible())) {
                         widget_side.set_visible(true);
                     }
      //             if (this.get_running()) {

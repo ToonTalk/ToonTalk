@@ -411,13 +411,13 @@ window.TOONTALK.backside =
                     // undefined if this is done by a robot
                     var other, side_of_other_element, backside_of_other, widget_offset;
                     if (options.robot && options.robot.visible() && !this.visible()) {
-                        this.add_backside_widget(side_of_other);
+                        this.add_backside_widget(side_of_other, options);
                         if (side_of_other.dropped_on_other) {
                             side_of_other.dropped_on_other(this, options);
                         }
                         return; 
                     }
-                    if (this.visible()) {
+                    if (this.visible() && (!options.robot || options.robot.visible())) {
                         if (TT.sounds && options.event) {
                             TT.sounds.drop.play();
                         }
@@ -446,6 +446,8 @@ window.TOONTALK.backside =
                             $(side_of_other_element).addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
                         }
                         if (options.event && !side_of_other.is_backside() && !side_of_other.is_sensor()) {
+                            // TODO: determine if some code could possibly be listening to this event since
+                            // users have no way of listening to top-level backside events (but maybe they should?)
                             window.dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
                                                                                             here: 'back'}));
                         }
@@ -453,8 +455,8 @@ window.TOONTALK.backside =
                     if (widget.robot_in_training() && !options.ignore_training && options.event) {
                         // delay this so it can record where the other was dropped
                         setTimeout(function () {
-                             widget.robot_in_training().dropped_on(side_of_other, this, options.event); 
-                        }.bind(this)) ;      
+                             widget.robot_in_training().dropped_on(side_of_other, this, options.event);
+                        }.bind(this));
                     }
                     if (side_of_other.is_backside() && side_of_other.get_widget().is_element() && widget.is_element()) {
                         // When an element backside is dropped on another element backside it is treated as an "anima-gadget"
@@ -468,7 +470,7 @@ window.TOONTALK.backside =
                         other.remove(options.event);
                         other.set_backside(side_of_other);
                     }
-                    this.add_backside_widget(side_of_other);
+                    this.add_backside_widget(side_of_other, options);
                     if (side_of_other.dropped_on_other) {
                         side_of_other.dropped_on_other(this, options);
                     }
@@ -500,8 +502,8 @@ window.TOONTALK.backside =
                     }
                     return true;
             };
-            backside.add_backside_widget = function (widget_side) {
-                return this.get_widget().add_backside_widget(widget_side);
+            backside.add_backside_widget = function (widget_side, options) {
+                return this.get_widget().add_backside_widget(widget_side, options);
             };
             backside.add_backside_widgets = function (backside_widgets, json_array)  {
                 var current_backside_widgets;
