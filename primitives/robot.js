@@ -223,6 +223,7 @@ window.TOONTALK.robot = (function (TT) {
             }
             stopped = new_value;
             if (stopped) {
+                this.run_body_finished_listeners();
                 if (this.visible()) {
                     $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
                     this.set_animating(false);
@@ -1094,7 +1095,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         }
         frontside_element.setAttribute('toontalk_name', this.get_name());
-        // TODO: determine if timeout still needed   
+        // TODO: determine if timeout still needed
         TT.UTILITIES.set_timeout( // wait for layout to settle down
             function () {
                 var relative_left, relative_top, thing_in_hand_width, thing_in_hand_height, robot_width, robot_height, css;

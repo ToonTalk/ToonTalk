@@ -118,11 +118,11 @@ window.TOONTALK.backside =
                                         update_green_flag_title();
                                         if (widget.robot_in_training()) {
                                             widget.robot_in_training().button_clicked(".toontalk-stop-sign", widget);
-                                        }  
+                                        }
                                         event.stopPropagation();
                                         if (widget.is_top_level()) {
                                             TT.UTILITIES.stop_audio_objects();
-                                        }                                                                    
+                                        }
                                     };
             var help_button_clicked = function (event) {
                                           if (relative_URL) {

@@ -155,7 +155,6 @@ window.TOONTALK.actions =
         run_watched: function (robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
-            var original_parent_element, previous_robot, previous_robot_backside_element;
             var saved_parent_element = frontside_element.parentElement;
             var first_robot = robot.get_first_in_team();
             var restore_after_last_event = function () {
@@ -214,18 +213,20 @@ window.TOONTALK.actions =
             // TODO: determine if the following should be replaced by top_level_widget.get_backside(true)...
             var top_level_position = $(frontside_element).closest(".toontalk-backside-of-top-level").offset();
             var context_backside = robot.get_context().get_backside();
-            var $home_element, backside_rectangle, attached_team_member;
-            if (TT.logging && TT.logging.indexOf('run') >= 0) {           
+            var parent = robot.get_parent();
+            var original_parent_element, previous_robot, previous_robot_backside_element,
+                $home_element, backside_rectangle, attached_team_member;
+            if (TT.logging && TT.logging.indexOf('run') >= 0) {
                 console.log(robot.to_debug_string(50) + " running watched");
             }
             previous_robot = robot.get_previous_robot();
             if (previous_robot) {
                 $home_element = $(previous_robot.get_backside(true).get_next_robot_area());
             } else {
-                $home_element = $(context_backside.get_backside_element(true)); // $(frontside_element).closest(".toontalk-backside");
+                $home_element = $(context_backside.get_backside_element(true));
             }
             if (!TT.UTILITIES.is_attached(frontside_element) && previous_robot) {
-                // could be a 'next robot' that hasn't been opened          
+                // could be a 'next robot' that hasn't been opened
                 previous_robot.open_backside();
                 previous_robot.get_backside().set_advanced_settings_showing(true);
                 original_parent_element = frontside_element.parentElement;
@@ -252,8 +253,11 @@ window.TOONTALK.actions =
                 // and ensure it has a reasonable z-index
 //                 $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()+100});
                 // put the robot back when finished
+                // maybe a better name is add_cycle_finished_listener...
                 robot.add_body_finished_listener(function () {
-                                                     if (original_parent_element) {
+                                                     if (!parent) {
+                                                         robot.remove();   
+                                                     } else if (original_parent_element && TOONTALK.UTILITIES.is_attached(original_parent_element)) {
                                                          original_parent_element.appendChild(frontside_element);
                                                      }
                                                      // let CSS position it
@@ -287,8 +291,8 @@ window.TOONTALK.actions =
             }
             // store this so that if the backside is closed while it is running its position is restored
             robot.start_offset = robot_start_offset;
-             // make sure the robot is a child of the top-level widget backside
-            top_level_widget.get_backside_element().appendChild(frontside_element);
+            // make sure the robot is a child of the top-level widget backside
+            robot.add_to_top_level_backside();
             TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             robot.run_next_step = function () {
                 if (context_backside && !document.hidden && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
