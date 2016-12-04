@@ -1067,7 +1067,8 @@ window.TOONTALK.nest = (function (TT) {
                                                           {starting_left: start_position.left,
                                                            starting_top:  start_position.top,
                                                            nest_recieving_message: nest_copy,
-                                                           temporary_bird: true
+                                                           temporary_bird: true,
+                                                           robot: options.robot
                                                           });
                         }
                    }
