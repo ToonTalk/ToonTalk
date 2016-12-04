@@ -106,6 +106,7 @@ window.TOONTALK.create_function_table =
         if (!message_properties.message_return_bird && 
             message.get_size() > 1 && 
             message.get_hole_contents(1) &&
+            message.get_hole_contents(1).is_nest() &&
             message.get_hole_contents(1).has_contents()) {
             options.do_not_remove_children  = true;
             options.do_not_remove_frontside = true;
