@@ -934,7 +934,7 @@ window.TOONTALK.number = (function () {
                 // try again with a smaller font_size
                 return this.to_HTML(exponent_area+1, client_width, client_height, font_size*original_max_characters/(exponent_area+1), format, top_level, operator, size_unconstrained_by_container);
             }
-           max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size);     
+            max_decimal_places = shrinking_digits_length(compute_number_of_full_size_characters_after_decimal_point(max_characters, exponent_area), font_size);     
             if (exponent < max_decimal_places) {
                 ten_to_accurancy_missing = bigrat.power(bigrat.create(), TEN, max_decimal_places-exponent);
                 shifted_value = bigrat.multiply(bigrat.create(), this.get_value(), ten_to_accurancy_missing);
@@ -946,10 +946,10 @@ window.TOONTALK.number = (function () {
                 decimal_digits = remove_trailing_zeroes(decimal_digits);
             }
             if (negative) { // negative so include sign and first digit
-                integer_digit = "-" + decimal_digits.substring(0, 1);
-                decimal_digits = decimal_digits.substring(1);
+                integer_digit = decimal_digits.substring(0, 2);
+                decimal_digits = decimal_digits.substring(2);
             } else {
-                integer_digit = decimal_digits.substring(0, 1);
+                integer_digit  = decimal_digits.substring(0, 1);
                 decimal_digits = decimal_digits.substring(1);
             }
             decimal_part = shrink_to_fit(decimal_digits, max_characters*(1-(exponent_area/max_characters)), font_size, true);
