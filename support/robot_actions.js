@@ -363,8 +363,7 @@ window.TOONTALK.actions =
             });
             return description;
         },
-        
-        get_json: function (json_history, callback, start_time) {
+                get_json: function (json_history, callback, start_time) {
             var json_array = [];
             var new_callback = function () {
                 callback({type: "body",
@@ -373,7 +372,7 @@ window.TOONTALK.actions =
             };
             TT.UTILITIES.get_json_of_array(this.get_steps(), json_array, 0, json_history, new_callback, start_time);
         }
-        
+
     };
 
 }(window.TOONTALK));
@@ -386,7 +385,7 @@ window.TOONTALK.newly_created_widgets_path =
     TT.creators_from_json["newly_created_widgets_path"] =  function (json) {
         return TT.newly_created_widgets_path.create(json.index);
     };
-    
+
     return {
         create: function (index) {
             return {

@@ -436,7 +436,16 @@ window.TOONTALK.robot_action =
     };
     var find_backside_element = function (widget, class_name_selector) {
         var backside_element = widget.get_backside_element(true);
-        return $(backside_element).find(class_name_selector).get(0);
+        var button = $(backside_element).find(class_name_selector).get(0);
+        if (button) {
+            return button;
+        }
+        widget.get_backside().set_advanced_settings_showing(true);
+        button = $(backside_element).find(class_name_selector).get(0);
+        if (button) {
+            return button;
+        }
+        TT.UTILITIES.report_internal_error("Cannot find button: " + class_name_selector + " in " + widget.get_backside());
     };
     var button_use_animation = function (widget, robot, continuation, class_name_selector, additional_info, delay) {
         var button_element = find_backside_element(widget, class_name_selector);

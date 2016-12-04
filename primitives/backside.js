@@ -94,6 +94,7 @@ window.TOONTALK.backside =
                                          };
             var green_flag_clicked = function (event) {
                                          if (widget.can_run()) {
+                                                     console.log(widget);
                                              update_flag_and_stop_sign_classes(true);
                                              widget.set_running(true);
                                              update_stop_sign_title();
