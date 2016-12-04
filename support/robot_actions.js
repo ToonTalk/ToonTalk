@@ -267,6 +267,7 @@ window.TOONTALK.actions =
                                                                                "z-index": ''});
                                                  });
             }
+            robot.add_body_finished_listener(restore_after_last_event);
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
                                           height: ''});
@@ -311,8 +312,6 @@ window.TOONTALK.actions =
                                         step.run_watched(robot);
                                     } else {
                                         robot.set_running_or_in_run_queue(false);
-                                        // restore position
-                                        restore_after_last_event();
                                         // following may finally close backside if close during cycle
                                         // so best to restore position first
                                         robot.run_body_finished_listeners();     
