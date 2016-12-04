@@ -1135,11 +1135,11 @@ window.TOONTALK.robot = (function (TT) {
             });
         TT.UTILITIES.set_css(frontside_element, {'font-size': this.name_font_size()});
     };
-    
+
     robot.add_newly_created_widget = function (new_widget) {
         return this.get_body().add_newly_created_widget(new_widget);
     };
-    
+
     robot.add_newly_created_widget_if_new = function (new_widget) {
         if (new_widget !== this.get_training_context() && this !== new_widget) {
             // ignore manipulations of the context or the robot
@@ -1150,12 +1150,12 @@ window.TOONTALK.robot = (function (TT) {
     robot.is_newly_created = function (widget) {
         return this.get_body().is_newly_created(widget);
     };
-    
+
     robot.get_recently_created_widget = function () {
         var newly_created_widgets = this.get_body().get_newly_created_widgets();
         return newly_created_widgets[newly_created_widgets.length-1];
     };
-    
+
     robot.get_title = function () {
         var description = this.get_description();
         var frontside_element;
@@ -1683,18 +1683,18 @@ window.TOONTALK.robot_backside =
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, robot);
             var generic_backside_update = backside.update_display.bind(backside);
             var add_to_drop_area = function (widget, drop_area) {
-                    var frontside_element = widget.get_frontside_element(true);
-                    var default_width, default_height;
-                    if (widget.get_default_width) {
-                        default_width  = widget.get_default_width();
-                        default_height = widget.get_default_height();
-                        // top left of drop area with default dimensions
-                        $(frontside_element).css({left: "",
-                                                  top:  "", 
-                                                  width:  default_width,
-                                                  height: default_height});
-                    }
-                    drop_area.appendChild(frontside_element);
+                var frontside_element = widget.get_frontside_element(true);
+                var default_width, default_height;
+                if (widget.get_default_width) {
+                    default_width  = widget.get_default_width();
+                    default_height = widget.get_default_height();
+                    // top left of drop area with default dimensions
+                    $(frontside_element).css({left: "",
+                                              top:  "", 
+                                              width:  default_width,
+                                              height: default_height});
+                }
+                drop_area.appendChild(frontside_element);
             };
             var generic_hide_backside = backside.hide_backside;
             var run_once_button_clicked =

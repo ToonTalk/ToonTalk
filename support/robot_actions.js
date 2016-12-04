@@ -109,7 +109,7 @@ window.TOONTALK.actions =
             }
             return new_actions;
         },
-        
+
         run_unwatched: function (robot, step_number) {
             var steps = this.get_steps();
             var step;
@@ -149,9 +149,9 @@ window.TOONTALK.actions =
                     }
                 }
             };
-            robot.run_next_step(); // do first step             
+            robot.run_next_step(); // do first step
         },
-        
+
         run_watched: function (robot) {
             var steps = this.get_steps();
             var frontside_element = robot.get_frontside_element();
@@ -204,7 +204,8 @@ window.TOONTALK.actions =
                 }
             };
             var step_number = 0;
-            var robot_home = $(frontside_element).offset();
+            var robot_home         = $(frontside_element).offset();
+            // need a fresh copy since robot_home will be modified later
             var robot_start_offset = $(frontside_element).offset();
             var robot_width  = $(frontside_element).width();
             var robot_height = $(frontside_element).height();
@@ -213,7 +214,7 @@ window.TOONTALK.actions =
             // TODO: determine if the following should be replaced by top_level_widget.get_backside(true)...
             var top_level_position = $(frontside_element).closest(".toontalk-backside-of-top-level").offset();
             var context_backside = robot.get_context().get_backside();
-            var $home_element, backside_rectangle;
+            var $home_element, backside_rectangle, attached_team_member;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {           
                 console.log(robot.to_debug_string(50) + " running watched");
             }
@@ -232,6 +233,19 @@ window.TOONTALK.actions =
                     // if no original_parent_element then find where it should be
                     original_parent_element = $home_element.get(0);
                 }
+                attached_team_member = previous_robot;
+                while (attached_team_member) {
+                    // if robot has no position use its previous_robot going back until someone has a position
+                    robot_home = $(attached_team_member.get_frontside_element()).offset();
+                    if (robot_home.left !== 0 && robot_home.top !== 0) {
+                        // update start location with a fresh copy
+                        robot_start_offset = {left: robot_home.left,
+                                              top:  robot_home.top};
+                        top_level_position = robot_home;
+                        break;
+                    }
+                    attached_team_member = attached_team_member.get_previous_robot();
+                }
                 robot.set_visible(true);
                 // need the robot's element to be initialised since will start animating very soon
                 robot.update_display();
@@ -239,15 +253,15 @@ window.TOONTALK.actions =
 //                 $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()+100});
                 // put the robot back when finished
                 robot.add_body_finished_listener(function () {
-                                                      if (original_parent_element) {
-                                                          original_parent_element.appendChild(frontside_element);
-                                                      }
-                                                      // let CSS position it
-                                                      $(frontside_element).css({left: "",
-                                                                                top:  "",
-                                                                                position: "",
-                                                                                "z-index": ''});
-                                                 });    
+                                                     if (original_parent_element) {
+                                                         original_parent_element.appendChild(frontside_element);
+                                                     }
+                                                     // let CSS position it
+                                                     $(frontside_element).css({left:      '',
+                                                                               top:       '',
+                                                                               position:  '',
+                                                                               "z-index": ''});
+                                                 });
             }
             if (robot_width === 0) {
                 $(frontside_element).css({width:  '',
@@ -258,7 +272,7 @@ window.TOONTALK.actions =
             if (!top_level_position) {
                 top_level_position = {left: 0, top: 0};
             }
-            if ($home_element.length > 0) {
+            if ($home_element.length > 0 && TT.UTILITIES.is_attached($home_element.get(0))) {
                 backside_rectangle = $home_element.get(0).getBoundingClientRect();
                 if (robot_home.left < backside_rectangle.left-top_level_position.left ||
                     robot_home.top  < backside_rectangle.top -top_level_position.top ||
