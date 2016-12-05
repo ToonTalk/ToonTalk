@@ -191,7 +191,7 @@ window.TOONTALK.robot_action =
              // no need to do this if unwatched
              // TODO: a more principled way of handling green flag clicking
              // TODO: support stop sign too
-             if (additional_info.button_selector === ".toontalk-green-flag" && (!additional_info || !additional_info.running_watched)) {
+             if (additional_info.button_selector === ".toontalk-green-flag") {
                 widget.set_running(true);
              }
              return true;
@@ -698,7 +698,10 @@ window.TOONTALK.robot_action =
                                                      }
                                                  });
             }
-            $(button_element).click();
+            if (additional_info.button_selector !== ".toontalk-green-flag") {
+                // green flag clicks wil be handled when unwatched version runs
+                $(button_element).click();
+            }
             continuation();
         };
         button_use_animation(widget, robot, new_continuation, additional_info.button_selector, additional_info);
@@ -738,7 +741,7 @@ window.TOONTALK.robot_action =
             return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path, additional_info), json.action_name);
         }
     };
-    
+
     return {
         create: function (path, action_name, additional_info) {
             var new_action = Object.create(this);
