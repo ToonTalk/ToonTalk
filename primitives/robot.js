@@ -1611,7 +1611,8 @@ window.TOONTALK.robot_backside =
             frontside_condition_widget.set_visible(robot_visible);
             frontside_condition_widget.rerender();
         }
-        if (backside_conditions) {
+        if (backside_conditions && $(backside_element).find(".toontalk-backside-condition").length === 0) {
+            // there are extra conditions and they haven't already been added
             backside_conditions.forEach(function (backside_condition) {
                 var condition_element, type;
                 if (backside_condition) {
@@ -1620,11 +1621,11 @@ window.TOONTALK.robot_backside =
                     } else {
                         type = backside_condition.get_type_name();
                     }
-                    area_class_name = "toontalk-backside-" + type + "-conditions-area";
+                    area_class_name = "toontalk-backside-" + type + "-conditions-area toontalk-backside-condition";
                     if (type === 'bird') {
                         if ($(backside_element).find(".toontalk-bird-on-back-condition").length === 0) {
                             condition_element = TT.UTILITIES.create_text_element("And there is a bird on the back.");
-                            $(condition_element).addClass("toontalk-bird-on-back-condition");
+                            $(condition_element).addClass("toontalk-bird-on-back-condition toontalk-backside-condition");
                         }
                     } else {
                         condition_element = create_conditions_area("And if " + TT.UTILITIES.add_a_or_an(type) + " matches: ", 
