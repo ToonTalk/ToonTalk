@@ -1050,8 +1050,8 @@ window.TOONTALK.robot = (function (TT) {
     };
 
     robot.get_training_context = function () {
-        return this.visible() && 
-               this.get_first_in_team().get_parent_of_frontside() &&
+        // also checked that this.visible() but that interfered with unwatched robots training other robots
+        return this.get_first_in_team().get_parent_of_frontside() &&
                this.get_first_in_team().get_parent_of_frontside().get_widget();
     };
     
