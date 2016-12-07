@@ -1173,7 +1173,7 @@ window.TOONTALK.robot = (function (TT) {
         }
         return this.toString();
     };
-    
+
     robot.toString = function (to_string_info) {
         var frontside_conditions, backside_conditions, backside_conditions_defined, body, prefix, postfix, frontside_is_top_level,
             frontside_conditions_string, next_robot, robot_description, robot_conditions_description, original_person, mismatch_description, backside_description;
@@ -1282,7 +1282,7 @@ window.TOONTALK.robot = (function (TT) {
             }
         }
         if (next_robot) {
-            robot_description += "\nIf it doesn't match then the next robot will try to run.\n" + next_robot.toString();
+            robot_description += "<p>If it doesn't match then the next robot will try to run.<\p><p>" + next_robot.toString() + "</p>";
         }
         return robot_description;
     };
