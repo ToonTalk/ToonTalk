@@ -188,11 +188,12 @@ window.TOONTALK.robot_action =
          "close the backside of": close_backside_of_widget,
          "close the backside":    close_backside_of_widget,
          "click the button of": function (widget, robot, additional_info) {
-             // no need to do this if unwatched
-             // TODO: a more principled way of handling green flag clicking
-             // TODO: support stop sign too
+             // no need to click buttons if unwatched since action itself recorded
+             // except start and stop 
              if (additional_info.button_selector === ".toontalk-green-flag") {
                 widget.set_running(true);
+             } else if (additional_info.button_selector === ".toontalk-stop-sign") {
+                widget.set_running(false);
              }
              return true;
          }
@@ -698,8 +699,9 @@ window.TOONTALK.robot_action =
                                                      }
                                                  });
             }
-            if (additional_info.button_selector !== ".toontalk-green-flag") {
-                // green flag clicks wil be handled when unwatched version runs
+            if (additional_info.button_selector !== ".toontalk-green-flag" &&
+                additional_info.button_selector !== ".toontalk-stop-sign") {
+                // green flag and stop sign clicks wil be handled when unwatched version runs
                 $(button_element).click();
             }
             continuation();
