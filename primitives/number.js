@@ -1138,7 +1138,7 @@ window.TOONTALK.number = (function () {
         if (other.is_zero()) {
             error = "Can't divide by zero. Operation ignored.";
             if (options && options.robot) {
-                error += " Caused by " + options.robot;
+                error += " Caused by the robot who " + options.robot;
             }
             TT.UTILITIES.display_message(error);
             return this;
