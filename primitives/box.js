@@ -649,16 +649,16 @@ window.TOONTALK.box = (function (TT) {
         var renderer = 
             function () {
                 var $box_hole_elements = $(frontside_element).children(".toontalk-box-hole");
-                if (!$(frontside_element).parent(".toontalk-conditions-container").is("*") &&
-                    !$(frontside_element).parent().is(".toontalk-scale-half")) {
+                if ($(frontside_element).is(".toontalk-conditions-contents")){
+                    TT.UTILITIES.set_css(frontside_element,
+                                         {width:  box_width -2*border_size,
+                                          height: box_height-2*border_size});
+                } else if (!$(frontside_element).parent(".toontalk-conditions-container").is("*") &&
+                           !$(frontside_element).parent().is(".toontalk-scale-half")) {
                     if ($(frontside_element).parent(".toontalk-box-hole").is("*")) {
                         TT.UTILITIES.set_css(frontside_element,
                                              {width:  '',
                                               height: ''});
-                    } else if ($(frontside_element).is(".toontalk-conditions-contents")){
-                        TT.UTILITIES.set_css(frontside_element,
-                                             {width:  box_width -2*border_size,
-                                              height: box_height-2*border_size});
                     } else {
                         TT.UTILITIES.set_css(frontside_element,
                                              {width:  box_width,
