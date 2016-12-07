@@ -1441,7 +1441,7 @@ window.TOONTALK.nest = (function (TT) {
             return true;
         };
         new_nest.widget_side_dropped_on_me = function (side_of_other, options) {
-            if (event && side_of_other.save_dimensions) {
+            if (options.event && side_of_other.save_dimensions) {
                 side_of_other.save_dimensions();
             }
             if (contents.length === 0) {
