@@ -184,8 +184,9 @@ window.TOONTALK.actions =
                     robot.rerender();
                 };
                 if (first_robot_still_visible) {
-                    if (!frontside_element.parentElement) {
+                    if (!frontside_element.parentElement && robot.get_parent_of_frontside()) {
                         // can happen if window is minimised and then restored
+                        // may not have parent if stopped
                         robot.get_parent_of_frontside().get_frontside_element().appendChild(frontside_element);  
                     }
                     TT.UTILITIES.animate_to_absolute_position(frontside_element,
