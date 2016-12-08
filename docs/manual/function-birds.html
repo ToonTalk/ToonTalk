@@ -5,13 +5,15 @@
 <title>Function Birds in ToonTalk</title>
 </head>
 <body>
+<h2>Function Birds</h2>
+<p>
 A function bird behaves just any other <a href="birds-nests.html">bird</a>.
 The difference is that a function bird behaves as if offscreen robots are waiting for boxes to arrive on her nest.
 These robots expect, by convention, that the delivered box contains another bird and some other widgets.
 The bird is given the result of computing a function of the other widgets.
-<h2>Numeric Function Birds</h2>
+</p>
 <p id='number_function'>
-Here is the list of <b>number</b> functions birds available in this system:
+Here is the list of <a href="numbers.html">number</a> functions birds available in this system:
 <table id='number_function_birds'></table>
 <script type="text/javascript">
    document.addEventListener('toontalk_initialized', 
@@ -21,7 +23,7 @@ Here is the list of <b>number</b> functions birds available in this system:
 </script> 
 </p>
 <p id='box_functions'>
-Here is the list of <b>box</b> functions birds available in this system:
+Here is the list of <a href="boxes.html">box</a> functions birds available in this system:
 <table id='box_function_birds'></table>
 <script type="text/javascript">
    document.addEventListener('toontalk_initialized', 
@@ -31,7 +33,7 @@ Here is the list of <b>box</b> functions birds available in this system:
 </script> 
 </p>
 <p id='element_functions'>
-Here is the list of <b>element</b> functions birds available in this system:
+Here is the list of <a href="elements.html">element</a> functions birds available in this system:
 <table id='element_function_birds'></table>
 <script type="text/javascript">
    document.addEventListener('toontalk_initialized', 
@@ -42,11 +44,11 @@ Here is the list of <b>element</b> functions birds available in this system:
 </p>
 <p>
 You can add a function bird to your work space by dragging one of the birds above or by clicking on a number.
-Click on <b>'>'</b> to see the advanced options and then click on 'Make a function bird'.
+Click on <span class='toontalk-button-style'>></span> button to see the advanced options and then click on <span class='toontalk-button-style'>Make a function bird</span>.
 Then click on the bird to choose the function.
 </p>
 <p>
-Click the green flag to watch the robot demonstrate this:
+Click the green flag <span class='toontalk-green-flag-icon'></span> to watch the robot demonstrate this:
 </p>
 <br>
 <div class='toontalk-json' translate='no'>
@@ -439,11 +441,11 @@ top level widget
   "version": 1
 }</div></div>
 <h3>
-Empty nests in boxes given to function birds
+Nests in boxes given to function birds
 </h3>
 <p>
 Function birds can be given message boxes with nests replacing some of the required widgets.
-After birds deliver all the required widgets to those nests the function bird will finally respond.
+If any are empty the function birds will wait until birds deliver all the required widgets to those nests to respond.
 Note that while waiting for those widgets if the work area is saved and restored those "off-screen" function birds are lost.
 </p>
 <p>
