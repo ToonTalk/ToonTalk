@@ -5054,12 +5054,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             });
         }
     };
-    utilities.random_location_inside = function (element, margin) {
-        // returns a random location within element leaving margin on the right and bottom
-        var bounding_rectangle = element.getBoundingClientRect();
-        return {left: Math.random()*(bounding_rectangle.width -margin),
-                 top: Math.random()*(bounding_rectangle.height-margin)};
-    };
     utilities.element_width = function (element) {
         var $element = $(element);
         if ($element.is(".toontalk-conditions-contents")) {

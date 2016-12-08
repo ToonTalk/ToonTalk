@@ -120,7 +120,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                                                                                  $(element).children(".ui-resizable-handle").show();
                                                                              }
                                                                          });
-                                            }                  
+                                            }
                                         });
             updating = false;
             if (pending_updates.length > 0) {

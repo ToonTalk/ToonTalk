@@ -483,18 +483,20 @@ window.TOONTALK.backside =
                         // TODO: determine if some code could possibly be listening to this event since
                         // users have no way of listening to top-level backside events (but maybe they should?)
                         window.dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
-                                                                                            here: 'back'}));
+                                                                                        here: 'back'}));
                     }
                     if (options.robot && !options.robot.visible() && this.visible()) {
                         // if robot isn't seen but this backside is then don't show the side_of_other until
                         // robot is finished since often it is temporary and will be removed before the robot is finished
                         options.robot.add_body_finished_listener(function () {
+                            var other_element;
                             if (side_of_other.get_parent() === this) {
                                 // still there so render it
-                                backside_element.appendChild(side_of_other.get_element(true));
+                                other_element = side_of_other.get_element(true);
+                                backside_element.appendChild(other_element);
                                 side_of_other.set_visible(true); // since this backside is
-                                $(backside_element).css(this.get_free_location());
-                                side_of_other.render();
+                                side_of_other.update_display();
+                                $(other_element).css(this.get_free_location(side_of_other));  
                             }
                         }.bind(this));
                     }
@@ -870,9 +872,61 @@ window.TOONTALK.backside =
             $(this.get_element()).remove();
         },
 
-        get_free_location: function () {
-            // TODO: make this work
-            return {left: 0, top: 0};
+        get_free_location: function (for_widget, options) {
+            // options include try_first which is a prefered position in client coordinates
+            // and margin_fraction regarding how much to avoid of the edges
+            // and default_width and default_height can be provided if size of for_widget not known
+            // does its best to find an empty area big enough for for_widget leaving margin_fraction around the edges
+            var my_element = this.get_element();
+            var my_rectangle  = my_element .getBoundingClientRect();
+            var my_position = $(my_element).position();
+            var empty = function (left, top) {
+                return my_element === document.elementFromPoint(left, top) &&
+                       my_element === document.elementFromPoint(left+for_rectangle.width, top) &&
+                       my_element === document.elementFromPoint(left, top+for_rectangle.height) &&
+                       my_element === document.elementFromPoint(left+for_rectangle.width, top+for_rectangle.height);
+            }
+            var margin_fraction, for_rectangle, left, top, start_left, start_top, max_left, max_top, element_at_point, non_margin_fraction;
+            for_rectangle = for_widget.get_element(true).getBoundingClientRect();
+            if (for_rectangle.width === 0) {
+                if (for_widget.get_default_width) {
+                    for_rectangle = {width:  for_widget.get_default_width(),
+                                     height: for_widget.get_default_height()};
+                } else {
+                    for_rectangle = {width:  options && options.default_width  || 100,
+                                     height: options && options.default_height || 100};
+                }
+            }
+            if (options && options.try_first && empty(options.try_first.left+ my_position.left-window.pageXOffset,
+                                                      options.try_first.top +my_position .top -window.pageYOffset)) {
+                return options.try_first;
+            }
+            if (options && options.margin_fraction !== undefined) {
+                margin_fraction = options.margin_fraction;
+            } else {
+                margin_fraction = 0.05;
+            }
+            non_margin_fraction = (1-2*margin_fraction);
+            left = my_position.left-window.pageXOffset+my_rectangle.width *margin_fraction;
+            top  = my_position.top -window.pageYOffset+my_rectangle.height*margin_fraction;
+            start_left = left;
+            start_top  = top;
+            max_left = left+my_rectangle.width *(1-margin_fraction)-for_rectangle.width;
+            max_top  = top+ my_rectangle.height*(1-margin_fraction)-for_rectangle.height;
+            while (top < max_top) {
+                if (empty(left, top)) {
+                    // transform from absolute coordinates to relative to this backside
+                    return {left: left-my_position.left-window.pageXOffset,
+                            top:  top -my_position.top -window.pageYOffset};
+                }
+                left += for_rectangle.width*1.2;
+                if (left > max_left) {
+                    left = start_left;
+                    top += for_rectangle.height*1.2;
+                }
+            }
+            return {left: my_rectangle.width *margin_fraction+Math.random()*(my_rectangle.width -for_rectangle.width) *non_margin_fraction, 
+                    top:  my_rectangle.height*margin_fraction+Math.random()*(my_rectangle.height-for_rectangle.height)*non_margin_fraction};
         },
 
         create_infinite_stack_check_box: function (backside, widget) {

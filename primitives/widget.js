@@ -918,7 +918,7 @@ window.TOONTALK.widget = (function (TT) {
                     }
                     if (!ok_if_not_there && TT.debugging) {
                         console.log("Listener of type " + type_name + " could not be removed.");
-                    }        
+                    }
                 };
             }
             // add fire_listeners? if so still need get_listeners?
@@ -1324,16 +1324,16 @@ window.TOONTALK.widget = (function (TT) {
             copy.set_running(this.get_running());
             return copy;
         },
-        
+
         get_type_name: function () {
             // only used for informative purposes so ignore if not overridden 
             return "";
         },
-        
+
         copy: function () {
             console.assert(false, "copy not implemented");
         },
-        
+
         add_copy_to_container: function (widget_copy, x_offset, y_offset) {
             var visible = this.visible();
             var frontside_element, element_of_copy, $container_element, ok_to_set_dimensions, position, container_widget, css, left, top;

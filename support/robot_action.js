@@ -142,9 +142,10 @@ window.TOONTALK.robot_action =
                  }
                  top_level_element = top_level_widget.get_backside_element();
                  widget_frontside_element = widget.get_frontside_element(true);
-                 $(widget_frontside_element).css(TT.UTILITIES.random_location_inside(top_level_element, 50));
+                 widget.update_display();
                  top_level_element.appendChild(widget_frontside_element);
                  widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.animation_settings.ANIMATION_SPEED));
+                 $(widget_frontside_element).css(top_level_widget.get_backside().get_free_location(widget));
              }
              return true;
          },
@@ -229,8 +230,8 @@ window.TOONTALK.robot_action =
         var widget_bounding_box,
             left_offset,
             top_offset,
-            animation_left_offset,
-            animation_top_offset,
+            animation_offset,
+            free_location,
             thing_in_hand_element,
             thing_in_hand_width,
             thing_in_hand_height,
@@ -255,50 +256,22 @@ window.TOONTALK.robot_action =
             if (!robot.original_animation_top_offset) {
                 robot.original_animation_top_offset = [];
             }
-            animation_left_offset = additional_info.left_offset_fraction*widget_bounding_box.width;
-            animation_top_offset  = additional_info.top_offset_fraction *widget_bounding_box.height;
+            animation_offset = {left: additional_info.left_offset_fraction*widget_bounding_box.width,
+                                top:  additional_info.top_offset_fraction *widget_bounding_box.height};
             if (thing_in_hand) {
                 thing_in_hand_element = thing_in_hand.get_element();
                 if (TT.UTILITIES.visible_element(thing_in_hand_element)) {
                     thing_in_hand_location = $(thing_in_hand_element).offset();
                     robot_location         = $(robot_frontside_element).offset();
-                    animation_left_offset -= thing_in_hand_location.left-robot_location.left;
-                    animation_top_offset  -= thing_in_hand_location.top -robot_location.top;
+                    animation_offset.left -= thing_in_hand_location.left-robot_location.left;
+                    animation_offset.top  -= thing_in_hand_location.top -robot_location.top;
                 }
             }
-            if (thing_in_hand && 
-                close_memmber(animation_left_offset, robot.last_thing_in_hand_width, robot.original_animation_left_offset) && 
-                robot.original_animation_top_offset.indexOf(animation_top_offset)  >= 0) {
-                // robot has already dropped something here
-                animation_left_offset = robot.animation_left_offset+robot.last_thing_in_hand_width;
-                animation_top_offset  = robot.animation_top_offset;
-                if (animation_left_offset >= widget_bounding_box.width) {
-                    animation_left_offset = 0;
-                    animation_top_offset += robot.max_thing_in_hand_height;
-                    if (animation_top_offset >= widget_bounding_box.height) {
-                        animation_top_offset = 0;
-                    }
-                }
-                TT.UTILITIES.when_attached(thing_in_hand_element,
-                                           function () {
-                                                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width(thing_in_hand_element);
-                                                if (typeof robot.max_thing_in_hand_height === 'undefined') {
-                                                    robot.max_thing_in_hand_height = 0;
-                                                }
-                                                robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
-                                           });
-            } else {
-                robot.original_animation_left_offset.push(animation_left_offset);
-                if (robot.original_animation_top_offset.indexOf(animation_top_offset) < 0) {
-                    robot.original_animation_top_offset.push(animation_top_offset);
-                }
-                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width (thing_in_hand_element);
-                robot.max_thing_in_hand_height = TT.UTILITIES.get_element_height(thing_in_hand_element);
-            }
-            widget_element.animation_left_offset = animation_left_offset;
-            widget_element.animation_top_offset  = animation_top_offset;
-            robot.animation_left_offset = animation_left_offset;
-            robot.animation_top_offset  = animation_top_offset;
+            free_location = side.get_backside().get_free_location(thing_in_hand, {try_first: animation_offset});
+            widget_element.animation_left_offset = free_location.left;
+            widget_element.animation_top_offset  = free_location.top;
+            robot.animation_left_offset = free_location.left;
+            robot.animation_top_offset  = free_location.top;
         } else {
             left_offset = widget_bounding_box.width/2;
             top_offset  = widget_bounding_box.height/2;

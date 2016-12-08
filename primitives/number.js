@@ -688,8 +688,8 @@ window.TOONTALK.number = (function () {
             client_height = $(frontside_element).height()
             if (!client_width || !client_height) {
                 // TODO: generalise this
-                client_width  = this.saved_width   || 76;
-                client_height = this.saved_heieght || 55;
+                client_width  = this.saved_width   || this.get_default_width();
+                client_height = this.saved_heieght || this.get_default_height();
                 $(frontside_element).css({width:  client_width,
                                           height: client_height});
             }
@@ -762,6 +762,14 @@ window.TOONTALK.number = (function () {
                                       height: 60 -border_size*2});
         }
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
+    };
+
+    number.get_default_width = function () {
+        return 76;
+    };
+
+    number.get_default_height = function () {
+        return 55;
     };
 
     number.get_border_size = function (width, height) {

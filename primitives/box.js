@@ -204,7 +204,7 @@ window.TOONTALK.box = (function (TT) {
                 return {width: box_width,
                         height: box_height/size};
             }
-        };           
+        };
         new_box.receive_size_from_dropped = function (dropped, event) {
             // dropped drop on the size text area
             // return a string for the new size
