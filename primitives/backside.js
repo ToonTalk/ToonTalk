@@ -440,18 +440,6 @@ window.TOONTALK.backside =
                             }
                         }
                     }
-                    if (this.get_widget().is_top_level()) {
-                        if (options.robot && !options.robot.visible()) {
-                            // TODO: determine if this is not visible when side_of_other_element is undefined
-                            $(side_of_other_element).addClass("toontalk-widget-added-to-backside-by-unwatched-robot");
-                        }
-                        if (options.event && !side_of_other.is_backside() && !side_of_other.is_sensor()) {
-                            // TODO: determine if some code could possibly be listening to this event since
-                            // users have no way of listening to top-level backside events (but maybe they should?)
-                            window.dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
-                                                                                            here: 'back'}));
-                        }
-                    }
                     if (widget.robot_in_training() && !options.ignore_training && options.event) {
                         // delay this so it can record where the other was dropped
                         setTimeout(function () {
@@ -490,6 +478,25 @@ window.TOONTALK.backside =
                     }
                     if (options.event) {
                         side_of_other.get_widget().backup_all();
+                    } 
+                    if (options.event && this.get_widget().is_top_level() && !side_of_other.is_backside() && !side_of_other.is_sensor()) {
+                        // TODO: determine if some code could possibly be listening to this event since
+                        // users have no way of listening to top-level backside events (but maybe they should?)
+                        window.dispatchEvent(TT.UTILITIES.create_event('widget added', {element_widget: side_of_other_element,
+                                                                                            here: 'back'}));
+                    }
+                    if (options.robot && !options.robot.visible() && this.visible()) {
+                        // if robot isn't seen but this backside is then don't show the side_of_other until
+                        // robot is finished since often it is temporary and will be removed before the robot is finished
+                        options.robot.add_body_finished_listener(function () {
+                            if (side_of_other.get_parent() === this) {
+                                // still there so render it
+                                backside_element.appendChild(side_of_other.get_element(true));
+                                side_of_other.set_visible(true); // since this backside is
+                                $(backside_element).css(this.get_free_location());
+                                side_of_other.render();
+                            }
+                        }.bind(this));
                     }
 //                     if (this.get_widget().is_ok_to_run() && !this.get_widget().get_running() && !this.get_widget().is_top_level()) {
 //                         // if a robot or widget with robots on the back is dropped on the back of something that has been told to run
@@ -858,11 +865,16 @@ window.TOONTALK.backside =
             }
             return "backside of " + this.get_widget().get_full_description(to_string_info);
         },
-                
+
         remove_element: function () {
             $(this.get_element()).remove();
         },
-        
+
+        get_free_location: function () {
+            // TODO: make this work
+            return {left: 0, top: 0};
+        },
+
         create_infinite_stack_check_box: function (backside, widget) {
             var check_box = TT.UTILITIES.create_check_box(widget.get_infinite_stack(), 
                                                           "toontalk-infinite-stack-check-box",

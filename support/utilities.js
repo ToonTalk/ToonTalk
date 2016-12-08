@@ -3450,7 +3450,7 @@ window.TOONTALK.UTILITIES =
              // sometimes the resize handle gets a z-index less than that of widgets
              $element.children(".ui-resizable-handle").css("z-index", 9999);
         };
-        
+
         utilities.match = function (pattern, widget) {
             var dereferenced_widget, match_status;
             if (pattern === undefined) {
