@@ -1289,7 +1289,7 @@ window.TOONTALK.backside =
                     }
                 };
             buuton.innerHTML = '&gt;';
-            $settings_button.addClass("toontalk-settings-backside-button toontalk-button");
+            $settings_button.addClass("toontalk-settings-backside-button toontalk-button toontalk-button-style");
             $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
             $settings_button.get(0).addEventListener('click', settings_button_clicked);
             TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to see the advanced settings of this " + widget.get_type_name() + ".");

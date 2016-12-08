@@ -1826,8 +1826,10 @@ window.TOONTALK.robot_backside =
                     add_conditions_area(backside_element, robot);
                 }
             };
-            backside.change_label_and_title_of_train_button(training);           
+            backside.change_label_and_title_of_train_button(training);
             $train_button.get(0).addEventListener('click', train_button_clicked);
+            // don't want advanced_settings_button to follow immediately
+            $train_button.css({display: "block"});
             return $train_button.get(0);
         }
 

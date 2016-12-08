@@ -2232,7 +2232,7 @@ window.TOONTALK.element_backside =
                 backside_element.appendChild(attribute_table);
             } else if (!element_widget.is_plain_text_element()) {
                 // neither the HTML nor the attributes are displayed
-                backside_element.appendChild(TT.UTILITIES.create_text_element("No attributes enabled. Click the '<' below to see the advanced options."))
+                backside_element.appendChild(TT.UTILITIES.create_text_element("No attributes enabled. Click the <span class='toontalk-button-style'>></span> button to see the advanced options."))
             }
             backside_element.appendChild(advanced_settings_button);
             $(attributes_chooser).hide();

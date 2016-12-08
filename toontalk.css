@@ -2122,11 +2122,19 @@ table.toontalk-documentation-table {
 	height:  0px;
 	display: none;
 }
-.toontalk-settings-backside-button {
+.toontalk-button-style {
 	cursor: pointer;
-	font-family: 'Lucida serif';
-    font-weight: bold;
-    font-size: 14pt;
+	font-weight: bold;
+	background-color: #fece2f;
+	display: inline-block;
+	border-radius: 6px;
+	border-color: #d19405;
+	border-width: 1px;
+	border-style: solid;
+	/* padding: 2px; */
+	margin:  2px;
+	font-family: Segoe UI,Arial,sans-serif;
+	font-size: 1.1em;
 }
 .toontalk-wand {
 	background-image: url("images/wand-static.png");
