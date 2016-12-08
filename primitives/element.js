@@ -321,7 +321,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         new_element.apply_css = function () {
             var transform = "";
-            var frontside_element, current_pending_css, new_dimensions, dimensions_from_parent;
+            var parent, frontside_element, current_pending_css, new_dimensions, dimensions_from_parent;
             frontside_element = this.get_frontside_element();
             if (!frontside_element) {
                 return;
