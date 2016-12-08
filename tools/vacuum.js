@@ -261,6 +261,9 @@ window.TOONTALK.vacuum = (function (TT) {
                 } else {
                     TT.UTILITIES.stop_listening_for_speech();
                 }
+            },
+            set_mode: function (new_value) {
+                set_mode(new_value);
             }
         };
         return TT.vacuum.the_vacuum;
@@ -276,6 +279,6 @@ window.TOONTALK.vacuum = (function (TT) {
         return vacuum;
     };
 
-    return vacuum
+    return vacuum;
 
 }(window.TOONTALK));
