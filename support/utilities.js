@@ -4577,7 +4577,11 @@ window.TOONTALK.UTILITIES =
        utilities.stop_audio_objects = function () {
             audio_objects_playing.forEach(function (audio_object) {
                 audio_object.pause();
-                audio_object.currentTime = 0;
+                try {
+                    audio_object.currentTime = 0;
+                } catch (error) {
+                    // this is an error in IE11 - ignore it
+                }
             });
        };
 

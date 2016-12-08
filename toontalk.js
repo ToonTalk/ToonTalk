@@ -125,7 +125,7 @@ if (debugging) {
                   "support/google_drive.js",
                   "support/utilities.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
-//                   "https://www.dropbox.com/static/api/2/dropins.js",
+//                   "https://www.dropbox.com/static/api/2/dropins.js", // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
                   "libraries/jquery.ui.touch-punch.min.js"];
 } else {
@@ -133,10 +133,10 @@ if (debugging) {
                   "libraries/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
-//                   "https://www.dropbox.com/static/api/2/dropins.js",
+//                   "https://www.dropbox.com/static/api/2/dropins.js",  // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
                   // Note that including this in the closure compiler resulted in errors
-                  "libraries/jquery.ui.touch-punch.min.js"];                 
+                  "libraries/jquery.ui.touch-punch.min.js"];
 }
 
 var local_replacements =
@@ -151,13 +151,13 @@ var loadFile = function (index, offline) {
                    var load_next_file = function () {
                                             index++;
                                             if (index < file_names.length) {
-                                                loadFile(index, offline);               
+                                                loadFile(index, offline);
                                             } else {
                                                 initialize_toontalk();
                                                 // delay the following since its addition was delayed as well
                                                 setTimeout(function () {
                                                     $(loading_please_wait).remove();
-                                                });                                                
+                                                });
                                             }
                                         };
                    if (file_name.indexOf("http") >= 0) {
