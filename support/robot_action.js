@@ -87,7 +87,7 @@ window.TOONTALK.robot_action =
                  TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but has nothing in its hand.");
              } else {
                  TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but doesn't know where to drop what its holding");
-             }   
+             }
          },
          "remove": function (widget, robot) {
              widget.remove();
