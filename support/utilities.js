@@ -2396,14 +2396,15 @@ window.TOONTALK.UTILITIES =
                           var default_capacity = 100;
                           var is_robot = $(element).is(".toontalk-robot");
                           var new_width, position, when_speaking_finished;
-                          if (text === element.toontalk_previous_text) {
-                              // already said and/or displayed this
-                              ui.tooltip.remove();
-                              if (TT.speak) {
-                                  window.speechSynthesis.cancel();
-                              }
-                              return;
-                          }
+                          // not repeating the same text for the same element wasn't a good way to cut down on excessive help
+//                           if (text === element.toontalk_previous_text) {
+//                               // already said and/or displayed this
+//                               ui.tooltip.remove();
+//                               if (TT.speak) {
+//                                   window.speechSynthesis.cancel();
+//                               }
+//                               return;
+//                           }
                           tooltip.innerHTML = process_encoded_HTML(text, decodeURIComponent); 
                           if (TT.speak) {
                               // first cancel any old speech
@@ -2414,10 +2415,10 @@ window.TOONTALK.UTILITIES =
                                       // this should be triggered only if the utterance was completed but it seems some browsers trigger it earlier
                                       // consequently partial utterances won't be repeated
                                       // should use charIndex to determine how much was said and maybe use onboundary (when it works) to highlight text
-                                      if (tooltip === element_displaying_tooltip || element_displaying_tooltip === undefined) {
-                                          // if switched to another widget don't consider this spoken
-                                          element.toontalk_previous_text = text;
-                                      }
+//                                       if (tooltip === element_displaying_tooltip || element_displaying_tooltip === undefined) {
+//                                           // if switched to another widget don't consider this spoken
+//                                           element.toontalk_previous_text = text;
+//                                       }
                                   };
                               }    
                               utilities.speak(tooltip.innerText, {when_finished: when_speaking_finished});
@@ -2456,9 +2457,9 @@ window.TOONTALK.UTILITIES =
                           // auto hide after duration proportional to text.length
                           // TODO: if longer than fits on the screen then autoscroll after some time
                           setTimeout(function () {
-                                         if (!is_robot) {
-                                             element.toontalk_previous_text = text;
-                                         }
+//                                          if (!is_robot) {
+//                                              element.toontalk_previous_text = text;
+//                                          }
                                          ui.tooltip.remove();
                                          // see http://bugs.jqueryui.com/ticket/10689
                                          if ($(tooltip).data('ui-tooltip')) {
