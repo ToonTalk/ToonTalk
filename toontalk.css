@@ -2033,13 +2033,17 @@ table.toontalk-documentation-table {
 	position: absolute;
 	top:   -25px;
 }
-.toontalk-stop-sign-icon {
+.toontalk-stop-sign-icon::after {
 	content: url("images/stop-sign-active.png");
+	width:  21px;
+	height: 19px;
 }
-.toontalk-green-flag-icon {
+.toontalk-green-flag-icon::after {
 	content: url("images/green-flag-active.png");
+	width:  20px;
+	height: 18px;
 }
-.toontalk-settings-icon {
+.toontalk-settings-icon::after {
 	content: url("images/settings-gear.png");
 	width:  22px;
 	height: 22px;
