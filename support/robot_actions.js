@@ -3,10 +3,10 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
- 
+
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
-window.TOONTALK.actions = 
+window.TOONTALK.actions =
 (function (TT) {
     "use strict";
 
@@ -17,7 +17,7 @@ window.TOONTALK.actions =
         actions.initialise_steps(TT.UTILITIES.create_array_from_json(json.steps, additional_info));
         return actions;
     };
-    
+
     return {
         create: function (steps) {
             var new_actions = Object.create(this);
@@ -63,7 +63,7 @@ window.TOONTALK.actions =
                     return;
                 }
                 this.add_newly_created_widget(new_widget);
-            };                
+            };
             new_actions.add_newly_created_widget = function (new_widget) {
                  if (TT.debugging && newly_created_widgets.indexOf(new_widget) >= 0) {
                      console.log("add_newly_created_widget called with not new widget.");
@@ -71,7 +71,7 @@ window.TOONTALK.actions =
                 }
                 newly_created_widgets.push(new_widget);
                 if (TT.logging && TT.logging.indexOf("newly-created") >= 0) {
-                    console.log("Added " + new_widget.to_debug_string(50) + 
+                    console.log("Added " + new_widget.to_debug_string(50) +
                                  " to list of newly_created_widgets. Length is " + newly_created_widgets.length);
                 }
             };
@@ -85,7 +85,7 @@ window.TOONTALK.actions =
                 var path, sub_path, children;
                 newly_created_widgets.some(function (newly_created_widget, index) {
                     // following used to be newly_created_widget.get_widget() but then path to front side when backside was manipulated and vice versa
-                    if (newly_created_widget === widget || (or_any_backside_of_widget && newly_created_widget === widget)) { 
+                    if (newly_created_widget === widget || (or_any_backside_of_widget && newly_created_widget === widget)) {
                         // might be a backside of the widget that was referenced
                         path = TT.newly_created_widgets_path.create(index);
                         return true;
@@ -113,7 +113,7 @@ window.TOONTALK.actions =
         run_unwatched: function (robot, step_number) {
             var steps = this.get_steps();
             var step;
-            if (TT.logging && TT.logging.indexOf('run') >= 0) {           
+            if (TT.logging && TT.logging.indexOf('run') >= 0) {
                 console.log(robot.to_debug_string(50) + " running unwatched");
             }
             if (!step_number) {
@@ -127,7 +127,7 @@ window.TOONTALK.actions =
                 if (step_number < steps.length) {
                     var step = steps[step_number];
                     step_number++;
-                    if (TT.logging && TT.logging.indexOf('event') >= 0) {           
+                    if (TT.logging && TT.logging.indexOf('event') >= 0) {
                         console.log(step + " (unwatched) at " + Date.now() + " by robot " + robot.get_name());
                     }
                     // each step needs to call robot.run_next_step
@@ -187,7 +187,7 @@ window.TOONTALK.actions =
                     if (!frontside_element.parentElement && robot.get_parent_of_frontside()) {
                         // can happen if window is minimised and then restored
                         // may not have parent if stopped
-                        robot.get_parent_of_frontside().get_frontside_element().appendChild(frontside_element);  
+                        robot.get_parent_of_frontside().get_frontside_element().appendChild(frontside_element);
                     }
                     TT.UTILITIES.animate_to_absolute_position(frontside_element,
                                                               robot_home,
@@ -256,7 +256,7 @@ window.TOONTALK.actions =
                 // maybe a better name is add_cycle_finished_listener...
                 robot.add_body_finished_listener(function () {
                                                      if (!parent) {
-                                                         robot.remove();   
+                                                         robot.remove();
                                                      } else if (original_parent_element && TOONTALK.UTILITIES.is_attached(original_parent_element)) {
                                                          original_parent_element.appendChild(frontside_element);
                                                      }
@@ -417,7 +417,7 @@ window.TOONTALK.newly_created_widgets_path =
                 }
             };
         }
-        
+
     };
 
 }(window.TOONTALK));

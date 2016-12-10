@@ -3,10 +3,10 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
- 
+
   /*jslint browser: true, devel: true, vars: true, white: true */
 
-window.TOONTALK.path = 
+window.TOONTALK.path =
 (function (TT) {
     "use strict";
 
@@ -19,7 +19,7 @@ window.TOONTALK.path =
     TT.creators_from_json["path.to_self"] = function (json, additional_info) {
         return TT.path.to_self();
     };
-    
+
     TT.creators_from_json["path.to_thing_in_hand"] = function () {
         return TT.path.to_thing_in_hand();
     };
@@ -27,7 +27,7 @@ window.TOONTALK.path =
     TT.creators_from_json["path.to_widget_on_nest"] = function () {
         return TT.path.to_widget_on_nest();
     };
-    
+
     TT.creators_from_json["path.top_level_backside"] = function () {
         return TT.path.top_level_backside;
     };
@@ -44,8 +44,8 @@ window.TOONTALK.path =
     TT.creators_from_json["path.to_resource"] = function (json, additional_info) {
         return TT.path.get_path_to_resource(TT.UTILITIES.create_from_json(json.resource, additional_info));
     };
-    
-    return { 
+
+    return {
         get_path_to: function (widget, robot, or_any_backside_of_widget) {
             var compute_path = function (widget, robot) {
                 var context = robot.get_training_context();
@@ -182,7 +182,7 @@ window.TOONTALK.path =
                 if (robot.context_is_backside()) {
                     // if is a backside on a backside -- if no top_level_context then context used below
                     referenced = robot.get_top_level_context();
-                }                   
+                }
             }
             if (referenced === undefined) {
                 referenced = robot.get_context();
@@ -200,7 +200,7 @@ window.TOONTALK.path =
                         return new_referenced.get_backside(true);
                     }
                     return new_referenced;
-                }                
+                }
             }
             if (referenced.dereference_contents && !path.not_to_be_dereferenced) {
                 new_referenced = referenced.dereference_contents(path, robot);
@@ -243,7 +243,7 @@ window.TOONTALK.path =
                 callback(path, start_time); // is a constant
                 return;
             }
-            new_callback = function (json, start_time) {   
+            new_callback = function (json, start_time) {
                 if (path.is_widget) {
                     json = path.add_to_json(json, json_history);
                 }
@@ -260,7 +260,7 @@ window.TOONTALK.path =
                     json.not_to_be_dereferenced = true;
                 }
                 if (path.is_backside === true || (path.is_backside && path.is_backside())) {
-                    // TODO: rationalise this -- in one case is_backside is a flag of a path 
+                    // TODO: rationalise this -- in one case is_backside is a flag of a path
                     // in the other the path is itself the backside of a widget
                     json.is_backside = true;
                 }
@@ -298,7 +298,7 @@ window.TOONTALK.path =
                     get_json: function (json_history, callback, start_time) {
                         callback({type: "path.to_self"}, start_time);
                     }
-            }; 
+            };
         },
         to_widget_on_nest: function () {
             return {dereference_path: function (robot, widget) {
@@ -310,7 +310,7 @@ window.TOONTALK.path =
                     get_json: function (json_history, callback, start_time) {
                         callback({type: "path.to_widget_on_nest"}, start_time);
                     }
-            }; 
+            };
         },
         to_thing_in_hand: function () {
             return {dereference_path: function (robot, widget) {
@@ -395,7 +395,7 @@ window.TOONTALK.path =
                        },
                        toString: function (to_string_info) {
                            var string = ((to_string_info && to_string_info.robot && to_string_info.robot.get_backside_conditions()) ? to_string_info.robot.get_backside_conditions()[type_name] :
-                                                                                    TT.UTILITIES.add_a_or_an(type_name)) + 
+                                                                                    TT.UTILITIES.add_a_or_an(type_name)) +
                                         " on the back of what I'm working on";
                            if (this.removing_widget) {
                                return "what is on " + string;
@@ -408,7 +408,7 @@ window.TOONTALK.path =
                                      start_time);
                     }};
             }
-            return this.get_path_to_backside_index_of_context(robot.get_backside_condition_index(backside_widget), backside_widget.get_type_name(), robot);   
+            return this.get_path_to_backside_index_of_context(robot.get_backside_condition_index(backside_widget), backside_widget.get_type_name(), robot);
         },
         get_path_to_backside_index_of_context: function (backside_index, type_name, robot) {
             // type_name is only used to generate better robot titles
@@ -430,14 +430,14 @@ window.TOONTALK.path =
                         }
                         // else signal an error?
                         if (TT.debugging) {
-                            console.log("can this happen?"); 
-                        }     
+                            console.log("can this happen?");
+                        }
                     },
                     toString: function (to_string_info) {
                         var conditions =  robot.get_frontside_conditions();
                         var top_level_condition = conditions && conditions.is_top_level();
                         var back = top_level_condition ? "work area" : "back of what";
-                        var string = TT.UTILITIES.add_a_or_an(type_name || "thing") + 
+                        var string = TT.UTILITIES.add_a_or_an(type_name || "thing") +
                                      " on the " + back + " I'm working on";
                         if (this.removing_widget && (!top_level_condition || type_name === 'nest')) {
                             return "what is on " + string;

@@ -3,7 +3,7 @@
  * Authors = Ken Kahn
  * License: New BSD
  */
- 
+
  /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
  // Sensors listen for DOM events and are 'concretized' as nests and events as messages delivered by birds
@@ -11,9 +11,9 @@
 
 window.TOONTALK.sensor = (function (TT) {
     "use strict";
-    
+
     var sensor = Object.create(TT.widget);
-    
+
     var style_contents = function (widget, sensor) {
         // styles the contents (the widget) of the sensor
         if (widget.get_type_name() === 'element') {
@@ -23,7 +23,7 @@ window.TOONTALK.sensor = (function (TT) {
             }
         }
     };
-    
+
     sensor.create = function (event_name, attributes_string, description, previous_contents, active, widget, name) {
         // widget is undefined when the event_name is appropriate to associate with window
         var new_sensor = TT.nest.create(description, previous_contents, "sensor", undefined, undefined, name || "sensor");
@@ -61,7 +61,7 @@ window.TOONTALK.sensor = (function (TT) {
             values = attribute_values(event);
             attributes = new_sensor.get_attributes();
             visible = new_sensor.visible();
-            $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-backside-of-top-level");        
+            $top_level_backside = $(new_sensor.get_frontside_element()).closest(".toontalk-backside-of-top-level");
             if (values.length === 1) {
                 value_widget = attribute_widget(values[0]);
                 if (typeof value_widget === "undefined") {
@@ -73,7 +73,7 @@ window.TOONTALK.sensor = (function (TT) {
                                              values.map(attribute_widget),
                                              "the values of the " + TT.UTILITIES.conjunction(attributes) + " attributes of " + TT.UTILITIES.add_a_or_an(event_name) + " event.",
                                              attributes.join(";"));
-            }     
+            }
             if (visible) {
                 delivery_bird = TT.bird.create(new_sensor);
                 new_sensor.add_to_top_level_backside(delivery_bird);
@@ -263,7 +263,7 @@ window.TOONTALK.sensor = (function (TT) {
                            return String.fromCharCode(event.keyCode);
                        }
                        return value;
-                    } else {       
+                    } else {
                          if (typeof value === 'undefined') {
                              if (event.detail && event.detail.element_widget && (attribute === 'widget' || attribute === 'back')) {
                                  // 'widget' is for backwards compatibility -- good idea?
@@ -288,15 +288,15 @@ window.TOONTALK.sensor = (function (TT) {
         };
         return new_sensor;
     };
-    
+
     TT.creators_from_json["sensor"] = function (json, additional_info) {
         if (!json) {
             // no possibility of cyclic references so don't split its creation into two phases
             return;
-        } 
+        }
         var sensor = TT.sensor.create(json.event_name,
                                       json.attribute,
-                                      json.description, 
+                                      json.description,
                                       [],         // contents defined below
                                       false,
                                       undefined,  // sensor_of defined below
@@ -313,7 +313,7 @@ window.TOONTALK.sensor = (function (TT) {
         } else {
             sensor.set_active(json.active);
         }
-        if (json.contents.length > 0) { 
+        if (json.contents.length > 0) {
             setTimeout(function () {
                 // delay to deal with possible circularity (e.g. widget added events)
                 previous_contents = TT.UTILITIES.create_array_from_json(json.contents, additional_info);
@@ -328,18 +328,18 @@ window.TOONTALK.sensor = (function (TT) {
         }
         return sensor;
     };
-    
+
     return sensor;
-    
+
 }(window.TOONTALK));
 
-window.TOONTALK.sensor_backside = 
+window.TOONTALK.sensor_backside =
 (function (TT) {
     "use strict";
-    
+
     return {
         create: function (sensor) {
-            var event_name_input      = TT.UTILITIES.create_text_input(sensor.get_event_name(), 
+            var event_name_input      = TT.UTILITIES.create_text_input(sensor.get_event_name(),
                                                                        'toontalk-sensor-event-name-input',
                                                                        // spaces are so this lines up with the next area "Event attribute"
                                                                        // TODO: figure out how to make this work with translation on
@@ -384,7 +384,7 @@ window.TOONTALK.sensor_backside =
                 event_name_input.button     .addEventListener('change', update_event_name);
                 event_attribute_input.button.addEventListener('change', update_attributes);
                 activate_switch.button      .addEventListener('click', activate_switch_clicked);
-                generic_add_advanced_settings.call(backside, event_name_input.container, event_attribute_input.container); 
+                generic_add_advanced_settings.call(backside, event_name_input.container, event_attribute_input.container);
                 // advanced table added above
                 $advanced_settings_table = $(backside_element).children(".toontalk-advanced-settings-table");
                 if ($advanced_settings_table.length > 0) {
@@ -394,4 +394,3 @@ window.TOONTALK.sensor_backside =
             return backside;
     }};
 }(window.TOONTALK));
-

@@ -4,7 +4,7 @@
  * License: New BSD
  */
 
-window.TOONTALK.DISPLAY_UPDATES = 
+window.TOONTALK.DISPLAY_UPDATES =
 (function (TT) {
     "use strict";
     // backsides, frontsides, and widgets (typically both sides) can be 'dirty'
@@ -14,7 +14,7 @@ window.TOONTALK.DISPLAY_UPDATES =
     var updating = false;
     var update_scheduled = false;
     return {
-        pending_update: function (x) {   
+        pending_update: function (x) {
             if (pending_updates.indexOf(x) >= 0) {
                 // already scheduled to be rendered
                 return;
@@ -37,12 +37,12 @@ window.TOONTALK.DISPLAY_UPDATES =
                 return;
             }
             if (updating) {
-                // this has been called recursively  
+                // this has been called recursively
                 return;
             }
             update_scheduled = true;
             TT.UTILITIES.set_timeout(function () {
-                // delay until others have chance to add to the queue (e.g. contents of box holes)  
+                // delay until others have chance to add to the queue (e.g. contents of box holes)
                 this.update_display_workhorse(now);
             }.bind(this));
         },
@@ -59,7 +59,7 @@ window.TOONTALK.DISPLAY_UPDATES =
             };
             pending_updates = [];
             updating = true;
-            update_scheduled = false;   
+            update_scheduled = false;
             time_of_next_update = (now | Date.now())+minimum_delay_between_updates;
             TT.UTILITIES.for_each_batch(updates,
                                         function (pending_update) {
@@ -88,7 +88,7 @@ window.TOONTALK.DISPLAY_UPDATES =
                                             }
                                             // if window was hidden and then shown elements might be stuck hidden
                                             // perhaps worth calling the following only when needed
-                                            $(element).show(); 
+                                            $(element).show();
                                             pending_update.update_display();
                                             if (pending_update.get_backside) {
                                                 backside = pending_update.get_backside();
@@ -134,5 +134,3 @@ window.TOONTALK.DISPLAY_UPDATES =
         }
     };
 }(window.TOONTALK));
-
-        

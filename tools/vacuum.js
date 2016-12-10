@@ -9,7 +9,7 @@
 window.TOONTALK.vacuum = (function (TT) {
     "use strict";
 
-    var vacuum = Object.create(null); 
+    var vacuum = Object.create(null);
     var titles = {suck:     "I'm a vacuum. Drag me over the thing you want to remove.\nType 'e' to switch to erasing, type 'r' to swich to restoring, or 'a' for removing all.\nOr click to switch modes.",
                   erase:    "I'm a vacuum. Drag me over the thing you want to erase (or un-erase).\nType 's' to switch to sucking, type 'r' to switch to restoring, or 'a' for removing all.\nOr click to switch modes.",
                   restore:  "Drag me over the work area. Each time you release me I'll restore a widget.\nType 's' to switch to sucking, type 'e' to swich to erasing, or 'a' for removing all.\nOr click to switch modes.",
@@ -90,10 +90,10 @@ window.TOONTALK.vacuum = (function (TT) {
             }
        });
        // so initialisation can access the vacuum
-       TT.vacuum.the_vacuum = 
+       TT.vacuum.the_vacuum =
            {apply_tool: function (widget_side, event) {
                 var widget = widget_side.get_widget();
-                var remove_widget = function (widget_side) {  
+                var remove_widget = function (widget_side) {
                     if (event && widget.robot_in_training()) {
                         widget.robot_in_training().removed(widget_side);
                     }
@@ -136,7 +136,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     }
                     // don't remove children since then can't restore
                     // tried using a copy and removing but then bird/nest relations were broken
-                    widget_side.remove({event: event, 
+                    widget_side.remove({event: event,
                                         do_not_remove_children: true});
                 };
                 var restoring, initial_location, restored_front_side_element, new_erased, top_level_backside, backside_widgets;
@@ -218,7 +218,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     set_mode('suck');
                     update_title();
                     element.toontalk_tool = TT.vacuum.the_vacuum;
-                }      
+                }
                 return element;
             },
             held: function () {
@@ -232,7 +232,7 @@ window.TOONTALK.vacuum = (function (TT) {
                                                        if (command === 'remove all') {
                                                            set_mode('suck_all');
                                                        } else if (command === 'suck' || command === 'erase' || command === 'restore') {
-                                                           set_mode(command);                            
+                                                           set_mode(command);
                                                        } else {
                                                            console.log("ignoring " + command); // give feedback?
                                                            return false;
@@ -252,7 +252,7 @@ window.TOONTALK.vacuum = (function (TT) {
                                                            top_level_widget = TT.tool.get_widget_side_under_tool();
                                                            this.apply_tool(top_level_widget, event);
                                                        }
-                                                       return true;  
+                                                       return true;
                                                    }.bind(this)});
                 }.bind(this);
                 held = new_value;

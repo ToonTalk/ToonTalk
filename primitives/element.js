@@ -8,7 +8,7 @@
 /*global $, BigInteger, bigrat */
 
 (function () {
-    
+
 // this internal function is need by both element and element_backside
 var is_transformation_option = function (attribute) {
     return (attribute === 'rotate' || attribute === 'skewX' || attribute === 'skewY' || attribute === 'transform-origin-x' || attribute === 'transform-origin-y');
@@ -31,15 +31,15 @@ var documentation_source = function (attribute) {
     } else {
         return "http://www.w3.org/community/webed/wiki/CSS/Properties/" + attribute;
     }
-}; 
+};
 
 window.TOONTALK.element = (function (TT) { // TT is for convenience and more legible code
     "use strict";
 
     var attributes_needing_updating = ["left", "top", "width", "height"];
-    
+
     var element = Object.create(TT.widget);
-    
+
     var value_in_pixels = function (value, attribute) {
         var last_character, number;
         if (!value) {
@@ -63,7 +63,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         return canonicalise_value(number, attribute);
     };
-    
+
     var canonicalise_value = function (value, attribute) {
         var new_value;
         if (["rotate", "skewX", "skewY"].indexOf(attribute) >= 0) {
@@ -89,15 +89,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             widget_height = $(widget.get_element()).height();
             if (parent_of_frontside) {
                 if (css.left) {
-                    container_width = parent_of_frontside.is_element() ? 
+                    container_width = parent_of_frontside.is_element() ?
                                       parent_of_frontside.get_original_width() :
                                       parent_of_frontside.get_width();
                     if (css.left < widget_width/-2 ||
                         css.left > container_width+widget_width/2) {
-                        // if center is off the left or the right edge 
+                        // if center is off the left or the right edge
                         // if negative after mod add width -- do another mod in case was positive
                         // keep it within the bounds of its container
-                        // note that if the container has scaling transforms those are ignored here                   
+                        // note that if the container has scaling transforms those are ignored here
                         if (container_width > 0) {
                             left = ((css.left%container_width)+container_width)%container_width;
                         } else {
@@ -110,7 +110,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     }
                 }
                 if (css.top) {
-                    container_height = parent_of_frontside.is_element() ? 
+                    container_height = parent_of_frontside.is_element() ?
                                        parent_of_frontside.get_original_height() :
                                        parent_of_frontside.get_height();
                     if (css.top < widget_height/-2 ||
@@ -131,7 +131,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         }
     };
-    
+
     element.create = function (original_html, style_attributes, description, children, sound_effect_or_sound_effect_file_name, video_object_or_video_file_name, ignore_pointer_events, additional_classes) {
         var new_element = Object.create(element);
         var guid = TT.UTILITIES.generate_unique_id(); // needed for copying tables
@@ -251,8 +251,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             return true;
         };
-        // sub classes can call set_HTML_from_sub_classes from within their set_HTML without recurring 
-        // since this closes over value calling super by storing and invoking this.set_HTML doesn't work 
+        // sub classes can call set_HTML_from_sub_classes from within their set_HTML without recurring
+        // since this closes over value calling super by storing and invoking this.set_HTML doesn't work
         // if as in attribute_object.set_HTML it needs to set_HTML of its copies (without each of them doing the same)
         new_element.set_HTML_from_sub_classes = new_element.set_HTML;
         new_element.set_text = function (new_value) {
@@ -339,7 +339,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (!pending_css) {
                     pending_css = {};
                 }
-                parent = this.get_parent();       
+                parent = this.get_parent();
                 dimensions_from_parent = parent && (parent.is_nest() || parent.is_hole() || parent.is_robot());
                 if (dimensions_from_parent) {
                     new_dimensions = this.get_parent().get_contents_dimensions();
@@ -355,9 +355,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 if (new_dimensions.width && dimensions_from_parent) {
                     // font size based on width doesn't adjust for FONT_ASPECT_RATIO since WWWWWWWWWWWW is too wide
-                    // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length) 
+                    // for single line plain text (forced by substitution of &NBSP; used (current_width  || this.get_width())/this.get_text().length)
                     pending_css['font-size'] = TT.UTILITIES.font_size(this.get_text(),
-                                                                      new_dimensions.width, 
+                                                                      new_dimensions.width,
                                                                       {height: new_dimensions.height});
                     pending_css.width     = new_dimensions.width;
                     pending_css.height    = new_dimensions.height;
@@ -373,14 +373,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     pending_css["height"]    = '';
                 } else {
                     pending_css['font-size'] = TT.UTILITIES.font_size(this.get_text(),
-                                                                      (pending_css.width || new_dimensions.width), 
-                                                                      {height: pending_css.height || new_dimensions.height});                  
+                                                                      (pending_css.width || new_dimensions.width),
+                                                                      {height: pending_css.height || new_dimensions.height});
                 }
                 if (!transform_css) {
                     $(frontside_element).css(pending_css);
                     return;
                 }
-                // continue processing (e.g. for transformations) 
+                // continue processing (e.g. for transformations)
             }
             if (!pending_css && !transform_css) {
                 return;
@@ -440,7 +440,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                                // use container dimensions if inside a condition container
                                                                current_width  = $(frontside_element.parentElement).width();
                                                                current_height = $(frontside_element.parentElement).height();
-                                                           } 
+                                                           }
                                                            if (this.ok_to_set_dimensions() || this.constrained_by_container()) {
                                                                TT.UTILITIES.scale_element(frontside_element,
                                                                                           current_width,
@@ -480,7 +480,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                 on_update_display_handlers.splice(index, 1);
                             };
                         });
-                    });   
+                    });
             }
         };
         new_element.is_image_element = function () {
@@ -644,7 +644,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if ($(frontside_element).parent(".toontalk-conditions-container").is("*")) {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an element that has been erased. It will match any element.");
                 } else {
-                    TT.UTILITIES.give_tooltip(frontside_element, "This is an erased element. It will replace its HTML with the HTML of the element you drop on it.");            
+                    TT.UTILITIES.give_tooltip(frontside_element, "This is an erased element. It will replace its HTML with the HTML of the element you drop on it.");
                 }
                 return;
             }
@@ -685,7 +685,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.fire_on_update_display_handlers();
             if (!TT.open_backside_only_if_alt_key) {
                 TT.UTILITIES.give_tooltip(frontside_element,
-                                          "Click to see the backside where you can place robots or change the style of this " + 
+                                          "Click to see the backside where you can place robots or change the style of this " +
                                           element_description(frontside_element) + ".");
             }
             // will enable/disable as appropriate
@@ -737,7 +737,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //             this.add_to_css('height', original_height);
         };
         new_element.compute_original_dimensions = function (recompute) {
-            TT.UTILITIES.original_dimensions(this, 
+            TT.UTILITIES.original_dimensions(this,
                                              function (width, height) {
                                                  var parent = this.get_parent_of_frontside();
                                                  original_width  = width;
@@ -844,7 +844,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.set_description(description);
         if (sound_effect_or_sound_effect_file_name) {
             // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
-            if (typeof sound_effect_or_sound_effect_file_name === 'string') { 
+            if (typeof sound_effect_or_sound_effect_file_name === 'string') {
                 new_element.set_sound_effect(new Audio(sound_effect_or_sound_effect_file_name));
             } else {
                 new_element.set_sound_effect(sound_effect_or_sound_effect_file_name);
@@ -873,11 +873,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         return new_element;
     };
-    
+
     element.copy = function (parameters) {
         // copy has a copy of the attributes array as well
         var style_attributes = this.get_style_attributes();
-        var copy = element.create(this.get_HTML(), 
+        var copy = element.create(this.get_HTML(),
                                   style_attributes.slice(),
                                   this.get_description(),
                                   TT.UTILITIES.copy_widgets(this.get_children()),
@@ -900,10 +900,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                             attribute_widgets_in_backside_table_copy[attribute_name].set_parent_of_frontside(backside, false, true); // a white lie
                             copy.set_attribute(attribute_name, this.get_attribute(attribute_name));
                         }.bind(this));
-        copy.set_attribute_widgets_in_backside_table(attribute_widgets_in_backside_table_copy);        
+        copy.set_attribute_widgets_in_backside_table(attribute_widgets_in_backside_table_copy);
         return this.add_to_copy(copy, parameters);
     };
-    
+
     element.match = function (other) {
         if (this.get_erased && this.get_erased()) {
             if (other.match_with_any_element) {
@@ -918,11 +918,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         return other.match_with_another_element_widget(this);
     };
-    
+
     element.match_with_any_element = function () {
         return 'matched';
     };
-    
+
     element.match_with_another_element_widget = function (element_pattern) {
         // TODO: match children elements as well
         var text_pattern;
@@ -961,7 +961,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (index >= 0) {
             return element.path.create(index);
         }
-        children.forEach(function (child, child_index) {    
+        children.forEach(function (child, child_index) {
             if (child.get_path_to) {
                 sub_path = child.get_path_to(widget, robot);
                 if (sub_path) {
@@ -1054,7 +1054,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         return true;
     };
-    
+
     element.create_backside = function () {
         return TT.element_backside.create(this);
     };
@@ -1070,7 +1070,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             return transform_css[attribute];
         }
     };
-    
+
     element.get_attribute = function (attribute) {
         var value = this.get_attribute_from_pending_css(attribute);
         var adjustment, frontside_element;
@@ -1088,7 +1088,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         };
         return this.get_attribute_from_current_css(attribute)+adjustment;
     };
-    
+
     element.set_attribute = function (attribute, new_value, handle_training, add_to_style_attributes) {
         var frontside = this.get_frontside(true);
         var frontside_element = frontside.get_element();
@@ -1125,7 +1125,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (current_value === new_value) {
                 return false;
             }
-        }      
+        }
         // need to use a number for JQuery's css otherwise treats "100" as "auto"
         new_value_number = value_in_pixels(new_value, attribute);
         if (typeof new_value_number === 'number') {
@@ -1140,7 +1140,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                 return;
 //             }
             if (TT.logging && TT.logging.indexOf('attribute:') >= 0 && TT.logging.indexOf(attribute) >= 0) {
-                console.log("Attribute " + attribute + " set to " + new_value_number + " was " + current_value + " at " + Date.now() + " for " + this);  
+                console.log("Attribute " + attribute + " set to " + new_value_number + " was " + current_value + " at " + Date.now() + " for " + this);
             }
             new_value = new_value_number;
             if (attribute === 'left' || attribute === 'top') {
@@ -1166,7 +1166,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         return true;
     };
-    
+
     element.dropped_on_style_attribute = function (dropped, attribute_name, options) {
         var widget_string, widget_number, attribute_name, attribute_value, attribute_numerical_value, new_value;
         if (!dropped) {
@@ -1253,7 +1253,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return "element attribute";
             };
             attribute_widget.toString = function () {
-                return widget_to_string.call(this) + " (" + this.attribute + " of " + this.get_attribute_owner() + ")";   
+                return widget_to_string.call(this) + " (" + this.attribute + " of " + this.get_attribute_owner() + ")";
             };
             attribute_widget.get_default_description = function () {
                 return "a number that is the " + this.attribute + " of " + this.get_attribute_owner().toString({plain_text: true}) + ".";
@@ -1272,8 +1272,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 var attribute_value, owner, decimal_value, css;
                 if (!this.get_erased()) {
                     owner = this.get_attribute_owner();
-                    if (owner.get_parent_of_frontside() && 
-                        owner.get_parent_of_frontside().is_element() && 
+                    if (owner.get_parent_of_frontside() &&
+                        owner.get_parent_of_frontside().is_element() &&
                         !owner.being_dragged &&
                         !owner.constrained_by_container()) {
                         // owner is part of an element so use its value to determine the CSS of this child
@@ -1313,9 +1313,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     callback({type: 'attribute_widget',
                               attribute_name: attribute_name,
                               element: json},
-                             start_time);   
+                             start_time);
                 };
-                TT.UTILITIES.get_json(this_element_widget, json_history, new_callback, start_time);                         
+                TT.UTILITIES.get_json(this_element_widget, json_history, new_callback, start_time);
             };
             attribute_widget.get_original_attribute_widget = function () {
                 var copies = this_element_widget.get_original_copies()[attribute_name];
@@ -1343,7 +1343,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     // if backside never opened then the attribute_widget may not have a parent
                     // which is OK since will treat this_element_widget as its owner
                 };
-                // if this is a copy use the original 
+                // if this is a copy use the original
                 var original, backside_ancestor_side, widget, widget_parent;
                 backside_ancestor_side = get_backside_parent(this);
                 if (!backside_ancestor_side) {
@@ -1396,7 +1396,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     if (this.get_attribute_owner().set_attribute(this.attribute, decimal_value)) {
                         // if the new_value is different from the current value
                         copies.forEach(function (copy, index) {
-                           copy.set_value_from_sub_classes(value_approximation, true); 
+                           copy.set_value_from_sub_classes(value_approximation, true);
                         });
                     }
                     // TODO: determine if the following could be moved up into the conditional and replaced with return false;
@@ -1427,7 +1427,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 if (this.get_attribute_owner().set_attribute(this.attribute, new_value)) {
                     // if the new_value is different from the current value
                     copies.forEach(function (copy, index) {
-                        return_value = copy.set_HTML_from_sub_classes(new_value); 
+                        return_value = copy.set_HTML_from_sub_classes(new_value);
                   });
                 }
                 return return_value;
@@ -1465,7 +1465,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
 //                     if (additional_info && additional_info.to_be_on_backside_of) {
 //                         owner = additional_info.to_be_on_backside_of[0]; // top of stack
 //                     }
-                    drag_listener = 
+                    drag_listener =
                         function (event) {
                             // ensures numbers are updated as the element is dragged
                             var owner, top_level_position, attribute_value, left, top;
@@ -1540,7 +1540,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
         }.bind(this));
     };
-   
+
     element.toString = function (to_string_info) {
         var scale_or_quote_html, image_description, children, text, description, source_URL;
         if (this.get_erased()) {
@@ -1558,7 +1558,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                    }
                    if (second_quote_index >= 0) {
                        return html.substring(0, attribute_index) + attribute_name + "=" + new_value + html.substring(second_quote_index+1);
-                   } 
+                   }
                }
                // no old value so add a new pair
                space_index = html.indexOf(' ');
@@ -1622,10 +1622,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         if (children && children.length > 0) {
             description += " with " + TT.UTILITIES.describe_widgets(children) + " on top";
-        }          
+        }
         return "the element " + description;
     };
-    
+
     element.get_type_name = function (plural) {
         if (plural) {
             return "elements";
@@ -1636,7 +1636,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     element.get_help_URL = function () {
         return "docs/manual/elements.html";
     };
-    
+
     element.get_json = function (json_history, callback, start_time) {
         // don't want them to appear where they were in the source page
         // need to revisit this since sometimes we want left and top
@@ -1663,7 +1663,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         new_callback = function () {
             var attributes_backsides = [];
-            var attributes_backsides_callback = 
+            var attributes_backsides_callback =
                 function (index) {
                     var next_backside_widget_callback = function () {
                         attributes_backsides_callback(index+1);
@@ -1672,7 +1672,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     if (index >= attributes.length) {
                         callback({type: "element",
                                   // z-index info is temporary and should not be captured here
-                                  html:                  html_encoded_or_shared, 
+                                  html:                  html_encoded_or_shared,
                                   attributes:            attributes,
                                   attribute_values:      attributes.map(this.get_attribute.bind(this)),
                                   attributes_backsides:  attributes_backsides,
@@ -1706,7 +1706,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
            new_callback();
         }
     };
-    
+
     TT.creators_from_json["element"] = function (json, additional_info) {
         if (!json) {
             // no possibility of cyclic references so don't split its creation into two phases
@@ -1723,7 +1723,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         if (html === undefined) {
             if (typeof json.html === 'string') {
-                // internal error 
+                // internal error
                 error_message = "No json.html recreating an element widget.";
             } else {
                 error_message = "additional_info.shared_html missing while recreating an element widget.";
@@ -1779,7 +1779,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         return reconstructed_element;
     };
-    
+
     element.create_attribute_path = function (attribute_widget, robot) {
         var path_to_element_widget = TT.path.get_path_to(attribute_widget.element_widget, robot, true);
         return this.extend_attribute_path(path_to_element_widget, attribute_widget.attribute);
@@ -1795,7 +1795,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                 }.bind(this));
         }
     };
-    
+
     element.extend_attribute_path = function (path_to_element_widget, attribute_name) {
        return {
             dereference_path: function (robot) {
@@ -1814,10 +1814,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                               element_widget_path: element_widget_path_json},
                              start_time);
                 };
-                TT.path.get_json(path_to_element_widget, json_history, element_widget_path_callback, start_time); 
+                TT.path.get_json(path_to_element_widget, json_history, element_widget_path_callback, start_time);
             }};
     };
-    
+
     TT.creators_from_json["path_to_style_attribute"] = function (json, additional_info) {
         var element_widget_path = TT.UTILITIES.create_from_json(json.element_widget_path, additional_info);
         return element.extend_attribute_path(element_widget_path, json.attribute);
@@ -1835,7 +1835,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.rerender();
             // -20 for top margin
             $(this.get_frontside_element()).find("iframe").attr('width', width).attr('height', height-20);
-        }.bind(this));        
+        }.bind(this));
     };
 
     element.set_location_attributes = function (left, top) {
@@ -1896,14 +1896,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         }
         return true; // so robot knows this succeeded
     };
-    
+
     return element;
 }(window.TOONTALK));
 
-window.TOONTALK.element_backside = 
+window.TOONTALK.element_backside =
 (function (TT) {
     "use strict";
-    
+
     var update_style_attributes_table = function (table, element_widget, backside) {
         var style_attributes, frontside_element;
         if (!backside.visible()) {
@@ -1920,7 +1920,7 @@ window.TOONTALK.element_backside =
             var classes = "toontalk-element-attribute-input toontalk-element-" + attribute + "-attribute-input";
             var row = document.createElement("tr");
             var td  = document.createElement("td");
-            var attribute_widget = backside.is_primary_backside() ? 
+            var attribute_widget = backside.is_primary_backside() ?
                                    element_widget.get_attribute_widget_in_backside_table(attribute) :
                                    backside.get_widget().create_attribute_widget(attribute);
             var attribute_frontside_element = attribute_widget.get_frontside_element(true);
@@ -1933,10 +1933,10 @@ window.TOONTALK.element_backside =
             row.appendChild(td);
             attribute_widget.set_visible(true);
             $(attribute_frontside_element).addClass("toontalk-element-attribute");
-            td.appendChild(attribute_frontside_element);        
+            td.appendChild(attribute_frontside_element);
         });
     };
-    
+
     var create_show_attributes_chooser = function (attributes_chooser, element_widget) {
         var show_label = "Add or remove my style attributes";
         var show_title = "Click to add widgets for my style attributes.";
@@ -1963,7 +1963,7 @@ window.TOONTALK.element_backside =
         TT.UTILITIES.give_tooltip($show_chooser_button.get(0), show_title);
         return $show_chooser_button.get(0);
     };
-    
+
     return {
         create: function (element_widget) {
             // TODO: determine if this should implement walk_children to the attributes in the table
@@ -1986,7 +1986,7 @@ window.TOONTALK.element_backside =
             var getter = edit_HTML ? "get_HTML" : "get_text";
             var generic_backside_update = backside.update_display.bind(backside);
             var generic_add_advanced_settings = backside.add_advanced_settings;
-            var text, html_input, update_html, drop_handler, 
+            var text, html_input, update_html, drop_handler,
                 URL_input, update_URL, URL_drop_handler,
                 $play_sound_effect_button, $play_video_button,
                 sound_effect, audio_label_and_title,
@@ -2055,7 +2055,7 @@ window.TOONTALK.element_backside =
                                                                                        button_selector: ".toontalk-URL-input"});
                         }
                     };
-                    URL_input = TT.UTILITIES.create_text_input(element_widget.get_source_URL(), 
+                    URL_input = TT.UTILITIES.create_text_input(element_widget.get_source_URL(),
                                                                "toontalk-URL-input",
                                                                "",
                                                                "Edit the URL where this text comes from.",
@@ -2096,7 +2096,7 @@ window.TOONTALK.element_backside =
                         }
                         update_style_attributes_table(attribute_table, element_widget, element_widget.get_backside());
                         if (element_widget.robot_in_training()) {
-                            element_widget.robot_in_training().edited(element_widget, 
+                            element_widget.robot_in_training().edited(element_widget,
                                                                        {setter_name: (check_box.button.checked ? "add_style_attribute" : "remove_style_attribute"),
                                                                         argument_1: option,
                                                                         toString: (check_box.button.checked ? "add" : "remove") + " a widget for the " + option + " attribute of",
@@ -2126,13 +2126,13 @@ window.TOONTALK.element_backside =
                         category_header.textContent = sub_tree.label;
                         sub_menu_list = document.createElement("ul");
                         menu_list.appendChild(category_header);
-                        menu_list.appendChild(sub_menu_list);   
+                        menu_list.appendChild(sub_menu_list);
                         process_options(sub_tree.sub_menus, sub_menu_list, element_widget);
                     } else {
                         // is an array
                         sub_tree.forEach(function (sub_sub_tree) {
                             process_options(sub_sub_tree, menu_list, element_widget);
-                        });               
+                        });
                     }
                 };
                 if ($(attributes_chooser).is(".ui-accordion")) {
@@ -2157,7 +2157,7 @@ window.TOONTALK.element_backside =
                     $advanced_settings_table.get(0).appendChild(attributes_chooser);
                     $advanced_settings_table.get(0).appendChild(show_attributes_chooser);
                     if (html_input && !element_widget.is_plain_text_element()) {
-                        $advanced_settings_table.get(0).appendChild(html_input.container); 
+                        $advanced_settings_table.get(0).appendChild(html_input.container);
                     }
                 }
             };
@@ -2177,7 +2177,7 @@ window.TOONTALK.element_backside =
                 };
                 $play_sound_effect_button = $("<button>Play sound</button>").button();
                 $play_sound_effect_button.addClass("toontalk-play-sound-effect-button");
-                play_sound_effect_button_clicked = 
+                play_sound_effect_button_clicked =
                     function (event) {
                         if (sound_effect.paused) {
                             TT.UTILITIES.play_audio(sound_effect);
@@ -2188,7 +2188,7 @@ window.TOONTALK.element_backside =
                         audio_label_and_title();
                         if (element_widget.robot_in_training()) {
                             element_widget.robot_in_training().button_clicked(".toontalk-play-sound-effect-button", element_widget);
-                        }                                            
+                        }
                     };
                 $play_sound_effect_button.get(0).addEventListener('click', play_sound_effect_button_clicked);
                 audio_label_and_title();
@@ -2215,12 +2215,12 @@ window.TOONTALK.element_backside =
                             video_object.play();
                             video_object.addEventListener('ended', video_label_and_title);
                         } else {
-                             video_object.pause();            
+                             video_object.pause();
                         }
                         video_label_and_title();
                         if (element_widget.robot_in_training()) {
                             element_widget.robot_in_training().button_clicked(".toontalk-play-video-button", element_widget);
-                        }                                            
+                        }
                     };
                 $play_video_button.get(0).addEventListener('click', play_video_button_clicked);
                 video_label_and_title();
@@ -2271,7 +2271,7 @@ window.TOONTALK.element_backside =
     }};
 }(window.TOONTALK));
 
-window.TOONTALK.element.function = 
+window.TOONTALK.element.function =
 (function (TT) {
     var functions = TT.create_function_table();
     var describe = function (widget) {
@@ -2281,10 +2281,10 @@ window.TOONTALK.element.function =
         return TT.UTILITIES.add_a_or_an(widget.get_type_name())
     }
     functions.add_function_object(
-        'join text', 
+        'join text',
         function (message, options) {
             var join = function () {
-                var message_properties = arguments[arguments.length-1]; // last arg 
+                var message_properties = arguments[arguments.length-1]; // last arg
                 for (i = 0; i < arguments.length-1; i++) {
                     if (!arguments[i] || !arguments[i].get_text) {
                         functions.report_error("The 'join text' bird is unable to turn " + describe(arguments[i]) + " into text to join.", message_properties);
@@ -2301,7 +2301,7 @@ window.TOONTALK.element.function =
         "join",
         ['any number of numbers or elements']);
     functions.add_function_object(
-        'part of text', 
+        'part of text',
         function (message, options) {
             var substring = function (element_or_number, start_widget, end_widget, message_properties) {
                 var start, end;
@@ -2321,7 +2321,7 @@ window.TOONTALK.element.function =
         "part",
         ['an element followed by two postive numbers']);
      functions.add_function_object(
-        'length of text', 
+        'length of text',
         function (message, options) {
             var length = function (text_widget, message_properties) {
                 if (!text_widget.get_text) {
@@ -2336,15 +2336,15 @@ window.TOONTALK.element.function =
         "length",
         ['an element or number']);
     functions.add_function_object(
-        'text as number', 
+        'text as number',
         function (message, options) {
             var text_to_number = function (text_widget, message_properties) {
                 var text, number;
                 if (!text_widget || !text_widget.get_text) {
                     functions.report_error("The 'text as number' bird could not turn " + describe(text_widget) + " into a text to turn it into a number.", message_properties);
                     return;
-                } 
-                text = text_widget.get_text();              
+                }
+                text = text_widget.get_text();
                 var slashIndex = text.indexOf('/');
                 if (slashIndex >= 0) {
                     number = TT.number.create(text.substring(0, slashIndex), text.substring(slashIndex+1, text.length));
@@ -2360,7 +2360,7 @@ window.TOONTALK.element.function =
         "text as number",
         ['an element']);
     functions.add_function_object(
-        'go to page', 
+        'go to page',
         function (message, options) {
             var go_to_URL = function (element_url, message_properties) {
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
@@ -2380,7 +2380,7 @@ window.TOONTALK.element.function =
         "page",
         ['an element containing a URL']);
     functions.add_function_object(
-        'speak', 
+        'speak',
         TT.widget.get_speak_function(functions),
         "The bird will cause the browser to speak what is in the second box hole. "
         + "Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. "
@@ -2388,7 +2388,7 @@ window.TOONTALK.element.function =
         "speak",
         ['a widget']);
     functions.add_function_object(
-        'listen', 
+        'listen',
         TT.widget.get_listen_function(functions),
         "The bird will cause the browser to listen to the next thing said and give the words to the bird in the first hole. "
         + "If you put a number between 0 and 1 in the second hole then only recognitions with at least that confidence will be considered. "
@@ -2435,7 +2435,7 @@ window.TOONTALK.element.function =
                                    TT.UTILITIES.display_message(frontside_element.outerHTML, options);
                                    $(frontside_element).remove();
                                },
-                               1000);                
+                               1000);
                 }
             };
             return functions.typed_bird_function(message, display_message, [undefined, 'number', 'number', 'number'], 'show message', options, 1, 4);

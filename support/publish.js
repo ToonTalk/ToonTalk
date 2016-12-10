@@ -26,13 +26,13 @@ var static_contents_header_2 =
 var static_contents_end =
 '</body>\n' +
 '</html>\n';
-    
+
     var assemble_contents = function (title, editable_contents, widgets_json) {
         var page_contents = static_contents_header_1 + title + static_contents_header_2;
         editable_contents.forEach(function (editable_content, index) {
                                       page_contents += '<div class="toontalk-edit" name="content">\n' + editable_content + "\n</div>\n";
                                       if (widgets_json[index]) {
-                                          page_contents += widgets_json[index]; 
+                                          page_contents += widgets_json[index];
                                       }
                                   });
         page_contents += static_contents_end;
@@ -86,7 +86,7 @@ var static_contents_end =
                                                         });
                     });
                 }
-                TT.google_drive.get_toontalk_files(TT.google_drive.full_file_name(program_name, 'page'), 
+                TT.google_drive.get_toontalk_files(TT.google_drive.full_file_name(program_name, 'page'),
                                                   'page',
                                                   insert_or_update);
             } else {
@@ -100,7 +100,7 @@ var static_contents_end =
                 // do something more?
                 console.log("Published page '" + message_data.title + "' updated.");
             };
-            TT.google_drive.insert_or_update_file(undefined, 
+            TT.google_drive.insert_or_update_file(undefined,
                                                   message_data.file_id,
                                                   'page',
                                                   assemble_contents(message_data.title, message_data.editable_contents, message_data.widgets_json),

@@ -4,7 +4,7 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
- 
+
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 window.TOONTALK.published_support = (function (TT) {
@@ -22,11 +22,11 @@ var respond_to_authorization_need = function (error, saving_window, saving_windo
     if (error === 'Need to authorize') {
         alert_element.innerHTML = "Editing will be enabled if you can log into your Google Drive account. ";
         authorize = TT.UTILITIES.create_button("Login to Google",
-                                               "toontalk-google-login-button", 
-                                               "Click to log in to Google to authorize use of your Google Drive.", 
+                                               "toontalk-google-login-button",
+                                               "Click to log in to Google to authorize use of your Google Drive.",
                                                function () {
                                                    $(alert_element).remove();
-                                                   saving_window.postMessage("user wants to authorize", saving_window_URL); 
+                                                   saving_window.postMessage("user wants to authorize", saving_window_URL);
                                                });
         alert_element.appendChild(authorize);
     } else {
@@ -86,7 +86,7 @@ var static_contents_end =
             editable_contents.forEach(function (editable_content, index) {
                                           page_contents += '<div class="toontalk-edit" name="content">\n' + editable_content + "\n</div>\n";
                                           if (widgets_json[index]) {
-                                              page_contents += widgets_json[index]; 
+                                              page_contents += widgets_json[index];
                                           }
                                       });
             page_contents += static_contents_end;
@@ -121,7 +121,7 @@ var static_contents_end =
                     console.log("Published page '" + document.title + "' updated.");
                 }
             };
-            TT.google_drive.insert_or_update_file(undefined, 
+            TT.google_drive.insert_or_update_file(undefined,
                                                   file_id,
                                                   'page',
                                                   assemble_contents(document.title, editable_contents, widgets_json),

@@ -3,19 +3,19 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
- 
+
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
 // loosely based upon https://developers.google.com/drive/web/quickstart/quickstart-js
 
     // Called when the client library is loaded to start the authorization flow.
-    // Is a global function since called by Google API 
+    // Is a global function since called by Google API
 function handle_client_load() {
     "use strict";
     window.TOONTALK.google_drive.handle_client_load();
 };
 
-window.TOONTALK.google_drive = 
+window.TOONTALK.google_drive =
 (function (TT) {
     "use strict";
     var CLIENT_ID = TT.GOOGLE_DRIVE_CLIENT_ID  || '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com';
@@ -97,7 +97,7 @@ window.TOONTALK.google_drive =
 
       get_folder_id: function(program_files, callback) {
           var title = program_files ? toontalk_programs_folder_title : toontalk_pages_folder_title;
-          var folder_id_callback = function (response) {              
+          var folder_id_callback = function (response) {
                var folder_creation_callback = function (response) {
                    if (response && response.id) {
                        callback(response.id);
@@ -116,7 +116,7 @@ window.TOONTALK.google_drive =
                    } else {
                        // create public pages folder
                        TT.google_drive.create_folder(toontalk_pages_folder_title,    true,  folder_creation_callback);
-                   } 
+                   }
                }
            }
            if (program_files && programs_folder_id) {
@@ -150,7 +150,7 @@ window.TOONTALK.google_drive =
       },
 
       get_toontalk_files: function (title, toontalk_type, callback) {
-          // gets all files of toontalk_type if title undefined 
+          // gets all files of toontalk_type if title undefined
           // used to get all in folder_id but user may get files via sharing or re-organise their files
           var query;
           if (typeof gapi === 'undefined') {
@@ -197,10 +197,10 @@ window.TOONTALK.google_drive =
                                      }
                       };
                   };
-                  if (file_id) { 
+                  if (file_id) {
                       TT.google_drive.insert_or_update_file(undefined, file_id, toontalk_type, contents, callback);
                   } else {
-                      TT.google_drive.insert_or_update_file(full_file_name, undefined, toontalk_type, contents, callback);   
+                      TT.google_drive.insert_or_update_file(full_file_name, undefined, toontalk_type, contents, callback);
                   }
               });
           };
@@ -223,14 +223,14 @@ window.TOONTALK.google_drive =
           var full_callback =
               function (file) {
                   if (!file_id) {
-                      // is new so add custom property for retrieval 
+                      // is new so add custom property for retrieval
                       TT.google_drive.insert_property(file.id, 'ToonTalkType', toontalk_type, 'PUBLIC');
                   }
                   if (callback) {
                       callback(file);
                   }
               };
-          var folder_id = toontalk_type === 'program' ? programs_folder_id : pages_folder_id;        
+          var folder_id = toontalk_type === 'program' ? programs_folder_id : pages_folder_id;
           var request_body, path, method, request;
           metadata["parents"] = [{"kind": "drive#fileLink",
                                   "id":   folder_id}];
@@ -331,10 +331,10 @@ window.TOONTALK.google_drive =
                      'visibility': visibility};
          var request = gapi.client.drive.properties.insert({'fileId': file_id,
                                                             'resource': body});
-         request.execute(function (response) { 
+         request.execute(function (response) {
          });
      }
-    
+
    };
 
 }(window.TOONTALK));

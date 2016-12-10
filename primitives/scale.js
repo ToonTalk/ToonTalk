@@ -32,7 +32,7 @@ window.TOONTALK.scale = (function (TT) {
         // new_scale is bound when copying a scale
         if (!new_scale) {
             new_scale = TT.box.create(2, undefined, initial_contents, description, name || "");
-        } 
+        }
         box_get_json = new_scale.get_json;
         box_copy = new_scale.copy;
         box_get_path_to = new_scale.get_path_to;
@@ -74,7 +74,7 @@ window.TOONTALK.scale = (function (TT) {
         };
         new_scale.widget_side_dropped_on_me = function (dropped, options) {
             var left_contents  = this.get_hole_contents(0);
-            var right_contents = this.get_hole_contents(1); 
+            var right_contents = this.get_hole_contents(1);
             var hole_index;
             if (dropped.dropped_on_other) {
                 // e.g. so egg can hatch from nest drop
@@ -106,7 +106,7 @@ window.TOONTALK.scale = (function (TT) {
                 }
             }
             // hole was empty so fill it
-            this.get_hole(hole_index).widget_side_dropped_on_me(dropped, options); 
+            this.get_hole(hole_index).widget_side_dropped_on_me(dropped, options);
             return true;
         };
         new_scale.which_hole = function (event, or_entire_thing) {
@@ -135,8 +135,8 @@ window.TOONTALK.scale = (function (TT) {
             var $frontside_element = $(frontside_element);
             var $scale_parts = $(frontside_element).children(".toontalk-scale-half");
             var $parent = $(frontside_element).parent();
-            var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ? 
-                                    frontside_element : 
+            var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ?
+                                    frontside_element :
                                     $parent.get(0);
             var scale_width  = $(container_element).width()  || $frontside_element.width();
             var scale_height = $(container_element).height() || $frontside_element.height();
@@ -187,7 +187,7 @@ window.TOONTALK.scale = (function (TT) {
                         }
                         if (contents.is_backside()) {
                             contents.update_display(); // TODO: see if render is OK
-                            contents.scale_to(contents_width, contents_height);      
+                            contents.scale_to(contents_width, contents_height);
                         }
                         contents.render();
                     }
@@ -195,7 +195,7 @@ window.TOONTALK.scale = (function (TT) {
                     // holes are really pans and their dimensions are different from box holes
                     hole.get_contents_dimensions = get_contents_dimensions_function;
                     hole.is_scale_pan = function () { return true; };
-                }                                          
+                }
             };
             var state, class_name, scales;
             if ($frontside_element.is(".toontalk-top-level-resource")) {
@@ -241,7 +241,7 @@ window.TOONTALK.scale = (function (TT) {
                             $(hole_element).addClass("toontalk-right_scale toontalk-scale-half");
                         }
                         frontside_element.appendChild(hole_element);
-                        hole.update_display();  
+                        hole.update_display();
                 });
                 // now that the "pan" widget elements have been created update display again
                 setTimeout(function () {
@@ -253,19 +253,19 @@ window.TOONTALK.scale = (function (TT) {
             TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
             if (TT.debugging) {
                 this._debug_string = this.to_debug_string();
-            } 
+            }
         };
         new_scale.get_contents_dimensions = function () {
             // dimensions of widgets in either pan
             var frontside_element = this.get_frontside_element(true);
             var $parent = $(frontside_element).parent();
-            var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ? 
-                                    frontside_element : 
+            var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ?
+                                    frontside_element :
                                     $parent.get(0);
             var scale_width  = $(container_element).width()  || $frontside_element.width();
             var scale_height = $(container_element).height() || $frontside_element.height();
             return {width:  scale_width  * PAN_FRACTION_OF_WIDTH,
-                    height: scale_height * PAN_FRACTION_OF_HEIGHT};  
+                    height: scale_height * PAN_FRACTION_OF_HEIGHT};
         };
         new_scale.render = function () {
             // do standard behaviour -- not what boxes do
@@ -284,7 +284,7 @@ window.TOONTALK.scale = (function (TT) {
             return false;
         };
         new_scale.toString = function () {
-            var left_contents  = this.get_hole_contents(0); 
+            var left_contents  = this.get_hole_contents(0);
             var right_contents = this.get_hole_contents(1);
             var state = this.get_state();
             var description, left_pan, right_pan;
@@ -463,7 +463,7 @@ window.TOONTALK.scale = (function (TT) {
                 return ["The " + right_contents + " is greater than the " + left_contents + ".",
                         "The " + right_contents + " is equal to the "     + left_contents + ".",
                         "The " + right_contents + " is less than the "    + left_contents + "."][state+1];
-            }            
+            }
         };
         new_scale.get_default_description = function () {
             return "a scale for comparing things.";
@@ -472,11 +472,11 @@ window.TOONTALK.scale = (function (TT) {
         new_scale.set_visible = function (new_value) {
             var pan_change_listener = function (event) {
                  if (event.new_value) {
-                     event.new_value.add_listener('value_changed', contents_listener);    
+                     event.new_value.add_listener('value_changed', contents_listener);
                  }
                  if (event.old_value) {
-                     event.old_value.remove_listener('value_changed', contents_listener, true);   
-                 }  
+                     event.old_value.remove_listener('value_changed', contents_listener, true);
+                 }
             }
             set_visible_as_box.call(this, new_value);
             if (new_value) {
@@ -486,7 +486,7 @@ window.TOONTALK.scale = (function (TT) {
             } else {
                 // no need to do this if not watched
                 new_scale.get_hole(0).remove_listener('contents_or_properties_changed', pan_change_listener, true);
-                new_scale.get_hole(1).remove_listener('contents_or_properties_changed', pan_change_listener, true);   
+                new_scale.get_hole(1).remove_listener('contents_or_properties_changed', pan_change_listener, true);
             }
             if (new_scale.get_hole_contents(0)) {
                 new_scale.get_hole_contents(0).add_listener('value_changed', contents_listener);
@@ -515,7 +515,7 @@ window.TOONTALK.scale = (function (TT) {
 
 }(window.TOONTALK));
 
-window.TOONTALK.scale_backside = 
+window.TOONTALK.scale_backside =
 (function (TT) {
     "use strict";
     return {
@@ -525,6 +525,6 @@ window.TOONTALK.scale_backside =
             // doesn't have a name so don't add name input area
             backside.get_element().appendChild(TT.backside.create_advanced_settings_button(backside, scale));
             return backside;
-        }  
+        }
     };
 }(window.TOONTALK));
