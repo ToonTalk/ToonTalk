@@ -1412,7 +1412,7 @@ window.TOONTALK.widget = (function (TT) {
         set_parent: function (new_parent) {
             this.set_parent_of_frontside(new_parent);
         },
-        
+
         drag_started: function (json, is_resource) {
             // by default records this if robot is being trained
             // widgets may override this behaviour
@@ -1420,35 +1420,35 @@ window.TOONTALK.widget = (function (TT) {
                 this.robot_in_training().picked_up(this, json, is_resource);
             }
         },
-        
+
         match: function (context) {
             // should return 'matched', 'not-matched', or an array of nests waiting for objects to arrive
             console.assert(false, "match not implemented for " + context.toString());
         },
-                   
+
         removed: function (part) {
             // part should be a ToonTalk widget that is part of this
             TT.UTILITIES.report_internal_error("removed not implemented");
         },
-        
+
         equals_box: function () {
             // if a box didn't respond to this then not equal
             return false;
         },
-        
+
         equals_number: function () {
             // if a number didn't respond to this then not equal
             return false;
         },
-        
+
         open_backside: function (continuation, duration) {
             // continuation will be run after animation is completed
             var backside = this.get_backside();
             var new_continuation, animate_backside_appearance,
                 backside_element, frontside_element, parent, $frontside_ancestor_that_is_backside_element, backside_widgets,
                 $frontside_ancestor_before_backside_element, frontside_ancestor_before_backside_element, ancestor_that_owns_backside_element,
-                final_left, final_top, 
-                frontside_offset, backside_width, frontside_height, 
+                final_left, final_top,
+                frontside_offset, backside_width, frontside_height,
                 container_offset, container_width;
             if (backside && TT.UTILITIES.visible_element(backside.get_element())) {
                 // already open
@@ -1462,7 +1462,7 @@ window.TOONTALK.widget = (function (TT) {
             new_continuation = continuation && function () {
                                                    setTimeout(continuation);
                                                };
-            animate_backside_appearance = 
+            animate_backside_appearance =
                 function (element, final_opacity) {
                     TT.UTILITIES.set_timeout(
                         function ()  {
@@ -1484,12 +1484,6 @@ window.TOONTALK.widget = (function (TT) {
             // frontside_ancestor_that_is_backside_element is first parent that is a toontalk-backside
             $frontside_ancestor_that_is_backside_element = $(frontside_element).parent();
             $frontside_ancestor_before_backside_element  = $(frontside_element);
-//             if ($frontside_ancestor_before_backside_element.is(".toontalk-top-level-resource")) {
-//                 if (new_continuation) {
-//                     new_continuation();
-//                 }
-//                 return;
-//             }
             while ($frontside_ancestor_that_is_backside_element.length > 0 && !$frontside_ancestor_that_is_backside_element.is(".toontalk-backside")) {
                 $frontside_ancestor_before_backside_element  = $frontside_ancestor_that_is_backside_element;
                 $frontside_ancestor_that_is_backside_element = $frontside_ancestor_that_is_backside_element.parent();
@@ -1503,7 +1497,7 @@ window.TOONTALK.widget = (function (TT) {
             container_offset = $frontside_ancestor_that_is_backside_element.offset();
             container_width  = $frontside_ancestor_that_is_backside_element.width();
             if (!container_offset) {
-                container_offset = {left: 0, 
+                container_offset = {left: 0,
                                     top:  0};
             }
             $(backside_element).css({left: frontside_offset.left-container_offset.left,

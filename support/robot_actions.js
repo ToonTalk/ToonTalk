@@ -207,8 +207,8 @@ window.TOONTALK.actions =
             var robot_home         = $(frontside_element).offset();
             // need a fresh copy since robot_home will be modified later
             var robot_start_offset = $(frontside_element).offset();
-            var robot_width  = $(frontside_element).width();
-            var robot_height = $(frontside_element).height();
+            var robot_width        = $(frontside_element).width();
+            var robot_height       = $(frontside_element).height();
             // only the first in team is certain to already have its frontside_element attached
             var top_level_widget = robot.get_first_in_team().top_level_widget();
             // TODO: determine if the following should be replaced by top_level_widget.get_backside(true)...
@@ -216,7 +216,7 @@ window.TOONTALK.actions =
             var context_backside = robot.get_context().get_backside();
             var parent = robot.get_parent();
             var original_parent_element, previous_robot, previous_robot_backside_element,
-                $home_element, backside_rectangle, attached_team_member;
+                $home_element, backside_rectangle, team_member;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {
                 console.log(robot.to_debug_string(50) + " running watched");
             }
@@ -228,25 +228,24 @@ window.TOONTALK.actions =
             }
             if (!TT.UTILITIES.is_attached(frontside_element) && previous_robot) {
                 // could be a 'next robot' that hasn't been opened
-                previous_robot.open_backside();
-                previous_robot.get_backside().set_advanced_settings_showing(true);
                 original_parent_element = frontside_element.parentElement;
                 if (!original_parent_element) {
                     // if no original_parent_element then find where it should be
                     original_parent_element = $home_element.get(0);
                 }
-                attached_team_member = previous_robot;
-                while (attached_team_member) {
+                team_member = previous_robot.get_first_in_team();
+                while (team_member !== robot) {
+                    team_member.open_backside();
+                    team_member.get_backside().set_advanced_settings_showing(true);
                     // if robot has no position use its previous_robot going back until someone has a position
-                    robot_home = $(attached_team_member.get_frontside_element()).offset();
-                    if (robot_home.left !== 0 && robot_home.top !== 0) {
+                    robot_home = $(team_member.get_frontside_element()).offset();
+                    if (robot_home.left !== 0 && robot_home.top !== 0 && top_level_position === undefined) {
                         // update start location with a fresh copy
                         robot_start_offset = {left: robot_home.left,
                                               top:  robot_home.top};
                         top_level_position = robot_home;
-                        break;
                     }
-                    attached_team_member = attached_team_member.get_previous_robot();
+                    team_member = team_member.get_next_robot();
                 }
                 robot.set_visible(true);
                 // need the robot's element to be initialised since will start animating very soon
@@ -300,14 +299,14 @@ window.TOONTALK.actions =
                 if (context_backside && !document.hidden && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
                     // TODO: determine how context_backside.visible() can be false and
                     // $(context_backside.get_element()).is(":visible") true (test-programs.html has an example)
-                    // pause between steps and give the previous step a chance to update the DOM     
+                    // pause between steps and give the previous step a chance to update the DOM
                     setTimeout(function () {
                                    var step;
                                    robot.run_watched_step_end_listeners();
                                    if (step_number < steps.length && !robot.stopped()) {
                                         step = steps[step_number];
                                         step_number++;
-                                        if (TT.logging && TT.logging.indexOf('event') >= 0) {           
+                                        if (TT.logging && TT.logging.indexOf('event') >= 0) {
                                             console.log(step + " (watched)");
                                         }
                                         step.run_watched(robot);
@@ -315,7 +314,7 @@ window.TOONTALK.actions =
                                         robot.set_running_or_in_run_queue(false);
                                         // following may finally close backside if close during cycle
                                         // so best to restore position first
-                                        robot.run_body_finished_listeners();     
+                                        robot.run_body_finished_listeners();
                                     }
                                },
                                robot.transform_step_duration(TT.animation_settings.PAUSE_BETWEEN_STEPS));
@@ -336,9 +335,9 @@ window.TOONTALK.actions =
             }.bind(this);
             robot.set_animating(true, robot_home);
             robot.run_next_step();
-            return true;             
+            return true;
         },
-        
+
         toString: function (to_string_info) {
             var description = "";
             var steps = this.get_steps();

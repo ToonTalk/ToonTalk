@@ -30,11 +30,11 @@ window.TOONTALK.robot = (function (TT) {
         }
         robot.current_action_name = undefined;
     };
-   
+
     var robot = Object.create(TT.widget);
 
     var name_counter = 0;
- 
+
     robot.create = function (frontside_conditions, backside_conditions, body, description, thing_in_hand, run_once, next_robot, name, watched_speed) {
         // frontside_conditions is a widget that needs to be matched against the frontside of the widget to run
         // backside_conditions is a list of required widgets on the backside
@@ -657,14 +657,14 @@ window.TOONTALK.robot = (function (TT) {
         this.match_status = TT.UTILITIES.match(frontside_condition_widget, this.get_context());
         if (this.match_status === 'matched') {
             backside_matched_widgets = [];
-            backside_conditions = this.get_backside_conditions();      
+            backside_conditions = this.get_backside_conditions();
             if (backside_conditions && backside_conditions.length > 0) {
                 backside_widgets = context.get_backside_widgets();
                 if (backside_widgets) {
                     backside_conditions.some(function (condition) {
                         // check that a widget on the back matches this condition
                         var sub_match_status, best_sub_match_status;
-                        if (condition.matching_widget && 
+                        if (condition.matching_widget &&
                             condition.matching_widget.get_parent === context) {
                             // try the last widget (if still a backside widget) first to see if it matches since corresponding widget rarely changes
                             sub_match_status = TT.UTILITIES.match(condition, condition.matching_widget);
@@ -683,7 +683,7 @@ window.TOONTALK.robot = (function (TT) {
                                 }
                                 if (backside_widget_side !== this) {
                                     // robots ignore themselves when matching backside widgets
-                                    if (!backside_widget_side.is_backside()) {   
+                                    if (!backside_widget_side.is_backside()) {
                                         if (clear_all_mismatch_displays) {
                                             // this is only defined if the backside is visible
                                             clear_all_mismatch_displays(backside_widget_side);
@@ -721,7 +721,6 @@ window.TOONTALK.robot = (function (TT) {
                 this.set_backside_matched_widgets(backside_matched_widgets);
             }
         }
-//      console.log("robot#" + this._debug_id + " match_status is " + this.match_status);
         if (this.match_status === 'matched') {
             if (!queue) {
                 queue = this.get_queue() || TT.DEFAULT_QUEUE;
@@ -864,7 +863,7 @@ window.TOONTALK.robot = (function (TT) {
         this.set_thing_in_hand(widget_copy || widget_side);
         return step;
     };
-    
+
     robot.dropped_on = function (source_widget, target_widget_side) {
         // need to support dropping on backside of a widget as well as which side of a box 
         var path, step, additional_info, $target_element,
@@ -1056,7 +1055,7 @@ window.TOONTALK.robot = (function (TT) {
         return this.get_first_in_team().get_parent_of_frontside() &&
                this.get_first_in_team().get_parent_of_frontside().get_widget();
     };
-    
+
     robot.add_step = function (step, new_widget) {
         this.get_body().add_step(step, new_widget);
         this.update_title();
@@ -1065,7 +1064,7 @@ window.TOONTALK.robot = (function (TT) {
             this.robot_training_this_robot().trained(this, step);
         }
     };
-    
+
     robot.update_display = function () {
         var frontside = this.get_frontside(true);
         var backside = this.get_backside(); 

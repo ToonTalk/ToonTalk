@@ -235,7 +235,7 @@ window.TOONTALK.backside =
                 help_button.translate = false; // should not be translated
                 TT.UTILITIES.give_tooltip(help_button, "Click to learn more about " + widget.get_type_name(true, true) + ".");
                 backside_element.appendChild(help_button);
-            };        
+            };
             if (description_label) {
                 backside_element.appendChild(description_label); 
             }
@@ -246,8 +246,8 @@ window.TOONTALK.backside =
                                                  function (event) {
                                                       widget.open_settings();
                                                       event.stopPropagation();
-                                                 });  
-                backside_element.appendChild(settings_button); 
+                                                 });
+                backside_element.appendChild(settings_button);
                 TT.UTILITIES.give_tooltip(settings_button, "Click to change settings or open a different program.");        
             }
             $backside_element.addClass("toontalk-backside toontalk-side " + "toontalk-backside-of-" + widget.get_type_name());
@@ -496,7 +496,7 @@ window.TOONTALK.backside =
                                 backside_element.appendChild(other_element);
                                 side_of_other.set_visible(true); // since this backside is
                                 side_of_other.update_display();
-                                $(other_element).css(this.get_free_location(side_of_other));  
+                                $(other_element).css(this.get_free_location(side_of_other));
                             }
                         }.bind(this));
                     }
@@ -1038,8 +1038,8 @@ window.TOONTALK.backside =
                         return widget;
                     }
                 } else {
-                    widget.get_selection = get_selection_without_parent;        
-                }                
+                    widget.get_selection = get_selection_without_parent;
+                }
                 event.stopPropagation();
             };
             check_box.button.checked = widget !== widget.get_selection();
@@ -1048,7 +1048,7 @@ window.TOONTALK.backside =
             }
             check_box.button.addEventListener('click', check_box_clicked);
             return check_box;
-        },      
+        },
 
         create_click_opens_backside_check_box: function (backside, widget) {
             var check_box = TT.UTILITIES.create_check_box(widget.get_open_backside_only_if_stopped(), 
@@ -1114,7 +1114,7 @@ window.TOONTALK.backside =
             (container_element || this.get_backside_element(true)).appendChild(TT.UTILITIES.create_row(description_text_area.container));
             if (!widget.get_description()) {
                 description_text_area.button.setAttribute('placeholder', widget.get_default_description());
-            }                                                 
+            }
         },
 
         add_name_setting: function (container_element) {
@@ -1253,7 +1253,7 @@ window.TOONTALK.backside =
        get_type_name: function () {
            return "backside of " + TT.UTILITIES.add_a_or_an(this.get_widget().get_type_name());
        },
-        
+
        hide_backside: function (event) {
             var widget, robot_in_training, frontside_element, $backside_element, backside_position, $backside_container,
                 animate_disappearance, parent_of_backside, container_widget;
