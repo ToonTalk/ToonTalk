@@ -220,13 +220,6 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget_element = side.get_element();
-        var close_memmber = function (x, max_difference, xs) {
-            return xs.some(function (other) {
-                              if (Math.abs(other-x) <= max_difference) {
-                                  return true;
-                              }
-                          });
-        };
         var widget_bounding_box,
             left_offset,
             top_offset,

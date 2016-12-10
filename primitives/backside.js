@@ -897,8 +897,8 @@ window.TOONTALK.backside =
                                      height: options && options.default_height || 100};
                 }
             }
-            if (options && options.try_first && empty(options.try_first.left+ my_position.left-window.pageXOffset,
-                                                      options.try_first.top +my_position .top -window.pageYOffset)) {
+            if (options && options.try_first && empty(options.try_first.left+my_position.left,
+                                                      options.try_first.top +my_position.top)) {
                 return options.try_first;
             }
             if (options && options.margin_fraction !== undefined) {
@@ -907,8 +907,8 @@ window.TOONTALK.backside =
                 margin_fraction = 0.05;
             }
             non_margin_fraction = (1-2*margin_fraction);
-            left = my_position.left-window.pageXOffset+my_rectangle.width *margin_fraction;
-            top  = my_position.top -window.pageYOffset+my_rectangle.height*margin_fraction;
+            left = my_position.left+my_rectangle.width *margin_fraction;
+            top  = my_position.top +my_rectangle.height*margin_fraction;
             start_left = left;
             start_top  = top;
             max_left = left+my_rectangle.width *(1-margin_fraction)-for_rectangle.width;
