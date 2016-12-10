@@ -593,7 +593,10 @@ window.TOONTALK.robot_action =
         var new_continuation = function () {
             var robot_returned_continuation = function () {
                 robot_to_be_trained_frontside_element.toontalk_return_to = undefined;
-                robot_to_be_trained.get_backside().change_label_and_title_of_train_button(false);
+                if (robot_to_be_trained.get_backside()) {
+                    // may be have been removed if robot training robot
+                    robot_to_be_trained.get_backside().change_label_and_title_of_train_button(false);
+                }
                 $(robot_to_be_trained_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
                 robot_to_be_trained_frontside_element.toontalk_followed_by = undefined;
                 setTimeout(continuation, robot.transform_step_duration(TT.animation_settings.STOP_TRAINING_DELAY));
