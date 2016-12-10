@@ -554,7 +554,9 @@ window.TOONTALK.UTILITIES =
                 source_widget_side.apply_backside_geometry();
             }
         }
-        if (target_widget_side && source_widget_side && source_widget_side.get_widget() === target_widget_side.get_widget()) {
+        if (target_widget_side && source_widget_side && 
+            !source_widget_side.is_backside() &&
+            source_widget_side.get_widget() === target_widget_side.get_widget()) {
             // dropping front side on backside so ignore
             return;
         }
@@ -738,6 +740,10 @@ window.TOONTALK.UTILITIES =
             css = {left: page_x - (top_level_backside_position.left + drag_x_offset + TT.USABILITY_DRAG_OFFSET.x),
                    top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)};
             utilities.set_css($source, css);
+            if (source_widget_side.get_widget() === target_widget_side.get_widget()) {
+                // probably just moving a backside so it was dropped on itself
+                return;
+            }
             if (source_widget_side.remove_from_parent_of_frontside) {
                 source_widget_side.remove_from_parent_of_frontside(event);
             } // other source_widget_side is presumably a backside
