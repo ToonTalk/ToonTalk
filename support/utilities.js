@@ -1581,7 +1581,6 @@ window.TOONTALK.UTILITIES =
                             error_callback("Could not determine the contents type of the url");
                             error_callback = function () {}; // ignore subsequent errors
                         }
-                        request.removeEventListener('readystatechange', response_handler);
                         return;
                     }
                 }
@@ -1617,10 +1616,9 @@ window.TOONTALK.UTILITIES =
                }
                widget_callback();
             }
-            request.removeEventListener('readystatechange', response_handler);
        };
        var request = new XMLHttpRequest();
-       request.addEventListener('readystatechange', response_handler);
+       request.addEventListener('load', response_handler);
 //        request.addEventListener('error', error_callback);
        request.open('GET', url, true);
        request.onerror = function (e) {
