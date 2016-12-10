@@ -531,13 +531,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         new_element.get_source_URL = function () {
             return source_URL;
         };
-        new_element.set_source_URL = function (new_value) {
+        new_element.set_source_URL = function (new_value, no_refresh) {
             var old_value = source_URL;
             if (old_value === new_value) {
                 return;
             }
             source_URL = new_value;
-            this.refresh();
+            if (!no_refresh) {
+                this.refresh();
+            }
             return true;
         };
         new_element.use_scaling_transform = function (css) {

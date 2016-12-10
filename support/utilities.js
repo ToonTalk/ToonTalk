@@ -1581,6 +1581,7 @@ window.TOONTALK.UTILITIES =
                             error_callback("Could not determine the contents type of the url");
                             error_callback = function () {}; // ignore subsequent errors
                         }
+                        request.removeEventListener('load', response_handler);
                         return;
                     }
                 }
@@ -1595,7 +1596,7 @@ window.TOONTALK.UTILITIES =
                     // is text but not HTML
                     if (this.responseText) {
                         widget = TT.element.create(this.responseText);
-                        widget.set_source_URL(url);
+                        widget.set_source_URL(url, true);
                     }
                } else {
                    widget = TT.element.create("<div class='toontalk-iframe-container'><iframe src='" + url + "' width='480' height='320'></iframe></div>");
@@ -1616,6 +1617,7 @@ window.TOONTALK.UTILITIES =
                }
                widget_callback();
             }
+            request.removeEventListener('load', response_handler);
        };
        var request = new XMLHttpRequest();
        request.addEventListener('load', response_handler);
