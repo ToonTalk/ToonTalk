@@ -901,15 +901,20 @@ window.TOONTALK.backside =
                        my_element === document.elementFromPoint(left+for_rectangle.width, top+for_rectangle.height);
             }
             var margin_fraction, for_rectangle, left, top, start_left, start_top, max_left, max_top, element_at_point, non_margin_fraction;
-            for_rectangle = for_widget.get_element(true).getBoundingClientRect();
-            if (for_rectangle.width === 0) {
-                if (for_widget.get_default_width) {
-                    for_rectangle = {width:  for_widget.get_default_width(),
-                                     height: for_widget.get_default_height()};
-                } else {
-                    for_rectangle = {width:  options && options.default_width  || 100,
-                                     height: options && options.default_height || 100};
+            if (for_widget) {
+                for_rectangle = for_widget.get_element(true).getBoundingClientRect();
+                if (for_rectangle.width === 0) {
+                    if (for_widget.get_default_width) {
+                        for_rectangle = {width:  for_widget.get_default_width(),
+                                         height: for_widget.get_default_height()};
+                    } else {
+                        for_rectangle = {width:  options && options.default_width  || 100,
+                                         height: options && options.default_height || 100};
+                    }
                 }
+            } else {
+                for_rectangle = {width:  options && options.default_width  || 100,
+                                 height: options && options.default_height || 100};        
             }
             if (options && options.try_first && empty(options.try_first.left+my_position.left,
                                                       options.try_first.top +my_position.top)) {
