@@ -410,6 +410,10 @@ window.TOONTALK.backside =
                     // options.event serves 2 functions: info for adjusting for scrolling and whether to update the display
                     // undefined if this is done by a robot
                     var other, side_of_other_element, backside_of_other, widget_offset;
+                    if (side_of_other === this) {
+                        // drop on self is interpreted as drop on parent
+                        return (this.get_parent() || this.top_level_widget().get_backside()).widget_side_dropped_on_me(side_of_other, options);
+                    }
                     if (options.robot && options.robot.visible() && !this.visible()) {
                         this.add_backside_widget(side_of_other, options);
                         if (side_of_other.dropped_on_other) {
