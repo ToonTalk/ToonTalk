@@ -964,6 +964,19 @@ window.TOONTALK.widget = (function (TT) {
             var backside  = this.get_backside();
             var frontside = this.get_frontside();
             var parent_of_frontside = this.get_parent_of_frontside();
+            var child_callback = function (child) {
+                                     if (options.do_not_remove_children) {
+                                        if (child.hide_backside) {
+                                            child.hide_backside();
+                                        }
+                                        if (child.walk_children) {
+                                            child.walk_children(child_callback);
+                                        }
+                                     } else if (child.remove) {
+                                         child.remove(options);
+                                     }
+                                     return true; // go on to next child
+                                 };
             if (!options) {
                 options = {};
             }
@@ -981,13 +994,8 @@ window.TOONTALK.widget = (function (TT) {
                 this.set_running(false);
             }
             this.set_visible(false); // in case robot vacuumed the widget while it was animating
-            if (this.walk_children && !options.do_not_remove_children) {
-                this.walk_children(function (child) {
-                                       if (child.remove) {
-                                           child.remove();
-                                       }
-                                       return true; // go on to next child
-                                   });
+            if (this.walk_children) {
+                this.walk_children(child_callback);
             }
         },
 
