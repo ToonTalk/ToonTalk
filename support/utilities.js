@@ -577,6 +577,7 @@ window.TOONTALK.UTILITIES =
                 drop_handler(event);
             }
         input_element.addEventListener('drop', new_drop_handler);
+        utilities.can_receive_drops(input_element);
     };
     var $toontalk_side_underneath = function (element) {
         var $dragee = utilities.get_$dragee();
@@ -588,6 +589,13 @@ window.TOONTALK.UTILITIES =
             $target = $(element).closest(".toontalk-side");
         }
         if ($(element).is(".toontalk-drop-area") && $dragee.is(".toontalk-robot")) {
+            $(element).addClass("toontalk-highlight");
+            return;
+        }
+        if (($(element).is(".toontalk-box-size-input") ||
+             $(element).is(".toontalk-numerator-input") ||
+             $(element).is(".toontalk-denominator-input")) && 
+            $dragee.is(".toontalk-number")) {
             $(element).addClass("toontalk-highlight");
             return;
         }
@@ -1845,17 +1853,6 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.can_receive_drops = function (element) {
-            // was using JQuery's 'on' but that didn't support additional listeners
-            var highlight_element =
-                function (event) {
-                    var highlighted_element = drag_enter_handler(event, element);
-                    if (highlighted_element && current_highlighted_element !== highlighted_element) {
-                        utilities.remove_highlight(current_highlighted_element);
-                    }
-                    current_highlighted_element = highlighted_element;
-                    event.stopPropagation();
-            };
-            var current_highlighted_element;
             // following makes drag of widgets work but not quite sure why
             element.addEventListener('dragover',
                                      function (event) {
@@ -1869,18 +1866,7 @@ window.TOONTALK.UTILITIES =
                                          drop_handler(event, element);
                                          event.stopPropagation();
                                      });
-            element.addEventListener('dragenter', highlight_element);
-            element.addEventListener('dragleave',
-                                     function (event) {
-                                         if (current_highlighted_element) {
-                                             if (!utilities.inside_rectangle(event.clientX, event.clientY, current_highlighted_element.getBoundingClientRect())) {
-                                                 utilities.remove_highlight(current_highlighted_element);
-                                                 current_highlighted_element = undefined;
-                                             }
-                                         }
-                                         // TODO: determine if the following is good
-                                         event.stopPropagation();
-                                     });
+            utilities.can_give_mouse_enter_feedback(element);
             // following attempt to use JQuery UI draggable but it provides mouseevents rather than dragstart and the like
             // and they don't have a dataTransfer attribute so forced to rely upon lower-level drag and drop functionality
 //             $element.draggable({
@@ -1892,6 +1878,30 @@ window.TOONTALK.UTILITIES =
 // //                 containment: false, // doesn't seem to work... -- nor does "none"
 //                 stack: ".toontalk-side",
 //             });
+        };
+
+        utilities.can_give_mouse_enter_feedback = function (element) {
+           var highlight_element =
+                function (event) {
+                    var highlighted_element = drag_enter_handler(event, element);
+                    if (highlighted_element && current_highlighted_element !== highlighted_element) {
+                        utilities.remove_highlight(current_highlighted_element);
+                    }
+                    current_highlighted_element = highlighted_element;
+                    event.stopPropagation();
+            };
+            var current_highlighted_element;
+            element.addEventListener('dragenter', highlight_element);
+            element.addEventListener('dragleave',
+                                     function (event) {
+                                         if (current_highlighted_element) {
+                                             if (!utilities.inside_rectangle(event.clientX, event.clientY, current_highlighted_element.getBoundingClientRect())) {
+                                                 utilities.remove_highlight(current_highlighted_element);
+                                                 current_highlighted_element = undefined;
+                                             }
+                                         }
+                                         event.stopPropagation();
+                                     });
         };
 
         utilities.create_drop_area = function (instructions) {
@@ -2943,8 +2953,7 @@ window.TOONTALK.UTILITIES =
                 container = text_input;
             }
             $(text_input).button()
-                         .addClass("toontalk-text-input")
-                         .css({"background-color": "white"});
+                         .addClass("toontalk-text-input");
             text_input.addEventListener('touchstart', function () {
                 $(text_input).select();
             });

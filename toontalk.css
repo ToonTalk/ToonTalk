@@ -1846,9 +1846,16 @@ padding-bottom:  8%;}
 	width:  95%;
 	padding-top: 10px;
 }
-.toontalk-drop-area.toontalk-highlight {
-	background-color: rgb(13, 160, 165);
+.toontalk-drop-area.toontalk-highlight,
+.toontalk-box-size-input.toontalk-highlight,
+.toontalk-numerator-input.toontalk-highlight,
+.toontalk-denominator-input.toontalk-highlight {
+	background-color: rgb(243, 189, 176);
 }
+.toontalk-box-size-input {
+	background-color:white;
+}
+
 .toontalk-drop-area-instructions {
 	opacity: .4;
 	display:  inline;
