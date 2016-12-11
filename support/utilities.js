@@ -587,6 +587,10 @@ window.TOONTALK.UTILITIES =
         } else {
             $target = $(element).closest(".toontalk-side");
         }
+        if ($(element).is(".toontalk-drop-area") && $dragee.is(".toontalk-robot")) {
+            $(element).addClass("toontalk-highlight");
+            return;
+        }
         if ($target.is("*") &&
             !$target.is(".toontalk-backside-of-top-level") &&
             !$target.closest(".toontalk-top-level-resource").is("*") &&

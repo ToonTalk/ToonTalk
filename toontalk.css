@@ -1846,6 +1846,9 @@ padding-bottom:  8%;}
 	width:  95%;
 	padding-top: 10px;
 }
+.toontalk-drop-area.toontalk-highlight {
+	background-color: rgb(13, 160, 165);
+}
 .toontalk-drop-area-instructions {
 	opacity: .4;
 	display:  inline;
