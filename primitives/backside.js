@@ -489,14 +489,28 @@ window.TOONTALK.backside =
                         // if robot isn't seen but this backside is then don't show the side_of_other until
                         // robot is finished since often it is temporary and will be removed before the robot is finished
                         options.robot.add_body_finished_listener(function () {
-                            var other_element;
-                            if (side_of_other.get_parent() === this) {
-                                // still there so render it
+                            var display_new_widget = function () {
                                 other_element = side_of_other.get_element(true);
                                 backside_element.appendChild(other_element);
                                 side_of_other.set_visible(true); // since this backside is
                                 side_of_other.update_display();
-                                $(other_element).css(this.get_free_location(side_of_other));
+                                $(other_element).css(this.get_free_location(side_of_other));    
+                            };
+                            var other_element;
+                            if (side_of_other.get_parent() === this) {
+                                // still there so render it
+                                if (side_of_other.get_running()) {
+                                    // it may be computing something and will go away soon so delay a bit
+                                    setTimeout(function () {
+                                                   if (side_of_other.get_parent()) {
+                                                      // hasn't removed itself
+                                                      display_new_widget();
+                                                   }
+                                               },
+                                               500);
+                                } else {
+                                    display_new_widget();
+                                }
                             }
                         }.bind(this));
                     }
