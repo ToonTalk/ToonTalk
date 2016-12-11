@@ -254,9 +254,9 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
                 widget.restore_dimensions = function () {
-                    var frontside_element, css;
+                    var frontside_element = this.get_frontside_element(true);
+                    var css;
                     if (this.saved_width > 0) {
-                       frontside_element = this.get_frontside_element(true);
                        if (!this.ok_to_set_dimensions()) {
                            css = {width:  '',
                                   height: ''};
@@ -276,6 +276,11 @@ window.TOONTALK.widget = (function (TT) {
                        }
                        this.saved_width =  undefined;
                        this.saved_height = undefined;
+                    } else if (frontside_element && 
+                               (this.is_bird() || this.is_nest() || this.is_robot())) {
+                       // may have been resized to fit in a box or a nest 
+                       TT.UTILITIES.set_css(frontside_element, {width:  '',
+                                                                height: ''});
                     }
                 };
                 widget.get_width = function () {
