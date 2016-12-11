@@ -2867,7 +2867,9 @@ window.TOONTALK.UTILITIES =
         utilities.create_alert_element = function (text) {
             var processed_text = process_encoded_HTML(text, decodeURIComponent);
             var alert_element = utilities.create_text_element(processed_text);
-            if ($(alert_element).children().length === 0 || processed_text !== text) {
+            if ($(alert_element).children().length === 0 || 
+                processed_text.indexOf("<") >= 0) {
+                // has no children or contains HTML
                 $(alert_element).addClass("toontalk-alert-element");
             } else {
                 $(alert_element).children().addClass("toontalk-alert-element");

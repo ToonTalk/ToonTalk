@@ -494,7 +494,7 @@ window.TOONTALK.backside =
                                 backside_element.appendChild(other_element);
                                 side_of_other.set_visible(true); // since this backside is
                                 side_of_other.update_display();
-                                $(other_element).css(this.get_free_location(side_of_other));    
+                                $(other_element).css(this.get_free_location(side_of_other));
                             };
                             var other_element;
                             if (side_of_other.get_parent() === this) {
