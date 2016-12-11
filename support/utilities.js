@@ -1389,7 +1389,7 @@ window.TOONTALK.UTILITIES =
                         var key_callback = function (json_key, start_time) {
                             json[key] = {json: json_key};
                         };
-                        object[key].get_json(undefined, key_callback, start_time);
+                        TT.path.get_json(object[key], undefined, key_callback, start_time);
                     } else {
                         json[key] = object[key];
                     }
