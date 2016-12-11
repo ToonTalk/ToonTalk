@@ -346,7 +346,8 @@ window.TOONTALK.UTILITIES =
                 return $(new_target).closest(".toontalk-side");
             }
         };
-        var $source, source_widget_side, $target, target_widget_side, drag_x_offset, drag_y_offset, target_position,
+        var $source, source_widget_side, $target, target_widget_side, new_target_widget_side,
+            drag_x_offset, drag_y_offset, target_position,
             new_target, $container, container, width, height, i, page_x, page_y,
             source_widget_saved_width, source_widget_saved_height;
         if (json_object === undefined && $dragee) {
@@ -442,7 +443,11 @@ window.TOONTALK.UTILITIES =
                 return;
             }
             target_position = $target.offset();
-            target_widget_side = utilities.widget_side_of_jquery($target);
+            new_target_widget_side = utilities.widget_side_of_jquery($target);
+            if (( target_widget_side.is_backside() &&  new_target_widget_side.is_backside()) ||
+                (!target_widget_side.is_backside() && !new_target_widget_side.is_backside())) {
+                target_widget_side = new_target_widget_side;
+            }
         }
         utilities.remove_highlight();
         if (json_object && json_object.view && json_object.view.drag_x_offset) {
@@ -740,10 +745,6 @@ window.TOONTALK.UTILITIES =
             css = {left: page_x - (top_level_backside_position.left + drag_x_offset + TT.USABILITY_DRAG_OFFSET.x),
                    top:  page_y - (top_level_backside_position.top  + drag_y_offset + TT.USABILITY_DRAG_OFFSET.y)};
             utilities.set_css($source, css);
-            if (source_widget_side.get_widget() === target_widget_side.get_widget()) {
-                // probably just moving a backside so it was dropped on itself
-                return;
-            }
             if (source_widget_side.remove_from_parent_of_frontside) {
                 source_widget_side.remove_from_parent_of_frontside(event);
             } // other source_widget_side is presumably a backside
