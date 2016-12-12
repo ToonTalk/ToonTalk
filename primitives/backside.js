@@ -499,7 +499,7 @@ window.TOONTALK.backside =
                                 side_of_other.set_visible(true); // since this backside is
                                 side_of_other.update_display();
                                 $(other_element).css(this.get_free_location(side_of_other));
-                            };
+                            }.bind(this);
                             var other_element;
                             if (side_of_other.get_parent() === this) {
                                 // still there so render it
