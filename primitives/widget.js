@@ -1766,7 +1766,7 @@ window.TOONTALK.widget = (function (TT) {
                 if (!window.webkitSpeechRecognition && !window.SpeechRecognition) {
                     // ignore this
                     functions.report_error("A listening bird can't listen because this browser doesn't support speech input. Try another browser such as Chrome.", message_properties);
-                    returns;
+                    return;
                 }
                 message_properties = functions.check_message(message);
                 if (typeof message_properties === 'string') {
