@@ -188,18 +188,19 @@ window.TOONTALK.path =
                 referenced = robot.get_context();
             }
             if (path.next) {
-                if (referenced.dereference) {
-                    referenced = referenced.dereference();
-                    if (!referenced.dereference_path) {
-                        // might for example be a wait_until_this_nest_receives_something object
-                        return referenced;
+                if (referenced.dereference_contents && !path.next.not_to_be_dereferenced) {
+                    new_referenced = referenced.dereference_contents(path.next, robot);
+                    if (new_referenced && path.is_backside) {
+                        return new_referenced.get_backside(true);
                     }
+                    return new_referenced;
+                } else {
+                    new_referenced = referenced.dereference_path(path.next, robot);
+                    if (new_referenced && path.next.is_backside) {
+                        return new_referenced.get_backside(true);
+                    }
+                    return new_referenced;
                 }
-                new_referenced = referenced.dereference_path(path.next, robot);
-                if (new_referenced && path.next.is_backside) {
-                    return new_referenced.get_backside(true);
-                }
-                return new_referenced;
             }
             if (referenced.dereference_contents && !path.not_to_be_dereferenced) {
                 new_referenced = referenced.dereference_contents(path, robot);
