@@ -122,8 +122,8 @@ html {
 	padding-left:   6px;
 	padding-right:  6px;
 /* 	if the following changes update backside.scale_to_fit and backside.scale_to */
-	min-width:  550px;
-	min-height: 200px;
+	min-width: 360px;
+	min-height: 120px;
 }
 .toontalk-backside.toontalk-highlight {
 	border-color: white;
