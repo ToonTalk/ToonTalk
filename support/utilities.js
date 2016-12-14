@@ -2369,47 +2369,46 @@ window.TOONTALK.UTILITIES =
                      my: "center bottom-20",
                      at: "center top",
                      using: function (position, feedback) {
-                               var element_position;
-                               if (position.top < 0) {
-                                   // too much text to fit well so JQuery puts the extra part off the top
-                                   // this moves it down but ensures it doesn't overlap with the element whose tooltip is being displayed
-                                   position.top = 0;
-                                   element_position = $element.offset();
-                                   if (element_position.left < $(window).width()/2) {
-                                       // widget is on left half of the window
-                                       position.left = element_position.left+$element.width()+10;
-                                    } else {
-                                       position.left = 0;
-                                       maximum_width_if_moved = element_position.left-40; // subtract something for borders and paddings
-                                    };
-                               }
-                               // TODO: determine why the placement of tool tips for robots, boxes, and numbers is too low
-                               // following fixes it - otherwise the tool tip can interfere with selection
-                               if (feedback.vertical === 'bottom') {
-                                   if ($element.is(".toontalk-robot")) {
+                                var element_position = $element.offset();
+                                if (position.top < 0) {
+                                    // too much text to fit well so JQuery puts the extra part off the top
+                                    // this moves it down but ensures it doesn't overlap with the element whose tooltip is being displayed
+                                    position.top = 0;
+                                }
+                                if (element_position.left < $(window).width()/2) {
+                                    // widget is on left half of the window
+                                    position.left = element_position.left+$element.width()+10;
+                                } else {
+                                    position.left = 0;
+                                    maximum_width_if_moved = element_position.left-40; // subtract something for borders and paddings
+                                };
+                                // TODO: determine why the placement of tool tips for robots, boxes, and numbers is too low
+                                // following fixes it - otherwise the tool tip can interfere with selection
+                                if (feedback.vertical === 'bottom') {
+                                    if ($element.is(".toontalk-robot")) {
                                         position.top  -= 30;
-                                   } else if ($element.is(".toontalk-number")) {
+                                    } else if ($element.is(".toontalk-number")) {
                                         position.top -= 30;
-                                   } else if ($element.is(".toontalk-box")) {
+                                    } else if ($element.is(".toontalk-box")) {
                                         position.top -= 30;
-                                   } else {
-                                       // can be too close to widget (or button) and interferes with clicks etc
-                                       position.top -= 20;
-                                   }
-                                   if (position.left < 10) {
-                                       position.left = 10;
-                                   }
-                                   if (position.top < 10) {
-                                       position.top = 10;
-                                   }
-                               } else {
+                                    } else {
+                                        // can be too close to widget (or button) and interferes with clicks etc
+                                        position.top -= 20;
+                                    }
+                                    if (position.left < 10) {
+                                        position.left = 10;
+                                    }
+                                    if (position.top < 10) {
+                                        position.top = 10;
+                                    }
+                                } else {
                                     position.top += 20;
-                               }
-                               position.left = Math.max(position.left, window.pageXOffset);
-                               position.top  = Math.max(position.top,  window.pageYOffset);
-                               utilities.set_css(this, position);
-                               feedback_horizontal = feedback.horizontal;
-                               feedback_vertical   = feedback.vertical;
+                                }
+                                position.left = Math.max(position.left, window.pageXOffset);
+                                position.top  = Math.max(position.top,  window.pageYOffset);
+                                utilities.set_css(this, position);
+                                feedback_horizontal = feedback.horizontal;
+                                feedback_vertical   = feedback.vertical;
                      }},
                 open: function (event, ui) {
                           var tooltip = ui.tooltip.get(0);
