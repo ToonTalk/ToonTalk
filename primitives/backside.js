@@ -918,10 +918,10 @@ window.TOONTALK.backside =
                 }
             } else {
                 for_rectangle = {width:  options && options.default_width  || 100,
-                                 height: options && options.default_height || 100};        
+                                 height: options && options.default_height || 100};
             }
-            if (options && options.try_first && empty(options.try_first.left+my_position.left,
-                                                      options.try_first.top +my_position.top)) {
+            if (options && options.try_first && empty(options.try_first.left+my_position.left-window.pageXOffset,
+                                                      options.try_first.top +my_position.top -window.pageYOffset)) {
                 return options.try_first;
             }
             if (options && options.margin_fraction !== undefined) {
@@ -930,8 +930,8 @@ window.TOONTALK.backside =
                 margin_fraction = 0.05;
             }
             non_margin_fraction = (1-2*margin_fraction);
-            left = my_position.left+my_rectangle.width *margin_fraction;
-            top  = my_position.top +my_rectangle.height*margin_fraction;
+            left = my_position.left+my_rectangle.width *margin_fraction-window.pageXOffset;
+            top  = my_position.top +my_rectangle.height*margin_fraction-window.pageYOffset;
             start_left = left;
             start_top  = top;
             max_left = left+my_rectangle.width *(1-margin_fraction)-for_rectangle.width;
@@ -939,8 +939,8 @@ window.TOONTALK.backside =
             while (top < max_top) {
                 if (empty(left, top)) {
                     // transform from absolute coordinates to relative to this backside
-                    return {left: left-my_position.left-window.pageXOffset,
-                            top:  top -my_position.top -window.pageYOffset};
+                    return {left: left+window.pageXOffset-my_position.left,
+                            top:  top +window.pageYOffset-my_position.top};
                 }
                 left += for_rectangle.width*1.2;
                 if (left > max_left) {
