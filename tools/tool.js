@@ -40,10 +40,10 @@ window.TOONTALK.tool = (function (TT) {
                 }
                 // don't change CSS if just clicked upon (held for less than 200 milliseconds)
                 setTimeout(function () {
-                               // if tool doesn't support held() or is still held then change its CSS 
+                               // if tool doesn't support held() or is still held then change its CSS
                                if (!tool.held || tool.held()) {
                                    $(element).addClass("toontalk-tool-held");
-                               } 
+                               }
                            },
                            200);
                 home_position = $(element).offset();
@@ -62,7 +62,7 @@ window.TOONTALK.tool = (function (TT) {
                 // not sure why the tool tip doesn't go away but force it here
                 $(".ui-tooltip").each(function () {
                                           $(this).hide();
-                                      }); 
+                                      });
             };
 
             var mouse_down = function (event) {
@@ -122,7 +122,7 @@ window.TOONTALK.tool = (function (TT) {
 
             var scroll_if_needed = function (event) {
                 var margin = 20;
-                var deltaX = 0, 
+                var deltaX = 0,
                     deltaY = 0;
                 if (event.clientX < margin) {
                     deltaX = -margin;
@@ -139,7 +139,7 @@ window.TOONTALK.tool = (function (TT) {
                         deltaY: deltaY};
             };
 
-            
+
             var release_tool = function (tool, widget_side_under_tool, event) {
                 // defined so that this can be called by tool "sub-classes"
                 var top_level_widget;
@@ -165,12 +165,12 @@ window.TOONTALK.tool = (function (TT) {
                 if (tool.set_held) {
                     tool.set_held(false);
                 }
-                $(element).removeClass("toontalk-tool-held"); 
+                $(element).removeClass("toontalk-tool-held");
                 $(element).addClass("toontalk-tool-returning");
                 // returning for one second
-                TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 1000, 
+                TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", 1000,
                                                         function () {
-                                                            $(element).removeClass("toontalk-tool-returning");                      
+                                                            $(element).removeClass("toontalk-tool-returning");
                                                         });
                 // return animation depends upon this delay
                 if (home_position) {
@@ -191,7 +191,7 @@ window.TOONTALK.tool = (function (TT) {
                     TT.debugging = 'touch';
                 }
             };
-                       
+
             element.addEventListener('mousedown',  mouse_down);
             element.addEventListener('touchstart', mouse_down);
             return pick_up;

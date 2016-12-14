@@ -3,10 +3,10 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
- 
+
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
-window.TOONTALK.SETTINGS = 
+window.TOONTALK.SETTINGS =
 (function (TT) {
     "use strict";
     var tables = [];
@@ -57,12 +57,12 @@ window.TOONTALK.SETTINGS =
                         $("#tab-" + cloud_files_index + "_info").show();
                         $("#tab-" + cloud_files_index + "_wrapper").show();
                     } else {
-                        // is not yet a data table but is just an empty table so make it into a data table    
+                        // is not yet a data table but is just an empty table so make it into a data table
                         become_cloud_files_table(ui.newPanel, 'program', widget, settings_panel, become_cloud_files_table_callback);
                     }
                 } else if (ui.newTab.find(".toontalk-pages-in-cloud-tab-label").length > 0) {
                     if (widget.get_setting('save_to_dropbox')) {
-                        dropbox_file_chooser([".tt.html"], 
+                        dropbox_file_chooser([".tt.html"],
                                                function (files) {
                                                    ui.newPanel.before($("<p><a href='" + files[0].link + "' target='_blank'>Click to open " + files[0].name + "</a></p>"));
                                                });
@@ -98,7 +98,7 @@ window.TOONTALK.SETTINGS =
                 settings_panel.appendChild(TT.UTILITIES.create_tabs(labels, tables));
             }
             add_click_listeners(widget, local_files_table, true, settings_panel);
-            // and add them if the table is redrawn since it may be showing other files 
+            // and add them if the table is redrawn since it may be showing other files
             $(local_files_table).on('draw.dt', function () {
                 add_click_listeners(widget, local_files_table, false, settings_panel);
             });
@@ -123,7 +123,7 @@ window.TOONTALK.SETTINGS =
                 return;
             }
             // published pages don't have a button class -- they are now ordinary links
-            class_name = (toontalk_type === 'program') && "toontalk-file-load-button toontalk-file-load-button-without-click-handler"; 
+            class_name = (toontalk_type === 'program') && "toontalk-file-load-button toontalk-file-load-button-without-click-handler";
             TT.UTILITIES.become_file_data_table($table, response.items, true, class_name);
             add_click_listeners(widget, $table.get(0), true, settings_panel);
             $table.on('draw.dt', function () {
@@ -165,85 +165,85 @@ window.TOONTALK.SETTINGS =
           };
           var widget_element = widget.get_backside_element();
           var current_program_name = widget.get_setting('program_name');
-          var program_name         = TT.UTILITIES.create_text_input(current_program_name, 
-                                                             "toontalk-program-name-input", 
-                                                             "Current program name:", 
-                                                             "Edit this to change the name of your program", 
+          var program_name         = TT.UTILITIES.create_text_input(current_program_name,
+                                                             "toontalk-program-name-input",
+                                                             "Current program name:",
+                                                             "Edit this to change the name of your program",
                                                              "docs/manual/settings.html");
           var close_button         = TT.UTILITIES.create_close_button(close_handler, "Click to close the settings panel.");
-          var reload_with_speech   = TT.UTILITIES.create_check_box(false, 
+          var reload_with_speech   = TT.UTILITIES.create_check_box(false,
                                                                    "toontalk-url-parameter-setting",
                                                                    TT.speak ? (TT.CHROME_APP ? "Turn off spoken help" : "Reload with speaking turned off")
                                                                             : (TT.CHROME_APP ? "Turn on spoken help" : "Reload with spoken help"),
                                                                    TT.speak ? "Check this if you no longer want spoken help."
                                                                             : "Check this if you would like ToonTalk to speak to you.");
-          var reload_with_balloons = TT.UTILITIES.create_check_box(false, 
+          var reload_with_balloons = TT.UTILITIES.create_check_box(false,
                                                                    "toontalk-url-parameter-setting",
                                                                    TT.balloons ? (TT.CHROME_APP ? "Turn off help balloons" : "Reload with no balloon help")
                                                                                : (TT.CHROME_APP ? "Turn on help balloons" : "Reload with balloon help"),
                                                                    TT.balloons ? "Check this if you no longer want ToonTalk to display balloons giving tips and help."
-                                                                               : "Check this if you would like ToonTalk to display balloons giving tips and help.");                                                                            
-          var reload_with_listen   = TT.UTILITIES.create_check_box(false, 
+                                                                               : "Check this if you would like ToonTalk to display balloons giving tips and help.");
+          var reload_with_listen   = TT.UTILITIES.create_check_box(false,
                                                                    "toontalk-url-parameter-setting",
                                                                    TT.listen ? (TT.CHROME_APP ? "Turn off voice commands" : "Reload with voice commands turned off")
                                                                              : (TT.CHROME_APP ? "Turn on voice commands"
                                                                                               : "Reload with <a href='docs/manual/voice-commands.html' target = '_blank'>voice commands</a> turned on"),
                                                                    TT.listen ? "Check this if you no longer want ToonTalk to listen to voice commands."
-                                                                             : "Check this if you would like ToonTalk to listen for voice commadns."); 
-          var reload_with_translate = TT.UTILITIES.create_check_box(false, 
+                                                                             : "Check this if you would like ToonTalk to listen for voice commadns.");
+          var reload_with_translate = TT.UTILITIES.create_check_box(false,
                                                                    "toontalk-url-parameter-setting",
                                                                    TT.TRANSLATION_ENABLED ? (TT.CHROME_APP ? "Turn off translation from English" : "Reload with no translation from English")
                                                                                           : (TT.CHROME_APP ? "Turn on translation" : "Reload with over one hundred languages that ToonTalk can be translated to"),
                                                                    TT.TRANSLATION_ENABLED ? "Check this if you no longer want ToonTalk to display a choice of languages."
-                                                                                          : "Check this if you would like ToonTalk to display a menu of languages for the interface to be translated to."); 
+                                                                                          : "Check this if you would like ToonTalk to display a menu of languages for the interface to be translated to.");
           var heading              = TT.UTILITIES.create_text_element("Saving and loading options");
-          var save_to_dropbox      = TT.UTILITIES.create_check_box(widget.get_setting('save_to_dropbox'), 
+          var save_to_dropbox      = TT.UTILITIES.create_check_box(widget.get_setting('save_to_dropbox'),
                                                              "toontalk-save-setting",
                                                              "When saving to the cloud use my Dropbox account",
                                                              'Check this if you want your programs saved to a "ToonTalk Reborn" folder in the "Apps" folder in your Dropbox.');
-          var save_to_google_drive = TT.UTILITIES.create_check_box(widget.get_setting('save_to_google_drive'), 
+          var save_to_google_drive = TT.UTILITIES.create_check_box(widget.get_setting('save_to_google_drive'),
                                                              "toontalk-save-setting",
                                                              "When saving to the cloud use my Google Drive account",
                                                              'Check this if you want your programs saved to a "ToonTalk Programs" folder in your Google Drive.');
           // ideally "ToonTalk Programs" should be <i translate='no'>ToonTalk Programs</i>
           // but see http://stackoverflow.com/questions/15734105/jquery-ui-tooltip-does-not-support-html-content
-          var auto_save_to_cloud    = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_cloud'), 
+          var auto_save_to_cloud    = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_cloud'),
                                                              "toontalk-save-setting",
                                                              "Save automatically to cloud storage",
                                                              'Check this if you want your programs to Dropbox or Google Drive when your program changes.');
-          var local_storage         = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_local_storage'), 
+          var local_storage         = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_local_storage'),
                                                              "toontalk-save-setting",
                                                              "Save automatically to this browser's local storage",
                                                              "Check this if you want your programs automatically saved in this browser's local storage.");
           var save_now_cloud        = TT.UTILITIES.create_button("Save to cloud storage now",
-                                                              "toontalk-save-button", 
-                                                              "Click to save your program now to your Dropbox or your Google Drive account.", 
+                                                              "toontalk-save-button",
+                                                              "Click to save your program now to your Dropbox or your Google Drive account.",
                                                               function () {
                                                                   widget.save(true, {google_drive: widget.get_setting('save_to_google_drive'),
                                                                                      dropbox:      widget.get_setting('save_to_dropbox')});
                                                               });
           var save_now_local       = TT.UTILITIES.create_button("Save to browser's storage now",
-                                                          "toontalk-save-button", 
-                                                          "Click to save your program now to this browser's local storage.", 
+                                                          "toontalk-save-button",
+                                                          "Click to save your program now to this browser's local storage.",
                                                           function () {
                                                               widget.save(true, {local_storage: true});
-                                                          });                                                          
+                                                          });
           var authorize            = TT.UTILITIES.create_button("Login to Google",
-                                                          "toontalk-google-login-button", 
-                                                          "Click to log in to Google to authorize use of your Google Drive.", 
+                                                          "toontalk-google-login-button",
+                                                          "Click to log in to Google to authorize use of your Google Drive.",
                                                           function () {
                                                               TT.google_drive.authorize(function () {
                                                                   $(authorize).remove();
                                                               });
                                                           });
           var publish             = TT.UTILITIES.create_button("Publish",
-                                                          "toontalk-publish-button", 
-                                                          "Click to publish your program by generating a Google Drive URL.", 
+                                                          "toontalk-publish-button",
+                                                          "Click to publish your program by generating a Google Drive URL.",
                                                           function () {
                                                               widget.display_message("Creating your web page...");
                                                               widget.publish(display_published, as_workspace.button.checked);
                                                           });
-          var as_workspace        = TT.UTILITIES.create_check_box(widget.get_setting('publish_as_workspace'), 
+          var as_workspace        = TT.UTILITIES.create_check_box(widget.get_setting('publish_as_workspace'),
                                                             "toontalk-publish-setting",
                                                             "As a workspace",
                                                             "Check this if you want to publish the workspace and its widgets. Uncheck it you wish to publish just the widgets.");
@@ -260,8 +260,8 @@ window.TOONTALK.SETTINGS =
               var link_to_download = document.createElement('span');
               var link_to_edit     = document.createElement('span');
               var url          = TT.google_drive.google_drive_url(google_file.id);
-              var editable_url = window.location.protocol + "//" + window.location.host + 
-                                 "/ToonTalk/published.html" + window.location.search + 
+              var editable_url = window.location.protocol + "//" + window.location.host +
+                                 "/ToonTalk/published.html" + window.location.search +
                                  "&replace-with-url=" + encodeURIComponent(TT.google_drive.google_drive_url(google_file.id, true));
               var both = window.document.createElement('span');
               if (TT.TRANSLATION_ENABLED) {
@@ -278,12 +278,12 @@ window.TOONTALK.SETTINGS =
           var contents_div = document.createElement('div');
           var google_status = TT.google_drive && typeof gapi !== 'undefined' ? TT.google_drive.get_status() : "Google Drive API not loaded";
           var cloud_available = true; // unless discovered otherwise below
-          var program_name_changed = 
+          var program_name_changed =
               function () {
                   var new_program_name = program_name.button.value.trim();
                   var saved_callback;
                   if (current_program_name !== new_program_name) {
-                      saved_callback = 
+                      saved_callback =
                           function () {
                               var loaded_callback =
                                   function () {
@@ -291,7 +291,7 @@ window.TOONTALK.SETTINGS =
                                       setTimeout(function () {
                                                      $(settings_panel).css({"z-index": TT.UTILITIES.next_z_index()});
                                                  },
-                                                 500);  
+                                                 500);
                                   };
                               var nothing_to_load_callback = function () {
                                   // save with the new name and then close settings
@@ -310,14 +310,14 @@ window.TOONTALK.SETTINGS =
           var reopen_settings = function () {
               $(settings_panel).remove();
               setTimeout(function () {
-                            window.TOONTALK.SETTINGS.open(widget);  
+                            window.TOONTALK.SETTINGS.open(widget);
                         });
           };
           var publish_and_as_workspace = TT.UTILITIES.create_vertical_table(publish, as_workspace.container);
           var reload_listener_function = function (parameter_name, current_value) {
               return function () {
-                         window.location.assign(TT.UTILITIES.add_URL_parameter(window.location.href, parameter_name, current_value ? '0' : '1'));    
-              };                         
+                         window.location.assign(TT.UTILITIES.add_URL_parameter(window.location.href, parameter_name, current_value ? '0' : '1'));
+              };
           }
           var change_setting_listener_function = function (parameter) {
               return function () {
@@ -345,11 +345,11 @@ window.TOONTALK.SETTINGS =
           reload_with_listen.button   .addEventListener('click', setting_listener_function('listen',    'listen'));
           reload_with_balloons.button .addEventListener('click', setting_listener_function('balloons',  'balloons'));
           reload_with_translate.button.addEventListener('click', setting_listener_function('translate', 'TRANSLATION_ENABLED'));
-          save_to_google_drive.button.addEventListener('click', 
+          save_to_google_drive.button.addEventListener('click',
                                                function (event) {
                                                    // if turning off auto-saving save one last time
                                                    // which also saves the new setting of save to local_storage
-                                                   // if turnning on OK to begin autosaving immediately       
+                                                   // if turnning on OK to begin autosaving immediately
                                                    widget.save(true, {save_to_google_drive: save_to_google_drive.button.checked,
                                                                       // is the following obsolete?
                                                                       gooogle_drive: true});
@@ -366,8 +366,8 @@ window.TOONTALK.SETTINGS =
                                                        auto_save_to_cloud.button.checked = false;
                                                    }
                                                });
-          save_to_dropbox.button.addEventListener('click', 
-                                               function (event) {                            
+          save_to_dropbox.button.addEventListener('click',
+                                               function (event) {
                                                    widget.save(true, {save_to_dropbox: save_to_dropbox.button.checked,
                                                                       dropbox: true});
                                                    widget.set_setting('save_to_dropbox', save_to_dropbox.button.checked);
@@ -383,7 +383,7 @@ window.TOONTALK.SETTINGS =
                                                        auto_save_to_cloud.button.checked = false;
                                                    }
                                                 });
-          auto_save_to_cloud.button.addEventListener('click', 
+          auto_save_to_cloud.button.addEventListener('click',
                                                 function (event) {
                                                     // if turnning off auto-saving save one last time
                                                     // which also saves the new setting of save to local_storage
@@ -400,7 +400,7 @@ window.TOONTALK.SETTINGS =
                                                         $(save_now_cloud).hide();
                                                     }
                                                 });
-          local_storage.button.addEventListener('click', 
+          local_storage.button.addEventListener('click',
                                                 function (event) {
                                                     // if turnning off auto-saving save one last time
                                                     // which also saves the new setting of save to local_storage
@@ -414,7 +414,7 @@ window.TOONTALK.SETTINGS =
                                                         $(save_now_local).show();
                                                     }
                                                 });
-          as_workspace.button.addEventListener('click', 
+          as_workspace.button.addEventListener('click',
                                                 function (event) {
                                                     widget.set_setting('publish_as_workspace', as_workspace.button.checked);
                                                 });
@@ -466,7 +466,7 @@ window.TOONTALK.SETTINGS =
                                  $(save_now_cloud).button("option", "disabled", true);
                                  TT.UTILITIES.give_tooltip(save_to_google_drive.container, "Inactivated because attempt to connect to Google Drive returned: " + google_status);
                                  publish.title               = save_to_google_drive.container.title;
-                                 save_now_cloud.title        = save_to_google_drive.container.title;          
+                                 save_now_cloud.title        = save_to_google_drive.container.title;
                              },
                              1);
               } else {
@@ -479,7 +479,7 @@ window.TOONTALK.SETTINGS =
               $row.get(0).appendChild(TT.UTILITIES.create_table_entry(publish_and_as_workspace));
           }
           add_files_tabs(widget, cloud_available, settings_panel);
-          widget_element.appendChild(settings_panel);                  
+          widget_element.appendChild(settings_panel);
       }
     };
 

@@ -85,7 +85,8 @@ setTimeout(function () {
     }
 });
 
-// <link rel="stylesheet" media="all" href="../../toontalk.css">
+add_css('libraries/jquery-ui-1.12.1.custom/jquery-ui.min.css');
+add_css('libraries/DataTables-1.10.13/media/css/jquery.dataTables.min.css');
 add_css('toontalk.css');
 
 // <link rel="shortcut icon" href="../../images/favicon.ico" />
@@ -96,9 +97,9 @@ document.head.appendChild(icon);
 
 var file_names;
 if (debugging) {
-    file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
-                  "libraries/jquery-ui.min.js",
-                  "libraries/jquery.dataTables.min.js",
+    file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+                  "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
+                  "libraries/DataTables-1.10.13/media/js/jquery.dataTables.min.js",
                   "libraries/rationaljs.js",
                   "support/initial.js",
                   "support/functions.js",
@@ -125,25 +126,26 @@ if (debugging) {
                   "support/google_drive.js",
                   "support/utilities.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
-//                   "https://www.dropbox.com/static/api/2/dropins.js",
+//                   "https://www.dropbox.com/static/api/2/dropins.js", // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
-                  "libraries/jquery.ui.touch-punch.min.js"];
+//                   "libraries/jquery.ui.touch-punch.min.js"
+                  ];
 } else {
-    file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js",
-                  "libraries/jquery-ui.min.js",
+    file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+//                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
-//                   "https://www.dropbox.com/static/api/2/dropins.js",
+//                   "https://www.dropbox.com/static/api/2/dropins.js",  // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
                   // Note that including this in the closure compiler resulted in errors
-                  "libraries/jquery.ui.touch-punch.min.js"];                 
+                  "libraries/jquery.ui.touch-punch.min.js"];
 }
 
 var local_replacements =
-    // used to run off-line
+    // needed for running off-line
     // no need for an entry for https://apis.google.com/js/client.js?onload=handle_client_load
-    // since requires an Internet connection
-    {"https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js": "libraries/jquery.min.js"};
+    // since requires an Internet connection to be useful
+    {"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js": "libraries/jquery-3.1.1.min.js"};
 
 var loadFile = function (index, offline) {
                    var script = document.createElement("script");
@@ -151,20 +153,20 @@ var loadFile = function (index, offline) {
                    var load_next_file = function () {
                                             index++;
                                             if (index < file_names.length) {
-                                                loadFile(index, offline);               
+                                                loadFile(index, offline);
                                             } else {
                                                 initialize_toontalk();
                                                 // delay the following since its addition was delayed as well
                                                 setTimeout(function () {
                                                     $(loading_please_wait).remove();
-                                                });                                                
+                                                });
                                             }
                                         };
                    if (file_name.indexOf("http") >= 0) {
                        if ((!offline && !TOONTALK.CHROME_APP) ||
-                           get_parameter('remote_storage', false)) {
+                           get_parameter('remote_storage') === "1") {
                            // Chrome App complains:
-                           // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' because it violates the following Content Security Policy directive: ...
+                           // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js' because it violates the following Content Security Policy directive: ...
                            // if remote_storage is set then want to connect to remote storage even though running localhost 
                            script.src = file_name;
                        } else if (local_replacements[file_name]) {

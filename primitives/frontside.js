@@ -3,10 +3,10 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
- 
+
 /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
-window.TOONTALK.frontside = 
+window.TOONTALK.frontside =
 (function (TT) {
     "use strict";
     // following needed due to containment mouse enter of a container from its contents isn't triggered since it has already happened
@@ -18,7 +18,7 @@ window.TOONTALK.frontside =
             var frontside_element = document.createElement('div');
             var $frontside_element = $(frontside_element);
             var click_handler = function (event) {
-                if ($(event.target).is('.ui-resizable-handle')) { 
+                if ($(event.target).is('.ui-resizable-handle')) {
                     // don't let resize events cause click response
                     // see http://stackoverflow.com/questions/5709220/how-to-cancel-click-after-resizable-events
                     return;
@@ -47,15 +47,15 @@ window.TOONTALK.frontside =
                 event.stopPropagation();
             };
             var mouse_enter_handler = function (event) {
-                selection_feedback(widget);
+                selection_feedback(widget, event);
                 if (widgets_entered_stack.indexOf(widget) >= 0) {
                     // seems somehow can enter without exiting so this cleans things up in that case
                     widgets_entered_stack = [];
                 } else {
                     widgets_entered_stack.push(widget);
-                }      
+                }
             };
-            var selection_feedback = function (widget) {
+            var selection_feedback = function (widget, event) {
                  // note that this highlights the backside if visible even if the widget passes the selection to its parent
                 var backside = widget.get_backside();
                 var wiggling_widget = (widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget).get_selection();
@@ -69,7 +69,7 @@ window.TOONTALK.frontside =
                 if (!$selected.is(".toontalk-top-level-resource")) {
                     $selected.addClass("toontalk-wiggle");
                 }
-                event.stopPropagation();   
+                event.stopPropagation();
             }
             var mouse_leave_handler = function (event) {
                 var backside = widget.get_backside();
@@ -80,7 +80,7 @@ window.TOONTALK.frontside =
                 $(wiggling_widget.get_frontside_element()).removeClass("toontalk-wiggle");
                 widgets_entered_stack.pop();
                 if (widgets_entered_stack.length > 0) {
-                    selection_feedback(widgets_entered_stack[widgets_entered_stack.length-1]);
+                    selection_feedback(widgets_entered_stack[widgets_entered_stack.length-1], event);
                 }
             }
             var visible;
@@ -104,7 +104,7 @@ window.TOONTALK.frontside =
                 // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
                 if (new_value) {
-                    TT.UTILITIES.when_attached(this.get_element(true), 
+                    TT.UTILITIES.when_attached(this.get_element(true),
                                                widget.render.bind(widget));
                 }
                 if (widget.walk_children) {
@@ -124,11 +124,11 @@ window.TOONTALK.frontside =
             }
             return frontside;
         },
-        
+
         update_display: function () {
             return this.get_widget().update_display();
         },
-        
+
         remove: function () {
             // used to have debugging code that checked if was still attached
             // but when running unwatched might never have been attached

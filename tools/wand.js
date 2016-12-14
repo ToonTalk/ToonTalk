@@ -59,7 +59,7 @@ window.TOONTALK.wand = (function (TT) {
                                                                listen_for_command(); // listen for next command
                                                            }
                                                        }
-                                                       return true;  
+                                                       return true;
                                                    }.bind(this)});
                 }.bind(this);
                 held = new_value;

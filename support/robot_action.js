@@ -3,10 +3,10 @@
  * Authors: Ken Kahn
  * License: New BSD
  */
- 
+
  /*jslint browser: true, devel: true, plusplus: true, vars: true, white: true */
 
-window.TOONTALK.robot_action = 
+window.TOONTALK.robot_action =
 (function (TT) {
     "use strict";
     var close_backside_of_widget = function (widget, robot, additional_info) {
@@ -87,7 +87,7 @@ window.TOONTALK.robot_action =
                  TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but has nothing in its hand.");
              } else {
                  TT.UTILITIES.report_internal_error("The robot that '" + robot.toString() + "' is executing dropped_on_text_area but doesn't know where to drop what its holding");
-             }   
+             }
          },
          "remove": function (widget, robot) {
              widget.remove();
@@ -142,9 +142,10 @@ window.TOONTALK.robot_action =
                  }
                  top_level_element = top_level_widget.get_backside_element();
                  widget_frontside_element = widget.get_frontside_element(true);
-                 $(widget_frontside_element).css(TT.UTILITIES.random_location_inside(top_level_element, 50));
+                 widget.update_display();
                  top_level_element.appendChild(widget_frontside_element);
                  widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.animation_settings.ANIMATION_SPEED));
+                 $(widget_frontside_element).css(top_level_widget.get_backside().get_free_location(widget));
              }
              return true;
          },
@@ -188,11 +189,12 @@ window.TOONTALK.robot_action =
          "close the backside of": close_backside_of_widget,
          "close the backside":    close_backside_of_widget,
          "click the button of": function (widget, robot, additional_info) {
-             // no need to do this if unwatched
-             // TODO: a more principled way of handling green flag clicking
-             // TODO: support stop sign too
-             if (additional_info.button_selector === ".toontalk-green-flag" && (!additional_info || !additional_info.running_watched)) {
+             // no need to click buttons if unwatched since action itself recorded
+             // except start and stop
+             if (additional_info.button_selector === ".toontalk-green-flag") {
                 widget.set_running(true);
+             } else if (additional_info.button_selector === ".toontalk-stop-sign") {
+                widget.set_running(false);
              }
              return true;
          }
@@ -218,18 +220,11 @@ window.TOONTALK.robot_action =
         var thing_in_hand = robot.get_thing_in_hand();
         var robot_frontside_element = robot.get_frontside_element();
         var widget_element = side.get_element();
-        var close_memmber = function (x, max_difference, xs) {
-            return xs.some(function (other) {
-                              if (Math.abs(other-x) <= max_difference) {
-                                  return true;
-                              }
-                          });
-        };
         var widget_bounding_box,
             left_offset,
             top_offset,
-            animation_left_offset,
-            animation_top_offset,
+            animation_offset,
+            free_location,
             thing_in_hand_element,
             thing_in_hand_width,
             thing_in_hand_height,
@@ -254,50 +249,22 @@ window.TOONTALK.robot_action =
             if (!robot.original_animation_top_offset) {
                 robot.original_animation_top_offset = [];
             }
-            animation_left_offset = additional_info.left_offset_fraction*widget_bounding_box.width;
-            animation_top_offset  = additional_info.top_offset_fraction *widget_bounding_box.height;
+            animation_offset = {left: additional_info.left_offset_fraction*widget_bounding_box.width,
+                                top:  additional_info.top_offset_fraction *widget_bounding_box.height};
             if (thing_in_hand) {
                 thing_in_hand_element = thing_in_hand.get_element();
                 if (TT.UTILITIES.visible_element(thing_in_hand_element)) {
                     thing_in_hand_location = $(thing_in_hand_element).offset();
                     robot_location         = $(robot_frontside_element).offset();
-                    animation_left_offset -= thing_in_hand_location.left-robot_location.left;
-                    animation_top_offset  -= thing_in_hand_location.top -robot_location.top;
+                    animation_offset.left -= thing_in_hand_location.left-robot_location.left;
+                    animation_offset.top  -= thing_in_hand_location.top -robot_location.top;
                 }
             }
-            if (thing_in_hand && 
-                close_memmber(animation_left_offset, robot.last_thing_in_hand_width, robot.original_animation_left_offset) && 
-                robot.original_animation_top_offset.indexOf(animation_top_offset)  >= 0) {
-                // robot has already dropped something here
-                animation_left_offset = robot.animation_left_offset+robot.last_thing_in_hand_width;
-                animation_top_offset  = robot.animation_top_offset;
-                if (animation_left_offset >= widget_bounding_box.width) {
-                    animation_left_offset = 0;
-                    animation_top_offset += robot.max_thing_in_hand_height;
-                    if (animation_top_offset >= widget_bounding_box.height) {
-                        animation_top_offset = 0;
-                    }
-                }
-                TT.UTILITIES.when_attached(thing_in_hand_element,
-                                           function () {
-                                                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width(thing_in_hand_element);
-                                                if (typeof robot.max_thing_in_hand_height === 'undefined') {
-                                                    robot.max_thing_in_hand_height = 0;
-                                                }
-                                                robot.max_thing_in_hand_height = Math.max(robot.max_thing_in_hand_height, $(thing_in_hand_element).height());
-                                           });
-            } else {
-                robot.original_animation_left_offset.push(animation_left_offset);
-                if (robot.original_animation_top_offset.indexOf(animation_top_offset) < 0) {
-                    robot.original_animation_top_offset.push(animation_top_offset);
-                }
-                robot.last_thing_in_hand_width = TT.UTILITIES.get_element_width (thing_in_hand_element);
-                robot.max_thing_in_hand_height = TT.UTILITIES.get_element_height(thing_in_hand_element);
-            }
-            widget_element.animation_left_offset = animation_left_offset;
-            widget_element.animation_top_offset  = animation_top_offset;
-            robot.animation_left_offset = animation_left_offset;
-            robot.animation_top_offset  = animation_top_offset;
+            free_location = side.get_backside().get_free_location(thing_in_hand, {try_first: animation_offset});
+            widget_element.animation_left_offset = free_location.left;
+            widget_element.animation_top_offset  = free_location.top;
+            robot.animation_left_offset = free_location.left;
+            robot.animation_top_offset  = free_location.top;
         } else {
             left_offset = widget_bounding_box.width/2;
             top_offset  = widget_bounding_box.height/2;
@@ -414,7 +381,7 @@ window.TOONTALK.robot_action =
         };
         robot.rerender();
         if (!TT.UTILITIES.visible_element(target.get_backside_element())) {
-            click_and_open_backside(target, 
+            click_and_open_backside(target,
                                     robot,
                                     function () {
                                          text_area = find_text_area();
@@ -436,7 +403,16 @@ window.TOONTALK.robot_action =
     };
     var find_backside_element = function (widget, class_name_selector) {
         var backside_element = widget.get_backside_element(true);
-        return $(backside_element).find(class_name_selector).get(0);
+        var button = $(backside_element).find(class_name_selector).get(0);
+        if (button) {
+            return button;
+        }
+        widget.get_backside().set_advanced_settings_showing(true);
+        button = $(backside_element).find(class_name_selector).get(0);
+        if (button) {
+            return button;
+        }
+        TT.UTILITIES.report_internal_error("Cannot find button: " + class_name_selector + " in " + widget.get_backside());
     };
     var button_use_animation = function (widget, robot, continuation, class_name_selector, additional_info, delay) {
         var button_element = find_backside_element(widget, class_name_selector);
@@ -462,8 +438,8 @@ window.TOONTALK.robot_action =
                 backside = widget.get_backside(true);
                 backside.set_advanced_settings_showing(true, backside.get_element());
             }
-            robot.animate_to_element(button_element, 
-                                     new_continuation, 
+            robot.animate_to_element(button_element,
+                                     new_continuation,
                                      robot.transform_animation_speed(TT.animation_settings.ROBOT_ANIMATION_SPEED),
                                      0, 0, true,
                                      robot.transform_original_step_duration(additional_info && additional_info.time));
@@ -596,7 +572,7 @@ window.TOONTALK.robot_action =
         } else {
             continuation();
             robot.run_next_step(true);
-        }      
+        }
     };
     var start_training_animation = function (robot_to_train, robot, continuation) {
         var backside_of_other = robot_to_train.open_backside();
@@ -604,7 +580,7 @@ window.TOONTALK.robot_action =
         continuation();
         if (backside_of_other) {
             $(backside_of_other.get_element()).find(".toontalk-train-backside-button").click();
-        } 
+        }
         $(robot_to_train_frontside_element).addClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
         robot_to_train_frontside_element.toontalk_followed_by = {element: robot.get_frontside_element(),
                                                                  left_offset: 30,
@@ -617,10 +593,13 @@ window.TOONTALK.robot_action =
         var new_continuation = function () {
             var robot_returned_continuation = function () {
                 robot_to_be_trained_frontside_element.toontalk_return_to = undefined;
-                robot_to_be_trained.get_backside().change_label_and_title_of_train_button(false);
+                if (robot_to_be_trained.get_backside()) {
+                    // may be have been removed if robot training robot
+                    robot_to_be_trained.get_backside().change_label_and_title_of_train_button(false);
+                }
                 $(robot_to_be_trained_frontside_element).removeClass("toontalk-robot-animating toontalk-robot-being-trained-by-robot");
                 robot_to_be_trained_frontside_element.toontalk_followed_by = undefined;
-                setTimeout(continuation, robot.transform_step_duration(TT.animation_settings.STOP_TRAINING_DELAY));                      
+                setTimeout(continuation, robot.transform_step_duration(TT.animation_settings.STOP_TRAINING_DELAY));
             };
             if (robot_to_be_trained_frontside_element.toontalk_return_to) {
                 TT.UTILITIES.animate_to_absolute_position(robot_to_be_trained_frontside_element,
@@ -671,13 +650,13 @@ window.TOONTALK.robot_action =
             delay = robot.transform_original_step_duration(additional_info.time);
         } else {
             delay = robot.transform_step_duration(TT.animation_settings.CLOSE_BACKSIDE_DURATION);
-        }             
+        }
         setTimeout(function () {
                        $(widget.get_backside_element()).children(".toontalk-close-button").click();
                        continuation();
                        robot.run_next_step(true);
                    },
-                   delay);     
+                   delay);
     };
     var click_button_animation = function (widget, robot, continuation, additional_info) {
         var new_continuation = function (button_element) {
@@ -689,12 +668,16 @@ window.TOONTALK.robot_action =
                                                      }
                                                  });
             }
-            $(button_element).click();
+            if (additional_info.button_selector !== ".toontalk-green-flag" &&
+                additional_info.button_selector !== ".toontalk-stop-sign") {
+                // green flag and stop sign clicks wil be handled when unwatched version runs
+                $(button_element).click();
+            }
             continuation();
         };
         button_use_animation(widget, robot, new_continuation, additional_info.button_selector, additional_info);
     };
-    var watched_run_functions = 
+    var watched_run_functions =
         {"copy":                              copy_animation,
          "pick up":                           pick_up_animation,
          "pick up a copy of":                 pick_up_a_copy_animation,
@@ -729,7 +712,7 @@ window.TOONTALK.robot_action =
             return TT.robot_action.create(TT.UTILITIES.create_from_json(json.path, additional_info), json.action_name);
         }
     };
-    
+
     return {
         create: function (path, action_name, additional_info) {
             var new_action = Object.create(this);
@@ -758,17 +741,17 @@ window.TOONTALK.robot_action =
                     return false;
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {
-                    if (referenced.wait_until_this_nest_receives_something) { 
-                        console.log("   wait_until_this_nest_receives_something " + 
-                                    referenced.wait_until_this_nest_receives_something.to_debug_string(50) + 
-                                    "(" + TT.path.toString(path) + 
+                    if (referenced.wait_until_this_nest_receives_something) {
+                        console.log("   wait_until_this_nest_receives_something " +
+                                    referenced.wait_until_this_nest_receives_something.to_debug_string(50) +
+                                    "(" + TT.path.toString(path) +
                                     ") by unwatched " + robot.to_debug_string(50));
                     } else {
-                        console.log("   " + referenced.to_debug_string(50) + " (" + TT.path.toString(path) + ")" + 
+                        console.log("   " + referenced.to_debug_string(50) + " (" + TT.path.toString(path) + ")" +
                                     " by unwatched " + robot.to_debug_string(50));
                     }
                 }
-                if (referenced.wait_until_this_nest_receives_something) {         
+                if (referenced.wait_until_this_nest_receives_something) {
                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(
                         function () {
                             if (robot.visible()) {
@@ -785,7 +768,7 @@ window.TOONTALK.robot_action =
                 } // else robot will stop due to the error
             };
             new_action.run_watched = function (robot) {
-                var referenced = TT.path.dereference_path(path, robot); 
+                var referenced = TT.path.dereference_path(path, robot);
                 var continuation = function () {
                     if (robot.stopped() && !robot.being_trained) {
                         // don't stop if this is a robot being trained by another robot
@@ -803,7 +786,7 @@ window.TOONTALK.robot_action =
                     return;
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {
-                    console.log("   " + referenced + " (" + TT.path.toString(path) + " " +  (referenced.to_debug_string ? referenced.to_debug_string(50) : referenced) + 
+                    console.log("   " + referenced + " (" + TT.path.toString(path) + " " +  (referenced.to_debug_string ? referenced.to_debug_string(50) : referenced) +
                                 " by watched " + robot.to_debug_string(50) + (robot.animate_consequences_of_actions() ? "" : " finishing instantly"));
                 }
                 if (referenced.wait_until_this_nest_receives_something) {
@@ -828,7 +811,7 @@ window.TOONTALK.robot_action =
                 var prefix = "";
                 var action_description = action_name; // default description is its name
                 var path_description, trained_action;
-                if (action_name === "open the backside" || 
+                if (action_name === "open the backside" ||
                     action_name === "close the backside") {
                     // following used to return the empty string but that led to confusing robot titles and users should know about every step
                     // action names should end of " of" so fix it here (too many JSONified robots are out there to change it and don't want two forms)
@@ -838,12 +821,12 @@ window.TOONTALK.robot_action =
                     switch (additional_info.button_selector) {
                     case ".toontalk-green-flag":
                         action_description = "click the green flag " +
-                                              TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") + 
+                                              TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") +
                                               " of";
                         break;
                     case ".toontalk-stop-sign":
                         action_description = "click the stop sign " +
-                                             TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") + 
+                                             TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") +
                                              " of";
                         break;
                     case ".toontalk-play-sound-effect-button":
@@ -883,7 +866,7 @@ window.TOONTALK.robot_action =
                         return trained_action;
                     }
                     suffix = " to " + trained_action;
-                    // indent actions trained 
+                    // indent actions trained
                     prefix = "- ";
                     if (to_string_info && to_string_info.robot_being_trained_description) {
                         path_description = to_string_info.robot_being_trained_description;
@@ -895,13 +878,13 @@ window.TOONTALK.robot_action =
                 } else if (action_name === 'stop training') {
                     path_description = to_string_info.robot_being_trained_description;
                     to_string_info.robot_being_trained_description = undefined;
-                } 
+                }
                 if (['pick up', 'edit', 'remove', 'copy', 'change whether erased', 'pick up a copy of', 'drop it on the text area of'].indexOf(action_name) >= 0) {
                     if (path_description.indexOf("hole of") >= 0) {
                         return prefix + action_description + " what is in " + path_description + suffix;
                     }
                     if (path_description.indexOf("a When") === 0) { // startsWith in ECMAScript 6
-                        // 'a when' occurs because robot's titles are best just jumping in saying  "When ..." but then when 
+                        // 'a when' occurs because robot's titles are best just jumping in saying  "When ..." but then when
                         // the robot itself is being manipulated then an indefinite article is added
                         path_description = path_description.substring(3);
                         path_description = TT.UTILITIES.remove_encoded_HTML(path_description);
@@ -933,7 +916,7 @@ window.TOONTALK.robot_action =
                     keys_callback(undefined, start_time);
                 }
             };
-            return new_action;  
+            return new_action;
         }
     };
 

@@ -4,7 +4,7 @@
  * License: New BSD
  */
 
-window.TOONTALK.queue = 
+window.TOONTALK.queue =
 (function (TT) {
     "use strict";
     var queue = {
@@ -16,7 +16,7 @@ window.TOONTALK.queue =
             result.run_function = result.run.bind(result);
             return result;
         },
-        
+
         enqueue: function (robot) {
 //             if (TT.debugging && this.to_run.does_any_item_satisfy(function (item) {
 //                                                                       return item.robot === robot_context_queue.robot;
@@ -27,7 +27,7 @@ window.TOONTALK.queue =
 //                 return;
 //             }
             if (robot.running_or_in_run_queue()) {
-                // already queued 
+                // already queued
                 return;
             }
             robot.set_running_or_in_run_queue(true);
@@ -36,9 +36,9 @@ window.TOONTALK.queue =
                 this.run();
             }
         },
-        
+
         maximum_run: 50, // milliseconds
-        
+
         paused: false,
 
         running: false,
@@ -52,7 +52,7 @@ window.TOONTALK.queue =
                 this.run();
             }
         },
-        
+
         run: function () {
             var end_time = Date.now()+queue.maximum_run;
             var next_robot_run, context, now, element;
@@ -67,9 +67,9 @@ window.TOONTALK.queue =
                 return;
             }
             // give browser a chance to run
-            TT.UTILITIES.set_timeout(this.run_function); 
+            TT.UTILITIES.set_timeout(this.run_function);
         }
-        
+
     };
     return queue;
 }(window.TOONTALK));

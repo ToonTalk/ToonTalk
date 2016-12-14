@@ -4,7 +4,7 @@
  * License: New BSD
  */
 
-window.TOONTALK.create_function_table = 
+window.TOONTALK.create_function_table =
 (function (TT) {
   "use strict";
   return function () {
@@ -67,7 +67,7 @@ window.TOONTALK.create_function_table =
     },
     report_error: function (error, message_properties) {
         TT.UTILITIES.display_message(error);
-        if (message_properties && 
+        if (message_properties &&
             (message_properties.error_bird || message_properties.bird)) {
            (message_properties.error_bird || message_properties.bird).widget_side_dropped_on_me(TT.element.create(error), {});
         }
@@ -77,12 +77,12 @@ window.TOONTALK.create_function_table =
     process_response: function (response, message_properties, message, options) {
         if (response) {
             // it used to be that this also called add_newly_created_widget
-            // this wasn't necessary and for the delay function bird meant this could happen at the wrong step
+            // but this wasn't necessary and for the delay function bird meant this could happen at the wrong step
             // following should not pass event through since otherwise it is recorded as if robot being trained did this
             options.do_not_run_next_step = true;
             options.by_function_bird = true;
             if (!message_properties.message_return_bird) {
-                // bird is "lost" unless message is returned
+                // bird in message is "lost" unless message is to be returned
                 options.temporary_bird = true;
             }
             message_properties.bird.widget_side_dropped_on_me(response, options);
@@ -91,7 +91,7 @@ window.TOONTALK.create_function_table =
         if (!message_properties.message_return_bird) {
             message.remove({do_not_remove_children: true});
         }
-    },  
+    },
     process_message: function (message, compute_response, options) {
         var response;
         var message_properties = this.check_message(message);
@@ -99,24 +99,33 @@ window.TOONTALK.create_function_table =
             // error reported and handled
             return;
         }
-        response = compute_response(message_properties);
+        response = compute_response(message_properties, options);
         // following is typically unneeded but if the message contains covered nests
         // then the response might still be considered as a child of the obsolete nest
         // only the first hole is re-used in responses
-        if (!message_properties.message_return_bird && message.get_size() > 1 && message.get_hole_contents(1)) {
+        if (!message_properties.message_return_bird &&
+            message.get_size() > 1 &&
+            message.get_hole_contents(1) &&
+            message.get_hole_contents(1).is_nest() &&
+            message.get_hole_contents(1).has_contents()) {
             options.do_not_remove_children  = true;
             options.do_not_remove_frontside = true;
-            message.get_hole_contents(1).remove(options);
+            message.get_hole_contents(1).dereference().remove(options);
         }
         this.process_response(response, message_properties, message, options);
         return response;
     },
-    type_check: function (type, widget, function_name, index, message_properties) {
+    type_check: function (type, widget, function_name, index, message_properties, options) {
         // returns a string describing the error if there is one
         if (widget.is_nest() && !widget.has_contents()) {
             // throw empty nest so can suspend this until nest is covered
             if (TT.sounds) {
                 TT.sounds.bird_fly.pause();
+            }
+            if (options && options.make_message_nests_delivery_targets) {
+                // easiest way to ensure bird flies here is to make this nest visible but off screen
+                widget.set_visible(true);
+                TT.UTILITIES.set_css(widget.get_element(), $(message_properties.message.get_element()).offset());
             }
             throw {wait_for_nest_to_receive_something: widget};
         }
@@ -125,7 +134,7 @@ window.TOONTALK.create_function_table =
             return true;
         }
         if (!widget) {
-            return this.report_error("The '" + function_name + "' bird can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the " 
+            return this.report_error("The '" + function_name + "' bird can only respond to boxes with " + TT.UTILITIES.add_a_or_an(type) + " in the "
                                       + TT.UTILITIES.ordinal(index) + " hole. The " + TT.UTILITIES.ordinal(index) + " hole is empty.",
                                      message_properties);
         }
@@ -137,12 +146,12 @@ window.TOONTALK.create_function_table =
                                   + " hole contains " + TT.UTILITIES.add_a_or_an(widget.get_type_name() + "."),
                                  message_properties);
     },
-    number_check: function (widget, function_name, index, message_properties) {
-        return this.type_check('number', widget, function_name, index, message_properties);
+    number_check: function (widget, function_name, index, message_properties, options) {
+        return this.type_check('number', widget, function_name, index, message_properties, options);
     },
-    n_ary_widget_function: function (message, zero_ary_value_function, binary_operation, function_name, options) { 
+    n_ary_widget_function: function (message, zero_ary_value_function, binary_operation, function_name, options) {
         // binary_operation is a function of two widgets that updates the first
-        var compute_response = function (message_properties) {
+        var compute_response = function (message_properties, options) {
             var next_widget, index, response;
             if (message_properties.box_size === 1) {
                 return zero_ary_value_function();
@@ -154,7 +163,7 @@ window.TOONTALK.create_function_table =
                 return;
             }
             response = response.dereference()
-            if (this.number_check(response, function_name, index, message_properties) !== true) {
+            if (this.number_check(response, function_name, index, message_properties, options) !== true) {
                 return;
             }
             if (message_properties.message_return_bird) {
@@ -179,7 +188,7 @@ window.TOONTALK.create_function_table =
         }.bind(this);
         return this.process_message(message, compute_response, options);
     },
-    n_ary_function: function (message, operation, minimum_arity, function_name, options) { 
+    n_ary_function: function (message, operation, minimum_arity, function_name, options) {
         var compute_response = function (message_properties) {
             var next_widget, index, args, any_approximate_arguments, response;
             if (message_properties.box_size < minimum_arity+1) { // one for the bird
@@ -242,7 +251,7 @@ window.TOONTALK.create_function_table =
                     if (index <= types.length) {
                         type = types[index-1];
                     }
-                    if (this.type_check(type, next_widget, function_name, index, message_properties) !== true) {
+                    if (this.type_check(type, next_widget, function_name, index, message_properties, options) !== true) {
                         // error already reported
                         return;
                     }
@@ -291,18 +300,18 @@ window.TOONTALK.create_function_table =
         if (types) {
            if (types.length === 1) {
                get_description = function () {
-                   return "If you give me a box with another bird and " + TT.UTILITIES.add_a_or_an(types[0]) + " then " + 
+                   return "If you give me a box with another bird and " + TT.UTILITIES.add_a_or_an(types[0]) + " then " +
                           TT.UTILITIES.lower_case_first_letter(this.title) + and_on_my_back;
                }
             } else {
                 get_description = function () {
-                    return "If you give me a box with another bird, " + TT.UTILITIES.conjunction(types, true) + " then " + 
+                    return "If you give me a box with another bird, " + TT.UTILITIES.conjunction(types, true) + " then " +
                            TT.UTILITIES.lower_case_first_letter(this.title) + and_on_my_back;
                 };
             }
         } else {
             get_description = function () {
-                return "If you give me a box with another bird and some numbers then " + 
+                return "If you give me a box with another bird and some numbers then " +
                        TT.UTILITIES.lower_case_first_letter(this.title) + and_on_my_back;
             };
         }
