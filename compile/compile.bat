@@ -1,13 +1,13 @@
 cd C:\Users\Ken\Documents\GitHub\ToonTalk
-rem ADVANCED_OPTIMIZATIONS caused errors
-rem removing datatables fixed one problem but remaining problem with loading still to fix - perhaps making each widget definition a local variable and then adding it to TOONTALK
-rem later add back --js libraries\jquery.ui.touch-punch.min.js
-rem min.js versions of JQuery UI caused errors
-rem --js jquery-ui.js caused error in tooltips: Uncaught TypeError: Cannot assign to read only property 'complete' of true
-java -jar c:\bin\closure\compiler.jar ^
+rem ADVANCED_OPTIMIZATIONS caused the Fibonacci test to fail by doing nothing
+rem caused errors:  --js libraries\jquery.ui.touch-punch.min.js -- need to test again
+rem java -jar c:\bin\closure\closure-compiler-v20161201.jar --compilation_level ADVANCED_OPTIMIZATIONS ^
+java -jar c:\bin\closure\closure-compiler-v20161201.jar ^
  --language_in ECMASCRIPT5_STRICT ^
  --js libraries\rationaljs.js ^
- --js libraries/jquery.dataTables.min.js ^
+ --js libraries/DataTables-1.10.13/media/js/jquery.dataTables.js ^
+ --js libraries/jquery-ui-1.12.1.custom/jquery-ui.js ^
+ --js libraries\jquery.ui.touch-punch.min.js ^
  --js support\initial.js ^
  --js support\functions.js ^
  --js primitives\widget.js ^

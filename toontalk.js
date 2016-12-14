@@ -128,10 +128,11 @@ if (debugging) {
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
 //                   "https://www.dropbox.com/static/api/2/dropins.js", // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
-                  "libraries/jquery.ui.touch-punch.min.js"];
+//                   "libraries/jquery.ui.touch-punch.min.js"
+                  ];
 } else {
     file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
-                  "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
+//                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
 //                   "https://www.dropbox.com/static/api/2/dropins.js",  // handled below -- partial support for saving to DropBox
