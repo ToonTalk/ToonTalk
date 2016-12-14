@@ -774,7 +774,6 @@ window.TOONTALK.bird = (function (TT) {
                  $(frontside_element).removeClass("toontalk-bird-static " + this.get_class_name_with_color("toontalk-bird-static"));
                  TT.UTILITIES.add_animation_class(frontside_element, direction);
                  // duration is proportional to distance
-                 // console.log("Flying to " + target_offset.left + ", " + target_offset.top + " holding " + (this.element_to_display_when_flying && this.element_to_display_when_flying.className));
                  this.animate_to_absolute_position(target_offset,
                                                    full_continuation,
                                                    options.robot && options.robot.transform_animation_speed(TT.animation_settings.BIRD_ANIMATION_SPEED));
@@ -1217,7 +1216,11 @@ window.TOONTALK.nest = (function (TT) {
             }
             // act as if the top contents was being dereferenced
             if (path_to_nest.next) {
-                return contents[0].get_widget().dereference_path(path_to_nest.next, robot);
+                if (contents[0].get_widget().dereference_path) {
+                    return contents[0].get_widget().dereference_path(path_to_nest.next, robot);
+                }
+                // if referenced widget doesn't support dereference_path fall back on generic path dereferencing
+                return TT.path.continue_dereferencing_path(path_to_nest.next, contents[0].get_widget(), robot);
             }
             // TODO: determine if this should just be return contents[0]
             return contents[0].get_widget();

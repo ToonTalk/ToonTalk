@@ -158,7 +158,7 @@ window.TOONTALK.path =
             return path_end;
         },
         dereference_path: function (path, robot, widget) {
-            // widget one of the robot's' backside conditions - if undefined is robot's context
+            // widget is one of the robot's backside conditions - if undefined is robot's context
             var dereferenced;
             if (path) {
                 if (path.dereference_path) {
@@ -189,7 +189,7 @@ window.TOONTALK.path =
             }
             if (path.next) {
                 if (referenced.dereference_contents && !path.next.not_to_be_dereferenced) {
-                    new_referenced = referenced.dereference_contents(path.next, robot);
+                    new_referenced = referenced.dereference_contents(path, robot);
                     if (new_referenced && path.is_backside) {
                         return new_referenced.get_backside(true);
                     }
@@ -415,6 +415,10 @@ window.TOONTALK.path =
             return {dereference_path: function (robot) {
                         var referenced = robot.get_backside_matched_widgets()[backside_index];
                         var container;
+                        if (this.next) {
+                            // there is more to the path so compute the part of the widget referenced
+                            return TT.path.dereference_path(this.next, robot, referenced);
+                        }
                         if (referenced) {
                             if (this.removing_widget) {
                                 container = referenced.get_parent_of_frontside();
