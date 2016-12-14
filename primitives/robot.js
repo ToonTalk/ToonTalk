@@ -1594,6 +1594,7 @@ window.TOONTALK.robot_backside =
         var backside_conditions = robot.get_backside_conditions();
         var robot_visible = robot.visible();
         var green_flag_message = "I always run when the green flag <span class='toontalk-green-flag-icon'></span> is clicked.";
+        var frontside_condtion_message = "I run only if the thing I'm on the back of matches: ";
         var area_class_name;
         if (frontside_condition_widget) {
             if (frontside_condition_widget.is_top_level()) {
@@ -1601,9 +1602,9 @@ window.TOONTALK.robot_backside =
                     backside_element.insertBefore(TT.UTILITIES.create_text_element(green_flag_message),
                                                   backside_element.firstChild);
                 }
-            } else if ($(backside_element).find(".toontalk-frontside-conditions-area").length === 0) {
+            } else if (backside_element.firstChild.textContent.indexOf(frontside_condtion_message) < 0) {
                 // and not already added
-                backside_element.insertBefore(create_conditions_area("I run only if the thing I'm on the back of matches: ",
+                backside_element.insertBefore(create_conditions_area(frontside_condtion_message,
                                                                      frontside_condition_widget,
                                                                      robot,
                                                                      "toontalk-frontside-conditions-area"),
