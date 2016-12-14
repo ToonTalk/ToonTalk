@@ -570,11 +570,12 @@ window.TOONTALK.widget = (function (TT) {
                         top_offset = (TT.UTILITIES.get_element_height(target_element)-TT.UTILITIES.get_element_height(frontside_element))*Math.random();
                     }
                     if (target_absolute_position) {
-                        target_absolute_position.left += left_offset;
-                        target_absolute_position.top  += top_offset;
+                        target_absolute_position = {left: target_absolute_position.left+left_offset,
+                                                    top:  target_absolute_position.top + top_offset};
                     } else {
                         // can happen if a user picks up the target while this is running
-                        target_absolute_position = {left: 0, top: 0};
+                        target_absolute_position = {left: 0,
+                                                    top:  0};
                     }
                     this.animate_to_absolute_position(target_absolute_position, continuation, speed, more_animation_follows, duration);
                 };
