@@ -1520,8 +1520,8 @@ window.TOONTALK.number_backside =
                 number.set_operator(operator, true, true);
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
-            var format_set = TT.UTILITIES.create_horizontal_table(decimal_format.container, mixed_number_format.container, improper_format.container, scientific_format.container);
-            var operator_set =TT.UTILITIES.create_horizontal_table(plus.container, minus.container, multiply.container, divide.container, set.container);
+            var format_set   = TT.UTILITIES.create_div(decimal_format, mixed_number_format, improper_format, scientific_format);
+            var operator_set = TT.UTILITIES.create_div(plus, minus, multiply, divide, set);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);
             var generic_backside_update = backside.update_display.bind(backside);
             var generic_add_advanced_settings = backside.add_advanced_settings;
@@ -1586,8 +1586,10 @@ window.TOONTALK.number_backside =
             };
             backside.add_advanced_settings = function () {
                 generic_add_advanced_settings.call(backside, format_set, operator_set);
-                $(format_set).buttonset();
-                $(operator_set).buttonset();
+                $(format_set)  .controlgroup()
+                               .removeClass("ui-controlgroup"); // doesn't look good
+                $(operator_set).controlgroup()
+                               .removeClass("ui-controlgroup"); // doesn't look good
             };
             TT.UTILITIES.when_attached(backside_element,
                                        function () {

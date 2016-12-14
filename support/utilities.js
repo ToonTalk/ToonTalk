@@ -2851,7 +2851,7 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.check_radio_button = function (button_elements) {
-            var $table = $(button_elements.button).closest(".ui-buttonset");
+            var $table = $(button_elements.button).closest(".ui-controlgroup");
             if ($table.length > 0) {
                 // un-highlight all before setting one
                 $table.find(".ui-state-active").removeClass("ui-state-active")
@@ -2875,7 +2875,7 @@ window.TOONTALK.UTILITIES =
 //                     container.appendChild(arguments[i]);
 //                 }
 //             }
-//             $(container).buttonset();
+//             $(container).controlgroup();
 //             return container;
 //         };
 
@@ -2988,8 +2988,7 @@ window.TOONTALK.UTILITIES =
                 container = utilities.create_horizontal_table(label_element, text_area);
             }
             $(text_area).button()
-                        .addClass("toontalk-text-area")
-                        .css({"background": "white"}); // somehow JQuery gives a background color despite toontalk-text-area's CSS
+                        .addClass("toontalk-text-area"); 
             text_area.addEventListener('touchstart', function () {
                 $(text_area).select();
             });
@@ -3023,7 +3022,7 @@ window.TOONTALK.UTILITIES =
             return typeof new_text === 'string' && dropped;
         };
 
-        utilities.create_radio_button = function (name, value, class_name, label, title, part_of_buttonset) {
+        utilities.create_radio_button = function (name, value, class_name, label, title, part_of_controlgroup) {
             var container = document.createElement("div");
             var input = document.createElement("input");
             var label_element = document.createElement("label");
@@ -3037,12 +3036,8 @@ window.TOONTALK.UTILITIES =
             container.appendChild(input);
             container.appendChild(label_element);
             utilities.give_tooltip(container, title);
-            // the following breaks the change listener
-            // used to work with use htmlFor to connect label and input
-            if (!part_of_buttonset) {
-                // if part_of_buttonset then no need to call button();
-                $(input).button();
-            }
+            $(input).checkboxradio({icon: false})
+                    .addClass("toontalk-button");
             utilities.use_custom_tooltip(input);
             return {container: container,
                     button: input,
@@ -3113,6 +3108,22 @@ window.TOONTALK.UTILITIES =
             return {container: container,
                     button: input,
                     label: label_element};
+        };
+
+        utilities.create_div = function () { // takes any number of parameters
+            var div = document.createElement("div");
+            var i;
+            for (i = 0; i < arguments.length; i++) {
+                if (arguments[i]) {
+                    if (arguments[i].container) {
+                        div.appendChild(arguments[i].button);
+                        div.appendChild(arguments[i].label);
+                    } else {
+                        div.appendChild(arguments[i]);
+                    }
+                }
+            }
+            return div;
         };
 
         utilities.create_horizontal_table = function () { // takes any number of parameters
@@ -5378,17 +5389,17 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                    "docs/manual/index.html?reset=1",
                                    "Learn about ToonTalk",
                                    "Click to visit the page that introduces everything.",
-                                   {"background": "yellow"});
+                                   {background: "yellow"});
                 add_button_or_link("toontalk-manual-tour",
                                    "docs/tours/tour1.html?reset=1",
                                    "Watch a tour of ToonTalk",
                                    "Click to visit a page that replays a tour.",
-                                   {"background": "pink"});
+                                   {background: "pink"});
                 add_button_or_link("toontalk-manual-whats-new",
                                    "docs/manual/whats-new.html?reset=1",
                                    "What's new?",
                                    "Click to visit see what has changed recently.",
-                                   {"background": "cyan"});
+                                   {background: "cyan"});
         };
         var unload_listener = function (event) {
             try {

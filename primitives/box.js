@@ -1104,7 +1104,7 @@ window.TOONTALK.box_backside =
             var backside_element = backside.get_element();
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, box);
             var generic_backside_update = backside.update_display.bind(backside);
-            var buttons = TT.UTILITIES.create_horizontal_table(horizontal.container, vertical.container);
+            var buttons = TT.UTILITIES.create_div(horizontal, vertical);
             size_input.button.addEventListener('change',   update_value);
             size_input.button.addEventListener('mouseout', update_value);
             horizontal.button.addEventListener('change',   update_orientation);
@@ -1130,7 +1130,8 @@ window.TOONTALK.box_backside =
                                        });
             backside_element.appendChild(size_input.container);
             backside_element.appendChild(buttons);
-            $(buttons).buttonset();
+            $(buttons).controlgroup()
+                      .removeClass("ui-controlgroup"); // doesn't look good
             backside_element.appendChild(advanced_settings_button);
             backside.rerender();
             return backside;
