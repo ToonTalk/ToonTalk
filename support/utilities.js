@@ -5554,7 +5554,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                        100);
             if (typeof TT.cross_origin_url_function === 'undefined') {
                 // might have been set explicitly in index.html or the like
-                utilities.download_file("http://crossorigin.me/https://drive.google.com/uc?id=0B0taMM6vlEqQaWprd2d1ZnlmQWs",
+                // any static web page containing only the word "working" will work
+                utilities.download_file("http://crossorigin.me/http://users.ox.ac.uk/~oucs0030/crossorigin-test.txt",
                                         function (contents) {
                                             if (contents === "working") {
                                                 TT.cross_origin_url_function = function (url) {
