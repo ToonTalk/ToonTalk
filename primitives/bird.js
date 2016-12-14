@@ -1193,14 +1193,15 @@ window.TOONTALK.nest = (function (TT) {
                                                              top:  0};
                     }
                     widget_element = widget_side.get_element(true);
-                    nest_width =  $(nest_element).width();
+                    nest_width  = $(nest_element).width();
                     nest_height = $(nest_element).height();
                     // left and top are 10%
                     left = nest_width  * .1 + nest_offset.left - top_level_backside_element_offset.left;
-                    top  = nest_height * .1 + nest_offset.top -  top_level_backside_element_offset.top;
+                    top  = nest_height * .1 + nest_offset.top  - top_level_backside_element_offset.top;
                     TT.UTILITIES.set_css(widget_element,
                                          {width:  contents_width(nest_width),
                                           height: contents_height(nest_height)});
+                    widget_side.render();
                     if ($top_level_backside_element.length > 0) {
                         robot.add_watched_step_end_listeners(function () {
                             // run this after step has finished since removal from parent may happen during this step
