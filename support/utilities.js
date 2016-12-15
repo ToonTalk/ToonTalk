@@ -5551,18 +5551,19 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                            TT.DISPLAY_UPDATES.update_display();
                        },
                        100);
-            if (typeof TT.cross_origin_url_function === 'undefined') {
-                // might have been set explicitly in index.html or the like
-                // any static web page containing only the word "working" will work
-                utilities.download_file("http://crossorigin.me/http://users.ox.ac.uk/~oucs0030/crossorigin-test.txt",
-                                        function (contents) {
-                                            if (contents === "working") {
-                                                TT.cross_origin_url_function = function (url) {
-                                                    return "http://crossorigin.me/" + url;
-                                                };
-                                            }
-                                        });
-            }
+            // the following works intermitently with http and fails when ToonTalk is using https due to browser refusal
+//             if (typeof TT.cross_origin_url_function === 'undefined') {
+//                 // might have been set explicitly in index.html or the like
+//                 // any static web page containing only the word "working" will work
+//                 utilities.download_file("http://crossorigin.me/http://users.ox.ac.uk/~oucs0030/crossorigin-test.txt",
+//                                         function (contents) {
+//                                             if (contents === "working") {
+//                                                 TT.cross_origin_url_function = function (url) {
+//                                                     return "http://crossorigin.me/" + url;
+//                                                 };
+//                                             }
+//                                         });
+//             }
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
         }
