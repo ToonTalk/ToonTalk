@@ -33,6 +33,8 @@ window.TOONTALK.google_drive =
                 status = wrong_origin_message + origin + ".\nIf you are hosting ToonTalk elsewhere you need to set TOONTALK.GOOGLE_DRIVE_CLIENT_ID and TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE";
                 if (callback_when_authorized) {
                     callback_when_authorized(status);
+                } else {
+                    console.log(status);
                 }
                 return;
             }
