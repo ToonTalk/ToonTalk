@@ -262,7 +262,8 @@ window.TOONTALK.SETTINGS =
               var url          = TT.google_drive.google_drive_url(google_file.id);
               var editable_url = window.location.protocol + "//" + window.location.host +
                                  "/ToonTalk/published.html" + window.location.search +
-                                 "&replace-with-url=" + encodeURIComponent(TT.google_drive.google_drive_url(google_file.id, true));
+                                 (window.location.search ? "&" : "?") + // if there are no URL parameters use ? otherwise &
+                                 "replace-with-url=" + encodeURIComponent(TT.google_drive.google_drive_url(google_file.id, true));
               var both = window.document.createElement('span');
               if (TT.TRANSLATION_ENABLED) {
                   url = TT.UTILITIES.add_URL_parameter(url, "translate", "1");
