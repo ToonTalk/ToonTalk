@@ -5556,18 +5556,19 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                        },
                        100);
             // the following works intermitently with http and fails when ToonTalk is using https due to browser refusal
-//             if (typeof TT.cross_origin_url_function === 'undefined') {
-//                 // might have been set explicitly in index.html or the like
-//                 // any static web page containing only the word "working" will work
-//                 utilities.download_file("http://crossorigin.me/http://users.ox.ac.uk/~oucs0030/crossorigin-test.txt",
-//                                         function (contents) {
-//                                             if (contents === "working") {
-//                                                 TT.cross_origin_url_function = function (url) {
-//                                                     return "http://crossorigin.me/" + url;
-//                                                 };
-//                                             }
-//                                         });
-//             }
+            if (typeof TT.cross_origin_url_function === 'undefined') {
+                // might have been set explicitly in index.html or the like
+                // any static web page containing only the word "working" will work
+                // note that if toontalk.appspot.com's quota is exceeded or broken then published pages will be downloaded instead of opened in a new tab 
+                utilities.download_file("https://toontalk.appspot.com/p/https%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D0B0taMM6vlEqQaWprd2d1ZnlmQWs",
+                                        function (contents) {
+                                            if (contents && contents.trim() === "working") {
+                                                TT.cross_origin_url_function = function (url) {
+                                                    return "https://toontalk.appspot.com/p/" + encodeURIComponent(url);
+                                                };
+                                            }
+                                        });
+            }
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
         }
