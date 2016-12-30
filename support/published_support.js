@@ -61,8 +61,6 @@ ensure_toontalk_is_initialized();
 
 return {
     create_editable_text: function () {
-//         var editable_text = $("<div class='toontalk-edit'>Edit this</div>").editable({inlineMode: inline_mode, imageUpload: false}).get(0);
-//          TT.UTILITIES.can_receive_drops($(editable_text).children(".froala-element").get(0));
          var editable_text = $('<textarea contenteditable="true">Edit this</textarea>');
          return editable_text;
     },
@@ -85,7 +83,7 @@ var static_contents_end =
 '</html>\n';
             var page_contents = static_contents_header_1 + title + static_contents_header_2;
             editable_contents.forEach(function (editable_content, index) {
-                                          page_contents += '<div class="toontalk-edit" contenteditable="true" name="content">\n' + editable_content + "\n</div>\n";
+                                          page_contents += '<div class="toontalk-edit" contenteditable="true">\n' + editable_content + "\n</div>\n";
                                           if (widgets_json[index]) {
                                               page_contents += widgets_json[index];
                                           }
@@ -97,7 +95,7 @@ var static_contents_end =
         any_edits = widget_count_in_last_save !== $elements.length;
         widget_count_in_last_save = $elements.length;
         $(".toontalk-edit").each(function (index, element) {
-                                     var content = element.innerHTML; // $(element).editable("getHTML", false, true);
+                                     var content = element.innerHTML;
                                      if (editable_contents[index] && editable_contents[index] !== content) {
                                          any_edits = true;
                                      }

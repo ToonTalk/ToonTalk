@@ -331,14 +331,14 @@ window.TOONTALK.google_drive =
  * @param {String} visibility 'PUBLIC' to make the property visible by all apps,
  *     or 'PRIVATE' to make it only available to the app that created it.
  */
-     insert_property: function(file_id, key, value, visibility) {
+     insert_property: function (file_id, key, value, visibility) {
          var body = {'key': key,
                      'value': value,
                      'visibility': visibility};
          var request = gapi.client.drive.properties.insert({'fileId': file_id,
                                                             'resource': body});
          request.execute(function (response) {
-         });
+                         });
      }
 
    };
