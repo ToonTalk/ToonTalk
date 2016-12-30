@@ -91,11 +91,11 @@ var static_contents_end =
             return page_contents;
         };
         var any_edits = widget_count_in_last_save !== $elements.length;
-        // check every 10 seconds for edits
+        // check every 5 seconds for edits
         setTimeout(function () {
                        TT.published_support.send_edit_updates(file_id);
                    },
-                   10000);
+                   5000);
         if (TT.google_drive.get_status() !== "Ready") {
             return;
         }
