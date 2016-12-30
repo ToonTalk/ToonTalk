@@ -61,8 +61,7 @@ ensure_toontalk_is_initialized();
 
 return {
     create_editable_text: function () {
-         var editable_text = $('<textarea contenteditable="true">Edit this</textarea>');
-         return editable_text;
+        return $('<div class="toontalk-edit" contenteditable="true">&nbsp;</div>').get(0);
     },
     send_edit_updates: function (file_id) {
         var $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");

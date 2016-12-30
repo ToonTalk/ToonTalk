@@ -328,11 +328,9 @@ window.TOONTALK.UTILITIES =
             top_level_element.toontalk_widget_side   = widget;
             top_level_element.appendChild(json_object_element);
             $(top_level_element).insertAfter($current_editable_text);
-            // TODO: update this
-//             while (child_target.nextSibling) {
-//                 $(editable_text).children(".froala-element").get(0).appendChild(child_target.nextSibling);
-//             }
             $(editable_text).insertAfter(top_level_element);
+            CKEDITOR.inline(editable_text);
+            utilities.can_receive_drops(editable_text);
             widget.set_visible(true);
             widget.render();
             // published_support will notice this and save soon
@@ -392,7 +390,7 @@ window.TOONTALK.UTILITIES =
             }
         } else if ($(event.target).is(".toontalk-drop-area")) {
             $target = $(event.target);
-        } else if (json_object && $(event.currentTarget).is(".froala-element")) {
+        } else if (json_object && $(event.currentTarget).is(".toontalk-edit")) {
             // dropped a widget on editable text - insert it after that
             insert_widget_in_editable_text(json_object, event);
             return;
@@ -5569,8 +5567,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                             }
                                         });
             }
-            $(".toontalk-edit").each(function (index, element) { 
+            $(".toontalk-edit").each(function (index, element) {
                                          CKEDITOR.inline(element);
+                                         utilities.can_receive_drops(element);
                                      });
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));

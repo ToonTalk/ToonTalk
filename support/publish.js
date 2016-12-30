@@ -8,10 +8,6 @@
 
 window.TOONTALK.publish = (function (TT) {
 
-// somehow libraries/froala-wysiwyg-editor/css/froala_style.min.css is missing
-
-// Using DropBox rather than GitHub for Froala since otherwise web fonts won't load due to lack of cross site permissions
-
 var static_contents_header_1 =
 '<!DOCTYPE html>\n' +
 '<html>\n' +
