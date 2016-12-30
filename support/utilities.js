@@ -5567,10 +5567,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                             }
                                         });
             }
-            $(".toontalk-edit").each(function (index, element) {
-                                         CKEDITOR.inline(element);
-                                         utilities.can_receive_drops(element);
-                                     });
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
         }

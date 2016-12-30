@@ -66,6 +66,12 @@ window.TOONTALK.google_drive =
            gapi.client.load('drive', 'v2', function() {
                TT.google_drive.get_folder_ids(function () {
                    status = "Ready";
+                   // no point supporting editing until ready to save edits
+                   // unclear if this is the most modular place for this
+                   $(".toontalk-edit").each(function (index, element) {
+                                                CKEDITOR.inline(element);
+                                                TT.UTILITIES.can_receive_drops(element);
+                                            });
                });
            });
            if (callback) {
