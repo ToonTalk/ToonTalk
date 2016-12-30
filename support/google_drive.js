@@ -228,6 +228,10 @@ window.TOONTALK.google_drive =
                       // is new so add custom property for retrieval
                       TT.google_drive.insert_property(file.id, 'ToonTalkType', toontalk_type, 'PUBLIC');
                   }
+                  if (file.error) {
+                      TT.UTILITIES.display_message("Unable to access " + file_name + " due to error: " + file.error);
+                      return;
+                  }
                   if (callback) {
                       callback(file);
                   }
@@ -308,9 +312,9 @@ window.TOONTALK.google_drive =
 
        google_drive_url: function (id, read_write) {
            // Google no longer supports static web pages from Google Drive: "https://googledrive.com/host/" + id + "/";
-           if (read_write) {
-               return "https://www.googleapis.com/drive/v2/files/" + id + "?alt=media";
-           }
+//            if (read_write) {
+//                return "https://www.googleapis.com/drive/v2/files/" + id + "?alt=media";
+//            }
            if (typeof TT.cross_origin_url_function === 'function') {
                return TT.cross_origin_url_function("https://drive.google.com/uc?id=" + id);
            }
