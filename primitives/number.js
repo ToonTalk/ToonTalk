@@ -344,9 +344,6 @@ window.TOONTALK.number = (function () {
         var new_number = Object.create(number);
         // value is a private variable closed over below
         var value = bigrat_from_values(numerator, denominator);
-//         if (!format) {
-//             format = number.default_format;
-//         }
         if (!operator) {
             operator = '+';
         }

@@ -13,31 +13,31 @@ var editable_contents = [];
 var widgets_json = [];
 var widget_count_in_last_save = 0;
 var editor_enabled = false;
-var inline_mode = !TT.UTILITIES.get_current_url_boolean_parameter('edit', false);
+// var inline_mode = !TT.UTILITIES.get_current_url_boolean_parameter('edit', false);
 
-var respond_to_authorization_need = function (error, saving_window, saving_window_URL) {
-    var alert_element = document.createElement('div');
-    var authorize;
-    alert_element.className = "toontalk-alert";
-    if (error === 'Need to authorize') {
-        alert_element.innerHTML = "Editing will be enabled if you can log into your Google Drive account. ";
-        authorize = TT.UTILITIES.create_button("Login to Google",
-                                               "toontalk-google-login-button",
-                                               "Click to log in to Google to authorize use of your Google Drive.",
-                                               function () {
-                                                   $(alert_element).remove();
-                                                   saving_window.postMessage("user wants to authorize", saving_window_URL);
-                                               });
-        alert_element.appendChild(authorize);
-    } else {
-        alert_element.innerHTML = "Editing disabled because unable to get authorization to access your Google Drive files. Problem is '" + error + "'";
-    }
-    document.body.insertBefore(alert_element, document.body.firstChild);
-    setTimeout(function () {
-                   $(alert_element).remove();
-               },
-               10000); // alert goes away after 10 seconds
-};
+// var respond_to_authorization_need = function (error, saving_window, saving_window_URL) {
+//     var alert_element = document.createElement('div');
+//     var authorize;
+//     alert_element.className = "toontalk-alert";
+//     if (error === 'Need to authorize') {
+//         alert_element.innerHTML = "Editing will be enabled if you can log into your Google Drive account. ";
+//         authorize = TT.UTILITIES.create_button("Login to Google",
+//                                                "toontalk-google-login-button",
+//                                                "Click to log in to Google to authorize use of your Google Drive.",
+//                                                function () {
+//                                                    $(alert_element).remove();
+//                                                    saving_window.postMessage("user wants to authorize", saving_window_URL);
+//                                                });
+//         alert_element.appendChild(authorize);
+//     } else {
+//         alert_element.innerHTML = "Editing disabled because unable to get authorization to access your Google Drive files. Problem is '" + error + "'";
+//     }
+//     document.body.insertBefore(alert_element, document.body.firstChild);
+//     setTimeout(function () {
+//                    $(alert_element).remove();
+//                },
+//                10000); // alert goes away after 10 seconds
+// };
 
 var ensure_toontalk_is_initialized = function () {
     // any web pages generated before the 8 January 2016 release need this to explicitly call initialize_toontalk
@@ -61,9 +61,7 @@ ensure_toontalk_is_initialized();
 
 return {
     create_editable_text: function () {
-        var editable_text = $("<div class='toontalk-edit'>Edit this</div>").editable({inlineMode: inline_mode, imageUpload: false}).get(0);
-         TT.UTILITIES.can_receive_drops($(editable_text).children(".froala-element").get(0));
-         return editable_text;
+        return $('<div class="toontalk-edit" contenteditable="true">&nbsp;</div>').get(0);
     },
     send_edit_updates: function (file_id) {
         var $elements = $(".toontalk-backside-of-top-level, .toontalk-top-level-resource-container");
@@ -84,7 +82,7 @@ var static_contents_end =
 '</html>\n';
             var page_contents = static_contents_header_1 + title + static_contents_header_2;
             editable_contents.forEach(function (editable_content, index) {
-                                          page_contents += '<div class="toontalk-edit" name="content">\n' + editable_content + "\n</div>\n";
+                                          page_contents += '<div class="toontalk-edit" contenteditable="true">\n' + editable_content + "\n</div>\n";
                                           if (widgets_json[index]) {
                                               page_contents += widgets_json[index];
                                           }
@@ -92,11 +90,18 @@ var static_contents_end =
             page_contents += static_contents_end;
             return page_contents;
         };
-        var any_edits;
-        any_edits = widget_count_in_last_save !== $elements.length;
+        var any_edits = widget_count_in_last_save !== $elements.length;
+        // check every 5 seconds for edits
+        setTimeout(function () {
+                       TT.published_support.send_edit_updates(file_id);
+                   },
+                   5000);
+        if (TT.google_drive.get_status() !== "Ready") {
+            return;
+        }
         widget_count_in_last_save = $elements.length;
         $(".toontalk-edit").each(function (index, element) {
-                                     var content = $(element).editable("getHTML", false, true);
+                                     var content = element.innerHTML;
                                      if (editable_contents[index] && editable_contents[index] !== content) {
                                          any_edits = true;
                                      }
@@ -127,11 +132,6 @@ var static_contents_end =
                                                   assemble_contents(document.title, editable_contents, widgets_json),
                                                   callback);
         }
-        // check every 10 seconds for edits
-        setTimeout(function () {
-                       TT.published_support.send_edit_updates(file_id);
-                   },
-                   10000);
     }};
 
 }(window.TOONTALK));

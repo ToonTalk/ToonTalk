@@ -328,10 +328,9 @@ window.TOONTALK.UTILITIES =
             top_level_element.toontalk_widget_side   = widget;
             top_level_element.appendChild(json_object_element);
             $(top_level_element).insertAfter($current_editable_text);
-            while (child_target.nextSibling) {
-                $(editable_text).children(".froala-element").get(0).appendChild(child_target.nextSibling);
-            }
             $(editable_text).insertAfter(top_level_element);
+            CKEDITOR.inline(editable_text);
+            utilities.can_receive_drops(editable_text);
             widget.set_visible(true);
             widget.render();
             // published_support will notice this and save soon
@@ -391,7 +390,7 @@ window.TOONTALK.UTILITIES =
             }
         } else if ($(event.target).is(".toontalk-drop-area")) {
             $target = $(event.target);
-        } else if (json_object && $(event.currentTarget).is(".froala-element")) {
+        } else if (json_object && $(event.currentTarget).is(".toontalk-edit")) {
             // dropped a widget on editable text - insert it after that
             insert_widget_in_editable_text(json_object, event);
             return;
@@ -961,7 +960,7 @@ window.TOONTALK.UTILITIES =
         var url = decodeURIComponent(encoded_url);
         utilities.download_file(url,
                                 function (contents) {
-                                    var body, id, title, div;
+                                    var body, id, title, div, urlDecoded;
                                     if (!contents) {
                                         utilities.display_message("Unable to read contents of " + url);
                                         return;
@@ -981,12 +980,11 @@ window.TOONTALK.UTILITIES =
                                     div.innerHTML = body;
                                     document.body.appendChild(div);
                                     callback();
-                                    if ((url.indexOf("googleapis.com") >= 0 || url.indexOf("googleusercontents.com") >= 0) &&
+                                    if (url.indexOf("drive.google.com") >= 0 &&
                                         TT.google_drive.connection_to_google_drive_possible()) {
-                                        id = url.substring(url.lastIndexOf('/')+1,url.indexOf('?'));
-                                        $(".toontalk-edit").editable({inlineMode:  !TT.UTILITIES.get_current_url_boolean_parameter('edit', false),
-                                                                      imageUpload: false,
-                                                                      crossDomain: true});
+                                        urlDecoded = decodeURIComponent(url);
+                                        id = urlDecoded.substring(urlDecoded.lastIndexOf('id=')+3);
+                                        $(".toontalk-edit").attr('contenteditable', true);
                                         TT.published_support.send_edit_updates(id);
                                     }
                                 },
@@ -2028,6 +2026,10 @@ window.TOONTALK.UTILITIES =
                 utilities.retrieve_string('toontalk-last-key', key_callback);
             } else {
                 widget = utilities.create_from_json(json);
+                if (widget.set_visible && has_ancestor_element(element, document.body)) {
+                    // check  widget.set_visible since widget might be a tool 
+                    widget.set_visible(true);
+                }
                 process_widget_callback()
             }
         };
@@ -5552,18 +5554,19 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                        },
                        100);
             // the following works intermitently with http and fails when ToonTalk is using https due to browser refusal
-//             if (typeof TT.cross_origin_url_function === 'undefined') {
-//                 // might have been set explicitly in index.html or the like
-//                 // any static web page containing only the word "working" will work
-//                 utilities.download_file("http://crossorigin.me/http://users.ox.ac.uk/~oucs0030/crossorigin-test.txt",
-//                                         function (contents) {
-//                                             if (contents === "working") {
-//                                                 TT.cross_origin_url_function = function (url) {
-//                                                     return "http://crossorigin.me/" + url;
-//                                                 };
-//                                             }
-//                                         });
-//             }
+            if (typeof TT.cross_origin_url_function === 'undefined') {
+                // might have been set explicitly in index.html or the like
+                // any static web page containing only the word "working" will work
+                // note that if toontalk.appspot.com's quota is exceeded or broken then published pages will be downloaded instead of opened in a new tab 
+                utilities.download_file("https://toontalk.appspot.com/p/https%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D0B0taMM6vlEqQaWprd2d1ZnlmQWs",
+                                        function (contents) {
+                                            if (contents && contents.trim() === "working") {
+                                                TT.cross_origin_url_function = function (url) {
+                                                    return "https://toontalk.appspot.com/p/" + encodeURIComponent(url);
+                                                };
+                                            }
+                                        });
+            }
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
         }

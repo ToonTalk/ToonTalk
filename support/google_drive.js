@@ -33,6 +33,8 @@ window.TOONTALK.google_drive =
                 status = wrong_origin_message + origin + ".\nIf you are hosting ToonTalk elsewhere you need to set TOONTALK.GOOGLE_DRIVE_CLIENT_ID and TOONTALK.ORIGIN_FOR_GOOGLE_DRIVE";
                 if (callback_when_authorized) {
                     callback_when_authorized(status);
+                } else {
+                    console.log(status);
                 }
                 return;
             }
@@ -64,6 +66,12 @@ window.TOONTALK.google_drive =
            gapi.client.load('drive', 'v2', function() {
                TT.google_drive.get_folder_ids(function () {
                    status = "Ready";
+                   // no point supporting editing until ready to save edits
+                   // unclear if this is the most modular place for this
+                   $(".toontalk-edit").each(function (index, element) {
+                                                CKEDITOR.inline(element);
+                                                TT.UTILITIES.can_receive_drops(element);
+                                            });
                });
            });
            if (callback) {
@@ -226,6 +234,10 @@ window.TOONTALK.google_drive =
                       // is new so add custom property for retrieval
                       TT.google_drive.insert_property(file.id, 'ToonTalkType', toontalk_type, 'PUBLIC');
                   }
+                  if (file.error) {
+                      console.log("Unable to access file " + (file_name || file_id) + " due to error: " + file.error.message);
+                      return;
+                  }
                   if (callback) {
                       callback(file);
                   }
@@ -306,9 +318,9 @@ window.TOONTALK.google_drive =
 
        google_drive_url: function (id, read_write) {
            // Google no longer supports static web pages from Google Drive: "https://googledrive.com/host/" + id + "/";
-           if (read_write) {
-               return "https://www.googleapis.com/drive/v2/files/" + id + "?alt=media";
-           }
+//            if (read_write) {
+//                return "https://www.googleapis.com/drive/v2/files/" + id + "?alt=media";
+//            }
            if (typeof TT.cross_origin_url_function === 'function') {
                return TT.cross_origin_url_function("https://drive.google.com/uc?id=" + id);
            }
@@ -325,14 +337,14 @@ window.TOONTALK.google_drive =
  * @param {String} visibility 'PUBLIC' to make the property visible by all apps,
  *     or 'PRIVATE' to make it only available to the app that created it.
  */
-     insert_property: function(file_id, key, value, visibility) {
+     insert_property: function (file_id, key, value, visibility) {
          var body = {'key': key,
                      'value': value,
                      'visibility': visibility};
          var request = gapi.client.drive.properties.insert({'fileId': file_id,
                                                             'resource': body});
          request.execute(function (response) {
-         });
+                         });
      }
 
    };
