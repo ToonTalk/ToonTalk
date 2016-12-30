@@ -249,30 +249,24 @@ window.TOONTALK.SETTINGS =
                                                             "Check this if you want to publish the workspace and its widgets. Uncheck it you wish to publish just the widgets.");
           var display_published = function (google_file, extra_info) {
               // currently extra_info is the JSON of the current widgets if previously published
-              var link_to_publication = create_connection_to_google_file(google_file, "Published '" + widget.get_setting('program_name') + "': ", extra_info);
+              var link_to_publication = create_connection_to_google_file(google_file, widget.get_setting('program_name'), extra_info);
               var $row = $(program_name.container).children("tr");
               widget.display_message("Your web page is ready for you to edit. Just click on the link.");
               if ($row.length > 0) {
                   $row.get(0).appendChild(TT.UTILITIES.create_table_entry(link_to_publication));
               }
           };
-          var create_connection_to_google_file = function (google_file, prefix, extra_info) {
-              var link_to_download = document.createElement('span');
-              var link_to_edit     = document.createElement('span');
-              var url          = TT.google_drive.google_drive_url(google_file.id);
+          var create_connection_to_google_file = function (google_file, name, extra_info) {
+              var link_to_edit = document.createElement('span');
               var editable_url = window.location.protocol + "//" + window.location.host +
                                  "/ToonTalk/published.html" + window.location.search +
                                  (window.location.search ? "&" : "?") + // if there are no URL parameters use ? otherwise &
                                  "replace-with-url=" + encodeURIComponent(TT.google_drive.google_drive_url(google_file.id, true));
-              var both = window.document.createElement('span');
               if (TT.TRANSLATION_ENABLED) {
-                  url = TT.UTILITIES.add_URL_parameter(url, "translate", "1");
+                  editable_url = TT.UTILITIES.add_URL_parameter(editable_url, "translate", "1");
               }
-              link_to_download.innerHTML = prefix + "<a href='" + url + "' target='_blank'>Download</a>";
-              link_to_edit.innerHTML = "&nbsp;or&nbsp;" + "<a href='" + editable_url + "' target='_blank'>Edit</a>";
-              both.appendChild(link_to_download);
-              both.appendChild(link_to_edit);
-              return both;
+              link_to_edit.innerHTML = "Published " + "<a href='" + editable_url + "' target='_blank' title='Click to visit or edit.'>" + name + "</a>";
+              return link_to_edit;
           };
           // create a div whose positioning isn't absolute
           // settings_panel needs to be absolute for at least z-index to work properly
