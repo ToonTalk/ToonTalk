@@ -145,8 +145,7 @@ var local_replacements =
     // needed for running off-line
     // no need for an entry for https://apis.google.com/js/client.js?onload=handle_client_load
     // since requires an Internet connection to be useful
-    {"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js": "libraries/jquery-3.1.1.min.js",
-     "https://cdn.ckeditor.com/4.6.1/standard/ckeditor.js":              "libraries/ckeditor/ckeditor.js"};
+    {"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js": "libraries/jquery-3.1.1.min.js"};
 
 var loadFile = function (index, offline) {
                    var script = document.createElement("script");
@@ -217,7 +216,8 @@ var published_page = get_parameter('published', '0') !== '0';
 
 if (published_page) {
     file_names.push("support/published_support.js");
-    file_names.push("https://cdn.ckeditor.com/4.6.1/standard/ckeditor.js");
+    // not using CDN first for CKEditor since customised it to include color buttons
+    file_names.push("libraries/ckeditor/ckeditor.js");
 }
 
 // if (TOONTALK.CHROME_APP) {
