@@ -145,7 +145,8 @@ var local_replacements =
     // needed for running off-line
     // no need for an entry for https://apis.google.com/js/client.js?onload=handle_client_load
     // since requires an Internet connection to be useful
-    {"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js": "libraries/jquery-3.1.1.min.js"};
+    {"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js": "libraries/jquery-3.1.1.min.js",
+     "https://cdn.ckeditor.com/4.6.1/standard/ckeditor.js":              "libraries/ckeditor/ckeditor.js"};
 
 var loadFile = function (index, offline) {
                    var script = document.createElement("script");
@@ -216,16 +217,7 @@ var published_page = get_parameter('published', '0') !== '0';
 
 if (published_page) {
     file_names.push("support/published_support.js");
-    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/froala_editor.min.js");
-    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/block_styles.min.js");
-    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/colors.min.js");
-    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_family.min.js");
-    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/font_size.min.js");
-    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/lists.min.js");
-    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/tables.min.js");
-    file_names.push("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/js/plugins/video.min.js");
-    add_css("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/font-awesome.min.css");
-    add_css("https://dl.dropboxusercontent.com/u/51973316/ToonTalk/libraries/froala-wysiwyg-editor/css/froala_editor.min.css");
+    file_names.push("https://cdn.ckeditor.com/4.6.1/standard/ckeditor.js");
 }
 
 // if (TOONTALK.CHROME_APP) {

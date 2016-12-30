@@ -328,9 +328,10 @@ window.TOONTALK.UTILITIES =
             top_level_element.toontalk_widget_side   = widget;
             top_level_element.appendChild(json_object_element);
             $(top_level_element).insertAfter($current_editable_text);
-            while (child_target.nextSibling) {
-                $(editable_text).children(".froala-element").get(0).appendChild(child_target.nextSibling);
-            }
+            // TODO: update this
+//             while (child_target.nextSibling) {
+//                 $(editable_text).children(".froala-element").get(0).appendChild(child_target.nextSibling);
+//             }
             $(editable_text).insertAfter(top_level_element);
             widget.set_visible(true);
             widget.render();
@@ -961,7 +962,7 @@ window.TOONTALK.UTILITIES =
         var url = decodeURIComponent(encoded_url);
         utilities.download_file(url,
                                 function (contents) {
-                                    var body, id, title, div;
+                                    var body, id, title, div, urlDecoded;
                                     if (!contents) {
                                         utilities.display_message("Unable to read contents of " + url);
                                         return;
@@ -981,12 +982,11 @@ window.TOONTALK.UTILITIES =
                                     div.innerHTML = body;
                                     document.body.appendChild(div);
                                     callback();
-                                    if ((url.indexOf("googleapis.com") >= 0 || url.indexOf("googleusercontents.com") >= 0) &&
+                                    if (url.indexOf("drive.google.com") >= 0 &&
                                         TT.google_drive.connection_to_google_drive_possible()) {
-                                        id = url.substring(url.lastIndexOf('/')+1,url.indexOf('?'));
-                                        $(".toontalk-edit").editable({inlineMode:  !TT.UTILITIES.get_current_url_boolean_parameter('edit', false),
-                                                                      imageUpload: false,
-                                                                      crossDomain: true});
+                                        urlDecoded = decodeURIComponent(url);
+                                        id = urlDecoded.substring(urlDecoded.lastIndexOf('id=')+3);
+                                        $(".toontalk-edit").attr('contenteditable', true);
                                         TT.published_support.send_edit_updates(id);
                                     }
                                 },
@@ -5569,6 +5569,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                             }
                                         });
             }
+            $(".toontalk-edit").each(function (index, element) { 
+                                         CKEDITOR.inline(element);
+                                     });
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
         }

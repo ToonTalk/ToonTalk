@@ -30,7 +30,7 @@ var static_contents_end =
     var assemble_contents = function (title, editable_contents, widgets_json) {
         var page_contents = static_contents_header_1 + title + static_contents_header_2;
         editable_contents.forEach(function (editable_content, index) {
-                                      page_contents += '<div class="toontalk-edit" name="content">\n' + editable_content + "\n</div>\n";
+                                      page_contents += '<div class="toontalk-edit" contenteditable="true" name="content">\n' + editable_content + "\n</div>\n";
                                       if (widgets_json[index]) {
                                           page_contents += widgets_json[index];
                                       }
