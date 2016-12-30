@@ -229,7 +229,7 @@ window.TOONTALK.google_drive =
                       TT.google_drive.insert_property(file.id, 'ToonTalkType', toontalk_type, 'PUBLIC');
                   }
                   if (file.error) {
-                      TT.UTILITIES.display_message("Unable to access " + file_name + " due to error: " + file.error);
+                      console.log("Unable to access file " + (file_name || file_id) + " due to error: " + file.error.message);
                       return;
                   }
                   if (callback) {
