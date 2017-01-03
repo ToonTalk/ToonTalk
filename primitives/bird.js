@@ -237,12 +237,7 @@ window.TOONTALK.bird = (function (TT) {
                                                            bird_finished_continuation();
                                                        }
                                                    };
-                            if (options.temporary_bird) {
-                                // no point returning if temporary
-                                new_continuation();
-                            } else {
-                                this.fly_to(bird_offset, new_continuation, options);
-                            }
+                            this.fly_to(bird_offset, new_continuation, options);
                         }.bind(this));
                     }.bind(this);
                     var old_bird_finished_continuation;
