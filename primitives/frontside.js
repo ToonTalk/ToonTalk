@@ -13,7 +13,7 @@ window.TOONTALK.frontside =
     var widgets_entered_stack = [];
     return {
         create: function (widget) {
-            // where widget is a ToonTalk widget like a number or a box
+            // where widget is a ToonTalk widget such as a number or a box
             var frontside = Object.create(this);
             var frontside_element = document.createElement('div');
             var $frontside_element = $(frontside_element);
@@ -136,6 +136,10 @@ window.TOONTALK.frontside =
             $(element).remove();
             // free the memory (tested and without the following memory footprint grows faster)
             element.toontalk_widget_side = null;
+        },
+
+        clear_selection_feedback_stack: function () {
+            widgets_entered_stack = [];
         }
 
     };

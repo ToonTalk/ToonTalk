@@ -804,6 +804,9 @@ window.TOONTALK.backside =
                 var parent_of_backside = widget.get_parent_of_backside();
                 if (frontside && (!parent_of_backside || parent_of_backside.get_widget().is_top_level())) {
                     TT.UTILITIES.highlight_element(frontside.get_element());
+                } else {
+                    // sometimes the stack of widget frontsides enter isn't popped enough (perhaps from moving mouse so fast some mouseleave events missed?)
+                    TT.frontside.clear_selection_feedback_stack();
                 }
             });
             backside_element.addEventListener("mouseleave", function (event) {
