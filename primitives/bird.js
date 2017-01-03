@@ -279,7 +279,9 @@ window.TOONTALK.bird = (function (TT) {
                             }
                         }
                     } else if (!this.is_function_bird()) {
-                        after_delivery_continuation();
+                        if (after_delivery_continuation) {
+                            after_delivery_continuation();
+                        }
                     }
                     stop_carrying_element($(bird_frontside_element).offset());
                 }.bind(this);
