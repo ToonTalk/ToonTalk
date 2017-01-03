@@ -737,7 +737,7 @@ window.TOONTALK.robot_action =
             new_action.run_unwatched = function (robot) {
                 var referenced = TT.path.dereference_path(path, robot);
                 if (!referenced) {
-                    TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + " in context: " + robot.get_context());
+                    TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + ", the back of " + robot.get_context());
                     return false;
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {
