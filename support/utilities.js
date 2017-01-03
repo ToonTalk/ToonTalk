@@ -2406,6 +2406,8 @@ window.TOONTALK.UTILITIES =
                                 } else {
                                     position.top += 20;
                                 }
+                                // tooltip has a minimum width of 100 pixels
+                                position.left = Math.min(position.left, $(window).width()-100);
                                 position.left = Math.max(position.left, window.pageXOffset);
                                 position.top  = Math.max(position.top,  window.pageYOffset);
                                 utilities.set_css(this, position);
