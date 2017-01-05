@@ -1081,9 +1081,14 @@ window.TOONTALK.widget = (function (TT) {
                             json_view.backside_height = $(backside_element).height();
                         }
                         if (!json_view.backside_left) {
-                            position = $(backside_element).position();
-                            json_view.backside_left = position.left;
-                            json_view.backside_top  = position.top;
+                            if (backside.json_view && typeof backside.json_view.backside_left !== 'undefined') {
+                                json_view.backside_left = backside.json_view.backside_left;
+                                json_view.backside_top  = backside.json_view.backside_top;
+                            } else {
+                                position = $(backside_element).position();
+                                json_view.backside_left = position.left;
+                                json_view.backside_top  = position.top;
+                            }
                             if ($(backside_element).find(".toontalk-settings-backside-button").html() === '&lt;') {
                                 json_view.advanced_settings_open = true;
                             }
