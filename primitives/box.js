@@ -710,11 +710,11 @@ window.TOONTALK.box = (function (TT) {
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.element_width(containing_element))
+                box_width = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "width"))
                             || this.saved_width
                             || TT.box.get_default_width();
             }
-            box_height    = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.element_height(containing_element))
+            box_height    = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "height"))
                             || this.saved_height
                             || TT.box.get_default_height();
             if (horizontal) {
