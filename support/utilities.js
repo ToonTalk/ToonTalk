@@ -699,7 +699,9 @@ window.TOONTALK.UTILITIES =
             }
             // widget_side_dropped_on_me needed here to get geometry right
             if (source_widget_side) {
-                target_widget_side.widget_side_dropped_on_me(source_widget_side, {event: event});
+                if (!target_widget_side.has_ancestor(source_widget_side)) {
+                    target_widget_side.widget_side_dropped_on_me(source_widget_side, {event: event});
+                }
             } else {
                 utilities.report_internal_error("No source_widget");
             }
