@@ -580,10 +580,12 @@ window.TOONTALK.backside =
                                         if (json_view) {
                                             if (backside_widget_side.is_backside()) {
                                                 backside = backside_widget_side.get_widget().get_backside(true);
+                                                // following used to include
+                                                //  width:  json_view.backside_width,
+                                                //  height: json_view.backside_height
+                                                // but then resized backsides on backsides changed size when refreshed
                                                 css = {left:   json_view.backside_left,
-                                                       top:    json_view.backside_top,
-                                                       width:  json_view.backside_width,
-                                                       height: json_view.backside_height};
+                                                       top:    json_view.backside_top};
                                                 backside_widget_side.get_widget().apply_backside_geometry();
                                                 if (json_view.advanced_settings_open) {
                                                     backside.set_advanced_settings_showing(true, backside.get_element());
@@ -844,7 +846,7 @@ window.TOONTALK.backside =
                                                     widget.set_visible(true);
                                                     TT.UTILITIES.set_css(element, // subtract 50 for right and bottom margins
                                                                          {left: (bounding_box.width-50) *Math.random(),
-                                                                           top:  (bounding_box.height-50)*Math.random()});
+                                                                           top: (bounding_box.height-50)*Math.random()});
                                                     backside_element.appendChild(element);
                                                     widget.update_display();
                                                 });
