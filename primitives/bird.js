@@ -354,6 +354,12 @@ window.TOONTALK.bird = (function (TT) {
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
             }
+            if (!nest_recieving_message && !this.visible()) {
+                // bird without a nest that isn't being watched so acts like a sink
+                message_side.remove();
+                this.remove();
+                return;
+            }
             options.delay = TT.animation_settings.PAUSE_BETWEEN_BIRD_STEPS;
             $(bird_frontside_element).removeClass("toontalk-bird-gimme")
             message_element = message_side.get_element(true);
