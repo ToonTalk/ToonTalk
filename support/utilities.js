@@ -3893,7 +3893,7 @@ window.TOONTALK.UTILITIES =
                 }
             }
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
-            if (TT.debugging) {
+            if (TT.debugging && !options.user_initiated) {
                 console.log(options.plain_text || message);
                 console.trace();
             }

@@ -2409,6 +2409,7 @@ window.TOONTALK.element.function =
                 } else {
                     options = {duration: 10000}; // ten seconds
                 }
+                options.user_initiated = true;
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
                     this.robot_in_training().display_message("Robot trained to display: " + widget.get_text(), options);
                 } else if (widget.is_plain_text_element()) {
