@@ -1358,7 +1358,10 @@ window.TOONTALK.backside =
                 // frontside needs to be added to backside container
                 container_widget = TT.UTILITIES.widget_side_of_jquery($backside_container);
                 if (container_widget && !(widget.is_robot() && container_widget.get_widget().is_robot() && widget.get_first_in_team() === container_widget.get_widget().get_first_in_team())) {
-                    container_widget.widget_side_dropped_on_me(widget, {event: event});
+                    container_widget.widget_side_dropped_on_me(widget, {event: event,
+                                                                        // a robot being trained to close a backside should not record 
+                                                                        // dropping the frontside 
+                                                                        ignore_training: true});
                     widget.render();
                 }
             }
