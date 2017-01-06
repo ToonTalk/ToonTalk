@@ -2366,7 +2366,7 @@ window.TOONTALK.element.function =
         function (message, options) {
             var go_to_URL = function (element_url, message_properties) {
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
-                    robot.display_message("Robot trained to replace current URL.");
+                    this.robot_in_training().display_message("Robot trained to replace current URL.");
                 } else {
                     if (!element_url.get_text) {
                         functions.report_error("The 'go to page' bird could not turn " + describe(element_url) + " into a text to use it as a URL.", message_properties);
@@ -2410,7 +2410,7 @@ window.TOONTALK.element.function =
                     options = {duration: 10000}; // ten seconds
                 }
                 if (this.robot_in_training()) { // this will be bound to the message given to the function bird
-                    robot.display_message("Robot trained to display: " + widget.get_text(), options);
+                    this.robot_in_training().display_message("Robot trained to display: " + widget.get_text(), options);
                 } else if (widget.is_plain_text_element()) {
                     TT.UTILITIES.display_message(widget.get_text(), options);
                 } else {
