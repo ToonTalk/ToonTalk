@@ -48,9 +48,9 @@ window.TOONTALK.robot_action =
                              TT.UTILITIES.report_internal_error("Dropping something on itself! " + target);
                          }
                          if (!target.visible()) {
-                            // might be a robot was running watched but window hidden or robot's context closed
-                            // so thing dropped on top-level backside should be removed from DOM
-                            $(thing_in_hand.get_frontside_element()).remove();
+                             // might be a robot was running watched but window hidden or robot's context closed
+                             // so thing dropped on top-level backside should be removed from DOM
+                             $(thing_in_hand.get_frontside_element()).remove();
                          }
                          thing_in_hand.drop_on(target, {robot: robot});
                          robot.set_thing_in_hand(undefined);
@@ -233,10 +233,11 @@ window.TOONTALK.robot_action =
         if (!widget_element) {
             widget_element = TT.UTILITIES.find_resource_equal_to_widget(side, robot);
         }
-        if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible()) {
+        if (!TT.UTILITIES.is_attached(widget_element) || !robot.visible() || robot.stopped()) {
             // is running in a context where the source of this widget isn't available
             // e.g. published page or test file without standard resource widgets
             // or robot was hidden while running
+            // or it has been stopped and is finishing the cycle
             continuation();
             return;
         }
@@ -768,19 +769,22 @@ window.TOONTALK.robot_action =
                 } // else robot will stop due to the error
             };
             new_action.run_watched = function (robot) {
-                var referenced = TT.path.dereference_path(path, robot);
-                var continuation = function () {
-                    if (robot.stopped() && !robot.being_trained) {
-                        // don't stop if this is a robot being trained by another robot
-                        return;
-                    }
+                var referenced, continuation;
+                if (robot.stopped() && !robot.being_trained) {
+                    // if stopped finish the cycle as if unwatched
+                    // don't stop if this is a robot being trained by another robot
+                    this.run_unwatched(robot);
+                    return;
+                }
+                referenced = TT.path.dereference_path(path, robot);
+                continuation = function () {
                     if (!additional_info) {
                         additional_info = {};
                     }
                     additional_info.running_watched = true;
                     // do the action unwatched
                     unwatched_run_function(referenced, robot, additional_info);
-                }
+                };
                 if (!referenced) {
                     TT.UTILITIES.report_internal_error("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + robot.get_context());
                     return;
@@ -803,7 +807,6 @@ window.TOONTALK.robot_action =
                     }
                     return;
                 }
-//                 referenced.set_visible(robot.visible());
                 watched_run_function(referenced, robot, continuation, additional_info);
             };
             new_action.toString = function (to_string_info) {

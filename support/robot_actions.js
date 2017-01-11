@@ -121,9 +121,10 @@ window.TOONTALK.actions =
                 step_number = 0;
             }
             robot.run_next_step = function (now_visible) {
-                if (this.stopped()) {
-                    return;
-                }
+                // stopping mid-cycle can leave things that break subsequent runs (e.g. leaving extra stuff on workspace)
+//                 if (this.stopped()) {
+//                     return;
+//                 }
                 if (step_number < steps.length) {
                     var step = steps[step_number];
                     step_number++;
@@ -137,7 +138,7 @@ window.TOONTALK.actions =
                     } else {
                         step.run_unwatched(robot);
                     }
-                } else {
+                } else if (!this.stopped()) {
                     // currently only watched robots use these listeners
                     // if that is always the case no need calling the following
                     robot.set_running_or_in_run_queue(false);
@@ -304,7 +305,7 @@ window.TOONTALK.actions =
                     setTimeout(function () {
                                    var step;
                                    robot.run_watched_step_end_listeners();
-                                   if (step_number < steps.length && !robot.stopped()) {
+                                   if (step_number < steps.length) {
                                         step = steps[step_number];
                                         step_number++;
                                         if (TT.logging && TT.logging.indexOf('event') >= 0) {
