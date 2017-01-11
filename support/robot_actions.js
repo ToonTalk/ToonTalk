@@ -189,7 +189,7 @@ window.TOONTALK.actions =
                     if (!frontside_element.parentElement && robot.get_parent_of_frontside()) {
                         // can happen if window is minimised and then restored
                         // may not have parent if stopped
-                        robot.get_parent_of_frontside().get_frontside_element().appendChild(frontside_element);
+                        robot.get_parent_of_frontside().get_frontside_element(true).appendChild(frontside_element);
                     }
                     TT.UTILITIES.animate_to_absolute_position(frontside_element,
                                                               robot_home,
@@ -218,7 +218,7 @@ window.TOONTALK.actions =
             var context_backside = robot.get_context().get_backside();
             var parent = robot.get_parent();
             var original_parent_element, previous_robot, previous_robot_backside_element,
-                $home_element, backside_rectangle, team_member;
+                $home_element, backside_rectangle, team_member, team_member_frontside;
             if (TT.logging && TT.logging.indexOf('run') >= 0) {
                 console.log(robot.to_debug_string(50) + " running watched");
             }
@@ -237,10 +237,23 @@ window.TOONTALK.actions =
                 }
                 team_member = previous_robot.get_first_in_team();
                 while (team_member !== robot) {
+                    // open the backside to indicate where the team mate came from but remove it after a couple seconds
                     team_member.open_backside();
                     team_member.get_backside().set_advanced_settings_showing(true);
+                    (function () {
+                         // since team_member is updated in this loop close over the current value
+                         var robot_whose_backside_was_opened = team_member;
+                         setTimeout(function () {
+                                        if (robot_whose_backside_was_opened.get_backside()) {
+                                            robot_whose_backside_was_opened.get_backside().set_advanced_settings_showing(false);
+                                            robot_whose_backside_was_opened.hide_backside();
+                                        }
+                                    },
+                                    2000);
+                    }());
+                    team_member_frontside = team_member.get_frontside_element();
                     // if robot has no position use its previous_robot going back until someone has a position
-                    robot_home = $(team_member.get_frontside_element()).offset();
+                    robot_home = $(team_member_frontside).offset();
                     if (robot_home.left !== 0 && robot_home.top !== 0 && top_level_position === undefined) {
                         // update start location with a fresh copy
                         robot_start_offset = {left: robot_home.left,
@@ -252,15 +265,13 @@ window.TOONTALK.actions =
                 robot.set_visible(true);
                 // need the robot's element to be initialised since will start animating very soon
                 robot.update_display();
-                // and ensure it has a reasonable z-index
-//                 $(frontside_element).css({"z-index": TT.UTILITIES.next_z_index()+100});
                 // put the robot back when finished
                 // maybe a better name is add_cycle_finished_listener...
                 robot.add_body_finished_listener(function () {
-                                                     if (!parent) {
-                                                         robot.remove();
-                                                     } else if (original_parent_element && TOONTALK.UTILITIES.is_attached(original_parent_element)) {
+                                                     if (original_parent_element && TOONTALK.UTILITIES.is_attached(original_parent_element)) {
                                                          original_parent_element.appendChild(frontside_element);
+                                                     } else if (!parent) {
+                                                         robot.remove({do_not_remove_frontside: true});
                                                      }
                                                      // let CSS position it
                                                      $(frontside_element).css({left:      '',
