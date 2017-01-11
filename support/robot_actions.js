@@ -165,6 +165,7 @@ window.TOONTALK.actions =
                     if (first_robot_still_visible) {
                         if (saved_parent_element) {
                             saved_parent_element.appendChild(frontside_element);
+                            robot.set_parent_of_frontside(TT.UTILITIES.widget_side_of_element(saved_parent_element));
                         }
                         robot.set_animating(false);
                     }
