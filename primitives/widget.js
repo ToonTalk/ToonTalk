@@ -788,6 +788,22 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 return false;
             };
+            widget.has_ancestor_either_side = function (other) {
+                // goes up the ancestor tree following both backside or frontside parent
+                var parent;
+                if (this === other || this === other.get_backside()) {
+                    return true;
+                }
+                parent = this.get_parent_of_frontside();
+                if (parent) {
+                    return parent.has_ancestor_either_side(other);
+                }
+                parent = this.get_parent_of_backside();
+                if (parent) {
+                    return parent.has_ancestor_either_side(other);
+                }
+                return false;
+            };
             widget.remove_from_parent_of_frontside = function (event) {
                  if (parent_of_frontside) {
                      if (parent_of_frontside.is_backside()) {

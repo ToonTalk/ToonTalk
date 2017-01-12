@@ -1460,7 +1460,7 @@ window.TOONTALK.UTILITIES =
             var widget = widget_side.get_widget();
             var insertion_index = -1;
             array_of_widgets.some(function (other, index) {
-                if (widget.has_ancestor(other)) {
+                if (widget.has_ancestor_either_side(other)) {
                     insertion_index = index;
                     return true;
                 }

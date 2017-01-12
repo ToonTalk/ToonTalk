@@ -1509,6 +1509,23 @@ window.TOONTALK.backside =
             return false;
         },
 
+        has_ancestor_either_side: function (other) {
+            // goes up the ancestor tree following both backside or frontside parent
+            var parent;
+            if (this === other || this === other.get_backside()) {
+                return true;
+            }
+            parent = this.get_parent_of_frontside();
+            if (parent) {
+                return parent.has_ancestor_either_side(other);
+            }
+            parent = this.get_parent_of_backside();
+            if (parent) {
+                return parent.has_ancestor_either_side(other);
+            }
+            return false;
+        },
+
         get_backside: function () {
             // e.g. a path to the backside of a widget and already have the backside
             return this;
