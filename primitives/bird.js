@@ -459,8 +459,8 @@ window.TOONTALK.bird = (function (TT) {
                 nest_offset = $(target_frontside_element).offset();
                 top_level_backside_element_bounding_box.max_left = top_level_backside_element_bounding_box.left+$top_level_backside_element.width();
                 top_level_backside_element_bounding_box.max_top  = top_level_backside_element_bounding_box.top +$top_level_backside_element.height();
-                target_offset = {left: target_left.left +nest_width,
-                                 top:  target_offset.top+nest_height};
+                target_offset = {left: target_offset.left+nest_width,
+                                 top:  target_offset.top +nest_height};
                 // set message down near nest (southeast)
                 var message_offset =  {left: Math.min(nest_offset.left+nest_width,  top_level_backside_element_bounding_box.max_left -nest_width),
                                        top:  Math.min(nest_offset.top +nest_height, top_level_backside_element_bounding_box.max_top  -nest_height)};
