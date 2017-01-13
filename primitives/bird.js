@@ -1704,7 +1704,9 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest.add_standard_widget_functionality(new_nest);
-        widget_remove = new_nest.remove;
+        if (!widget_remove) {
+            widget_remove = new_nest.remove;
+        }
         new_nest.remove = function () {
             widget_remove.call(this);
             if (original_nest) {
