@@ -447,6 +447,7 @@ body > .toontalk-local-alert {
 	/* background-color same as toontalk-top-level-number */
 	background-color: rgb(183, 248, 196);
 	table-layout: fixed;
+	text-align: center;
 	border-spacing:  0px;
 	border-collapse: collapse;
 	width:  100%;

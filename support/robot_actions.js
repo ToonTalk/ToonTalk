@@ -129,7 +129,7 @@ window.TOONTALK.actions =
                     var step = steps[step_number];
                     step_number++;
                     if (TT.logging && TT.logging.indexOf('event') >= 0) {
-                        console.log(step + " (unwatched) at " + Date.now() + " by robot " + robot.get_name());
+                        console.log(step + " (unwatched) at " + Date.now() + " by robot " + robot.get_name() + " " + robot._debug_id);
                     }
                     // each step needs to call robot.run_next_step
                     if (now_visible) {
