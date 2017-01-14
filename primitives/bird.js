@@ -1165,7 +1165,7 @@ window.TOONTALK.nest = (function (TT) {
                     return this;
                 }
             }
-            if (contents && contents[0].dereference_path) {
+            if (contents && typeof contents[0].dereference_path === 'function') {
                 return contents[0].dereference_path(path, robot);
             }
             robot.display_message("Robot expected to find something on a nest that it could get " + TT.path.toString(path) + ". But the nest is empty or contains something else.");
