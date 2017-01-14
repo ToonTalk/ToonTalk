@@ -1323,6 +1323,12 @@ window.TOONTALK.UTILITIES =
                     // sort the shared widgets so descendants are processed before ancestors
                     // otherwise ancestor may have become a shared_widget_index before replacement
                     shared_widgets_sorted = json_history.shared_widgets.slice().sort(function (w1, w2) {
+                        if (w1.is_nest()) {
+                            return -1;
+                        }
+                        if (w2.is_nest()) {
+                            return 1;
+                        }
                         if (w1.has_ancestor_either_side(w2)) {
                             return -1;
                         }
