@@ -124,6 +124,10 @@ html {
 	min-width:  450px;
 	min-height: 150px;
 }
+.toontalk-backside-showing-advanced-settings {
+    min-width:  600px;
+	min-height: 300px;
+}
 .toontalk-backside.toontalk-highlight {
 	border-color: white;
 }
