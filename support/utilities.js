@@ -1770,6 +1770,58 @@ window.TOONTALK.UTILITIES =
             return element.getBoundingClientRect().height;
         };
 
+        utilities.cached_selectors = {};
+
+        utilities.get_toontalk_css = function (selector) {
+            var get_css = function (style_sheet) {
+                var rules = style_sheet.cssRules;
+                var i;
+                for (i = 0; i < rules.length; i++) {
+                    if (rules[i].selectorText === selector) {
+                         utilities.cached_selectors[selector] = rules[i].cssText;
+                         return rules[i].cssText;
+                    }
+                }
+            };
+            var i, style_sheet;
+            if (utilities.cached_selectors[selector]) {
+                utilities.cached_selectors[selector];
+            }
+            // can't iterate over it as an array
+            for (i = 0; i < document.styleSheets.length; i++) {
+                style_sheet = document.styleSheets[i];
+                if (style_sheet.href.indexOf("toontalk.css") >= 0) {
+                    return get_css(style_sheet);
+                }
+            }
+        };
+
+        utilities.get_toontalk_css_attribute = function (attribute, selector) {
+            var css = utilities.get_toontalk_css(selector);
+            var start, end;
+            if (!css) {
+                return;
+            }
+            start = css.indexOf(attribute + ": ");
+            if (start < 0) {
+                return;
+            }
+            start += (attribute + ": ").length;
+            end = css.indexOf(";", start);
+            return css.substring(start, end);
+        };
+
+        utilities.get_toontalk_css_numeric_attribute = function (attribute, selector) {
+            var as_string = utilities.get_toontalk_css_attribute(attribute, selector);
+            var index;
+            if (as_string) {
+                index = as_string.indexOf('px');
+                if (index >= 0) {
+                    return +as_string.substring(0, index);
+                }
+            }
+        };
+
         utilities.data_transfer_json_object = function (event) {
             var data, json_string, json, element;
             if (!event.dataTransfer) {
@@ -5103,8 +5155,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     utilities.element_width = function (element) {
         var $element = $(element);
         if ($element.is(".toontalk-conditions-contents")) {
-            // update if toontalk-conditions-contents CSS changes
-            return 240;
+            return TT.UTILITIES.get_toontalk_css_numeric_attribute("width", ".toontalk-conditions-container");
         }
         if (!$element.is(".toontalk-not-observable")) {
             // was element.getBoundingClientRect().width but box in second hole was too wide
@@ -5114,8 +5165,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
     utilities.element_height = function (element) {
         var $element = $(element);
         if ($element.is(".toontalk-conditions-contents")) {
-            // update if toontalk-conditions-contents CSS changes
-            return 60;
+            return TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-conditions-container");
         }
         if (!$element.is(".toontalk-not-observable")) {
             return $(element).height();

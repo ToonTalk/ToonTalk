@@ -635,13 +635,20 @@ window.TOONTALK.backside =
             };
             backside.scale_to_fit = function (this_element, other_element) {
                 // if CSS of toontalk-backside changes then change the following numbers
-                var scales = TT.UTILITIES.scale_to_fit(this_element, other_element, 450, 150);
+                var scales = TT.UTILITIES.scale_to_fit(this_element,
+                                                       other_element,
+                                                       TT.UTILITIES.get_toontalk_css_numeric_attribute("width",  ".toontalk-backside"),
+                                                       TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-backside"));
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;
             };
             backside.scale_to = function (new_width, new_height) {
                 // if CSS of toontalk-backside changes then change the following numbers
-                var scales = TT.UTILITIES.scale_element(this.get_element(true), new_width, new_height, 450, 150);
+                var scales = TT.UTILITIES.scale_element(this.get_element(true),
+                                                        new_width,
+                                                        new_height,
+                                                        TT.UTILITIES.get_toontalk_css_numeric_attribute("width",  ".toontalk-backside"),
+                                                        TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-backside"));
                 x_scale = scales.x_scale;
                 y_scale = scales.y_scale;
             };

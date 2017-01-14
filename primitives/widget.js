@@ -659,6 +659,10 @@ window.TOONTALK.widget = (function (TT) {
              return $(this.get_frontside_element()).closest(".toontalk-conditions-container").is("*");
         },
 
+        directly_inside_conditions_container: function () {
+             return $(this.get_frontside_element()).parent(".toontalk-conditions-container").is("*");
+        },
+
         get_title_of_erased_widget: function () {
             var type_name = this.get_type_name();
             if (this.inside_conditions_container()) {

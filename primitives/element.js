@@ -436,10 +436,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                                        function (original_parent) {
                                                            var parent = this.get_parent_of_frontside();
                                                            wrap_location(this, current_pending_css);
-                                                           if ($(frontside_element).is(".toontalk-conditions-contents") && $(frontside_element.parentElement).is(".toontalk-conditions-container")) {
+                                                           if ($(frontside_element).is(".toontalk-conditions-contents") && this.directly_inside_conditions_container()) {
+                                                               // TODO: determine if $(frontside_element).is(".toontalk-conditions-contents") is redundant
                                                                // use container dimensions if inside a condition container
-                                                               current_width  = $(frontside_element.parentElement).width();
-                                                               current_height = $(frontside_element.parentElement).height();
+                                                               current_width  = TT.UTILITIES.get_toontalk_css_numeric_attribute("width",  ".toontalk-conditions-container");
+                                                               current_height = TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-conditions-container");
                                                            }
                                                            if (this.ok_to_set_dimensions() || this.constrained_by_container()) {
                                                                TT.UTILITIES.scale_element(frontside_element,
@@ -643,7 +644,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                           height:    height,
                                           position:  '',    // no longer absolute (maybe shouldn't have been since is presumably a condition)
                                           transform: ''}); // remove any transformations
-                if ($(frontside_element).parent(".toontalk-conditions-container").is("*")) {
+                if (this.inside_conditions_container()) {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an element that has been erased. It will match any element.");
                 } else {
                     TT.UTILITIES.give_tooltip(frontside_element, "This is an erased element. It will replace its HTML with the HTML of the element you drop on it.");

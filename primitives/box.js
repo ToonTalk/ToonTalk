@@ -649,11 +649,12 @@ window.TOONTALK.box = (function (TT) {
         var renderer =
             function () {
                 var $box_hole_elements = $(frontside_element).children(".toontalk-box-hole");
+                // TODO: decide if best to rationalise away .toontalk-conditions-contents and only use parent is .toontalk-conditions-container
                 if ($(frontside_element).is(".toontalk-conditions-contents")){
                     TT.UTILITIES.set_css(frontside_element,
                                          {width:  box_width -2*border_size,
                                           height: box_height-2*border_size});
-                } else if (!$(frontside_element).parent(".toontalk-conditions-container").is("*") &&
+                } else if (!this.directly_inside_conditions_container() &&
                            !$(frontside_element).parent().is(".toontalk-scale-half")) {
                     if ($(frontside_element).parent(".toontalk-box-hole").is("*")) {
                         TT.UTILITIES.set_css(frontside_element,
@@ -710,11 +711,13 @@ window.TOONTALK.box = (function (TT) {
             if (size === 0) {
                 box_width = 0;
             } else {
-                box_width = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "width"))
+                box_width = (this.directly_inside_conditions_container() && TT.UTILITIES.get_toontalk_css_numeric_attribute("width", ".toontalk-conditions-container"))
+                            || (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "width"))
                             || this.saved_width
                             || TT.box.get_default_width();
             }
-            box_height    = (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "height"))
+            box_height    = (this.directly_inside_conditions_container() && TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-conditions-container"))
+                            || (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "height"))
                             || this.saved_height
                             || TT.box.get_default_height();
             if (horizontal) {

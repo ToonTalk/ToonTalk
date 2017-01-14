@@ -755,8 +755,8 @@ window.TOONTALK.number = (function () {
         }
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             // leave room for borders
-            $(frontside_element).css({width:  240-border_size*2,
-                                      height: 60 -border_size*2});
+            $(frontside_element).css({width:  TT.UTILITIES.get_toontalk_css_numeric_attribute("width",  ".toontalk-conditions-container")-border_size*2,
+                                      height: TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-conditions-container")-border_size*2});
         }
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
     };
