@@ -411,10 +411,29 @@ window.TOONTALK.path =
             return this.get_path_to_backside_index_of_context(robot.get_backside_condition_index(backside_widget), backside_widget.get_type_name(), robot);
         },
         get_path_to_backside_index_of_context: function (backside_index, type_name, robot) {
-            // type_name is only used to generate better robot titles
+            // type_name is used to generate better robot titles and for error checking
             return {dereference_path: function (robot) {
                         var referenced = robot.get_backside_matched_widgets()[backside_index];
+                        var get_only_widget_of_type = function (type_name, widgets) {
+                            var widget_found;
+                            widgets.some(function (widget) {
+                                if (widget.get_type_name() === type_name) {
+                                    if (widget_found) {
+                                        // second one so give up
+                                        widget_found = undefined;
+                                        return true;
+                                    }
+                                    widget_found = widget.dereference();
+                                }
+                            });
+                            return widget_found;
+                        };
                         var container;
+                        if (referenced && referenced.get_type_name() !== type_name) {
+                            // this can happen if some backside widgets were removed and put back in a different order
+                            // if there is only one backside matched widget of the correct type use it
+                            referenced = get_only_widget_of_type(type_name, robot.get_backside_matched_widgets());
+                        }
                         if (this.next) {
                             // there is more to the path so compute the part of the widget referenced
                             return TT.path.dereference_path(this.next, robot, referenced);

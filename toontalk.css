@@ -121,9 +121,12 @@ html {
 	padding-top:    6px;
 	padding-left:   6px;
 	padding-right:  6px;
-/* 	if the following changes update backside.scale_to_fit and backside.scale_to */
 	min-width:  450px;
 	min-height: 150px;
+}
+.toontalk-backside-showing-advanced-settings {
+    min-width:  800px;
+	min-height: 300px;
 }
 .toontalk-backside.toontalk-highlight {
 	border-color: white;
@@ -444,6 +447,7 @@ body > .toontalk-local-alert {
 	/* background-color same as toontalk-top-level-number */
 	background-color: rgb(183, 248, 196);
 	table-layout: fixed;
+	text-align: center;
 	border-spacing:  0px;
 	border-collapse: collapse;
 	width:  100%;
@@ -508,7 +512,6 @@ padding-bottom:  8%;}
 }
 .toontalk-conditions-container {
 /* 	Can't add the border to toontalk-conditions-contents because erased elements have 0 opacity */
-/* if dimensions change then change utilities.element_width and utilities.element_height and number.js */
 	width: 240px;
 	height: 60px;
 	border: 1px black solid;

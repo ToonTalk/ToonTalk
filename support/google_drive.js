@@ -201,7 +201,7 @@ window.TOONTALK.google_drive =
                                          return;
                                      }
                                      if (TT.debugging) {
-                                        console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));
+                                         console.log("File " + file.title + " (" + file.id + ") " + (file_id ? "updated" : "created"));
                                      }
                       };
                   };

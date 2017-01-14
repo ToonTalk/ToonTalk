@@ -1641,13 +1641,13 @@ top level widget
     ]
   },
   "view": {
-    "background_color": "rgba(0, 0, 0, 0)",
-    "backside_width": 296,
-    "backside_height": 143,
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 410,
+    "backside_height": 194,
     "backside_left": 8,
-    "backside_top": 179.1875,
-    "drag_x_offset": 29,
-    "drag_y_offset": 92.8125
+    "backside_top": 182.1875,
+    "drag_x_offset": 258,
+    "drag_y_offset": 141
   },
   "version": 1,
   "shared_widgets": [
@@ -1675,12 +1675,237 @@ top level widget
                 }
               },
               "view": {
-                "frontside_width": 70,
-                "frontside_height": 102,
-                "frontside_left": "3.8114539748953975%",
-                "frontside_top": "27.967271293375394%",
-                "saved_width": 70,
-                "saved_height": 102
+                "frontside_left": "3.697044979079498%",
+                "frontside_top": "25.5717665615142%"
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": "4",
+                    "denominator": "1",
+                    "format": "mixed_number",
+                    "erased": true
+                  },
+                  "view": {},
+                  "version": 1
+                },
+                "backside_conditions": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "box",
+                        "size": 3,
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "box",
+                                "size": 2,
+                                "contents": [
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "element",
+                                        "html": "location",
+                                        "attributes": [
+                                          "left",
+                                          "top",
+                                          "width",
+                                          "height"
+                                        ],
+                                        "attribute_values": [
+                                          8,
+                                          643.188,
+                                          29.328125,
+                                          44
+                                        ],
+                                        "attributes_backsides": [
+                                          [],
+                                          [],
+                                          [],
+                                          []
+                                        ],
+                                        "children": false
+                                      },
+                                      "view": {
+                                        "saved_width": 96,
+                                        "saved_height": 32
+                                      },
+                                      "version": 1
+                                    }
+                                  },
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "element",
+                                        "html": "hash",
+                                        "attributes": [
+                                          "left",
+                                          "top",
+                                          "width",
+                                          "height"
+                                        ],
+                                        "attribute_values": [
+                                          8,
+                                          643.188,
+                                          37.328125,
+                                          60
+                                        ],
+                                        "attributes_backsides": [
+                                          null,
+                                          null,
+                                          null,
+                                          null
+                                        ],
+                                        "children": false
+                                      },
+                                      "view": {
+                                        "saved_width": 48,
+                                        "saved_height": 32
+                                      },
+                                      "version": 1
+                                    }
+                                  }
+                                ],
+                                "horizontal": true,
+                                "name": ";;"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          null
+                        ],
+                        "horizontal": true,
+                        "name": ";;"
+                      },
+                      "view": {
+                        "saved_width": 240,
+                        "saved_height": 60
+                      },
+                      "version": 1
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "number",
+                        "operator": "+",
+                        "numerator": "4",
+                        "denominator": "1",
+                        "format": "mixed_number",
+                        "erased": true
+                      },
+                      "view": {
+                        "saved_width": 240,
+                        "saved_height": 60
+                      },
+                      "version": 1
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "bird"
+                      },
+                      "view": {},
+                      "version": 1
+                    }
+                  }
+                ],
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "copy",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 0
+                      },
+                      "additional_info": {
+                        "time": 8090
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "sensor",
+                        "backside_index": 1,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 2640
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 2
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2512
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 11657
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "bird",
+                        "backside_index": 2
+                      },
+                      "additional_info": {
+                        "time": 1834
+                      }
+                    }
+                  ]
+                },
+                "name": "update hash",
+                "running": true,
+                "description": "a robot that updates the URL when the number chanages."
+              },
+              "view": {
+                "frontside_left": "14.162199267782427%",
+                "frontside_top": "22.988958990536275%"
               },
               "version": 1
             }
@@ -1701,12 +1926,114 @@ top level widget
                 }
               },
               "view": {
-                "frontside_width": 116,
-                "frontside_height": 98,
-                "frontside_left": "10.68416579497908%",
-                "frontside_top": "62.150039432176655%",
-                "saved_width": 116,
-                "saved_height": 98
+                "frontside_left": "2.907622907949791%",
+                "frontside_top": "60.16364353312302%"
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "box",
+                "size": 3,
+                "contents": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "bird"
+                      },
+                      "view": {},
+                      "version": 1
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "box",
+                        "size": 2,
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "element",
+                                "html": "location",
+                                "attributes": [
+                                  "left",
+                                  "top",
+                                  "width",
+                                  "height"
+                                ],
+                                "attribute_values": [
+                                  8,
+                                  634.188,
+                                  25.328125,
+                                  44
+                                ],
+                                "attributes_backsides": [
+                                  [],
+                                  [],
+                                  [],
+                                  []
+                                ],
+                                "children": false
+                              },
+                              "view": {
+                                "saved_width": 96,
+                                "saved_height": 32
+                              },
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "element",
+                                "html": "hash",
+                                "attributes": [
+                                  "left",
+                                  "top",
+                                  "width",
+                                  "height"
+                                ],
+                                "attribute_values": [
+                                  8,
+                                  634.188,
+                                  25.328125,
+                                  44
+                                ],
+                                "attributes_backsides": [
+                                  null,
+                                  null,
+                                  null,
+                                  null
+                                ],
+                                "children": false
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;"
+                      },
+                      "view": {},
+                      "version": 1
+                    }
+                  },
+                  null
+                ],
+                "horizontal": true,
+                "name": ";;"
+              },
+              "view": {
+                "frontside_width": 240,
+                "frontside_height": 60,
+                "frontside_left": "18.571848849372387%",
+                "frontside_top": "62.923895899053626%",
+                "saved_width": 240,
+                "saved_height": 60
               },
               "version": 1
             }
@@ -1743,9 +2070,7 @@ top level widget
                               },
                               "view": {
                                 "frontside_left": 779.469,
-                                "frontside_top": 79.1719,
-                                "saved_width": 70,
-                                "saved_height": 102
+                                "frontside_top": 79.1719
                               },
                               "version": 1
                             }
@@ -1761,40 +2086,16 @@ top level widget
                                       "semantic": {
                                         "type": "bird",
                                         "nest": {
-                                          "semantic": {
-                                            "type": "nest",
-                                            "contents": [],
-                                            "guid": "toontalk_id_1468423631785",
-                                            "serial_number": 4,
-                                            "name": "refreshed"
-                                          },
-                                          "view": {
-                                            "frontside_left": 548.688,
-                                            "frontside_top": 363.75,
-                                            "saved_width": 116,
-                                            "saved_height": 98
-                                          },
-                                          "version": 1
+                                          "shared_widget_index": 3
                                         }
                                       },
-                                      "view": {
-                                        "saved_width": 70,
-                                        "saved_height": 102
-                                      },
+                                      "view": {},
                                       "version": 1
                                     }
                                   },
                                   {
                                     "widget": {
-                                      "semantic": {
-                                        "type": "nest",
-                                        "contents": [],
-                                        "guid": "toontalk_id_1468423631770",
-                                        "serial_number": 3,
-                                        "name": "string"
-                                      },
-                                      "view": {},
-                                      "version": 1
+                                      "shared_widget_index": 1
                                     }
                                   }
                                 ],
@@ -1826,9 +2127,7 @@ top level widget
                               },
                               "view": {
                                 "frontside_left": 441.75,
-                                "frontside_top": 56.0781,
-                                "saved_width": 70,
-                                "saved_height": 102
+                                "frontside_top": 56.0781
                               },
                               "version": 1
                             }
@@ -1847,27 +2146,13 @@ top level widget
                                           "shared_widget_index": 1
                                         }
                                       },
-                                      "view": {
-                                        "saved_width": 70,
-                                        "saved_height": 102
-                                      },
+                                      "view": {},
                                       "version": 1
                                     }
                                   },
                                   {
                                     "widget": {
-                                      "semantic": {
-                                        "type": "nest",
-                                        "contents": [],
-                                        "guid": "toontalk_id_1468423631746",
-                                        "serial_number": 1,
-                                        "name": "hash"
-                                      },
-                                      "view": {
-                                        "saved_width": 116,
-                                        "saved_height": 98
-                                      },
-                                      "version": 1
+                                      "shared_widget_index": 2
                                     }
                                   },
                                   {
@@ -1917,9 +2202,7 @@ top level widget
                               },
                               "view": {
                                 "frontside_left": 49.6719,
-                                "frontside_top": 167.828,
-                                "saved_width": 70,
-                                "saved_height": 102
+                                "frontside_top": 167.828
                               },
                               "version": 1
                             }
@@ -1961,9 +2244,9 @@ top level widget
                                                 ],
                                                 "attribute_values": [
                                                   8,
-                                                  338.188,
-                                                  -4.669921875,
-                                                  60
+                                                  634.188,
+                                                  2.5770263671875,
+                                                  44.1729736328125
                                                 ],
                                                 "attributes_backsides": [
                                                   [],
@@ -1994,9 +2277,9 @@ top level widget
                                                 ],
                                                 "attribute_values": [
                                                   8,
-                                                  338.188,
-                                                  -4.669921875,
-                                                  60
+                                                  634.188,
+                                                  1.2371826171875,
+                                                  44.1729736328125
                                                 ],
                                                 "attributes_backsides": [
                                                   null,
@@ -2044,10 +2327,10 @@ top level widget
                         "infinite_stack": true
                       },
                       "view": {
-                        "frontside_width": 8.22983,
-                        "frontside_height": 0.872864,
-                        "frontside_left": "5.81650187520234%",
-                        "frontside_top": "34.203455646132724%",
+                        "frontside_width": 456.766,
+                        "frontside_height": 82.4219,
+                        "frontside_left": "5.2777013139254425%",
+                        "frontside_top": "31.590319570324816%",
                         "saved_width": 733,
                         "saved_height": 68
                       },
@@ -2215,7 +2498,7 @@ top level widget
                                                         ],
                                                         "attribute_values": [
                                                           8,
-                                                          338.188,
+                                                          643.188,
                                                           -2.75274658203125,
                                                           13.20843505859375
                                                         ],
@@ -2248,7 +2531,7 @@ top level widget
                                                         ],
                                                         "attribute_values": [
                                                           8,
-                                                          338.188,
+                                                          643.188,
                                                           -2.75274658203125,
                                                           13.20843505859375
                                                         ],
@@ -2326,8 +2609,8 @@ top level widget
                                 "is_backside": true
                               },
                               "additional_info": {
-                                "left_offset_fraction": 0.07380007804370448,
-                                "top_offset_fraction": 0.09978606356968216,
+                                "left_offset_fraction": 0.0738,
+                                "top_offset_fraction": 0.0998,
                                 "time": 2802
                               }
                             },
@@ -2535,507 +2818,19 @@ top level widget
                         "description": "a robot who reads the URL's hash as a number."
                       },
                       "view": {
-                        "frontside_width": 73,
-                        "frontside_height": 101,
-                        "frontside_left": "86.92152219469084%",
-                        "frontside_top": "26.370752687151164%",
-                        "saved_width": 73,
-                        "saved_height": 101
+                        "frontside_left": "84.99297337441175%",
+                        "frontside_top": "6.630719307177643%"
                       },
                       "version": 1
                     }
-                  },
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "robot",
-                        "frontside_conditions": {
-                          "semantic": {
-                            "type": "number",
-                            "operator": "+",
-                            "numerator": "1",
-                            "denominator": "1",
-                            "format": "mixed_number",
-                            "erased": true
-                          },
-                          "view": {},
-                          "version": 1
-                        },
-                        "backside_conditions": [
-                          {
-                            "widget": {
-                              "semantic": {
-                                "type": "box",
-                                "size": 7,
-                                "contents": [
-                                  {
-                                    "widget": {
-                                      "semantic": {
-                                        "type": "bird"
-                                      },
-                                      "view": {},
-                                      "version": 1
-                                    }
-                                  },
-                                  {
-                                    "widget": {
-                                      "semantic": {
-                                        "type": "box",
-                                        "size": 2,
-                                        "contents": [
-                                          {
-                                            "widget": {
-                                              "semantic": {
-                                                "type": "bird"
-                                              },
-                                              "view": {},
-                                              "version": 1
-                                            }
-                                          },
-                                          {
-                                            "widget": {
-                                              "shared_widget_index": 4
-                                            }
-                                          }
-                                        ],
-                                        "horizontal": true,
-                                        "name": ";;"
-                                      },
-                                      "view": {},
-                                      "version": 1
-                                    }
-                                  },
-                                  {
-                                    "widget": {
-                                      "semantic": {
-                                        "type": "bird"
-                                      },
-                                      "view": {},
-                                      "version": 1
-                                    }
-                                  },
-                                  {
-                                    "widget": {
-                                      "semantic": {
-                                        "type": "box",
-                                        "size": 3,
-                                        "contents": [
-                                          {
-                                            "widget": {
-                                              "semantic": {
-                                                "type": "bird"
-                                              },
-                                              "view": {},
-                                              "version": 1
-                                            }
-                                          },
-                                          {
-                                            "widget": {
-                                              "shared_widget_index": 4
-                                            }
-                                          },
-                                          {
-                                            "widget": {
-                                              "semantic": {
-                                                "type": "number",
-                                                "operator": "+",
-                                                "numerator": "2",
-                                                "denominator": "1",
-                                                "format": "mixed_number"
-                                              },
-                                              "view": {},
-                                              "version": 1
-                                            }
-                                          }
-                                        ],
-                                        "horizontal": true,
-                                        "name": ";;"
-                                      },
-                                      "view": {},
-                                      "version": 1
-                                    }
-                                  },
-                                  {
-                                    "widget": {
-                                      "semantic": {
-                                        "type": "bird"
-                                      },
-                                      "view": {},
-                                      "version": 1
-                                    }
-                                  },
-                                  {
-                                    "widget": {
-                                      "semantic": {
-                                        "type": "box",
-                                        "size": 2,
-                                        "contents": [
-                                          {
-                                            "widget": {
-                                              "semantic": {
-                                                "type": "bird"
-                                              },
-                                              "view": {},
-                                              "version": 1
-                                            }
-                                          },
-                                          {
-                                            "widget": {
-                                              "semantic": {
-                                                "type": "box",
-                                                "size": 2,
-                                                "contents": [
-                                                  {
-                                                    "widget": {
-                                                      "semantic": {
-                                                        "type": "element",
-                                                        "html": "location",
-                                                        "attributes": [
-                                                          "left",
-                                                          "top",
-                                                          "width",
-                                                          "height"
-                                                        ],
-                                                        "attribute_values": [
-                                                          8,
-                                                          338.188,
-                                                          -2.75274658203125,
-                                                          13.20843505859375
-                                                        ],
-                                                        "attributes_backsides": [
-                                                          [],
-                                                          [],
-                                                          [],
-                                                          []
-                                                        ],
-                                                        "children": false
-                                                      },
-                                                      "view": {
-                                                        "frontside_left": 0,
-                                                        "saved_width": 96,
-                                                        "saved_height": 32
-                                                      },
-                                                      "version": 1
-                                                    }
-                                                  },
-                                                  {
-                                                    "widget": {
-                                                      "semantic": {
-                                                        "type": "element",
-                                                        "html": "hash",
-                                                        "attributes": [
-                                                          "left",
-                                                          "top",
-                                                          "width",
-                                                          "height"
-                                                        ],
-                                                        "attribute_values": [
-                                                          8,
-                                                          338.188,
-                                                          -2.75274658203125,
-                                                          13.20843505859375
-                                                        ],
-                                                        "attributes_backsides": [
-                                                          null,
-                                                          null,
-                                                          null,
-                                                          null
-                                                        ],
-                                                        "children": false
-                                                      },
-                                                      "view": {
-                                                        "frontside_left": 0,
-                                                        "saved_width": 48,
-                                                        "saved_height": 32
-                                                      },
-                                                      "version": 1
-                                                    }
-                                                  }
-                                                ],
-                                                "horizontal": true,
-                                                "name": ";;"
-                                              },
-                                              "view": {},
-                                              "version": 1
-                                            }
-                                          }
-                                        ],
-                                        "horizontal": true,
-                                        "name": ";;"
-                                      },
-                                      "view": {},
-                                      "version": 1
-                                    }
-                                  },
-                                  {
-                                    "widget": {
-                                      "shared_widget_index": 4
-                                    }
-                                  }
-                                ],
-                                "horizontal": true,
-                                "name": ";;"
-                              },
-                              "view": {
-                                "frontside_left": 198,
-                                "frontside_top": 78,
-                                "saved_width": 240,
-                                "saved_height": 60
-                              },
-                              "version": 1
-                            }
-                          }
-                        ],
-                        "body": {
-                          "type": "body",
-                          "steps": [
-                            {
-                              "type": "robot_action",
-                              "action_name": "pick up a copy of",
-                              "path": {
-                                "type": "path.to_backside_widget_of_context",
-                                "type_name": "box",
-                                "backside_index": 0
-                              },
-                              "additional_info": {
-                                "time": 2438
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "drop it on",
-                              "path": {
-                                "type": "path.to_entire_context",
-                                "is_backside": true
-                              },
-                              "additional_info": {
-                                "left_offset_fraction": 0.07380007804370448,
-                                "top_offset_fraction": 0.09978606356968216,
-                                "time": 2802
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "pick up",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 5,
-                                  "removing_widget": true
-                                }
-                              },
-                              "additional_info": {
-                                "time": 2879
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "drop it on",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 4
-                                }
-                              },
-                              "additional_info": {
-                                "time": 1090
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "pick up",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 3,
-                                  "removing_widget": true
-                                }
-                              },
-                              "additional_info": {
-                                "time": 11861
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "drop it on",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 2
-                                }
-                              },
-                              "additional_info": {
-                                "time": 2512
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "pick up",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 1,
-                                  "removing_widget": true
-                                }
-                              },
-                              "additional_info": {
-                                "time": 6558
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "drop it on",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 0
-                                }
-                              },
-                              "additional_info": {
-                                "time": 2080
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "open the backside of",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 6
-                                }
-                              },
-                              "additional_info": {
-                                "time": 5443
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "click the button of",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 6
-                                }
-                              },
-                              "additional_info": {
-                                "button_selector": ".toontalk-settings-backside-button",
-                                "time": 2370
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "edit",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 6
-                                }
-                              },
-                              "additional_info": {
-                                "setter_name": "set_operator",
-                                "argument_1": "=",
-                                "toString": "by changing the operator to = of the number",
-                                "button_selector": ".toontalk-set-equal-radio-button",
-                                "time": 1605
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "close the backside of",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 6
-                                }
-                              },
-                              "additional_info": {
-                                "time": 1731
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "pick up",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "next_path": {
-                                  "type": "box_path",
-                                  "index": 6,
-                                  "removing_widget": true
-                                }
-                              },
-                              "additional_info": {
-                                "time": 1699
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "drop it on",
-                              "path": {
-                                "type": "path.to_entire_context"
-                              },
-                              "additional_info": {
-                                "time": 2787
-                              }
-                            },
-                            {
-                              "type": "robot_action",
-                              "action_name": "remove",
-                              "path": {
-                                "type": "newly_created_widgets_path",
-                                "index": 0,
-                                "removing_widget": true
-                              },
-                              "additional_info": {
-                                "time": 3294
-                              }
-                            }
-                          ]
-                        },
-                        "run_once": true,
-                        "name": "read hash",
-                        "running": true,
-                        "description": "a robot who reads the URL's hash as a number."
-                      },
-                      "view": {
-                        "backside_left": 0,
-                        "backside_top": 0,
-                        "frontside_left": "86.92152219469084%",
-                        "frontside_top": "26.370752687151164%",
-                        "saved_width": 73,
-                        "saved_height": 101
-                      },
-                      "version": 1
-                    },
-                    "is_backside": true
                   }
                 ]
               },
               "view": {
-                "backside_width": 566,
+                "backside_width": 566.797,
                 "backside_height": 216,
-                "backside_left": 0,
-                "backside_top": 0,
+                "backside_left": "48.04197175732218%",
+                "backside_top": "23.097397476340696%",
                 "backside_geometry": {
                   "x_scale": 0.6659729448491151,
                   "y_scale": 0.665036674816626,
@@ -3050,356 +2845,14 @@ top level widget
               "version": 1
             },
             "is_backside": true
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "robot",
-                "frontside_conditions": {
-                  "semantic": {
-                    "type": "number",
-                    "operator": "+",
-                    "numerator": "4",
-                    "denominator": "1",
-                    "format": "mixed_number",
-                    "erased": true
-                  },
-                  "view": {},
-                  "version": 1
-                },
-                "backside_conditions": [
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "box",
-                        "size": 3,
-                        "contents": [
-                          {
-                            "widget": {
-                              "semantic": {
-                                "type": "bird"
-                              },
-                              "view": {},
-                              "version": 1
-                            }
-                          },
-                          {
-                            "widget": {
-                              "semantic": {
-                                "type": "box",
-                                "size": 2,
-                                "contents": [
-                                  {
-                                    "widget": {
-                                      "semantic": {
-                                        "type": "element",
-                                        "html": "location",
-                                        "attributes": [
-                                          "left",
-                                          "top",
-                                          "width",
-                                          "height"
-                                        ],
-                                        "attribute_values": [
-                                          8,
-                                          338.188,
-                                          29.328125,
-                                          44
-                                        ],
-                                        "attributes_backsides": [
-                                          [],
-                                          [],
-                                          [],
-                                          []
-                                        ],
-                                        "children": false
-                                      },
-                                      "view": {
-                                        "saved_width": 96,
-                                        "saved_height": 32
-                                      },
-                                      "version": 1
-                                    }
-                                  },
-                                  {
-                                    "widget": {
-                                      "semantic": {
-                                        "type": "element",
-                                        "html": "hash",
-                                        "attributes": [
-                                          "left",
-                                          "top",
-                                          "width",
-                                          "height"
-                                        ],
-                                        "attribute_values": [
-                                          8,
-                                          338.188,
-                                          37.328125,
-                                          60
-                                        ],
-                                        "attributes_backsides": [
-                                          null,
-                                          null,
-                                          null,
-                                          null
-                                        ],
-                                        "children": false
-                                      },
-                                      "view": {
-                                        "saved_width": 48,
-                                        "saved_height": 32
-                                      },
-                                      "version": 1
-                                    }
-                                  }
-                                ],
-                                "horizontal": true,
-                                "name": ";;"
-                              },
-                              "view": {},
-                              "version": 1
-                            }
-                          },
-                          null
-                        ],
-                        "horizontal": true,
-                        "name": ";;"
-                      },
-                      "view": {
-                        "saved_width": 240,
-                        "saved_height": 60
-                      },
-                      "version": 1
-                    }
-                  },
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "number",
-                        "operator": "+",
-                        "numerator": "4",
-                        "denominator": "1",
-                        "format": "mixed_number",
-                        "erased": true
-                      },
-                      "view": {
-                        "saved_width": 240,
-                        "saved_height": 60
-                      },
-                      "version": 1
-                    }
-                  },
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "bird"
-                      },
-                      "view": {},
-                      "version": 1
-                    }
-                  }
-                ],
-                "body": {
-                  "type": "body",
-                  "steps": [
-                    {
-                      "type": "robot_action",
-                      "action_name": "copy",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "box",
-                        "backside_index": 0
-                      },
-                      "additional_info": {
-                        "time": 8090
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "sensor",
-                        "backside_index": 1,
-                        "removing_widget": true
-                      },
-                      "additional_info": {
-                        "time": 2640
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0,
-                        "next_path": {
-                          "type": "box_path",
-                          "index": 2
-                        }
-                      },
-                      "additional_info": {
-                        "time": 2512
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "pick up",
-                      "path": {
-                        "type": "newly_created_widgets_path",
-                        "index": 0,
-                        "removing_widget": true
-                      },
-                      "additional_info": {
-                        "time": 11657
-                      }
-                    },
-                    {
-                      "type": "robot_action",
-                      "action_name": "drop it on",
-                      "path": {
-                        "type": "path.to_backside_widget_of_context",
-                        "type_name": "bird",
-                        "backside_index": 2
-                      },
-                      "additional_info": {
-                        "time": 1834
-                      }
-                    }
-                  ]
-                },
-                "name": "update hash",
-                "running": true,
-                "description": "a robot that updates the URL when the number chanages."
-              },
-              "view": {
-                "frontside_width": 73,
-                "frontside_height": 101,
-                "frontside_left": "23.64507060669456%",
-                "frontside_top": "28.53903785488959%",
-                "saved_width": 73,
-                "saved_height": 101
-              },
-              "version": 1
-            }
-          },
-          {
-            "widget": {
-              "semantic": {
-                "type": "box",
-                "size": 3,
-                "contents": [
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "bird"
-                      },
-                      "view": {},
-                      "version": 1
-                    }
-                  },
-                  {
-                    "widget": {
-                      "semantic": {
-                        "type": "box",
-                        "size": 2,
-                        "contents": [
-                          {
-                            "widget": {
-                              "semantic": {
-                                "type": "element",
-                                "html": "location",
-                                "attributes": [
-                                  "left",
-                                  "top",
-                                  "width",
-                                  "height"
-                                ],
-                                "attribute_values": [
-                                  8,
-                                  338.188,
-                                  29.328125,
-                                  44
-                                ],
-                                "attributes_backsides": [
-                                  [],
-                                  [],
-                                  [],
-                                  []
-                                ],
-                                "children": false
-                              },
-                              "view": {
-                                "saved_width": 96,
-                                "saved_height": 32
-                              },
-                              "version": 1
-                            }
-                          },
-                          {
-                            "widget": {
-                              "semantic": {
-                                "type": "element",
-                                "html": "hash",
-                                "attributes": [
-                                  "left",
-                                  "top",
-                                  "width",
-                                  "height"
-                                ],
-                                "attribute_values": [
-                                  8,
-                                  338.188,
-                                  29.328125,
-                                  44
-                                ],
-                                "attributes_backsides": [
-                                  null,
-                                  null,
-                                  null,
-                                  null
-                                ],
-                                "children": false
-                              },
-                              "view": {
-                                "saved_width": 48,
-                                "saved_height": 32
-                              },
-                              "version": 1
-                            }
-                          }
-                        ],
-                        "horizontal": true,
-                        "name": ";;"
-                      },
-                      "view": {},
-                      "version": 1
-                    }
-                  },
-                  null
-                ],
-                "horizontal": true,
-                "name": ";;"
-              },
-              "view": {
-                "frontside_width": 240,
-                "frontside_height": 60,
-                "frontside_left": "26.730844665271967%",
-                "frontside_top": "70.26813880126183%",
-                "saved_width": 240,
-                "saved_height": 60
-              },
-              "version": 1
-            }
           }
         ]
       },
       "view": {
         "frontside_width": 76,
         "frontside_height": 55,
-        "frontside_left": 108.266,
-        "frontside_top": 51.9219,
+        "frontside_left": 87.5313,
+        "frontside_top": 32.3281,
         "backside_left": 0,
         "backside_top": 0,
         "backside_geometry": {
@@ -3421,7 +2874,10 @@ top level widget
         "serial_number": 3,
         "name": "string"
       },
-      "view": {},
+      "view": {
+        "frontside_left": 0,
+        "frontside_top": 19.76
+      },
       "version": 1
     },
     {
@@ -3433,8 +2889,8 @@ top level widget
         "name": "hash"
       },
       "view": {
-        "saved_width": 116,
-        "saved_height": 98
+        "frontside_left": 0,
+        "frontside_top": 21.9855
       },
       "version": 1
     },
@@ -3448,9 +2904,7 @@ top level widget
       },
       "view": {
         "frontside_left": 548.688,
-        "frontside_top": 363.75,
-        "saved_width": 116,
-        "saved_height": 98
+        "frontside_top": 363.75
       },
       "version": 1
     },

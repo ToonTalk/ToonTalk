@@ -227,10 +227,6 @@ window.TOONTALK.robot = (function (TT) {
                 if (this.visible()) {
                     $(this.get_frontside_element()).removeClass("toontalk-robot-waiting");
                     this.set_animating(false);
-                    if (this.get_thing_in_hand()) {
-                        $(this.get_thing_in_hand().get_element()).removeClass("toontalk-held-by-robot");
-                        this.drop_thing_in_hand();
-                    }
                     this.rerender();
                 }
             }
@@ -291,11 +287,12 @@ window.TOONTALK.robot = (function (TT) {
             }
         };
         new_robot.animate_consequences_of_actions = function () {
-            return this.visible();
+            return this.visible() && !this.stopped();
         };
         new_robot.transform_step_duration = function (duration) {
-            if (!this.visible()) {
+            if (!this.visible() || this.stopped()) {
                 // was watched but window hidden or robot's context closed
+                // or stopped but finishing current cycle
                 return 0;
             }
             if (context && !context.get_backside()) { // context is undefined if being trained (by another robot)
@@ -310,7 +307,7 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.transform_original_step_duration = function (original_duration) {
             // no watched speed means the original durations (if known)
             // when duration isn't available the speed will be used
-            if (!this.visible()) {
+            if (!this.visible() || this.stopped()) {
                 // was watched but window hidden or robot's context closed
                 return 0;
             }
@@ -328,8 +325,9 @@ window.TOONTALK.robot = (function (TT) {
                 // was watched but no longer
                 return 0;
             }
-            if (!this.visible()) {
+            if (!this.visible() || this.stopped()) {
                 // was watched but window hidden or robot's context closed
+                // or robot has been stopped (but finishing the cycle)
                 return 0;
             }
             if (watched_speed) {
@@ -783,7 +781,7 @@ window.TOONTALK.robot = (function (TT) {
             return;
         }
         if (waiting) {
-            if (this.visible()) {
+            if (this.visible() && !this.stopped()) {
                 TT.UTILITIES.add_animation_class(frontside_element, "toontalk-robot-waiting");
                 TT.UTILITIES.give_tooltip(frontside_element, "This robot is waiting for a bird to deliver something.");
             }

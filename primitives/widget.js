@@ -659,6 +659,10 @@ window.TOONTALK.widget = (function (TT) {
              return $(this.get_frontside_element()).closest(".toontalk-conditions-container").is("*");
         },
 
+        directly_inside_conditions_container: function () {
+             return $(this.get_frontside_element()).parent(".toontalk-conditions-container").is("*");
+        },
+
         get_title_of_erased_widget: function () {
             var type_name = this.get_type_name();
             if (this.inside_conditions_container()) {
@@ -785,6 +789,22 @@ window.TOONTALK.widget = (function (TT) {
                 parent = this.get_parent_of_frontside();
                 if (parent) {
                     return parent.has_ancestor(other);
+                }
+                return false;
+            };
+            widget.has_ancestor_either_side = function (other) {
+                // goes up the ancestor tree following both backside or frontside parent
+                var parent;
+                if (this === other || this === other.get_backside()) {
+                    return true;
+                }
+                parent = this.get_parent_of_frontside();
+                if (parent) {
+                    return parent.has_ancestor_either_side(other);
+                }
+                parent = this.get_parent_of_backside();
+                if (parent) {
+                    return parent.has_ancestor_either_side(other);
                 }
                 return false;
             };
@@ -1081,9 +1101,14 @@ window.TOONTALK.widget = (function (TT) {
                             json_view.backside_height = $(backside_element).height();
                         }
                         if (!json_view.backside_left) {
-                            position = $(backside_element).position();
-                            json_view.backside_left = position.left;
-                            json_view.backside_top  = position.top;
+                            if (backside.json_view && typeof backside.json_view.backside_left !== 'undefined') {
+                                json_view.backside_left = backside.json_view.backside_left;
+                                json_view.backside_top  = backside.json_view.backside_top;
+                            } else {
+                                position = $(backside_element).position();
+                                json_view.backside_left = position.left;
+                                json_view.backside_top  = position.top;
+                            }
                             if ($(backside_element).find(".toontalk-settings-backside-button").html() === '&lt;') {
                                 json_view.advanced_settings_open = true;
                             }

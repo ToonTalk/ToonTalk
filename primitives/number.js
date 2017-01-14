@@ -243,13 +243,13 @@ window.TOONTALK.number = (function () {
         case '+':
             return '';
         case '-':
-            return '&minus;';
+            return '&minus;&thinsp;';
         case '*':
-            return '&times;';
+            return '&times;&thinsp;';
         case '/':
-            return '&divide;';
+            return '&divide;&thinsp;';
         case '=':
-            return '&equals;';
+            return '&equals;&thinsp;';
         case '^':
             // deprecated
             return '^';
@@ -755,8 +755,8 @@ window.TOONTALK.number = (function () {
         }
         if ($(frontside_element).is(".toontalk-conditions-contents")) {
             // leave room for borders
-            $(frontside_element).css({width:  240-border_size*2,
-                                      height: 60 -border_size*2});
+            $(frontside_element).css({width:  TT.UTILITIES.get_toontalk_css_numeric_attribute("width",  ".toontalk-conditions-container")-border_size*2,
+                                      height: TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-conditions-container")-border_size*2});
         }
         TT.UTILITIES.give_tooltip(frontside_element, this.get_title());
     };
@@ -890,7 +890,7 @@ window.TOONTALK.number = (function () {
                        operator_HTML + '<div style="margin-top: ' + (client_height-font_size)/2 + 'px">' + value_as_string + '</div>' + exponent_string + '</div>';
             }
         }
-        table_style = ' style="font-size:' + (font_size * 0.4) + 'px;"';
+        table_style = ' style="font-size:' + (font_size * 0.45) + 'px;"';
         if (format === 'improper_fraction' || !format) { // default format
             // double the max_characters since the font size is halved
             improper_fraction_HTML =
@@ -901,7 +901,7 @@ window.TOONTALK.number = (function () {
             if (operator_HTML === '') {
                 return improper_fraction_HTML;
             } else {
-                return "<table class='toontalk-operator-and-fraction'" + table_style + "><tr><td>" + operator_HTML + "</td><td>" + improper_fraction_HTML + "</td></tr></table>";
+                return "<table class='toontalk-operator-and-fraction'" + table_style + "><tr><td style='width: 20%;'>" + operator_HTML + "</td><td>" + improper_fraction_HTML + "</td></tr></table>";
             }
         }
         if (format === 'mixed_number' || format === 'proper_fraction') {

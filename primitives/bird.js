@@ -237,12 +237,7 @@ window.TOONTALK.bird = (function (TT) {
                                                            bird_finished_continuation();
                                                        }
                                                    };
-                            if (options.temporary_bird) {
-                                // no point returning if temporary
-                                new_continuation();
-                            } else {
-                                this.fly_to(bird_offset, new_continuation, options);
-                            }
+                            this.fly_to(bird_offset, new_continuation, options);
                         }.bind(this));
                     }.bind(this);
                     var old_bird_finished_continuation;
@@ -279,7 +274,9 @@ window.TOONTALK.bird = (function (TT) {
                             }
                         }
                     } else if (!this.is_function_bird()) {
-                        after_delivery_continuation();
+                        if (after_delivery_continuation) {
+                            after_delivery_continuation();
+                        }
                     }
                     stop_carrying_element($(bird_frontside_element).offset());
                 }.bind(this);
@@ -356,6 +353,12 @@ window.TOONTALK.bird = (function (TT) {
                 top_level_widget, top_level_backside_element_bounding_box;
             if (!nest_recieving_message) {
                 nest_recieving_message = nest;
+            }
+            if (!nest_recieving_message && !this.visible()) {
+                // bird without a nest that isn't being watched so acts like a sink
+                message_side.remove();
+                this.remove();
+                return;
             }
             options.delay = TT.animation_settings.PAUSE_BETWEEN_BIRD_STEPS;
             $(bird_frontside_element).removeClass("toontalk-bird-gimme")
@@ -456,8 +459,8 @@ window.TOONTALK.bird = (function (TT) {
                 nest_offset = $(target_frontside_element).offset();
                 top_level_backside_element_bounding_box.max_left = top_level_backside_element_bounding_box.left+$top_level_backside_element.width();
                 top_level_backside_element_bounding_box.max_top  = top_level_backside_element_bounding_box.top +$top_level_backside_element.height();
-                target_offset.left += nest_width
-                target_offset.top  += nest_height;
+                target_offset = {left: target_offset.left+nest_width,
+                                 top:  target_offset.top +nest_height};
                 // set message down near nest (southeast)
                 var message_offset =  {left: Math.min(nest_offset.left+nest_width,  top_level_backside_element_bounding_box.max_left -nest_width),
                                        top:  Math.min(nest_offset.top +nest_height, top_level_backside_element_bounding_box.max_top  -nest_height)};
@@ -1162,10 +1165,10 @@ window.TOONTALK.nest = (function (TT) {
                     return this;
                 }
             }
-            if (contents) {
+            if (contents && typeof contents[0].dereference_path === 'function') {
                 return contents[0].dereference_path(path, robot);
             }
-            robot.display_message("Robot expected to find something on a nest that it could get " + TT.path.toString(path) + ". But the nest is empty.");
+            robot.display_message("Robot expected to find something on a nest that it could get " + TT.path.toString(path) + ". But the nest is empty or contains something else.");
             return this;
         };
         new_nest.dereference_contents = function (path_to_nest, robot) {
@@ -1701,7 +1704,9 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.compare_with_box   = new_nest.compare_with_number;
         new_nest.compare_with_scale = new_nest.compare_with_number;
         new_nest.add_standard_widget_functionality(new_nest);
-        widget_remove = new_nest.remove;
+        if (!widget_remove) {
+            widget_remove = new_nest.remove;
+        }
         new_nest.remove = function () {
             widget_remove.call(this);
             if (original_nest) {

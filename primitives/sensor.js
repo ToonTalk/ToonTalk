@@ -81,7 +81,8 @@ window.TOONTALK.sensor = (function (TT) {
                 // comes from the bottom center
                 delivery_bird.animate_delivery_to(value_widget,
                                                   new_sensor,
-                                                  {nest_recieving_message: new_sensor, 
+                                                  {nest_recieving_message: new_sensor,
+                                                   temporary_bird: true,
                                                    starting_left: $top_level_backside.width()/2, 
                                                    starting_top:  $top_level_backside.height()});
             } else {

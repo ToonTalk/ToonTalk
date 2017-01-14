@@ -89,7 +89,8 @@ window.TOONTALK.create_function_table =
             return_the_message(message_properties, options);
         }
         if (!message_properties.message_return_bird) {
-            message.remove({do_not_remove_children: true});
+            message.remove({do_not_remove_children: true,
+                            remove_backside:        true});
         }
     },
     process_message: function (message, compute_response, options) {
