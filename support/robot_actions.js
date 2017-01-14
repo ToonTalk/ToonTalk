@@ -309,7 +309,10 @@ window.TOONTALK.actions =
             robot.add_to_top_level_backside();
             TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
             robot.run_next_step = function () {
-                if (context_backside && !document.hidden && (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element()))) {
+                if (context_backside &&
+                    !document.hidden &&
+                    (context_backside.visible() || TT.UTILITIES.visible_element(context_backside.get_element())) &&
+                    !robot.stopped()) {
                     // TODO: determine how context_backside.visible() can be false and
                     // $(context_backside.get_element()).is(":visible") true (test-programs.html has an example)
                     // pause between steps and give the previous step a chance to update the DOM

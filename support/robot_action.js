@@ -746,10 +746,10 @@ window.TOONTALK.robot_action =
                         console.log("   wait_until_this_nest_receives_something " +
                                     referenced.wait_until_this_nest_receives_something.to_debug_string(50) +
                                     "(" + TT.path.toString(path) +
-                                    ") by unwatched " + robot.to_debug_string(50));
+                                    ") by unwatched " + robot.to_debug_string(50) + " " + robot._debug_id);
                     } else {
                         console.log("   " + referenced.to_debug_string(50) + " (" + TT.path.toString(path) + ")" +
-                                    " by unwatched " + robot.to_debug_string(50));
+                                    " by unwatched " + robot.to_debug_string(50) + " " + robot._debug_id);
                     }
                 }
                 if (referenced.wait_until_this_nest_receives_something) {
@@ -791,7 +791,7 @@ window.TOONTALK.robot_action =
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {
                     console.log("   " + referenced + " (" + TT.path.toString(path) + " " +  (referenced.to_debug_string ? referenced.to_debug_string(50) : referenced) +
-                                " by watched " + robot.to_debug_string(50) + (robot.animate_consequences_of_actions() ? "" : " finishing instantly"));
+                                " by watched " + robot.to_debug_string(50)  + " " + robot._debug_id + (robot.animate_consequences_of_actions() ? "" : " finishing instantly"));
                 }
                 if (referenced.wait_until_this_nest_receives_something) {
                     referenced.wait_until_this_nest_receives_something.run_when_non_empty(
