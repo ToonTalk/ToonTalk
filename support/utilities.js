@@ -989,10 +989,12 @@ window.TOONTALK.UTILITIES =
                                         urlDecoded = decodeURIComponent(url);
                                         id = urlDecoded.substring(urlDecoded.lastIndexOf('id=')+3);
                                         $(".toontalk-edit").attr('contenteditable', true);
-                                        TT.published_support.send_edit_updates(id);
+                                        if (TT.published_support) {
+                                            TT.published_support.send_edit_updates(id);
+                                        }
                                     }
                                 },
-                                gapi && gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
+                                typeof gapi == 'object' && gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
     };
     var extract_html_by_tag = function (html, tag, contents_only) {
         var start = html.indexOf("<" + tag);
