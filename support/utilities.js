@@ -1782,6 +1782,10 @@ window.TOONTALK.UTILITIES =
             var get_css = function (style_sheet) {
                 var rules = style_sheet.cssRules;
                 var i;
+                if (!rules) {
+                    // can happen if css is coming from a different domain
+                    return;
+                }
                 for (i = 0; i < rules.length; i++) {
                     if (rules[i].selectorText === selector) {
                          utilities.cached_selectors[selector] = rules[i].cssText;
