@@ -320,12 +320,15 @@ window.TOONTALK.google_drive =
        },
 
        google_drive_url: function (id, read_write) {
+           var url;
            // Google no longer supports static web pages from Google Drive: "https://googledrive.com/host/" + id + "/";
 //            if (read_write) {
 //                return "https://www.googleapis.com/drive/v2/files/" + id + "?alt=media";
 //            }
            if (typeof TT.cross_origin_url_function === 'function') {
-               return TT.cross_origin_url_function("https://drive.google.com/uc?id=" + id);
+               url = TT.cross_origin_url_function("https://drive.google.com/uc?id=" + id);
+               // this ensures that the domain is the ToonTalk one not the ToonTalk proxy server
+               return TT.TOONTALK_URL + "published.html?replace-with-url=" + encodeURIComponent(url);
            }
            // if the cross origin proxy server isn't available then dowload the page locally
            return "https://drive.google.com/uc?export=download&id=" + id;
