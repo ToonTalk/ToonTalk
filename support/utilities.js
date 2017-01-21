@@ -538,7 +538,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 source_widget_side = utilities.create_from_json(json_object, {event: event});
             }
-            if (!source_widget_side) {
+           if (!source_widget_side) {
                 if (json_object) {
                     utilities.report_internal_error("Unable to construct a ToonTalk widget from the JSON.");
                 } else if (TT.debugging) {
@@ -989,10 +989,12 @@ window.TOONTALK.UTILITIES =
                                         urlDecoded = decodeURIComponent(url);
                                         id = urlDecoded.substring(urlDecoded.lastIndexOf('id=')+3);
                                         $(".toontalk-edit").attr('contenteditable', true);
-                                        TT.published_support.send_edit_updates(id);
+                                        if (TT.published_support) {
+                                            TT.published_support.send_edit_updates(id);
+                                        }
                                     }
                                 },
-                                gapi && gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
+                                typeof gapi == 'object' && gapi.auth && gapi.auth.getToken() && gapi.auth.getToken().access_token);
     };
     var extract_html_by_tag = function (html, tag, contents_only) {
         var start = html.indexOf("<" + tag);
@@ -1782,6 +1784,10 @@ window.TOONTALK.UTILITIES =
             var get_css = function (style_sheet) {
                 var rules = style_sheet.cssRules;
                 var i;
+                if (!rules) {
+                    // can happen if css is coming from a different domain
+                    return;
+                }
                 for (i = 0; i < rules.length; i++) {
                     if (rules[i].selectorText === selector) {
                          utilities.cached_selectors[selector] = rules[i].cssText;
@@ -4004,6 +4010,7 @@ window.TOONTALK.UTILITIES =
             if (TT.debugging) {
                 utilities.display_message("Error: " + message);
             }
+            Raven.captureException(message); // message is sometimes an exception and sometimes not
         };
 
         utilities.get_current_url_boolean_parameter = function (parameter, default_value) {

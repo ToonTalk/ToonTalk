@@ -258,13 +258,7 @@ window.TOONTALK.SETTINGS =
           };
           var create_connection_to_google_file = function (google_file, name, extra_info) {
               var link_to_edit = document.createElement('span');
-              var editable_url = window.location.protocol + "//" + window.location.host +
-                                 "/ToonTalk/published.html" + window.location.search +
-                                 (window.location.search ? "&" : "?") + // if there are no URL parameters use ? otherwise &
-                                 "replace-with-url=" + encodeURIComponent(TT.google_drive.google_drive_url(google_file.id, true));
-              if (TT.TRANSLATION_ENABLED) {
-                  editable_url = TT.UTILITIES.add_URL_parameter(editable_url, "translate", "1");
-              }
+              var editable_url = TT.google_drive.google_drive_url(google_file.id, true);
               link_to_edit.innerHTML = "Published " + "<a href='" + editable_url + "' target='_blank' title='Click to visit or edit.'>" + name + "</a>";
               return link_to_edit;
           };

@@ -66,6 +66,9 @@ window.TOONTALK.google_drive =
            gapi.client.load('drive', 'v2', function() {
                TT.google_drive.get_folder_ids(function () {
                    status = "Ready";
+                   if (typeof CKEDITOR === 'undefined') {
+                       return;
+                   }
                    // no point supporting editing until ready to save edits
                    // unclear if this is the most modular place for this
                    $(".toontalk-edit").each(function (index, element) {
@@ -317,12 +320,20 @@ window.TOONTALK.google_drive =
        },
 
        google_drive_url: function (id, read_write) {
+           var url;
            // Google no longer supports static web pages from Google Drive: "https://googledrive.com/host/" + id + "/";
 //            if (read_write) {
 //                return "https://www.googleapis.com/drive/v2/files/" + id + "?alt=media";
 //            }
            if (typeof TT.cross_origin_url_function === 'function') {
-               return TT.cross_origin_url_function("https://drive.google.com/uc?id=" + id);
+               url = TT.cross_origin_url_function("https://drive.google.com/uc?id=" + id);
+               // this ensures that the domain is the ToonTalk one not the ToonTalk proxy server
+               // seems a good idea to copy window.location.search to new URL (e.g. translate)
+               return TT.TOONTALK_URL +
+                      "published.html" +
+                      window.location.search +
+                      (window.location.search ? "&" : "?") + // if there are no URL parameters use ? otherwise &
+                      "replace-with-url=" + encodeURIComponent(url);
            }
            // if the cross origin proxy server isn't available then dowload the page locally
            return "https://drive.google.com/uc?export=download&id=" + id;

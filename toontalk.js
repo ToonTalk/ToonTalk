@@ -101,6 +101,7 @@ if (debugging) {
                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "libraries/DataTables-1.10.13/media/js/jquery.dataTables.min.js",
                   "libraries/rationaljs.js",
+                  !TOONTALK.RUNNING_LOCALLY && "https://cdn.ravenjs.com/3.9.1/raven.min.js", // only include this if not running locally 
                   "support/initial.js",
                   "support/functions.js",
                   "primitives/widget.js",
@@ -132,6 +133,7 @@ if (debugging) {
                   ];
 } else {
     file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+                  !TOONTALK.RUNNING_LOCALLY && "https://cdn.ravenjs.com/3.9.1/raven.min.js",
 //                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
@@ -155,6 +157,9 @@ var loadFile = function (index, offline) {
                                             if (index < file_names.length) {
                                                 loadFile(index, offline);
                                             } else {
+                                                if (!TOONTALK.RUNNING_LOCALLY) {
+                                                    Raven.config('https://b58cd20d39f14d9dad94aaa904a94adc@sentry.io/131294').install();
+                                                }
                                                 initialize_toontalk();
                                                 // delay the following since its addition was delayed as well
                                                 setTimeout(function () {
@@ -162,6 +167,10 @@ var loadFile = function (index, offline) {
                                                 });
                                             }
                                         };
+                   if (!file_name) {
+                       load_next_file();
+                       return;
+                   }
                    if (file_name.indexOf("http") >= 0) {
                        if ((!offline && !TOONTALK.CHROME_APP) ||
                            get_parameter('remote_storage') === "1") {
@@ -174,6 +183,7 @@ var loadFile = function (index, offline) {
                        } else {
                            // ignore it
                            load_next_file();
+                           return;
                        }
                    } else {
                        script.src = path_prefix + file_name;

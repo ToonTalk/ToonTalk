@@ -397,7 +397,7 @@ body > .toontalk-local-alert {
 	align-items:center;
 }
 .toontalk-integer, .toontalk-top-level-decimal {
-	line-height: 125%;
+	/* line-height: 125%; */
 }
 .toontalk-approximate-number {
 	background-color: rgb(248, 225, 24);
@@ -462,8 +462,7 @@ a {
 }
 .toontalk-numerator {
 }
-td.toontalk-number.toontalk-fraction-part-of-mixed-number {
-padding-bottom:  8%;}
+td.toontalk-number.toontalk-fraction-part-of-mixed-number {/* padding-bottom:  8%; */}
 .toontalk-fraction-line {
 	width: 90%;
 	border-width: 2pt;
@@ -551,7 +550,7 @@ padding-bottom:  8%;}
 	position: static;
 }
 .toontalk-infinite-stack {
-	box-shadow: 10px 5px 5px black;
+	box-shadow: 6px 6px 3px #585858;
 }
 .toontalk-resource-table {
 	padding: 4px;
@@ -1787,8 +1786,7 @@ background-image: url("images/dusty-morph.png");
     padding: 10px 20px;
     color: white;
     border-radius: 20px;
-    font: bold 14px "Helvetica Neue", Sans-Serif
-    box-shadow: 0 0 7px black;
+    box-shadow: 4px 4px 2px #585858;
 }
 .toontalk-arrow {
     width: 70px;
