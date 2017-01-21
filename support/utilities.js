@@ -538,7 +538,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 source_widget_side = utilities.create_from_json(json_object, {event: event});
             }
-            if (!source_widget_side) {
+           if (!source_widget_side) {
                 if (json_object) {
                     utilities.report_internal_error("Unable to construct a ToonTalk widget from the JSON.");
                 } else if (TT.debugging) {
@@ -4010,6 +4010,7 @@ window.TOONTALK.UTILITIES =
             if (TT.debugging) {
                 utilities.display_message("Error: " + message);
             }
+            Raven.captureException(message); // message is sometimes an exception and sometimes not
         };
 
         utilities.get_current_url_boolean_parameter = function (parameter, default_value) {
