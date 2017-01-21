@@ -551,7 +551,7 @@ padding-bottom:  8%;}
 	position: static;
 }
 .toontalk-infinite-stack {
-	box-shadow: 10px 5px 5px black;
+	box-shadow: 6px 6px 3px #585858;
 }
 .toontalk-resource-table {
 	padding: 4px;
@@ -1787,8 +1787,7 @@ background-image: url("images/dusty-morph.png");
     padding: 10px 20px;
     color: white;
     border-radius: 20px;
-    font: bold 14px "Helvetica Neue", Sans-Serif
-    box-shadow: 0 0 7px black;
+    box-shadow: 4px 4px 2px #585858;
 }
 .toontalk-arrow {
     width: 70px;
