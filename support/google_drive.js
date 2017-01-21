@@ -328,7 +328,12 @@ window.TOONTALK.google_drive =
            if (typeof TT.cross_origin_url_function === 'function') {
                url = TT.cross_origin_url_function("https://drive.google.com/uc?id=" + id);
                // this ensures that the domain is the ToonTalk one not the ToonTalk proxy server
-               return TT.TOONTALK_URL + "published.html?replace-with-url=" + encodeURIComponent(url);
+               // seems a good idea to copy window.location.search to new URL (e.g. translate)
+               return TT.TOONTALK_URL +
+                      "published.html" +
+                      window.location.search +
+                      (window.location.search ? "&" : "?") + // if there are no URL parameters use ? otherwise &
+                      "replace-with-url=" + encodeURIComponent(url);
            }
            // if the cross origin proxy server isn't available then dowload the page locally
            return "https://drive.google.com/uc?export=download&id=" + id;
