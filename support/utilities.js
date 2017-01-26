@@ -3962,7 +3962,7 @@ window.TOONTALK.UTILITIES =
                 }
             }
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
-            if (TT.debugging && !options.user_initiated) {
+            if (TT.debugging && !options.user_initiated && !options.dont_log) {
                 console.log(options.plain_text || message);
                 console.trace();
             }

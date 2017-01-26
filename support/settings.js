@@ -135,7 +135,7 @@ window.TOONTALK.SETTINGS =
     };
     var close_settings = function (widget) {
         $(".toontalk-settings-panel").remove();
-        widget.display_message("Your program was copied and the new copy's name is '" + widget.get_setting('program_name') + "'.");
+        widget.display_message("Your program was copied and the new copy's name is '" + widget.get_setting('program_name') + "'.", {dont_log: true});
     };
     var add_click_listeners = function (widget, table, in_the_cloud, settings_panel) {
         var program_click_handler = function (event) {
@@ -240,7 +240,7 @@ window.TOONTALK.SETTINGS =
                                                           "toontalk-publish-button",
                                                           "Click to publish your program by generating a Google Drive URL.",
                                                           function () {
-                                                              widget.display_message("Creating your web page...");
+                                                              widget.display_message("Creating your web page...", {dont_log: true});
                                                               widget.publish(display_published, as_workspace.button.checked);
                                                           });
           var as_workspace        = TT.UTILITIES.create_check_box(widget.get_setting('publish_as_workspace'),
@@ -251,7 +251,7 @@ window.TOONTALK.SETTINGS =
               // currently extra_info is the JSON of the current widgets if previously published
               var link_to_publication = create_connection_to_google_file(google_file, widget.get_setting('program_name'), extra_info);
               var $row = $(program_name.container).children("tr");
-              widget.display_message("Your web page is ready for you to edit. Just click on the link.");
+              widget.display_message("Your web page is ready for you to edit. Just click on the link.", {dont_log: true});
               if ($row.length > 0) {
                   $row.get(0).appendChild(TT.UTILITIES.create_table_entry(link_to_publication));
               }
