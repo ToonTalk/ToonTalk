@@ -2104,7 +2104,7 @@ window.TOONTALK.UTILITIES =
                 utilities.retrieve_string('toontalk-last-key', key_callback);
             } else {
                 widget = utilities.create_from_json(json);
-                if (widget.set_visible && has_ancestor_element(element, document.body)) {
+                if (widget && widget.set_visible && has_ancestor_element(element, document.body)) {
                     // check  widget.set_visible since widget might be a tool 
                     widget.set_visible(true);
                 }
