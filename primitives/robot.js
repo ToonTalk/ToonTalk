@@ -1436,7 +1436,9 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.find_conditions_path = function (widget, robot_with_widget_in_conditions, robot) {
          var frontside_conditions = robot_with_widget_in_conditions.get_frontside_conditions();
-         var path_within_conditions = frontside_conditions === widget ? 'entire_condition' : frontside_conditions.get_path_to && frontside_conditions.get_path_to(widget, robot);
+         var path_within_conditions = frontside_conditions === widget ?
+                                      'entire_condition' :
+                                      frontside_conditions && frontside_conditions.get_path_to && frontside_conditions.get_path_to(widget, robot);
          var path_to_robot = TT.path.get_path_to(robot_with_widget_in_conditions, robot);
          var backside_conditions, backside_condition_with_path;
          if (!path_within_conditions) {
