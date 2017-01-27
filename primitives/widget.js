@@ -2156,7 +2156,7 @@ window.TOONTALK.widget = (function (TT) {
                     var json;
                     if (json_string) {
                         try {
-                            json = JSON.parse(json_string);
+                            json = TTT.UTILITIES.parse_json(json_string);
                             this.remove_all_backside_widgets();
                             TT.UTILITIES.add_backside_widgets_from_json(this,
                                                                         json.semantic.backside_widgets,
@@ -2167,7 +2167,7 @@ window.TOONTALK.widget = (function (TT) {
                                 loaded_callback();
                             }
                         } catch (e) {
-                            TT.UTILITIES.display_message("Error encountered loading " + ": " + e);
+                            TT.UTILITIES.display_message("Error encountered loading " + json_string + ": " + e);
                         }
                     } else if (nothing_to_load_callback) {
                         nothing_to_load_callback();

@@ -802,7 +802,7 @@ window.TOONTALK.UTILITIES =
                 json = extract_json_from_div_string(reader.result);
                 if (json) {
                     try {
-                        json_object = JSON.parse(json);
+                        json_object = utilities.parse_json(json);
                         widget = utilities.create_from_json(json_object);
                     } catch (e) {
                         // no need to report this it need not contain ToonTalk JSON
@@ -1870,11 +1870,7 @@ window.TOONTALK.UTILITIES =
             }
             json_string = extract_json_from_div_string(data);
             if (json_string) {
-                try {
-                    return JSON.parse(json_string);
-                } catch (exception) {
-                    utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
-                }
+                return utilities.parse_json(json_string);
             }
             // treat the data as rich text (HTML) or a plain text element
             element = TT.element.create("");
@@ -1893,6 +1889,15 @@ window.TOONTALK.UTILITIES =
                                  json = element_json;
                              });
             return json;
+        };
+
+        utilities.parse_json = function (json_string) {
+            try {
+                return JSON.parse(json_string);
+            } catch (exception) {
+                utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
+                utilities.report_internal_error(exception);
+            }
         };
 
         utilities.drag_and_drop = function (element) {
@@ -2063,7 +2068,7 @@ window.TOONTALK.UTILITIES =
                 return;
             }
             json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
-            json = JSON.parse(json_string);
+            json = utilities.parse_json(json_string);
             if (json.semantic &&
                 json.semantic.type === 'top_level' &&
                 !TT.no_local_storage &&
@@ -4010,7 +4015,9 @@ window.TOONTALK.UTILITIES =
             if (TT.debugging) {
                 utilities.display_message("Error: " + message);
             }
-            Raven.captureException(message); // message is sometimes an exception and sometimes not
+            if (typeof Raven === 'object') {
+                Raven.captureException(message); // message is sometimes an exception and sometimes not
+            }
         };
 
         utilities.get_current_url_boolean_parameter = function (parameter, default_value) {
@@ -4228,7 +4235,7 @@ window.TOONTALK.UTILITIES =
                                               if (chrome.runtime.lastError) {
                                                   console.error(chrome.runtime.lastError + " caused by get " + key);
                                               }
-                                              callback(stored[key] && JSON.parse(stored[key]));
+                                              callback(stored[key] && utilities.parse_json(stored[key]));
                                           });
             };
             utilities.retrieve_string = function (key, callback) {
@@ -4264,7 +4271,7 @@ window.TOONTALK.UTILITIES =
                if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
                    console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
                }
-               callback(json_string && JSON.parse(json_string));
+               callback(json_string && utilities.parse_json(json_string));
             };
             utilities.retrieve_string = function (key, callback) {
                 if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
