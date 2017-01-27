@@ -149,16 +149,21 @@ var local_replacements =
     // since requires an Internet connection to be useful
     {"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js": "libraries/jquery-3.1.1.min.js"};
 
-var loadFile = function (index, offline) {
+var load_file = function (index, offline) {
                    var script = document.createElement("script");
                    var file_name = file_names[index];
                    var load_next_file = function () {
                                             index++;
                                             if (index < file_names.length) {
-                                                loadFile(index, offline);
+                                                load_file(index, offline);
                                             } else {
                                                 if (!TOONTALK.RUNNING_LOCALLY) {
                                                     Raven.config('https://b58cd20d39f14d9dad94aaa904a94adc@sentry.io/131294').install();
+                                                    if (typeof initialize_toontalk !== "function") {
+                                                        Raven.captureException("initialize_toontalk not defined. Probably error loading scripts.");
+                                                        alert("ToonTalk was not loaded properly. Some script files missing. See console for details.");
+                                                        return;
+                                                    }
                                                 }
                                                 initialize_toontalk();
                                                 // delay the following since its addition was delayed as well
@@ -197,10 +202,13 @@ var loadFile = function (index, offline) {
                        if (script.src.indexOf("https:") >= 0) {
                            if (local_replacements[file_name]) {
                                // try again with local file
-                               loadFile(index, true);
+                               load_file(index, true);
                            }
                        } else {
                            console.error(event);
+                           if (!TOONTALK.RUNNING_LOCALLY) {
+                               Raven.captureException(event.message);
+                           }
                        }
                    });
                    document.head.appendChild(script);
@@ -234,6 +242,6 @@ if (published_page) {
 //     file_names.push("libraries/translate_a/element.js?cb=googleTranslateElementInit");
 // }
 
-loadFile(0, TOONTALK.RUNNING_LOCALLY);
+load_file(0, TOONTALK.RUNNING_LOCALLY);
 
 }());

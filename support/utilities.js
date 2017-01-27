@@ -802,7 +802,7 @@ window.TOONTALK.UTILITIES =
                 json = extract_json_from_div_string(reader.result);
                 if (json) {
                     try {
-                        json_object = JSON.parse(json);
+                        json_object = utilities.parse_json(json);
                         widget = utilities.create_from_json(json_object);
                     } catch (e) {
                         // no need to report this it need not contain ToonTalk JSON
@@ -1052,7 +1052,6 @@ window.TOONTALK.UTILITIES =
                 // was undefined and still is
                 return;
             }
-//             console.log(json);
             if (!additional_info) {
                 additional_info = {};
             }
@@ -1104,6 +1103,9 @@ window.TOONTALK.UTILITIES =
                 }
                 widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, uninitialised_widget, true);
                 return handle_delayed_backside_widgets(widget_side, additional_info, json_semantic.shared_widget_index);
+            } else if (!json_semantic.type) {
+                TT.UTILITIES.report_internal_error("No type attribute given in " + JSON.stringify(json_semantic));
+                return;
             } else if (TT.creators_from_json[json_semantic.type]) {
                 if (!additional_info) {
                     additional_info = {};
@@ -1870,11 +1872,7 @@ window.TOONTALK.UTILITIES =
             }
             json_string = extract_json_from_div_string(data);
             if (json_string) {
-                try {
-                    return JSON.parse(json_string);
-                } catch (exception) {
-                    utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
-                }
+                return utilities.parse_json(json_string);
             }
             // treat the data as rich text (HTML) or a plain text element
             element = TT.element.create("");
@@ -1893,6 +1891,15 @@ window.TOONTALK.UTILITIES =
                                  json = element_json;
                              });
             return json;
+        };
+
+        utilities.parse_json = function (json_string) {
+            try {
+                return JSON.parse(json_string);
+            } catch (exception) {
+                utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
+                utilities.report_internal_error(exception);
+            }
         };
 
         utilities.drag_and_drop = function (element) {
@@ -2063,7 +2070,7 @@ window.TOONTALK.UTILITIES =
                 return;
             }
             json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
-            json = JSON.parse(json_string);
+            json = utilities.parse_json(json_string);
             if (json.semantic &&
                 json.semantic.type === 'top_level' &&
                 !TT.no_local_storage &&
@@ -2099,7 +2106,7 @@ window.TOONTALK.UTILITIES =
                 utilities.retrieve_string('toontalk-last-key', key_callback);
             } else {
                 widget = utilities.create_from_json(json);
-                if (widget.set_visible && has_ancestor_element(element, document.body)) {
+                if (widget && widget.set_visible && has_ancestor_element(element, document.body)) {
                     // check  widget.set_visible since widget might be a tool 
                     widget.set_visible(true);
                 }
@@ -3962,7 +3969,7 @@ window.TOONTALK.UTILITIES =
                 }
             }
             $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
-            if (TT.debugging && !options.user_initiated) {
+            if (TT.debugging && !options.user_initiated && !options.dont_log) {
                 console.log(options.plain_text || message);
                 console.trace();
             }
@@ -4010,7 +4017,9 @@ window.TOONTALK.UTILITIES =
             if (TT.debugging) {
                 utilities.display_message("Error: " + message);
             }
-            Raven.captureException(message); // message is sometimes an exception and sometimes not
+            if (typeof Raven === 'object') {
+                Raven.captureException(message); // message is sometimes an exception and sometimes not
+            }
         };
 
         utilities.get_current_url_boolean_parameter = function (parameter, default_value) {
@@ -4228,7 +4237,7 @@ window.TOONTALK.UTILITIES =
                                               if (chrome.runtime.lastError) {
                                                   console.error(chrome.runtime.lastError + " caused by get " + key);
                                               }
-                                              callback(stored[key] && JSON.parse(stored[key]));
+                                              callback(stored[key] && utilities.parse_json(stored[key]));
                                           });
             };
             utilities.retrieve_string = function (key, callback) {
@@ -4264,7 +4273,7 @@ window.TOONTALK.UTILITIES =
                if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
                    console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
                }
-               callback(json_string && JSON.parse(json_string));
+               callback(json_string && utilities.parse_json(json_string));
             };
             utilities.retrieve_string = function (key, callback) {
                 if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
