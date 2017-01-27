@@ -159,6 +159,11 @@ var load_file = function (index, offline) {
                                             } else {
                                                 if (!TOONTALK.RUNNING_LOCALLY) {
                                                     Raven.config('https://b58cd20d39f14d9dad94aaa904a94adc@sentry.io/131294').install();
+                                                    if (typeof initialize_toontalk !== "function") {
+                                                        Raven.captureException("initialize_toontalk not defined. Probably error loading scripts.");
+                                                        alert("ToonTalk was not loaded properly. Some script files missing. See console for details.");
+                                                        return;
+                                                    }
                                                 }
                                                 initialize_toontalk();
                                                 // delay the following since its addition was delayed as well
