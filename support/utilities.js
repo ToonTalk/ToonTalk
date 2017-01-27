@@ -1052,7 +1052,6 @@ window.TOONTALK.UTILITIES =
                 // was undefined and still is
                 return;
             }
-//             console.log(json);
             if (!additional_info) {
                 additional_info = {};
             }
@@ -1104,6 +1103,9 @@ window.TOONTALK.UTILITIES =
                 }
                 widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, uninitialised_widget, true);
                 return handle_delayed_backside_widgets(widget_side, additional_info, json_semantic.shared_widget_index);
+            } else if (!json_semantic.type) {
+                TT.UTILITIES.report_internal_error("No type attribute given in " + JSON.stringify(json_semantic));
+                return;
             } else if (TT.creators_from_json[json_semantic.type]) {
                 if (!additional_info) {
                     additional_info = {};
