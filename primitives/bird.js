@@ -734,6 +734,12 @@ window.TOONTALK.bird = (function (TT) {
 
     bird.create_function = function (type_name, description, function_name) {
         // default function adds its arguments and gives result to bird
+        var error;
+        if (typeof TT[type_name].function === 'undefined') {
+            error = "Unable to create function bird for type: " + type_name + " description: " + description + " name: " + function_name;
+            TT.UTILITIES.report_internal_error(error);
+            throw error;
+        }
         return bird.create(TT.nest.create_function(description, type_name, function_name || TT.UTILITIES.get_first_property(TT[type_name].function)));
     };
 
