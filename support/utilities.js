@@ -1902,8 +1902,7 @@ window.TOONTALK.UTILITIES =
             try {
                 return JSON.parse(json_string);
             } catch (exception) {
-                utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
-                utilities.report_internal_error(exception);
+                utilities.report_internal_error("Exception parsing JSON " + exception.toString() + " error: " + json_string);
             }
         };
 
