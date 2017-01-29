@@ -803,7 +803,9 @@ window.TOONTALK.UTILITIES =
                 if (json) {
                     try {
                         json_object = utilities.parse_json(json);
-                        widget = utilities.create_from_json(json_object);
+                        if (json_object) {
+                            widget = utilities.create_from_json(json_object);
+                        }
                     } catch (e) {
                         // no need to report this it need not contain ToonTalk JSON
                         // console.log("Exception parsing " + json + "\n" + e.toString());
@@ -1872,7 +1874,10 @@ window.TOONTALK.UTILITIES =
             }
             json_string = extract_json_from_div_string(data);
             if (json_string) {
-                return utilities.parse_json(json_string);
+                json = utilities.parse_json(json_string);
+                if (json) {
+                    return json;
+                }
             }
             // treat the data as rich text (HTML) or a plain text element
             element = TT.element.create("");
@@ -2071,6 +2076,9 @@ window.TOONTALK.UTILITIES =
             }
             json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
             json = utilities.parse_json(json_string);
+            if (!json) {
+                return;
+            }
             if (json.semantic &&
                 json.semantic.type === 'top_level' &&
                 !TT.no_local_storage &&
