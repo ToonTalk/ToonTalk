@@ -569,7 +569,9 @@ window.TOONTALK.UTILITIES =
             // dropping front side on backside so ignore
             return;
         }
-        handle_drop($target, $source, source_widget_side, target_widget_side, target_position, event, json_object, drag_x_offset, drag_y_offset);
+        if (source_widget_side) {
+            handle_drop($target, $source, source_widget_side, target_widget_side, target_position, event, json_object, drag_x_offset, drag_y_offset);
+        }
     };
     var add_drop_handler_to_input_element = function (input_element, drop_handler) {
         // TODO: need touch version of the following
