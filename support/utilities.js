@@ -447,7 +447,8 @@ window.TOONTALK.UTILITIES =
             }
             target_position = $target.offset();
             new_target_widget_side = utilities.widget_side_of_jquery($target);
-            if (( target_widget_side.is_backside() &&  new_target_widget_side.is_backside()) ||
+            if (!target_widget_side ||
+                ( target_widget_side.is_backside() &&  new_target_widget_side.is_backside()) ||
                 (!target_widget_side.is_backside() && !new_target_widget_side.is_backside())) {
                 target_widget_side = new_target_widget_side;
             }
