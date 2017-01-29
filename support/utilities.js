@@ -447,7 +447,8 @@ window.TOONTALK.UTILITIES =
             }
             target_position = $target.offset();
             new_target_widget_side = utilities.widget_side_of_jquery($target);
-            if (( target_widget_side.is_backside() &&  new_target_widget_side.is_backside()) ||
+            if (!target_widget_side ||
+                ( target_widget_side.is_backside() &&  new_target_widget_side.is_backside()) ||
                 (!target_widget_side.is_backside() && !new_target_widget_side.is_backside())) {
                 target_widget_side = new_target_widget_side;
             }
@@ -568,7 +569,9 @@ window.TOONTALK.UTILITIES =
             // dropping front side on backside so ignore
             return;
         }
-        handle_drop($target, $source, source_widget_side, target_widget_side, target_position, event, json_object, drag_x_offset, drag_y_offset);
+        if (source_widget_side) {
+            handle_drop($target, $source, source_widget_side, target_widget_side, target_position, event, json_object, drag_x_offset, drag_y_offset);
+        }
     };
     var add_drop_handler_to_input_element = function (input_element, drop_handler) {
         // TODO: need touch version of the following
@@ -803,7 +806,9 @@ window.TOONTALK.UTILITIES =
                 if (json) {
                     try {
                         json_object = utilities.parse_json(json);
-                        widget = utilities.create_from_json(json_object);
+                        if (json_object) {
+                            widget = utilities.create_from_json(json_object);
+                        }
                     } catch (e) {
                         // no need to report this it need not contain ToonTalk JSON
                         // console.log("Exception parsing " + json + "\n" + e.toString());
@@ -1872,7 +1877,10 @@ window.TOONTALK.UTILITIES =
             }
             json_string = extract_json_from_div_string(data);
             if (json_string) {
-                return utilities.parse_json(json_string);
+                json = utilities.parse_json(json_string);
+                if (json) {
+                    return json;
+                }
             }
             // treat the data as rich text (HTML) or a plain text element
             element = TT.element.create("");
@@ -1897,8 +1905,7 @@ window.TOONTALK.UTILITIES =
             try {
                 return JSON.parse(json_string);
             } catch (exception) {
-                utilities.report_internal_error("Exception parsing " + json_string + "\n" + exception.toString());
-                utilities.report_internal_error(exception);
+                utilities.report_internal_error("Exception parsing JSON " + exception.toString() + " error: " + json_string);
             }
         };
 
@@ -2071,6 +2078,9 @@ window.TOONTALK.UTILITIES =
             }
             json_string = json_string.substring(json_string.indexOf("{"), json_string.lastIndexOf("}")+1);
             json = utilities.parse_json(json_string);
+            if (!json) {
+                return;
+            }
             if (json.semantic &&
                 json.semantic.type === 'top_level' &&
                 !TT.no_local_storage &&

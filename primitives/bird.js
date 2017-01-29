@@ -630,6 +630,9 @@ window.TOONTALK.bird = (function (TT) {
                 if (nest.is_function_nest && nest.is_function_nest()) {
                     return nest.get_function_object().toString();
                 }
+                if (nest.get_name()) {
+                    return "bird named '" + nest.get_name() + "'";
+                }
                 return "bird";
             }
             if (to_string_info && to_string_info.role === "conditions") {
@@ -1843,7 +1846,10 @@ window.TOONTALK.nest = (function (TT) {
     };
 
     nest.toString = function () {
-        return "nest"; // good enough for now
+        if (this.get_name()) {
+            return "nest named '" + this.get_name() + "'";
+        }
+        return "nest";
     };
 
     nest.get_default_description = function () {
