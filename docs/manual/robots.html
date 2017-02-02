@@ -115,7 +115,7 @@ Closing the backsides will speed things up very much.
 You can stretch the doubling number to see it better.
 </p>
 <p>
-Robot can be trained to millions of different things. <a href='examples.html?reset=1'>Explore a few examples.</a>
+Robot can be trained to millions of different things. <a target="_blank" href='examples.html?reset=1'>Explore a few examples.</a>
 </p>
 <h3>Running over and over again</h3>
 <p>
@@ -353,15 +353,18 @@ top level widget
 <h3>What are robots a metaphor for?</h3>
 <p>
 Robots are pieces of programs.
-They correspond to a conventional program that is roughly like this:
+Each team of robots correspond to a conventional program that is roughly like this:
 <pre>
-repeat-forever
-   if context matches conditions
-      do recorded actions
-   else if there is a next robot and context matches conditions of the next robot
-      do recorded actions of next robot
+repeat forever
+   run the first robot in the team
+
+define running a robot as
+   if context matches conditions of the current robot
+      do recorded actions of that robot
    else if the reason the context doesn't match the conditions is because of an empty nest
-      wait until a bird brings something to that nest.
+      wait until a bird brings something to that nest and then run this robot again
+   else if there is a next robot
+      run the next robot.
 </pre>
 Every robot team is always doing this at the same time.
 Or more accurately ToonTalk creates the illusion that they all are running at the same time
