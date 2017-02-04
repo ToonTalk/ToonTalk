@@ -205,12 +205,18 @@ var load_file = function (index, offline) {
                    var script = document.createElement("script");
                    var file_name = file_names[index];
                    var load_next_file = function () {
+                                            if (file_names[index] && file_names[index].indexOf("raven.min.js") >= 0) {
+                                                // previous load was error reporter code so install it
+                                                Raven.config('https://b58cd20d39f14d9dad94aaa904a94adc@sentry.io/131294').install();
+                                                if (reason_unable_to_run()) {
+                                                    Raven.captureException("User proceeded despite this warning: " + reason_unable_to_run());
+                                                }
+                                            }
                                             index++;
                                             if (index < file_names.length) {
                                                 load_file(index, offline);
                                             } else {
                                                 if (!TOONTALK.RUNNING_LOCALLY) {
-                                                    Raven.config('https://b58cd20d39f14d9dad94aaa904a94adc@sentry.io/131294').install();
                                                     if (typeof initialize_toontalk !== "function") {
                                                         Raven.captureException("initialize_toontalk not defined. Probably error loading scripts.");
                                                         alert("ToonTalk was not loaded properly. Some script files missing. See console for details.");
@@ -218,9 +224,6 @@ var load_file = function (index, offline) {
                                                     }
                                                 }
                                                 initialize_toontalk();
-                                                if (!TOONTALK.RUNNING_LOCALLY && reason_unable_to_run()) {
-                                                    Raven.captureException("User proceeded despite this warning: " + reason_unable_to_run());
-                                                }
                                                 // delay the following since its addition was delayed as well
                                                 setTimeout(function () {
                                                     $(loading_please_wait).remove();
