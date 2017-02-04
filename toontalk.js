@@ -51,6 +51,8 @@ var reason_unable_to_run = function () {
         if (version_start >= 0) {
             version_start += browser_name.length+1;
             version_end = window.navigator.userAgent.indexOf(".", version_start);
+            version_end = window.navigator.userAgent.indexOf(".", version_end+1);
+            // ignore all but first decimal point in version string
             if (version_end >= 0) {
                 return +window.navigator.userAgent.substring(version_start, version_end);
             }
