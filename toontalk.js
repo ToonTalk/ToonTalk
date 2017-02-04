@@ -78,8 +78,8 @@ var reason_unable_to_run = function () {
     }
     if (is_browser_of_type("Safari")) {
         var version = version_number("Version");
-        if (version && version < 6.2) {
-            return "The oldest version of Safari that can run ToonTalk is 6.2. Your version is " + version;
+        if (version && version <= 6) {
+            return "The Safari version 6 and lower cannot run ToonTalk. Your version is " + version;
         }
     }
     if (is_browser_of_type("Opera")) {
