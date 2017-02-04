@@ -39,6 +39,58 @@ var get_url_parameter = function (name, parameters, default_value) {
     return value;
 };
 
+var reason_unable_to_run = function () {
+    // tests on browserstack.com seem to indicate Chrome 31+, FireFox 14+, IE11, Safari 6.2+, Opera 15+
+    var is_browser_of_type = function (type) {
+        // type can be "MSIE", "Firefox", "Safari", "Chrome", "Opera"
+        return window.navigator.userAgent.indexOf(type) >= 0;
+    };
+    var version_number = function (browser_name) {
+        var version_start = window.navigator.userAgent.indexOf(browser_name + "/");
+        var version_end, version;
+        if (version_start >= 0) {
+            version_start += browser_name.length+1;
+            version_end = window.navigator.userAgent.indexOf(".", version_start);
+            if (version_end >= 0) {
+                return +window.navigator.userAgent.substring(version_start, version_end);
+            }
+        }
+    };
+    if (is_browser_of_type("MSIE")) {
+        // see https://msdn.microsoft.com/en-us/library/ms537503(v=vs.85).aspx
+        return "The only version of Internet Explorer that can run ToonTalk is 11.";
+    }
+    if (is_browser_of_type("Chrome")) {
+        // see https://developer.chrome.com/multidevice/user-agent
+        var version = version_number("Chrome");
+        if (version && version < 31) {
+            return "The oldest version of Chrome that can run ToonTalk is 31. Your version is " + version;
+        }
+    }
+    if (is_browser_of_type("FireFox")) {
+        // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
+        var version = version_number("FireFox");
+        if (version && version < 14) {
+            return "The oldest version of FireFox that can run ToonTalk is 14. Your version is " + version;
+        }
+    }
+    if (is_browser_of_type("Safari")) {
+        var version = version_number("Version");
+        if (version && version < 6.2) {
+            return "The oldest version of Safari that can run ToonTalk is 6.2. Your version is " + version;
+        }
+    }
+    if (is_browser_of_type("Opera")) {
+        return "Opera version 12 cannot run ToonTalk. Version 15 and above work fine.";
+    }
+};
+
+if (reason_unable_to_run()) {
+    if (window.confirm(reason_unable_to_run() + " Do you want to exit?")) {
+        window.location.assign("docs/browser-requirements.html");
+    }
+}
+
 // following is needed to access the user's Google Drive 
 // default assumes web page is hosted on toontalk.github.io
 window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
@@ -166,6 +218,9 @@ var load_file = function (index, offline) {
                                                     }
                                                 }
                                                 initialize_toontalk();
+                                                if (!TOONTALK.RUNNING_LOCALLY && reason_unable_to_run()) {
+                                                    Raven.captureException("User proceeded despite this warning: " + reason_unable_to_run());
+                                                }
                                                 // delay the following since its addition was delayed as well
                                                 setTimeout(function () {
                                                     $(loading_please_wait).remove();
