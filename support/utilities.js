@@ -5522,9 +5522,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.logging                      = utilities.get_current_url_parameter('log');
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
-            if (TT.volume > 0) {
-                initialize_sounds();
-            }
             TT.puzzle                        = utilities.get_current_url_boolean_parameter('puzzle', false);
             // puzzle by default sets alt_key_to_open_backside and reset to its value
             TT.open_backside_only_if_alt_key = utilities.get_current_url_boolean_parameter('alt_key_to_open_backside', TT.puzzle);
@@ -5662,6 +5659,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             }
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
+            if (TT.volume > 0) {
+                // this loads in all the sounds so do it after everything else has been initialised
+                setTimeout(initialize_sounds);
+            }
         }
         var document_click, $saved_selection;
         if (toontalk_initialized) {
