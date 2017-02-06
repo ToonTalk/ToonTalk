@@ -1232,7 +1232,7 @@ window.TOONTALK.backside =
             $make_sensor_nest_button.attr('title', "Click to create a nest which receives messages when events happen to this " + widget.get_type_name() + ".");
             $make_function_bird_button.addClass("toontalk-make-function_bird_button toontalk-button");
             $make_function_bird_button.get(0).addEventListener('click', make_function_bird_button_clicked);
-            if (widget.is_number() || widget.is_box() || widget.is_element()) {
+            if (widget.is_number() || (widget.is_box() && !widget.is_scale())|| widget.is_element()) {
                 // will implement more functions (e.g. for string elements and boxes)
                 $make_function_bird_button.attr('title', "Click to get a bird that flies to functions of " + widget.get_type_name(true) + ".");
             } else {
