@@ -848,7 +848,8 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         if (sound_effect_or_sound_effect_file_name) {
             // by supporting both the sound effect and the file name we can get sharing of audio objects between copies of the same element
             if (typeof sound_effect_or_sound_effect_file_name === 'string') {
-                if (sound_effect_or_sound_effect_file_name.indexOf("http") < 0) {
+                if (sound_effect_or_sound_effect_file_name.indexOf("http") < 0 &&
+                    sound_effect_or_sound_effect_file_name.indexOf("data:") < 0) {
                     // if it is a relative path then treat it relative to the ToonTalk web site
                     sound_effect_or_sound_effect_file_name = TT.TOONTALK_URL + sound_effect_or_sound_effect_file_name;
                 }
