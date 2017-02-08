@@ -1105,8 +1105,13 @@ window.TOONTALK.box_backside =
             };
             var update_orientation = function () {
                 var selected = TT.UTILITIES.selected_radio_button(horizontal, vertical);
-                var orientation = selected.button.value;
-                var is_horizontal = (orientation === "horizontal");
+                var orientation, is_horizontal; 
+                if (!selected) {
+                    // not clear how this can happen but appeared in logs https://sentry.io/ken-kahn/toontalk/issues/214372255/
+                    return;
+                }
+                orientation = selected.button.value;
+                is_horizontal = (orientation === "horizontal");
                 box.set_horizontal(is_horizontal, true, true);
             };
             var backside_element = backside.get_element();

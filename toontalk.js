@@ -83,7 +83,7 @@ var reason_unable_to_run = function () {
         }
     }
     if (is_browser_of_type("Opera")) {
-        return "Opera version 12 cannot run ToonTalk. Version 15 and above work fine.";
+        return "Opera version 12 and below cannot run ToonTalk. Version 15 and above work fine.";
     }
 };
 

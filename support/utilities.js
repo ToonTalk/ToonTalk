@@ -4262,6 +4262,15 @@ window.TOONTALK.UTILITIES =
                                              callback(stored && stored[key]);
                                          });
             };
+        } else if (!window.localStorage) {
+            utilities.store_object = function () {
+                console.log("Browser local storage not available in this browser. Nothing stored");
+            };
+            utilities.store_string = utilities.store_object;
+            utilities.retrieve_object = function (key, callback) {
+                callback();
+            };
+            utilities.retrieve_string = utilities.retrieve_object;
         } else {
             utilities.store_object = function(key, object, callback) {
                 if (TT.logging && TT.logging.indexOf('store') >= 0) {
@@ -4279,11 +4288,11 @@ window.TOONTALK.UTILITIES =
                 }
             };
             utilities.retrieve_object = function (key, callback) {
-               var json_string = window.localStorage.getItem(key);
-               if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
-                   console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
-               }
-               callback(json_string && utilities.parse_json(json_string));
+                var json_string = window.localStorage.getItem(key);
+                if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                    console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
+                }
+                callback(json_string && utilities.parse_json(json_string));
             };
             utilities.retrieve_string = function (key, callback) {
                 if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
