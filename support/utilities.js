@@ -3045,8 +3045,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 container = text_input;
             }
-            $(text_input).button()
-                         .addClass("toontalk-text-input");
+            text_input.classList.add("toontalk-text-with-button-style", "ui-corner-all", "ui-widget", "toontalk-text-area");
             text_input.addEventListener('touchstart', function () {
                 $(text_input).select();
             });
@@ -3080,8 +3079,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 container = utilities.create_horizontal_table(label_element, text_area);
             }
-            $(text_area).button()
-                        .addClass("toontalk-text-area"); 
+            text_area.classList.add("toontalk-text-with-button-style", "ui-corner-all", "ui-widget", "toontalk-text-area");
             text_area.addEventListener('touchstart', function () {
                 $(text_area).select();
             });
@@ -4318,7 +4316,7 @@ window.TOONTALK.UTILITIES =
                     callback(window.localStorage.getItem(key));
                 } catch (e) {
                      TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,
-                                                 {only_if_new: true});                    
+                                                 {only_if_new: true});
                 }
             };
         };

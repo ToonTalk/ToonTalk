@@ -815,8 +815,8 @@ table.toontalk-documentation-table {
 .toontalk-button-style {
 	cursor: pointer;
 	font-weight: bold;
-	background-color: #fece2f;
 	display: inline-block;
+	background-color: #fece2f;
 	border-radius: 6px;
 	border-color: #d19405;
 	border-width: 1px;
@@ -826,6 +826,32 @@ table.toontalk-documentation-table {
 	font-family: Segoe UI,Arial,sans-serif;
 	font-size: 1.1em;
 }
+.toontalk-button-style:hover {
+	background-color: rgba(241, 121, 83, 0.98);
+}
+.toontalk-text-with-button-style:hover {
+	background-color: rgba(247, 205, 192, 0.98);
+}
+.toontalk-text-with-button-style {
+/*     padding: .4em 1em; */
+    display: inline-block;
+    font-weight: bold;
+    background-color: #f8f3e4;
+    border-radius: 6px;
+	border-color: #d19405;
+	border-width: 1px;
+	border-style: solid;
+    position: relative;
+    line-height: normal;
+/*     margin-right: .1em; */
+    cursor: pointer;
+    vertical-align: middle;
+    text-align: center;
+    overflow: visible;
+    font-family: Segoe UI,Arial,sans-serif;
+    font-size: 1.1em;
+}
+
 .toontalk-wand {
 	background-image: url("images/wand-static.png");
 	background-repeat: no-repeat;
