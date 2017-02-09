@@ -412,7 +412,7 @@ window.TOONTALK.newly_created_widgets_path =
                         // there is more to the path so compute the part of the widget referenced
                         return TT.path.dereference_path(this.next, robot, widget);
                     }
-                    if (this.removing_widget) {
+                    if (this.removing_widget && widget) {
                         container = widget.get_parent_of_frontside();
                         if (container && container.is_hole()) {
                             container = container.get_parent_of_frontside();

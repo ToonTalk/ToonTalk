@@ -1004,7 +1004,7 @@ window.TOONTALK.box = (function (TT) {
                     if (path.removing_widget) {
                         if (hole.get_type_name() === 'empty hole') {
                             // TODO: determine if this is obsolete since hole will be a false value (e.g. null)
-                            TT.UTILITIES.report_internal_error("Robot is trying to remove something from an empty hole. ");
+                            TT.UTILITIES.display_message("Robot is trying to remove something from an empty hole. ", {only_if_new: true});
                             return;
                         } else if (!hole.get_infinite_stack()) {
                             robot.remove_from_container(hole, this);
@@ -1012,14 +1012,14 @@ window.TOONTALK.box = (function (TT) {
                     }
                     return hole;
                 } else if (path.removing_widget) {
-                    TT.UTILITIES.report_internal_error("Robot is trying to remove something from an empty hole. ");
+                    TT.UTILITIES.display_message("Robot is trying to remove something from an empty hole. ", {only_if_new: true});
                     return;
                 } else {
                     // referencing an empty hole
                     return this.get_hole(index);
                 }
             }
-            TT.UTILITIES.report_internal_error(this + " unable to dereference the path: " + TT.path.toString(path));
+            TT.UTILITIES.display_message(this + " unable to dereference the path: " + TT.path.toString(path), {only_if_new: true});
         } else {
             return this;
         }
