@@ -3978,7 +3978,8 @@ window.TOONTALK.UTILITIES =
                     return message;
                 }
             }
-            $(".toontalk-alert-element").remove(); // remove any pre-existing alerts
+            // add to any pre-existing alerts
+            $(".toontalk-alert-element").text($(".toontalk-alert-element").text() + "..." + message)
             if (TT.debugging && !options.user_initiated && !options.dont_log) {
                 console.log(options.plain_text || message);
                 console.trace();
