@@ -497,8 +497,12 @@ window.TOONTALK.robot_action =
     };
     var copy_animation = function (widget, robot, continuation) {
         var new_continuation = function () {
-            continuation();
-            widget.add_copy_to_container(robot.get_recently_created_widget());
+            if (widget.add_copy_to_container) {
+                continuation();
+                widget.add_copy_to_container(robot.get_recently_created_widget());
+            } else {
+                TT.UTILITIES.display_message("Unable to copy " + TT.UTILITIES.add_a_or_an(widget.get_type_name()) + " by robot named " + robot.get_name());
+            }
         };
         move_to_tool_and_use_animation(widget, robot, new_continuation, "toontalk-wand-small", "toontalk-wand");
     };
