@@ -786,7 +786,7 @@ window.TOONTALK.robot_action =
                     unwatched_run_function(referenced, robot, additional_info);
                 };
                 if (!referenced) {
-                    TT.UTILITIES.report_internal_error("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + robot.get_context());
+                    TT.UTILITIES.display_message("Unable to dereference the path: " + TT.path.toString(path) + " in context: " + robot.get_context(), {only_if_new: true});
                     return;
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {

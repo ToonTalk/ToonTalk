@@ -1016,7 +1016,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     return child;
                 }
             }
-            TT.UTILITIES.report_internal_error(this + " unable to dereference the path: " + TT.path.toString(path));
+            TT.UTILITIES.display_message(this + " unable to dereference the path: " + TT.path.toString(path), {only_if_new: true});
         } else {
             return this;
         }
