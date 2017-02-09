@@ -4277,29 +4277,49 @@ window.TOONTALK.UTILITIES =
                 if (TT.logging && TT.logging.indexOf('store') >= 0) {
                     console.log("Storing " + object + " with key " + key);
                 }
-                window.localStorage.setItem(key, JSON.stringify(object, utilities.clean_json));
+                try {
+                    window.localStorage.setItem(key, JSON.stringify(object, utilities.clean_json));
+                } catch (e) {
+                    TT.UTILITIES.display_message("Unable to store your project to the browser's local storage. You can save to Google Drive if you have an account. Otherwise drag your project to Wordpad or the like. The error message is: " + e,
+                                                 {only_if_new: true});
+                }
                 if (callback) {
                     callback();
                 }
             };
             utilities.store_string = function(key, string, callback) {
-                window.localStorage.setItem(key, string);
+                try {
+                    window.localStorage.setItem(key, string);
+                } catch (e) {
+                    TT.UTILITIES.display_message("Unable to store your project to the browser's local storage. You can save to Google Drive if you have an account. Otherwise drag your project to Wordpad or the like. The error message is: " + e,
+                                                 {only_if_new: true});
+                }
                 if (callback) {
                     callback();
                 }
             };
             utilities.retrieve_object = function (key, callback) {
-                var json_string = window.localStorage.getItem(key);
-                if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
-                    console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
+                try {
+                    var json_string = window.localStorage.getItem(key);
+                    if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                        console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
+                    }
+                    callback(json_string && utilities.parse_json(json_string));
+                } catch (e) {
+                     TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,
+                                                 {only_if_new: true});
                 }
-                callback(json_string && utilities.parse_json(json_string));
             };
             utilities.retrieve_string = function (key, callback) {
                 if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
                     console.log("Retrieved string " + (window.localStorage.getItem(key) && window.localStorage.getItem(key).substring(0, 100)) + "... with key " + key);
                 }
-                callback(window.localStorage.getItem(key));
+                try {
+                    callback(window.localStorage.getItem(key));
+                } catch (e) {
+                     TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,
+                                                 {only_if_new: true});                    
+                }
             };
         };
 
