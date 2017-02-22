@@ -4132,7 +4132,8 @@ window.TOONTALK.UTILITIES =
                 // doesn't have a z-index
                 return html;
             }
-            $element = $(html);
+            // surround with div in case html is for more than one element
+            $element = $("<div>" + html + "</div>");
             $element.attr('z-index', '');
             return $element.html();
         };
