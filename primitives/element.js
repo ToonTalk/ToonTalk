@@ -1663,6 +1663,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             html_index = json_history.shared_html.indexOf(html_encoded);
             if (html_index < 0) {
+                // break up very long strings to avoid parsing problems on systems that turncate very long HTML lines
                 html_index = json_history.shared_html.push(TT.UTILITIES.string_to_array(html_encoded, 100))-1;
             }
             html_encoded_or_shared = {shared_html_index: html_index};
@@ -1686,8 +1687,9 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                   attributes_backsides:  attributes_backsides,
                                   additional_classes:    this.get_additional_classes(),
                                   children:              this.get_children().length > 0 && children_json,
-                                  sound_effect:          this.get_sound_effect() && this.get_sound_effect().src,
-                                  video:                 this.get_video_object() && this.get_video_object().src,
+                                  // break up very long strings to avoid parsing problems on systems that turncate very long HTML lines
+                                  sound_effect:          this.get_sound_effect() && TT.UTILITIES.string_to_array(this.get_sound_effect().src, 100),
+                                  video:                 this.get_video_object() && TT.UTILITIES.string_to_array(this.get_video_object().src, 100),
                                   ignore_pointer_events: this.get_ignore_pointer_events() ? true : undefined, // undefined means no attribute value pair saving space
                                   source_URL:            this.get_source_URL()
                                  },
@@ -1741,6 +1743,14 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             } else {
                 throw error_message;
             }
+        }
+        if (json.sound_effect && Array.isArray(json.sound_effect)) {
+            // was broken into managable lines - restoring it here
+            json.sound_effect = json.sound_effect.join("");
+        }
+        if (json.video && Array.isArray(json.video)) {
+            // was broken into managable lines - restoring it here
+            json.video = json.video.join("");
         }
         reconstructed_element = element.create(html, json.attributes, json.description, children, json.sound_effect, json.video, json.ignore_pointer_events);
         if (additional_info && additional_info.event) {
