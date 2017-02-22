@@ -4023,7 +4023,9 @@ window.TOONTALK.UTILITIES =
         };
 
         utilities.display_tooltip = function ($element) {
-            utilities.use_custom_tooltip($element.get(0));
+            $element.each(function () {
+                utilities.use_custom_tooltip(this);
+            });
             $element.tooltip('open');
         };
 
