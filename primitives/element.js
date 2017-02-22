@@ -1668,7 +1668,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             html_encoded_or_shared = {shared_html_index: html_index};
         } else {
-            html_encoded_or_shared = html_encoded;
+            html_encoded_or_shared = TT.UTILITIES.string_to_array(html_encoded, 100);
         }
         new_callback = function () {
             var attributes_backsides = [];
@@ -1718,12 +1718,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
     };
 
     TT.creators_from_json["element"] = function (json, additional_info) {
+        var html, children, is_child, ignore_attributes, reconstructed_element, error_message;
         if (!json) {
             // no possibility of cyclic references so don't split its creation into two phases
             return;
         }
-        var html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html && additional_info.shared_html[json.html.shared_html_index]);
-        var children, is_child, ignore_attributes, reconstructed_element, error_message;
+        if (Array.isArray(json.html)) {
+            json.html = json.html.join("");
+        }
+        html = decodeURIComponent(typeof json.html === 'string' ? json.html : additional_info.shared_html && additional_info.shared_html[json.html.shared_html_index]);
         if (json.children) {
             is_child = additional_info.is_child;
             additional_info.is_child = true;
