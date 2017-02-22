@@ -1069,7 +1069,15 @@ window.TOONTALK.UTILITIES =
                 additional_info.shared_widgets = [];
             }
             if (json.shared_html) {
-                additional_info.shared_html = json.shared_html;
+               json.shared_html = json.shared_html.map(function (encoded_html_or_array_of_encoded_html) {
+                   if (Array.isArray(encoded_html_or_array_of_encoded_html)) {
+                       // was long enough to be broken into pieces so put it back together
+                       return encoded_html_or_array_of_encoded_html.join("");
+                   } else {
+                       return encoded_html_or_array_of_encoded_html;
+                   }
+               });
+               additional_info.shared_html = json.shared_html;
             }
             if (json.widget) {
                 // is a context where need to know which side of the widget
@@ -5254,6 +5262,17 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     previous_bounding_box = bounding_box;
                 },
                 handles: "n,e,s,w,se,ne,sw,nw"});
+    };
+
+    utilities.string_to_array = function (string, size) {
+        var array = [];
+        var index = 0;
+        while (string.length > size) {
+            array.push(string.substr(0, size));
+            string = string.substr(size);
+        }
+        array.push(string);
+        return array;
     };
 
     utilities.listen_for_speech = function (options) {

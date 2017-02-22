@@ -1663,7 +1663,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             }
             html_index = json_history.shared_html.indexOf(html_encoded);
             if (html_index < 0) {
-                html_index = json_history.shared_html.push(html_encoded)-1;
+                html_index = json_history.shared_html.push(TT.UTILITIES.string_to_array(html_encoded, 100))-1;
             }
             html_encoded_or_shared = {shared_html_index: html_index};
         } else {
