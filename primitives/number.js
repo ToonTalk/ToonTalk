@@ -1258,8 +1258,9 @@ window.TOONTALK.number = (function () {
     number.get_json = function (json_history, callback, start_time) {
         callback({type: "number",
                   operator:    this.get_operator(),
-                  numerator:   this.numerator_string(),
-                  denominator: this.denominator_string(),
+                  // break it up into lines so no HTML line is too long
+                  numerator:   TT.UTILITIES.string_to_array(this.numerator_string(),   100),
+                  denominator: TT.UTILITIES.string_to_array(this.denominator_string(), 100),
                   format:      this.get_format(),
                   approximate: this.get_approximate()
                  },
@@ -1270,6 +1271,12 @@ window.TOONTALK.number = (function () {
         if (!json) {
             // no possibility of cyclic references so don't split its creation into two phases
             return;
+        }
+        if (Array.isArray(json.numerator)) {
+            json.numerator = json.numerator.join("");
+        }
+        if (Array.isArray(json.denominator)) {
+            json.denominator = json.denominator.join("");
         }
         return number.create(json.numerator, json.denominator, json.operator, json.format, json.description, json.approximate);
     };
