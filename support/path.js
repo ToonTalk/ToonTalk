@@ -129,7 +129,7 @@ window.TOONTALK.path =
 //                     path.is_backside = is_backside;
 //                     return path;
 //                 }
-                robot_ancestor = widget.ancestor_of_type('robot');
+                robot_ancestor = widget.ancestor_of_type && widget.ancestor_of_type('robot');
                 if (robot_ancestor) {
                     // is a condition of a robot
                     return TT.robot.find_conditions_path(widget, robot_ancestor, robot);
@@ -500,7 +500,7 @@ window.TOONTALK.path =
             // this can be shared by all since only used to drop on -- not to pick up
             // if pick up then needs to be a fresh copy like get_path_to_resource
             dereference_path: function (robot) {
-                var top_level_widget = robot.get_context().ancestor_of_type('top-level');
+                var top_level_widget = robot.get_context().ancestor_of_type && robot.get_context().ancestor_of_type('top-level');
                 if (top_level_widget) {
                     return top_level_widget;
                 }
