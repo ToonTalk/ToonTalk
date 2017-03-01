@@ -259,11 +259,11 @@ window.TOONTALK.scale = (function (TT) {
             // dimensions of widgets in either pan
             var frontside_element = this.get_frontside_element(true);
             var $parent = $(frontside_element).parent();
-            var container_element = ($parent.is(".toontalk-backside") || $frontside_element.is(".toontalk-conditions-contents")) ?
+            var container_element = ($parent.is(".toontalk-backside") || $(frontside_element).is(".toontalk-conditions-contents")) ?
                                     frontside_element :
                                     $parent.get(0);
-            var scale_width  = $(container_element).width()  || $frontside_element.width();
-            var scale_height = $(container_element).height() || $frontside_element.height();
+            var scale_width  = $(container_element).width()  || $(frontside_element).width();
+            var scale_height = $(container_element).height() || $(frontside_element).height();
             return {width:  scale_width  * PAN_FRACTION_OF_WIDTH,
                     height: scale_height * PAN_FRACTION_OF_HEIGHT};
         };
