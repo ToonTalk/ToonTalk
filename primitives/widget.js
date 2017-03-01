@@ -804,7 +804,11 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 parent = this.get_parent_of_backside();
                 if (parent) {
-                    return parent.has_ancestor_either_side(other);
+                    try {
+                        return parent.has_ancestor_either_side(other);
+                    } catch (e) {
+                        console.error("widget.has_ancestor_either_side encountered this error: " + e.message);
+                    }
                 }
                 return false;
             };
