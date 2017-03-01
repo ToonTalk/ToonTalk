@@ -736,7 +736,7 @@ window.TOONTALK.UTILITIES =
             // dragging top-level backside to itself or one of its children is ignored
             return;
         } else if (!target_widget_side && !event.changedTouches) {
-            utilities.report_internal_error("target widget missing");
+            console.log("Warning: when handling a drop event the target widget was missing.");
             return; // let event propagate
         } else {
             // before processing drop ensure that dropped item (source_widget) is visible and where dropped
