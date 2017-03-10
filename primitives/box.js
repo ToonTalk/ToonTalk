@@ -145,7 +145,7 @@ window.TOONTALK.box = (function (TT) {
         };
         new_box.set_size = function (new_size, update_display, train) {
             var i, box_visibility, listeners, parent;
-            if (size === new_size || new_size < 0 || isNaN(new_size)) {
+            if (size === new_size || new_size < 0 || isNaN(new_size) || new_size > Number.MAX_SAFE_INTEGER) {
                 // ingore no change, negative or NaN values
                 return false;
             }
