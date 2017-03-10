@@ -738,7 +738,9 @@ window.TOONTALK.robot_action =
             new_action.run_unwatched = function (robot) {
                 var referenced = TT.path.dereference_path(path, robot);
                 if (!referenced) {
-                    TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + ", the back of " + robot.get_context());
+                    TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + ", the back of " + robot.get_context() +
+                                                       ". This could be because this robot (" + robot + ") was trained in a very different situation.",
+                                                       {dont_log_exception: true});
                     return false;
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {
