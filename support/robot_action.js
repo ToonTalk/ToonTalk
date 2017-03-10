@@ -409,11 +409,7 @@ window.TOONTALK.robot_action =
             return button;
         }
         widget.get_backside().set_advanced_settings_showing(true);
-        button = $(backside_element).find(class_name_selector).get(0);
-        if (button) {
-            return button;
-        }
-        TT.UTILITIES.report_internal_error("Cannot find button: " + class_name_selector + " in " + widget.get_backside());
+        return $(backside_element).find(class_name_selector).get(0);
     };
     var button_use_animation = function (widget, robot, continuation, class_name_selector, additional_info, delay) {
         var button_element = find_backside_element(widget, class_name_selector);
@@ -742,7 +738,9 @@ window.TOONTALK.robot_action =
             new_action.run_unwatched = function (robot) {
                 var referenced = TT.path.dereference_path(path, robot);
                 if (!referenced) {
-                    TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + ", the back of " + robot.get_context());
+                    TT.UTILITIES.report_internal_error("Unable to dereference path: " + TT.path.toString(path) + ", the back of " + robot.get_context() +
+                                                       ". This could be because this robot (" + robot + ") was trained in a very different situation.",
+                                                       {dont_log_exception: true});
                     return false;
                 }
                 if (TT.logging && TT.logging.indexOf('event') >= 0) {

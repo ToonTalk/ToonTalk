@@ -1744,7 +1744,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             if (TT.debugging) {
                 html = error_message;
             } else {
-                throw error_message;
+                throw new Error(error_message);
             }
         }
         if (json.sound_effect && Array.isArray(json.sound_effect)) {

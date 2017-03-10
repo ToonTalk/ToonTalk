@@ -4029,14 +4029,14 @@ window.TOONTALK.UTILITIES =
             $element.tooltip('open');
         };
 
-        utilities.report_internal_error = function (message) {
+        utilities.report_internal_error = function (message, options) {
             // these are ToonTalk errors not user errors
             console.error(message);
             console.trace();
             if (TT.debugging) {
                 utilities.display_message("Error: " + message);
             }
-            if (typeof Raven === 'object') {
+            if (typeof Raven === 'object' && (!options || !options.dont_log_exception)) {
                 Raven.captureException(message); // message is sometimes an exception and sometimes not
             }
         };

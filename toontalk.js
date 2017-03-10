@@ -39,6 +39,21 @@ var get_url_parameter = function (name, parameters, default_value) {
     return value;
 };
 
+// following is needed to access the user's Google Drive 
+// default assumes web page is hosted on toontalk.github.io
+window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
+                   ORIGIN_FOR_GOOGLE_DRIVE: get_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io'),
+                   // TOONTALK_URL is where the scripts, sounds, css, images, etc live
+                   TOONTALK_URL: path_prefix,
+                   // can't see through your finger so offset dragee
+                   // here so people can easily customise this (diffrent devices, fingers, etc.)
+                   USABILITY_DRAG_OFFSET: {x: 0,
+                                           y: 0},
+                   // following needed since window.navigator.onLine was true even after disconnecting from the net
+                   RUNNING_LOCALLY: this_url.indexOf("file://") === 0 || this_url.indexOf("http://localhost") === 0,
+                   CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
+                  };
+
 var reason_unable_to_run = function () {
     // tests on browserstack.com seem to indicate Chrome 31+, FireFox 14+, IE11, Safari 6.2+, Opera 15+
     var is_browser_of_type = function (type) {
@@ -87,26 +102,15 @@ var reason_unable_to_run = function () {
     }
 };
 
+var log_errors = !TOONTALK.RUNNING_LOCALLY;
+
 if (reason_unable_to_run()) {
     if (window.confirm(reason_unable_to_run() + " Do you want to exit?")) {
         window.location.assign("docs/browser-requirements.html");
+    } else {
+        log_errors = false;
     }
 }
-
-// following is needed to access the user's Google Drive 
-// default assumes web page is hosted on toontalk.github.io
-window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
-                   ORIGIN_FOR_GOOGLE_DRIVE: get_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io'),
-                   // TOONTALK_URL is where the scripts, sounds, css, images, etc live
-                   TOONTALK_URL: path_prefix,
-                   // can't see through your finger so offset dragee
-                   // here so people can easily customise this (diffrent devices, fingers, etc.)
-                   USABILITY_DRAG_OFFSET: {x: 0,
-                                           y: 0},
-                   // following needed since window.navigator.onLine was true even after disconnecting from the net
-                   RUNNING_LOCALLY: this_url.indexOf("file://") === 0 || this_url.indexOf("http://localhost") === 0,
-                   CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
-                  };
 
 if (this_url.indexOf("http://localhost") === 0) {
     window.TOONTALK.GOOGLE_DRIVE_CLIENT_ID = "148386604750-advtvsmt840u2ulf52g38gja71als4f2.apps.googleusercontent.com";
@@ -155,7 +159,7 @@ if (debugging) {
                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "libraries/DataTables-1.10.13/media/js/jquery.dataTables.min.js",
                   "libraries/rationaljs.js",
-                  !TOONTALK.RUNNING_LOCALLY && "https://cdn.ravenjs.com/3.9.1/raven.min.js", // only include this if not running locally 
+                  log_errors && "https://cdn.ravenjs.com/3.12.1/raven.min.js", // only include this if not running locally 
                   "support/initial.js",
                   "support/functions.js",
                   "primitives/widget.js",
@@ -187,7 +191,7 @@ if (debugging) {
                   ];
 } else {
     file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
-                  !TOONTALK.RUNNING_LOCALLY && "https://cdn.ravenjs.com/3.9.1/raven.min.js",
+                  log_errors && "https://cdn.ravenjs.com/3.12.1/raven.min.js",
 //                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
@@ -218,7 +222,7 @@ var load_file = function (index, offline) {
                                             if (index < file_names.length) {
                                                 load_file(index, offline);
                                             } else {
-                                                if (!TOONTALK.RUNNING_LOCALLY) {
+                                                if (log_errors) {
                                                     if (typeof initialize_toontalk !== "function") {
                                                         Raven.captureException("initialize_toontalk not defined. Probably error loading scripts.");
                                                         alert("ToonTalk was not loaded properly. Some script files missing. See console for details.");
@@ -266,7 +270,7 @@ var load_file = function (index, offline) {
                            }
                        } else {
                            console.error(event);
-                           if (!TOONTALK.RUNNING_LOCALLY) {
+                           if (log_errors) {
                                Raven.captureException(event.message);
                            }
                        }
