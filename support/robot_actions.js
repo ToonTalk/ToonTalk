@@ -174,7 +174,9 @@ window.TOONTALK.actions =
                         TT.UTILITIES.set_absolute_position(frontside_element, robot_home);
                     } else {
                         TT.UTILITIES.set_css(frontside_element, {position: 'static'});
-                        previous_robot.get_backside(true).get_next_robot_area().appendChild(frontside_element);
+                        if (previous_robot.get_backside(true)) {
+                            previous_robot.get_backside(true).get_next_robot_area().appendChild(frontside_element);
+                        }
                     }
                     if (robot.get_run_once()) {
                         first_robot.set_running(false);
