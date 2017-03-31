@@ -1819,7 +1819,7 @@ window.TOONTALK.UTILITIES =
             };
             var i, style_sheet;
             if (utilities.cached_selectors[selector]) {
-                utilities.cached_selectors[selector];
+                return utilities.cached_selectors[selector];
             }
             // can't iterate over it as an array
             for (i = 0; i < document.styleSheets.length; i++) {
@@ -2132,7 +2132,7 @@ window.TOONTALK.UTILITIES =
             } else {
                 widget = utilities.create_from_json(json);
                 if (widget && widget.set_visible && has_ancestor_element(element, document.body)) {
-                    // check  widget.set_visible since widget might be a tool 
+                    // check widget.set_visible since widget might be a tool
                     widget.set_visible(true);
                 }
                 process_widget_callback()
