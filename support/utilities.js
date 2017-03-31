@@ -1630,7 +1630,8 @@ window.TOONTALK.UTILITIES =
                     widget = TT.element.create("<img src='" + url + "' class = 'toontalk-image' alt='" + url + "'/>");
                 } else if (type.indexOf("video") === 0) {
                     widget = TT.element.create("<video src='" + url + " ' width='320' height='240'>");
-                } else if (type.indexOf("text") === 0 && type.indexOf("text/html") < 0) {
+                } else if (type.indexOf("text") === 0 && 
+                           (type.indexOf("text/html") < 0 || url.indexOf('.txt') === url.length-4)) {
                     // is text but not HTML
                     if (this.responseText) {
                         widget = TT.element.create(this.responseText);
@@ -1662,12 +1663,18 @@ window.TOONTALK.UTILITIES =
 //        request.addEventListener('error', error_callback);
        request.open('GET', url, true);
        request.onerror = function (e) {
+           if (TT.is_already_cross_origin_url && !TT.is_already_cross_origin_url(url)) {
+               utilities.create_widget_from_URL(TT.cross_origin_url_function(url), widget_callback, error_callback);
+               return;
+           }
            if (error_callback) {
                error_callback(e);
                error_callback = function () {}; // ignore subsequent errors
            } else {
                utilities.display_message("Error trying to GET " + url + " " + e);
-               console.error(e.stack);
+               if (e.stack) {
+                   console.error(e.stack);
+               }
            }
        };
        request.send();
@@ -5570,6 +5577,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 };
             TT.debugging                    = utilities.get_current_url_parameter('debugging');
             TT.logging                      = utilities.get_current_url_parameter('log');
+            TT.maximum_walk_depth           = 100; // to prevent stack overflows
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
             TT.puzzle                        = utilities.get_current_url_boolean_parameter('puzzle', false);
@@ -5604,7 +5612,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                          PAUSE_BETWEEN_STEPS:      50,
                                          PAUSE_BETWEEN_BIRD_STEPS: 50}; // was 300
             }
-            utilities.process_json_elements();
             // for top-level resources since they are not on the backside 'work space' we need a way to turn them off
             // clicking on a running widget may not work since its HTML may be changing constantly
             window.document.addEventListener('click', document_click);
@@ -5704,8 +5711,15 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                                 TT.cross_origin_url_function = function (url) {
                                                     return "https://toontalk.appspot.com/p/" + encodeURIComponent(url);
                                                 };
+                                                TT.is_already_cross_origin_url = function (url) {
+                                                    return url.indexOf("https://toontalk.appspot.com/p/") === 0;
+                                                }
                                             }
+                                            // the following may rely upon cross_origin_url_function so delayed until now
+                                            utilities.process_json_elements();
                                         });
+            } else {
+                utilities.process_json_elements();
             }
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
