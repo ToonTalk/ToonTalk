@@ -903,7 +903,7 @@ window.TOONTALK.robot_action =
                             // remove period from robot's description
                             path_description = path_description.substring(0, path_description.length-1);
                         }
-                        return prefix + action_description + " a robot who w" + path_description + suffix + "\n";
+                        return prefix + action_description + " a robot who " + path_description + suffix + "\n";
                     }
                 }
                 return prefix + action_description + " " + path_description + suffix;
