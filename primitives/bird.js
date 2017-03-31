@@ -1725,8 +1725,8 @@ window.TOONTALK.nest = (function (TT) {
         new_nest.add_speech_listeners({descriptions_acceptable: true,
                                        names_acceptable: true});
         generic_set_visible = new_nest.set_visible;
-        new_nest.set_visible = function (new_value) {
-            generic_set_visible.call(this, new_value);
+        new_nest.set_visible = function (new_value, depth) {
+            generic_set_visible.call(this, new_value, depth);
             if (!new_value) {
                 this.set_locked(false);
             }

@@ -469,7 +469,7 @@ window.TOONTALK.scale = (function (TT) {
             return "a scale for comparing things.";
         };
         set_visible_as_box = new_scale.set_visible;
-        new_scale.set_visible = function (new_value) {
+        new_scale.set_visible = function (new_value, depth) {
             var pan_change_listener = function (event) {
                  if (event.new_value) {
                      event.new_value.add_listener('value_changed', contents_listener);
@@ -478,7 +478,7 @@ window.TOONTALK.scale = (function (TT) {
                      event.old_value.remove_listener('value_changed', contents_listener, true);
                  }
             }
-            set_visible_as_box.call(this, new_value);
+            set_visible_as_box.call(this, new_value, depth?depth+1:1);
             if (new_value) {
                 // need to rerender the scale when its pans change
                 new_scale.get_hole(0).add_listener('contents_or_properties_changed', pan_change_listener);
