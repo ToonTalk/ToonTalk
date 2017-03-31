@@ -99,7 +99,7 @@ window.TOONTALK.frontside =
             frontside.visible = function () {
                 return visible;
             };
-            frontside.set_visible = function (new_value) {
+            frontside.set_visible = function (new_value, depth) {
                 var widget = this.get_widget();
                 // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
@@ -108,10 +108,23 @@ window.TOONTALK.frontside =
                                                widget.render.bind(widget));
                 }
                 if (widget.walk_children) {
-                    widget.walk_children(function (child_side) {
-                                             child_side.set_visible(new_value);
-                                             return true; // continue to next child
-                    });
+                    if (depth && depth%TT.maximum_walk_depth === 0) {
+                        // to avoid a stack overflow delay this
+                        if (depth < TT.maximum_walk_depth*10) {
+                            // else better to stop walking when 10x in case walking a circular structure (though not clear how one can be created)
+                            setTimeout(function () {
+                                 widget.walk_children(function (child_side) {
+                                                          child_side.set_visible(new_value, depth+1);
+                                                          return true; // continue to next child
+                                                      });
+                            });
+                        }
+                    } else {
+                        widget.walk_children(function (child_side) {
+                                                 child_side.set_visible(new_value, depth ? depth+1 : 1);
+                                                 return true; // continue to next child
+                        });
+                    }
                 }
             };
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code

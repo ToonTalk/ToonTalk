@@ -1444,7 +1444,7 @@ window.TOONTALK.robot = (function (TT) {
          if (!path_within_conditions) {
              backside_conditions = robot_with_widget_in_conditions.get_backside_conditions();
              backside_conditions.some(function (condition) {
-                                          if (condition) {
+                                          if (condition && condition !== robot && condition !== robot_with_widget_in_conditions) {
                                               path_within_conditions = condition.get_path_to(widget, robot);
                                               if (path_within_conditions) {
                                                   backside_condition_with_path = condition;

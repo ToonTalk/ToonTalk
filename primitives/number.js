@@ -1515,13 +1515,19 @@ window.TOONTALK.number_backside =
             };
             var update_format = function () {
                 var selected = TT.UTILITIES.selected_radio_button(decimal_format, mixed_number_format, improper_format, scientific_format);
-                var format = selected.button.value;
-                number.set_format(format, true, true);
+                var format;
+                if (selected) {
+                    format = selected.button.value;
+                    number.set_format(format, true, true);
+                }
             };
             var update_operator = function () {
                 var selected = TT.UTILITIES.selected_radio_button(plus, minus, multiply, divide, set);
-                var operator = selected.button.value;
-                number.set_operator(operator, true, true);
+                var operator;
+                if (selected) {
+                    operator = selected.button.value;
+                    number.set_operator(operator, true, true);
+                }
             };
             var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set   = TT.UTILITIES.create_div(decimal_format, mixed_number_format, improper_format, scientific_format);

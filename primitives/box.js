@@ -1373,10 +1373,10 @@ window.TOONTALK.box_hole =
                 // if box is visible then hole is
                 return this.get_parent_of_frontside().visible();
             };
-            hole.set_visible = function (new_value) {
+            hole.set_visible = function (new_value, depth) {
                 visible = new_value;
                 if (contents) {
-                    contents.set_visible(new_value);
+                    contents.set_visible(new_value, depth?depth+1:1);
                 }
             };
             hole.remove = function () {

@@ -22,6 +22,10 @@ window.TOONTALK.robot_action =
             return true;
          },
          "pick up": function (widget, robot, additional_info) {
+             if (widget.is_empty_hole && widget.is_empty_hole()) {
+                 TT.UTILITIES.report_internal_error(robot + " trying to pick up an empty hole.");
+                 return;
+             }
              if (widget.get_infinite_stack()) {
                  return unwatched_run_functions["pick up a copy of"](widget, robot);
              }
@@ -899,7 +903,7 @@ window.TOONTALK.robot_action =
                             // remove period from robot's description
                             path_description = path_description.substring(0, path_description.length-1);
                         }
-                        return prefix + action_description + " a robot who w" + path_description + suffix + "\n";
+                        return prefix + action_description + " a robot who " + path_description + suffix + "\n";
                     }
                 }
                 return prefix + action_description + " " + path_description + suffix;

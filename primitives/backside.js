@@ -294,7 +294,7 @@ window.TOONTALK.backside =
                 }
                 return visible;
             };
-            backside.set_visible = function (new_value) {
+            backside.set_visible = function (new_value, depth) {
                 // tried to return if no change if visibility but then loading backside of robot lost its conditions
                 visible = new_value;
                 if (widget.is_top_level()) {
@@ -306,7 +306,7 @@ window.TOONTALK.backside =
                 }
                 this.get_backside_widgets().forEach(function (backside_widget) {
                         if (backside_widget && backside_widget !== this) {
-                            backside_widget.set_visible(new_value);
+                            backside_widget.set_visible(new_value, depth?depth+1:1);
                         }
                 }.bind(this));
                 if (visible) {
