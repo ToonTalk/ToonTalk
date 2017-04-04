@@ -2470,6 +2470,10 @@ window.TOONTALK.UTILITIES =
             // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
             var $element = $(element);
             var maximum_width_if_moved, feedback_horizontal, feedback_vertical;
+            if (typeof $element.tooltip != 'function') {
+                // this was observed in the Sentry logs
+                return;
+            }
             // ensure the most up-to-date tooltip and avoid interference due to translation
             if (utilities.widget_side_of_element(element) &&
                 utilities.widget_side_of_element(element).get_title) {
