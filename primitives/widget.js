@@ -608,7 +608,7 @@ window.TOONTALK.widget = (function (TT) {
                     } else if (!backside || !backside.get_element() || !TT.UTILITIES.visible_element(backside.get_element())) {
                         if (TT.open_backside_only_if_alt_key) {
                             // no title regarding backside since not readily available when in puzzle mode
-                        } else if (this.can_run && this.can_run(true)) {
+                        } else if (this.can_run && this.can_run([], true)) {
                             if (this.get_running()) {
                                 title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign " +
                                         TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") +
