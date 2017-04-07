@@ -15521,5 +15521,812 @@ top level widget
   },
   "version": 1
 }</div></div>
+<p>Reads a Raspberry Pi pin. URL may need updating.</p>
+<div class='toontalk-json' translate='no' style='display:none'>
+This will be replaced by a work area containing 6 things: a bird, a backside of a nest, a nest, a nest, a robot, and a box.
+top level widget
+<div style='display:none;'>{
+  "semantic": {
+    "type": "top_level",
+    "backside_widgets": [
+      {
+        "widget": {
+          "semantic": {
+            "type": "bird",
+            "nest": {
+              "shared_widget_index": 1
+            }
+          },
+          "view": {
+            "frontside_left": 331.344,
+            "frontside_top": 13.875
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 1
+        },
+        "is_backside": true
+      },
+      {
+        "widget": {
+          "shared_widget_index": 1
+        }
+      },
+      {
+        "widget": {
+          "shared_widget_index": 2
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "robot",
+            "frontside_conditions": {
+              "type": "top_level"
+            },
+            "backside_conditions": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "bird"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      },
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": [
+                              "27"
+                            ],
+                            "denominator": [
+                              "1"
+                            ],
+                            "format": "mixed_number",
+                            "erased": true
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {
+                    "frontside_width": 224,
+                    "frontside_height": 44
+                  },
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird"
+                  },
+                  "view": {},
+                  "version": 1
+                }
+              }
+            ],
+            "body": {
+              "type": "body",
+              "steps": [
+                {
+                  "type": "robot_action",
+                  "action_name": "pick up",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "box",
+                    "backside_index": 0,
+                    "removing_widget": true
+                  },
+                  "additional_info": {
+                    "time": 8619
+                  }
+                },
+                {
+                  "type": "robot_action",
+                  "action_name": "drop it on",
+                  "path": {
+                    "type": "path.to_backside_widget_of_context",
+                    "type_name": "bird",
+                    "backside_index": 1
+                  },
+                  "additional_info": {
+                    "time": 1782
+                  }
+                }
+              ]
+            },
+            "name": "#1"
+          },
+          "view": {
+            "frontside_left": 1076.66,
+            "frontside_top": 39.6563
+          },
+          "version": 1
+        }
+      },
+      {
+        "widget": {
+          "semantic": {
+            "type": "box",
+            "size": 2,
+            "contents": [
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "bird",
+                    "nest": {
+                      "shared_widget_index": 2
+                    }
+                  },
+                  "view": {},
+                  "version": 1
+                }
+              },
+              {
+                "widget": {
+                  "semantic": {
+                    "type": "number",
+                    "operator": "+",
+                    "numerator": [
+                      "27"
+                    ],
+                    "denominator": [
+                      "1"
+                    ],
+                    "format": "mixed_number"
+                  },
+                  "view": {
+                    "frontside_left": 57,
+                    "frontside_top": 82,
+                    "saved_width": 76,
+                    "saved_height": 55
+                  },
+                  "version": 1
+                }
+              }
+            ],
+            "horizontal": true,
+            "name": ";;"
+          },
+          "view": {
+            "frontside_width": 164,
+            "frontside_height": 68,
+            "frontside_left": 650.984,
+            "frontside_top": 35.3594,
+            "backside_geometry": {
+              "x_scale": 1,
+              "y_scale": 1,
+              "original_width": 171,
+              "original_height": 39
+            }
+          },
+          "version": 1
+        }
+      }
+    ]
+  },
+  "view": {
+    "background_color": "rgb(245, 240, 240)",
+    "backside_width": 1281,
+    "backside_height": 444,
+    "backside_left": 8,
+    "backside_top": 182.1875,
+    "drag_x_offset": 1180,
+    "drag_y_offset": 145
+  },
+  "version": 1,
+  "shared_widgets": [
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1491556149335",
+        "serial_number": 1,
+        "name": "URL"
+      },
+      "view": {},
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1491553441196",
+        "serial_number": 1,
+        "name": "Read pin state",
+        "backside_widgets": [
+          {
+            "widget": {
+              "semantic": {
+                "type": "box",
+                "size": 4,
+                "contents": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "box",
+                        "size": 3,
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "bird",
+                                "nest": {
+                                  "shared_widget_index": 0
+                                }
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "element",
+                                "html": [
+                                  "http%3A%2F%2F172.23.185.185%2FreadPin%2F"
+                                ],
+                                "attributes": [
+                                  "left",
+                                  "top",
+                                  "width",
+                                  "height"
+                                ],
+                                "attribute_values": [
+                                  0,
+                                  0,
+                                  46.15625,
+                                  69
+                                ],
+                                "attributes_backsides": [
+                                  [],
+                                  [],
+                                  [],
+                                  []
+                                ],
+                                "children": false
+                              },
+                              "view": {
+                                "frontside_left": 0
+                              },
+                              "version": 1
+                            }
+                          },
+                          null
+                        ],
+                        "horizontal": true,
+                        "name": ";;",
+                        "infinite_stack": true
+                      },
+                      "view": {
+                        "saved_width": 560,
+                        "saved_height": 76
+                      },
+                      "version": 1
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "box",
+                        "size": 2,
+                        "contents": [
+                          null,
+                          {
+                            "widget": {
+                              "shared_widget_index": 0
+                            }
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;",
+                        "infinite_stack": true
+                      },
+                      "view": {
+                        "saved_width": 395,
+                        "saved_height": 76
+                      },
+                      "version": 1
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "bird",
+                        "nest": {
+                          "semantic": {
+                            "type": "function_nest",
+                            "function_type": "element",
+                            "function_name": "join text"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      },
+                      "view": {
+                        "frontside_left": 305.781,
+                        "frontside_top": 203.797
+                      },
+                      "version": 1
+                    }
+                  },
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "bird",
+                        "nest": {
+                          "semantic": {
+                            "type": "function_nest",
+                            "function_type": "element",
+                            "function_name": "read page"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      },
+                      "view": {},
+                      "version": 1
+                    }
+                  }
+                ],
+                "horizontal": true,
+                "name": ";;"
+              },
+              "view": {
+                "frontside_width": 730,
+                "frontside_height": 85,
+                "frontside_left": 51.4844,
+                "frontside_top": 96.875,
+                "saved_width": 730,
+                "saved_height": 85
+              },
+              "version": 1
+            }
+          },
+          {
+            "widget": {
+              "semantic": {
+                "type": "robot",
+                "frontside_conditions": {
+                  "semantic": {
+                    "type": "box",
+                    "size": 2,
+                    "contents": [
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "bird"
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      },
+                      {
+                        "widget": {
+                          "semantic": {
+                            "type": "number",
+                            "operator": "+",
+                            "numerator": [
+                              "27"
+                            ],
+                            "denominator": [
+                              "1"
+                            ],
+                            "format": "mixed_number",
+                            "erased": true
+                          },
+                          "view": {},
+                          "version": 1
+                        }
+                      }
+                    ],
+                    "horizontal": true,
+                    "name": ";;"
+                  },
+                  "view": {},
+                  "version": 1
+                },
+                "backside_conditions": [
+                  {
+                    "widget": {
+                      "semantic": {
+                        "type": "box",
+                        "size": 4,
+                        "contents": [
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "box",
+                                "size": 3,
+                                "contents": [
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "bird"
+                                      },
+                                      "view": {},
+                                      "version": 1
+                                    }
+                                  },
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "element",
+                                        "html": [
+                                          "http%3A%2F%2F172.23.185.185%2FreadPin%2F"
+                                        ],
+                                        "attributes": [
+                                          "left",
+                                          "top",
+                                          "width",
+                                          "height"
+                                        ],
+                                        "attribute_values": [
+                                          0,
+                                          0,
+                                          11.328125,
+                                          36
+                                        ],
+                                        "attributes_backsides": [
+                                          [],
+                                          [],
+                                          [],
+                                          []
+                                        ],
+                                        "children": false,
+                                        "erased": true
+                                      },
+                                      "view": {
+                                        "frontside_width": 100,
+                                        "frontside_height": 100,
+                                        "backside_left": 0,
+                                        "backside_top": 0
+                                      },
+                                      "version": 1
+                                    }
+                                  },
+                                  null
+                                ],
+                                "horizontal": true,
+                                "name": ";;"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "box",
+                                "size": 2,
+                                "contents": [
+                                  null,
+                                  {
+                                    "widget": {
+                                      "semantic": {
+                                        "type": "nest",
+                                        "contents": [],
+                                        "guid": "in a robot's condition",
+                                        "serial_number": 1,
+                                        "name": "URL"
+                                      },
+                                      "view": {},
+                                      "version": 1
+                                    }
+                                  }
+                                ],
+                                "horizontal": true,
+                                "name": ";;"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          },
+                          {
+                            "widget": {
+                              "semantic": {
+                                "type": "bird"
+                              },
+                              "view": {},
+                              "version": 1
+                            }
+                          }
+                        ],
+                        "horizontal": true,
+                        "name": ";;"
+                      },
+                      "view": {
+                        "frontside_width": 224,
+                        "frontside_height": 44
+                      },
+                      "version": 1
+                    }
+                  }
+                ],
+                "body": {
+                  "type": "body",
+                  "steps": [
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "path.to_widget_on_nest",
+                          "next_path": {
+                            "type": "box_path",
+                            "index": 1,
+                            "removing_widget": true
+                          }
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2424
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0,
+                          "next": {
+                            "type": "box_path",
+                            "index": 2
+                          },
+                          "next_path": {
+                            "type": "box_path",
+                            "index": 2
+                          }
+                        }
+                      },
+                      "additional_info": {
+                        "time": 1970
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up a copy of",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 0
+                        }
+                      },
+                      "additional_info": {
+                        "time": 4847
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 2
+                        }
+                      },
+                      "additional_info": {
+                        "time": 1873
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "path.to_widget_on_nest",
+                          "next_path": {
+                            "type": "box_path",
+                            "index": 0,
+                            "removing_widget": true
+                          }
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2209
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1,
+                          "next": {
+                            "type": "box_path",
+                            "index": 0
+                          },
+                          "next_path": {
+                            "type": "box_path",
+                            "index": 0
+                          }
+                        }
+                      },
+                      "additional_info": {
+                        "time": 4441
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "pick up a copy of",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1
+                        }
+                      },
+                      "additional_info": {
+                        "time": 5510
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "drop it on",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 3
+                        }
+                      },
+                      "additional_info": {
+                        "time": 2741
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "remove",
+                      "path": {
+                        "type": "path.to_entire_context",
+                        "next_path": {
+                          "type": "path.to_widget_on_nest",
+                          "removing_widget": true
+                        }
+                      },
+                      "additional_info": {
+                        "time": 6050
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "remove",
+                      "path": {
+                        "type": "path.to_backside_widget_of_context",
+                        "type_name": "box",
+                        "backside_index": 0,
+                        "next_path": {
+                          "type": "box_path",
+                          "index": 1,
+                          "next": {
+                            "type": "box_path",
+                            "index": 1
+                          },
+                          "next_path": {
+                            "type": "box_path",
+                            "index": 1,
+                            "removing_widget": true
+                          }
+                        }
+                      },
+                      "additional_info": {
+                        "time": 3784
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "remove",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 2,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 3125
+                      }
+                    },
+                    {
+                      "type": "robot_action",
+                      "action_name": "remove",
+                      "path": {
+                        "type": "newly_created_widgets_path",
+                        "index": 0,
+                        "removing_widget": true
+                      },
+                      "additional_info": {
+                        "time": 3251
+                      }
+                    }
+                  ]
+                },
+                "name": "Read pin"
+              },
+              "view": {
+                "frontside_left": 869.281,
+                "frontside_top": 77.7031
+              },
+              "version": 1
+            }
+          }
+        ]
+      },
+      "view": {
+        "frontside_left": 439.031,
+        "frontside_top": 24.6875,
+        "backside_width": 965.046875,
+        "backside_height": 217.546875,
+        "backside_left": 79.75,
+        "backside_top": 199.046875,
+        "backside_geometry": {
+          "x_scale": 1.7264081218184757,
+          "y_scale": 1.3105609300342254,
+          "original_width": 559,
+          "original_height": 166
+        }
+      },
+      "version": 1
+    },
+    {
+      "semantic": {
+        "type": "nest",
+        "contents": [],
+        "guid": "toontalk_id_1491559250615",
+        "serial_number": 1,
+        "name": "#1"
+      },
+      "view": {
+        "frontside_left": 881.563,
+        "frontside_top": 37.1719
+      },
+      "version": 1
+    }
+  ]
+}</div></div>
 </body>
 </html>
