@@ -1810,6 +1810,10 @@ window.TOONTALK.nest = (function (TT) {
                 function () {
                     return function_object.short_name;
                 },
+            get_backside_widgets:
+                function () {
+                    return [];
+                },
             // following needed for bird to just pass along the contents
             has_ancestor:            return_false,
             visible:                 return_false,
