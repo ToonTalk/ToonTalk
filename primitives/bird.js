@@ -1754,7 +1754,11 @@ window.TOONTALK.nest = (function (TT) {
         // message by convention is a box whose first widget should be a bird
         // and whose other widgets are arguments to the function
         var function_nest =
-            {get_function_type:
+            {is_nest:
+                function () {
+                    return true;
+                },
+            get_function_type:
                 function (plural) {
                     return TT[type_name].get_type_name(plural);
                 },
