@@ -249,9 +249,9 @@ window.TOONTALK.sensor = (function (TT) {
             }
         };
         widget_can_run = new_sensor.can_run;
-        new_sensor.can_run = function (robots_only) {
+        new_sensor.can_run = function (widgets_considered, robots_only) {
             // can run in the sense of becoming active
-            return !robots_only || widget_can_run.call(this, robots_only);
+            return !robots_only || widget_can_run.call(this, widgets_considered, robots_only);
         };
         attribute_values = function (event) {
             return new_sensor.get_attributes().map(
@@ -264,7 +264,7 @@ window.TOONTALK.sensor = (function (TT) {
                         // but orindary letters end up as strings such as U+0058
                         // Note that this workaround fails for some punctuation -- e.g. '-' becomes 'insert'
                        value = event.keyIdentifier;
-                       if (value.indexOf("U+") === 0) {
+                       if (value && value.indexOf("U+") === 0) {
                            return String.fromCharCode(event.keyCode);
                        }
                        return value;

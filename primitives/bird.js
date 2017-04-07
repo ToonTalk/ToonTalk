@@ -1229,7 +1229,10 @@ window.TOONTALK.nest = (function (TT) {
             // act as if the top contents was being dereferenced
             if (path_to_nest.next) {
                 if (contents[0].get_widget().dereference_path) {
-                    return contents[0].get_widget().dereference_path(path_to_nest.next, robot);
+                    widget_side = contents[0].get_widget().dereference_path(path_to_nest.next, robot);
+                    if (widget_side) {
+                        return widget_side;
+                    }
                 }
                 // if referenced widget doesn't support dereference_path fall back on generic path dereferencing
                 return TT.path.continue_dereferencing_path(path_to_nest.next, contents[0].get_widget(), robot);
@@ -1754,7 +1757,11 @@ window.TOONTALK.nest = (function (TT) {
         // message by convention is a box whose first widget should be a bird
         // and whose other widgets are arguments to the function
         var function_nest =
-            {get_function_type:
+            {is_nest:
+                function () {
+                    return true;
+                },
+            get_function_type:
                 function (plural) {
                     return TT[type_name].get_type_name(plural);
                 },
@@ -1805,6 +1812,10 @@ window.TOONTALK.nest = (function (TT) {
             get_name:
                 function () {
                     return function_object.short_name;
+                },
+            get_backside_widgets:
+                function () {
+                    return [];
                 },
             // following needed for bird to just pass along the contents
             has_ancestor:            return_false,

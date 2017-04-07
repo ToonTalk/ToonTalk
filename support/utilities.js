@@ -891,17 +891,21 @@ window.TOONTALK.UTILITIES =
             sound.volume = utilities.get_audio_volume(sound);
             return sound;
         }
-        TT.sounds = {hatching:      create_sound("SPARROW.mp3"),
-                     bird_fly:      create_sound("PIGEON.mp3"),
-                     bammer_hammer: create_sound("POP.mp3"),
-                     vacuum_spit:   create_sound("SPIT.mp3"),
-                     vacuum_suck:   create_sound("DUSTBUST.mp3"),
-                     drop:          create_sound("BOOK_DROP.mp3"),
-                     magic:         create_sound("MAGIC.mp3"),
-                     fall_inside:   create_sound("FALL_INSIDE.mp3"),
-                     click:         create_sound("TYPE.mp3"),
-                     event_ignored: create_sound("PLOP.mp3")};
-        TT.sounds.bird_fly.loop = true;
+        try {
+            TT.sounds = {hatching:      create_sound("SPARROW.mp3"),
+                         bird_fly:      create_sound("PIGEON.mp3"),
+                         bammer_hammer: create_sound("POP.mp3"),
+                         vacuum_spit:   create_sound("SPIT.mp3"),
+                         vacuum_suck:   create_sound("DUSTBUST.mp3"),
+                         drop:          create_sound("BOOK_DROP.mp3"),
+                         magic:         create_sound("MAGIC.mp3"),
+                         fall_inside:   create_sound("FALL_INSIDE.mp3"),
+                         click:         create_sound("TYPE.mp3"),
+                         event_ignored: create_sound("PLOP.mp3")};
+            TT.sounds.bird_fly.loop = true;
+        } catch (ignore_error) {
+            // this occurred in the Sentry logs in IE11 Windows 7 but couldn't reproduce it
+        }
     };
     var load_script = function (url) {
         var script = document.createElement('script');
@@ -2466,6 +2470,10 @@ window.TOONTALK.UTILITIES =
             // customization to crude talk balloons thanks to http://jsfiddle.net/pragneshkaria/Qv6L2/49/
             var $element = $(element);
             var maximum_width_if_moved, feedback_horizontal, feedback_vertical;
+            if (typeof $element.tooltip != 'function') {
+                // this was observed in the Sentry logs
+                return;
+            }
             // ensure the most up-to-date tooltip and avoid interference due to translation
             if (utilities.widget_side_of_element(element) &&
                 utilities.widget_side_of_element(element).get_title) {

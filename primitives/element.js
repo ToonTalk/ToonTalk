@@ -580,22 +580,31 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             });
         };
         widget_can_run = new_element.can_run.bind(new_element);
-        new_element.can_run = function () {
+        new_element.can_run = function (widgets_considered, robots_only) {
+            // widgets_considered is to avoid infinite recursion
+            // it the list of widgets already tested if they can run 
             var result;
-            if (widget_can_run()) {
+            if (typeof widgets_considered === 'undefined') {
+                widgets_considered = [];
+            }
+            if (widgets_considered.indexOf(this) >= 0) {
+                return false;
+            }
+            widgets_considered.push(this);
+            if (widget_can_run(widgets_considered, robots_only)) {
                 return true;
             }
             Object.keys(attribute_widgets_in_backside_table).some(function (attribute_name) {
-                if (attribute_widgets_in_backside_table[attribute_name].can_run()) {
+                if (attribute_widgets_in_backside_table[attribute_name].can_run(widgets_considered, robots_only)) {
                     result = true;
                     return true;
                 }
-            });
+            }.bind(this));
             if (result) {
                 return result;
             }
             children.some(function (child) {
-                if (child.can_run()) {
+                if (child.can_run(widgets_considered, robots_only)) {
                     result = true;
                     return true;
                 }
@@ -2380,6 +2389,32 @@ window.TOONTALK.element.function =
         "The bird will return with a number that has the same text as the element. Arithmetic can be done on the result unlike the original text.",
         "text as number",
         ['an element']);
+    functions.add_function_object(
+        'read page',
+        function (message, options) {
+            var read_URL = function (element_url, message_properties) {
+                var url, url_callback;
+                if (!element_url.get_text) {
+                    functions.report_error("The 'read page' bird could not turn " + describe(element_url) + " into a text to use it as a URL.", message_properties);
+                    return;
+                }
+                url = element_url.get_text();
+                url_callback = function (text) {
+                    var response;
+                    if (text === null) {
+                        text = "Unable to read " + url;
+                    }
+                    response = TT.element.create(text, [], "what was in " + url);
+                    functions.process_response(response, message_properties, message, options);
+                };
+                TT.UTILITIES.download_file(url, url_callback);
+            };
+            // type checking should be extended so can say below any number of elements or numbers
+            return functions.typed_bird_function(message, read_URL, ['element'], 'read page', options, 1, 1);
+        },
+        "The bird will return with the contents of the URL.",
+        "read URL",
+        ['an element containing a URL']);
     functions.add_function_object(
         'go to page',
         function (message, options) {
