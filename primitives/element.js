@@ -2381,6 +2381,32 @@ window.TOONTALK.element.function =
         "text as number",
         ['an element']);
     functions.add_function_object(
+        'read page',
+        function (message, options) {
+            var read_URL = function (element_url, message_properties) {
+                var url, url_callback;
+                if (!element_url.get_text) {
+                    functions.report_error("The 'read page' bird could not turn " + describe(element_url) + " into a text to use it as a URL.", message_properties);
+                    return;
+                }
+                url = element_url.get_text();
+                url_callback = function (text) {
+                    var response;
+                    if (text === null) {
+                        text = "Unable to read " + url;
+                    }
+                    response = TT.element.create(text, [], "what was in " + url);
+                    functions.process_response(response, message_properties, message, options);
+                };
+                TT.UTILITIES.download_file(url, url_callback);
+            };
+            // type checking should be extended so can say below any number of elements or numbers
+            return functions.typed_bird_function(message, read_URL, ['element'], 'read page', options, 1, 1);
+        },
+        "The bird will return with the contents of the URL.",
+        "read URL",
+        ['an element containing a URL']);
+    functions.add_function_object(
         'go to page',
         function (message, options) {
             var go_to_URL = function (element_url, message_properties) {
