@@ -983,7 +983,7 @@ window.TOONTALK.box = (function (TT) {
         }
     };
 
-    box.dereference_path = function (path, robot) {
+    box.dereference_path = function (path, robot, report_error) {
         var index, hole;
         if (path) {
             if (!path.get_index && path.next) {
@@ -991,6 +991,9 @@ window.TOONTALK.box = (function (TT) {
                 path = path.next;
             }
             index = path.get_index && path.get_index();
+            if (!report_error && typeof index === 'undefined') {
+                return;
+            }
             if (!TT.debugging || typeof index === 'number') {
                 hole = this.get_hole_contents(index);
                 if (hole) {
@@ -1329,8 +1332,8 @@ window.TOONTALK.box_hole =
                 }
                 return this;
             };
-            hole.can_run = function () {
-                return contents && contents.can_run();
+            hole.can_run = function (widgets_considered, robots_only) {
+                return contents && contents.can_run(widgets_considered, robots_only);
             };
             hole.get_index = function () {
                 return index;

@@ -1229,7 +1229,10 @@ window.TOONTALK.nest = (function (TT) {
             // act as if the top contents was being dereferenced
             if (path_to_nest.next) {
                 if (contents[0].get_widget().dereference_path) {
-                    return contents[0].get_widget().dereference_path(path_to_nest.next, robot);
+                    widget_side = contents[0].get_widget().dereference_path(path_to_nest.next, robot);
+                    if (widget_side) {
+                        return widget_side;
+                    }
                 }
                 // if referenced widget doesn't support dereference_path fall back on generic path dereferencing
                 return TT.path.continue_dereferencing_path(path_to_nest.next, contents[0].get_widget(), robot);
