@@ -264,7 +264,7 @@ window.TOONTALK.sensor = (function (TT) {
                         // but orindary letters end up as strings such as U+0058
                         // Note that this workaround fails for some punctuation -- e.g. '-' becomes 'insert'
                        value = event.keyIdentifier;
-                       if (value.indexOf("U+") === 0) {
+                       if (value && value.indexOf("U+") === 0) {
                            return String.fromCharCode(event.keyCode);
                        }
                        return value;
