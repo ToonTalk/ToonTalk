@@ -1436,10 +1436,10 @@ window.TOONTALK.widget = (function (TT) {
             return frontside.visible();
         },
 
-        set_visible: function (new_value) {
+        set_visible: function (new_value, depth) {
             var frontside = this.get_frontside(new_value);
             if (frontside) {
-                frontside.set_visible(new_value);
+                frontside.set_visible(new_value, depth);
             }
         },
 
