@@ -1424,7 +1424,15 @@ window.TOONTALK.UTILITIES =
                 }
             };
             if (Date.now()-start_time <= utilities.maximum_json_generation_duration) {
-                widget_side.get_json(json_history, new_callback, start_time);
+                try {
+                    widget_side.get_json(json_history, new_callback, start_time);
+                } catch (error) {
+                    // tried to check error is an instance of InternalError but not all browsers support htat
+                    // assumes it is a stack overflow
+                    setTimeout(function () {
+                                   widget_side.get_json(json_history, new_callback, Date.now());
+                               });
+                }
             } else {
                 // taking too long so let browser run
                 setTimeout(function () {
