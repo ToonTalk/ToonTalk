@@ -5596,9 +5596,9 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         }
                     });
                 };
-            TT.debugging                    = utilities.get_current_url_parameter('debugging');
-            TT.logging                      = utilities.get_current_url_parameter('log');
-            TT.maximum_walk_depth           = 100; // to prevent stack overflows
+            TT.debugging                     = utilities.get_current_url_parameter('debugging');
+            TT.logging                       = utilities.get_current_url_parameter('log');
+            TT.maximum_recursion_depth       = 100; // to prevent stack overflows every so often uses setTimeout
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
             TT.puzzle                        = utilities.get_current_url_boolean_parameter('puzzle', false);

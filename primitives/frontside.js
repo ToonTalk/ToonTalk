@@ -108,7 +108,7 @@ window.TOONTALK.frontside =
                                                widget.render.bind(widget));
                 }
                 if (widget.walk_children) {
-                    if (depth && depth%TT.maximum_walk_depth === 0) {
+                    if (depth && depth%TT.maximum_recursion_depth === 0) {
                         // to avoid a stack overflow delay this
                         // if structure is circular this will keep running
                         setTimeout(function () {
