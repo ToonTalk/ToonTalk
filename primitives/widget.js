@@ -1436,10 +1436,10 @@ window.TOONTALK.widget = (function (TT) {
             return frontside.visible();
         },
 
-        set_visible: function (new_value) {
+        set_visible: function (new_value, depth) {
             var frontside = this.get_frontside(new_value);
             if (frontside) {
-                frontside.set_visible(new_value);
+                frontside.set_visible(new_value, depth);
             }
         },
 
@@ -2029,11 +2029,24 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.save = function (immediately, parameters, callback) {
                 var program_name = this.get_setting('program_name', TT.reset);
                 var save_function = function (json) {
+                    var json_string;
                     save_in_progress = false;
                     if (save_to_google_drive) {
                         google_drive_status = TT.google_drive.get_status();
                         if (google_drive_status === "Ready") {
-                            TT.google_drive.upload_file(program_name, "json", JSON.stringify(json, TT.UTILITIES.clean_JSON), callback);
+                            try {
+                                json_string = JSON.stringify(json, TT.UTILITIES.clean_JSON);
+                            } catch (error) {
+                                if (TT.UTILITIES.is_stack_overflow(error)) {
+                                    TT.UTILITIES.display_message("Unable to store your project because the depth of widget nesting exceeds the size of the stack.  " +
+                                                                 "Perhaps you can launch this browser or another with a larger stack size.",
+                                                                 {only_if_new: true});
+                                } else {
+                                    TT.UTILITIES.display_message("Unable to store your project because of the error: " + error.message,
+                                                                 {only_if_new: true});
+                                }
+                            }
+                            TT.google_drive.upload_file(program_name, "json", json_string, callback);
                             callback = undefined;
                         } else if (TT.google_drive.connection_to_google_drive_possible()) {
                             if (google_drive_status === 'Need to authorize') {
@@ -2160,7 +2173,7 @@ window.TOONTALK.widget = (function (TT) {
                     var json;
                     if (json_string) {
                         try {
-                            json = TTT.UTILITIES.parse_json(json_string);
+                            json = TT.UTILITIES.parse_json(json_string);
                             this.remove_all_backside_widgets();
                             TT.UTILITIES.add_backside_widgets_from_json(this,
                                                                         json.semantic.backside_widgets,

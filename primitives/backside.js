@@ -1271,7 +1271,7 @@ window.TOONTALK.backside =
                                                                          widget.remove();
                                                                      }.bind(this));
                 $create_remove_widget_button.attr('title', "Click to remove this " + widget.get_type_name() + " and its backside.");
-                $create_remove_widget_button.addClass("toontalk-remove-backside-and-widget-buttton");
+                $create_remove_widget_button.addClass("toontalk-remove-backside-and-widget-button");
                 TT.UTILITIES.use_custom_tooltip($create_remove_widget_button.get(0));
                 settings.appendChild($create_remove_widget_button.get(0));
             }

@@ -644,8 +644,12 @@ window.TOONTALK.box = (function (TT) {
                 $(hole_element).css(css);
             }
         };
+        var too_small_to_display_borders_and_children = function () {
+            return box_width < 10 || box_height < 10;
+        }
         var horizontal = this.get_horizontal();
         var first_time = !$(frontside_element).is(".toontalk-box");
+        var dimensions_constrained_by_container = this.constrained_by_container();
         var renderer =
             function () {
                 var $box_hole_elements = $(frontside_element).children(".toontalk-box-hole");
@@ -656,7 +660,7 @@ window.TOONTALK.box = (function (TT) {
                                           height: box_height-2*border_size});
                 } else if (!this.directly_inside_conditions_container() &&
                            !$(frontside_element).parent().is(".toontalk-scale-half")) {
-                    if ($(frontside_element).parent(".toontalk-box-hole").is("*")) {
+                    if (!too_small_to_display_borders_and_children() && $(frontside_element).parent(".toontalk-box-hole").is("*")) {
                         TT.UTILITIES.set_css(frontside_element,
                                              {width:  '',
                                               height: ''});
@@ -666,7 +670,9 @@ window.TOONTALK.box = (function (TT) {
                                               height: box_height});
                     }
                 }
-                if ($box_hole_elements.length === size) {
+                if (too_small_to_display_borders_and_children()) {
+                    // too small to display hole contents
+                } else if ($box_hole_elements.length === size) {
                     $box_hole_elements.each(function (index, hole_element) {
                         var hole = this.get_hole(index);
                         if (hole) {
@@ -681,13 +687,13 @@ window.TOONTALK.box = (function (TT) {
                         hole_element = hole.get_element();
                         $(hole_element).addClass("toontalk-hole-number-" + index);
                         if (hole.get_contents()) {
-                            hole.get_contents().update_display();
+                            hole.get_contents().rerender();
                         }
                         update_hole(hole_element, hole, index);
                         frontside_element.appendChild(hole_element);
                     });
                 };
-                if (!this.constrained_by_container()) {
+                if (!dimensions_constrained_by_container) {
                     // unconstrained boxes have a single resize handle in the south east
                     // whose location needs to be adjusted for borders
                     $(frontside_element).children(".ui-resizable-handle").css({right:  -border_size,
@@ -709,17 +715,23 @@ window.TOONTALK.box = (function (TT) {
             // scales explicitly control the size of the contents of their pans
             var containing_element = $(frontside_element).parent().is(".toontalk-scale-half") ? frontside_element : element;
             if (size === 0) {
-                box_width = 0;
+                box_width  = 0;
+                box_height = 0;
+            } else if (dimensions_constrained_by_container) {
+                box_width  = $(containing_element).width();
+                box_height = $(containing_element).height();
             } else {
                 box_width = (this.directly_inside_conditions_container() && TT.UTILITIES.get_toontalk_css_numeric_attribute("width", ".toontalk-conditions-container"))
                             || (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "width"))
                             || this.saved_width
                             || TT.box.get_default_width();
             }
-            box_height    = (this.directly_inside_conditions_container() && TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-conditions-container"))
-                            || (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "height"))
-                            || this.saved_height
-                            || TT.box.get_default_height();
+            if (box_height === undefined) {
+                box_height = (this.directly_inside_conditions_container() && TT.UTILITIES.get_toontalk_css_numeric_attribute("height", ".toontalk-conditions-container"))
+                             || (!$(containing_element).is(".toontalk-carried-by-bird") && TT.UTILITIES.get_style_numeric_property(containing_element, "height"))
+                             || this.saved_height
+                             || TT.box.get_default_height();
+            }
             if (horizontal) {
                 if (size === 0) {
                     hole_width = 0;
@@ -751,6 +763,10 @@ window.TOONTALK.box = (function (TT) {
         }
         $(frontside_element).removeClass("toontalk-box-erased");
         update_dimensions();
+        if (too_small_to_display_borders_and_children()) {
+            renderer();
+            return;
+        }
         border_size = this.get_border_size(hole_width, hole_height);
         if (border_size === 4) {
             border_class = "toontalk-box-eighth-size-border";
