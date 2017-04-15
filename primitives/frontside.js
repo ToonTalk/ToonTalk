@@ -110,15 +110,13 @@ window.TOONTALK.frontside =
                 if (widget.walk_children) {
                     if (depth && depth%TT.maximum_walk_depth === 0) {
                         // to avoid a stack overflow delay this
-                        if (depth < TT.maximum_walk_depth*10) {
-                            // else better to stop walking when 10x in case walking a circular structure (though not clear how one can be created)
-                            setTimeout(function () {
-                                 widget.walk_children(function (child_side) {
-                                                          child_side.set_visible(new_value, depth+1);
-                                                          return true; // continue to next child
-                                                      });
-                            });
-                        }
+                        // if structure is circular this will keep running
+                        setTimeout(function () {
+                                       widget.walk_children(function (child_side) {
+                                                                child_side.set_visible(new_value, depth+1);
+                                                                return true; // continue to next child
+                                                            });
+                                   });
                     } else {
                         widget.walk_children(function (child_side) {
                                                  child_side.set_visible(new_value, depth ? depth+1 : 1);
