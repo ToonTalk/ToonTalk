@@ -1559,8 +1559,14 @@ window.TOONTALK.UTILITIES =
                                   div_hidden + JSON.stringify(json, utilities.clean_json, '  ') + div_close +
                        div_close;
             } catch (error) {
-                return "<div>\n" + type_description + " is too deep to create a JSON string to save it.\nYou may be able to launch your browser with a larger stack.\n" +
-                                  (title ? title + "\n" : "") + div_close;
+                if (utilities.is_stack_overflow(error)) {
+                    return "<div>\n" + type_description + " is nested too deep to create a JSON string to save it.\n" +
+                           "You may be able to launch your browser with a larger stack.\n" +
+                           (title ? title + "\n" : "") + div_close;
+                } else {
+                    return "<div>\n" + type_description + " triggered the following error during save: " + error.message +
+                           (title ? title + "\n" : "") + div_close;
+                }
             }
     };
 
@@ -1936,9 +1942,28 @@ window.TOONTALK.UTILITIES =
         utilities.parse_json = function (json_string) {
             try {
                 return JSON.parse(json_string);
-            } catch (exception) {
-                utilities.report_internal_error("Exception parsing JSON " + exception.toString() + " error: " + json_string);
+            } catch (error) {
+                if (utilities.is_stack_overflow(error)) {
+                    utilities.report_internal_error("Exception parsing JSON because the widgets are too deeply nested. " +
+                                                    "Perhaps you can launch the browser with a larger stack size.");
+                } else {
+                    utilities.report_internal_error("Exception parsing JSON " + error.toString() + " error: " + json_string);
+                }
             }
+        };
+
+        utilities.is_stack_overflow = function (error) {
+            // according to https://www.safaribooksonline.com/library/view/high-performance-javascript/9781449382308/ch04s03.html
+            // Internet Explorer: “Stack overflow at line x”
+            // Firefox: “Too much recursion”
+            // Safari: “Maximum call stack size exceeded”
+            // Opera: “Abort (control stack overflow)”
+            // and I noticed that:
+            // Chrome: "Maximum call stack size exceeded"
+            return error.message.indexOf("Maximum call stack size exceeded") === 0 ||
+                   error.message.indexOf("Stack overflow at line") === 0 ||
+                   error.message.indexOf("Too much recursion") === 0 ||
+                   error.message.indexOf("Abort (control stack overflow)") === 0;
         };
 
         utilities.drag_and_drop = function (element) {
@@ -2129,7 +2154,13 @@ window.TOONTALK.UTILITIES =
                                            utilities.report_internal_error("An error occurred loading the saved state. Sorry. Please report this. Error is " + error);
                                            widget = TT.widget.create_top_level_widget();
                                        }
-                                       process_widget_callback(depth ? depth+1 : 1);
+                                       if (depth >= TT.maximum_recursion_depth && depth%TT.maximum_recursion_depth === 0) {
+                                           setTimeout(function () {
+                                               process_widget_callback(depth+1);
+                                           });
+                                       } else {
+                                          process_widget_callback(depth ? depth+1 : 1);
+                                       }
                                    };
                                    if (toontalk_last_key) {
                                        utilities.retrieve_object(toontalk_last_key,
@@ -2152,7 +2183,13 @@ window.TOONTALK.UTILITIES =
                     // check widget.set_visible since widget might be a tool
                     widget.set_visible(true);
                 }
-                process_widget_callback()
+                if (depth >= TT.maximum_recursion_depth && depth%TT.maximum_recursion_depth === 0) {
+                    setTimeout(function () {
+                                   process_widget_callback(depth+1);
+                               });
+                } else {
+                    process_widget_callback(depth ? depth+1 : 1);
+                }
             }
         };
 
@@ -4311,13 +4348,28 @@ window.TOONTALK.UTILITIES =
             utilities.retrieve_string = utilities.retrieve_object;
         } else {
             utilities.store_object = function(key, object, callback) {
+                var json_string;
                 if (TT.logging && TT.logging.indexOf('store') >= 0) {
                     console.log("Storing " + object + " with key " + key);
                 }
                 try {
-                    window.localStorage.setItem(key, JSON.stringify(object, utilities.clean_json));
+                    json_string = JSON.stringify(object, utilities.clean_json)
+                } catch (error) {
+                    if (utilities.is_stack_overflow(error)) {
+                        TT.UTILITIES.display_message("Unable to store your project because the depth of widget nesting exceeds the size of the stack.  " +
+                                                     "Perhaps you can launch this browser or another with a larger stack size.",
+                                                     {only_if_new: true});
+                    } else {
+                        TT.UTILITIES.display_message("Unable to store your project because of the error: " + error.message,
+                                                     {only_if_new: true});
+                    }
+                }
+                try {
+                    window.localStorage.setItem(key, json_string);
                 } catch (e) {
-                    TT.UTILITIES.display_message("Unable to store your project to the browser's local storage. You can save to Google Drive if you have an account. Otherwise drag your project to Wordpad or the like. The error message is: " + e,
+                    TT.UTILITIES.display_message("Unable to store your project to the browser's local storage. " +
+                                                 "You can save to Google Drive if you have an account. Otherwise drag your project to Wordpad or the like. " +
+                                                 "The error message is: " + e,
                                                  {only_if_new: true});
                 }
                 if (callback) {
