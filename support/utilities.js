@@ -1553,10 +1553,15 @@ window.TOONTALK.UTILITIES =
                     title = title.substring(0, data_image_start+20) + " ... " + title.substring(data_image_end);
                 }
             }
-            return div_json + "\nThis will be replaced by " + type_description + ".\n" +
-                              (title ? title + "\n" : "") +
-                              div_hidden + JSON.stringify(json, utilities.clean_json, '  ') + div_close +
-                   div_close;
+            try {
+                return div_json + "\nThis will be replaced by " + type_description + ".\n" +
+                                  (title ? title + "\n" : "") +
+                                  div_hidden + JSON.stringify(json, utilities.clean_json, '  ') + div_close +
+                       div_close;
+            } catch (error) {
+                return "<div>\n" + type_description + " is too deep to create a JSON string to save it.\nYou may be able to launch your browser with a larger stack.\n" +
+                                  (title ? title + "\n" : "") + div_close;
+            }
     };
 
     utilities.describe_widgets = function (widget_array) {
@@ -2029,7 +2034,7 @@ window.TOONTALK.UTILITIES =
             return drop_area;
         };
 
-        utilities.process_json_elements = function ($elements, index) {
+        utilities.process_json_elements = function ($elements, index, depth) {
             // because retrieve_object is treated as asychronous need to make each element wait for a response_handler
             var element, json_string, json, widget, frontside_element, backside_element, backside,
                 message, toontalk_last_key, process_widget_callback, key_callback;
@@ -2040,7 +2045,7 @@ window.TOONTALK.UTILITIES =
             if ($elements.length === 0) {
                 return;
             }
-            process_widget_callback = function () {
+            process_widget_callback = function (depth) {
                 if (widget) {
                     element.textContent = ""; // served its purpose of being parsed as JSON
                     // may have been been display:none while loading so looks better while loading
@@ -2095,7 +2100,7 @@ window.TOONTALK.UTILITIES =
                     utilities.report_internal_error("Could not recreate a widget from this JSON: " + json_string);
                 }
                 if (index < $elements.length-1) {
-                    utilities.process_json_elements($elements, index+1);
+                    utilities.process_json_elements($elements, index+1, depth+1);
                 }
             };
             element = $elements.get(index);
@@ -2124,7 +2129,7 @@ window.TOONTALK.UTILITIES =
                                            utilities.report_internal_error("An error occurred loading the saved state. Sorry. Please report this. Error is " + error);
                                            widget = TT.widget.create_top_level_widget();
                                        }
-                                       process_widget_callback();
+                                       process_widget_callback(depth ? depth+1 : 1);
                                    };
                                    if (toontalk_last_key) {
                                        utilities.retrieve_object(toontalk_last_key,
