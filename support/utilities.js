@@ -1849,7 +1849,7 @@ window.TOONTALK.UTILITIES =
             // can't iterate over it as an array
             for (i = 0; i < document.styleSheets.length; i++) {
                 style_sheet = document.styleSheets[i];
-                if (style_sheet.href.indexOf("toontalk.css") >= 0) {
+                if (style_sheet.href && style_sheet.href.indexOf("toontalk.css") >= 0) {
                     return get_css(style_sheet);
                 }
             }
