@@ -4382,7 +4382,10 @@ window.TOONTALK.UTILITIES =
                 try {
                     window.localStorage.setItem(key, string);
                 } catch (e) {
-                    TT.UTILITIES.display_message("Unable to store your project to the browser's local storage. You can save to Google Drive if you have an account. Otherwise drag your project to Wordpad or the like. The error message is: " + e,
+                    TT.UTILITIES.display_message("Unable to store your project to the browser's local storage. " +
+                                                 "You can save to Google Drive if you have an account. " +
+                                                 "Otherwise drag your project to Wordpad or the like. " +
+                                                 "The error message is: " + e,
                                                  {only_if_new: true});
                 }
                 if (callback) {
@@ -4397,7 +4400,9 @@ window.TOONTALK.UTILITIES =
                     }
                     callback(json_string && utilities.parse_json(json_string));
                 } catch (e) {
-                     TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,
+                     TT.UTILITIES.display_message("Unable to read from the browser's local storage. " +
+                                                  "You can read and save to Google Drive if you have an account. " +
+                                                  "The error message is: " + e,
                                                  {only_if_new: true});
                 }
             };
