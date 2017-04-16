@@ -1175,7 +1175,8 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.toString = function (to_string_info) {
         var frontside_conditions, backside_conditions, backside_conditions_defined, body, prefix, postfix, frontside_is_top_level,
-            frontside_conditions_string, next_robot, robot_description, robot_conditions_description, original_person, mismatch_description, backside_description;
+            frontside_conditions_string, next_robot, robot_description, robot_conditions_description, original_person, mismatch_description, backside_description,
+            body_description;
         if (to_string_info && to_string_info.role === "conditions") {
             return "any robot";
         }
@@ -1232,10 +1233,19 @@ window.TOONTALK.robot = (function (TT) {
             prefix = "is being trained.\n";
             postfix = "\n..."; // to indicate still being constructed
         }
+        try {
+            body_description = body.toString({robot: this});
+        } catch (error) {
+            if (TT.UTILITIES.is_stack_overflow(error)) {
+                body_description = "...";
+            } else {
+                body_description = "Describing the actions caused this error: " + error.message;
+            }
+        }
         robot_description = prefix + robot_conditions_description +
                             (to_string_info && to_string_info.person === 'third' ? " he will " : " I will ") +
                             (this.get_run_once() ? "" : "repeatedly ") +
-                            "\n" + (body.toString({robot: this}) || "do nothing") + postfix;
+                            "\n" + (body_description || "do nothing") + postfix;
         if (to_string_info && to_string_info.resource) {
             // restore "person"
             to_string_info.person = original_person;
