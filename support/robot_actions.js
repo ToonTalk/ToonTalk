@@ -228,12 +228,12 @@ window.TOONTALK.actions =
             if (previous_robot) {
                 $home_element = $(previous_robot.get_backside(true).get_next_robot_area());
             } else {
-                $home_element = $(context_backside.get_backside_element(true));
+                $home_element = context_backside && $(context_backside.get_backside_element(true));
             }
             if (!TT.UTILITIES.is_attached(frontside_element) && previous_robot) {
                 // could be a 'next robot' that hasn't been opened
                 original_parent_element = frontside_element.parentElement;
-                if (!original_parent_element) {
+                if (!original_parent_element && $home_element) {
                     // if no original_parent_element then find where it should be
                     original_parent_element = $home_element.get(0);
                 }
@@ -292,7 +292,7 @@ window.TOONTALK.actions =
             if (!top_level_position) {
                 top_level_position = {left: 0, top: 0};
             }
-            if ($home_element.length > 0 && TT.UTILITIES.is_attached($home_element.get(0))) {
+            if ($home_element && $home_element.length > 0 && TT.UTILITIES.is_attached($home_element.get(0))) {
                 backside_rectangle = $home_element.get(0).getBoundingClientRect();
                 if (robot_home.left < backside_rectangle.left-top_level_position.left ||
                     robot_home.top  < backside_rectangle.top -top_level_position.top ||
