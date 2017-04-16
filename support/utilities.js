@@ -1427,11 +1427,13 @@ window.TOONTALK.UTILITIES =
                 try {
                     widget_side.get_json(json_history, new_callback, start_time);
                 } catch (error) {
-                    // tried to check error is an instance of InternalError but not all browsers support htat
-                    // assumes it is a stack overflow
-                    setTimeout(function () {
-                                   widget_side.get_json(json_history, new_callback, Date.now());
-                               });
+                    if (utilities.is_stack_overflow(error)) {
+                        setTimeout(function () {
+                                       widget_side.get_json(json_history, new_callback, Date.now());
+                                   });
+                    } else {
+                        utilities.display_message("Failed to save your project due to error: " + error.message, {only_if_new: true});
+                    }
                 }
             } else {
                 // taking too long so let browser run
@@ -1847,7 +1849,7 @@ window.TOONTALK.UTILITIES =
             // can't iterate over it as an array
             for (i = 0; i < document.styleSheets.length; i++) {
                 style_sheet = document.styleSheets[i];
-                if (style_sheet.href.indexOf("toontalk.css") >= 0) {
+                if (style_sheet.href && style_sheet.href.indexOf("toontalk.css") >= 0) {
                     return get_css(style_sheet);
                 }
             }
@@ -4380,7 +4382,10 @@ window.TOONTALK.UTILITIES =
                 try {
                     window.localStorage.setItem(key, string);
                 } catch (e) {
-                    TT.UTILITIES.display_message("Unable to store your project to the browser's local storage. You can save to Google Drive if you have an account. Otherwise drag your project to Wordpad or the like. The error message is: " + e,
+                    TT.UTILITIES.display_message("Unable to store your project to the browser's local storage. " +
+                                                 "You can save to Google Drive if you have an account. " +
+                                                 "Otherwise drag your project to Wordpad or the like. " +
+                                                 "The error message is: " + e,
                                                  {only_if_new: true});
                 }
                 if (callback) {
@@ -4395,7 +4400,9 @@ window.TOONTALK.UTILITIES =
                     }
                     callback(json_string && utilities.parse_json(json_string));
                 } catch (e) {
-                     TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,
+                     TT.UTILITIES.display_message("Unable to read from the browser's local storage. " +
+                                                  "You can read and save to Google Drive if you have an account. " +
+                                                  "The error message is: " + e,
                                                  {only_if_new: true});
                 }
             };
@@ -5295,7 +5302,18 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         }
         stop_index = Math.min(array.length, start_index+chunk_size);
         for (i = start_index; i < stop_index; i++) {
-            callback(array[i], i);
+            try {
+                callback(array[i], i);
+            } catch (error) {
+                if (utilities.is_stack_overflow(error)) {
+                    utilities.set_timeout(function () {
+                        utilities.for_each_batch(array, callback, chunk_size, i);
+                    });
+                    return
+                } else {
+                    throw error;
+                }
+            }
         }
         if (stop_index < array.length) {
             utilities.set_timeout(function () {
