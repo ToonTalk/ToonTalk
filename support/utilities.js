@@ -5297,7 +5297,18 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         }
         stop_index = Math.min(array.length, start_index+chunk_size);
         for (i = start_index; i < stop_index; i++) {
-            callback(array[i], i);
+            try {
+                callback(array[i], i);
+            } catch (error) {
+                if (utilities.is_stack_overflow(error)) {
+                    utilities.set_timeout(function () {
+                        utilities.for_each_batch(array, callback, chunk_size, i);
+                    });
+                    return
+                } else {
+                    throw error;
+                }
+            }
         }
         if (stop_index < array.length) {
             utilities.set_timeout(function () {
