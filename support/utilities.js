@@ -1427,11 +1427,13 @@ window.TOONTALK.UTILITIES =
                 try {
                     widget_side.get_json(json_history, new_callback, start_time);
                 } catch (error) {
-                    // tried to check error is an instance of InternalError but not all browsers support htat
-                    // assumes it is a stack overflow
-                    setTimeout(function () {
-                                   widget_side.get_json(json_history, new_callback, Date.now());
-                               });
+                    if (utilities.is_stack_overflow(error)) {
+                        setTimeout(function () {
+                                       widget_side.get_json(json_history, new_callback, Date.now());
+                                   });
+                    } else {
+                        utilities.display_message("Failed to save your project due to error: " + error.message, {only_if_new: true});
+                    }
                 }
             } else {
                 // taking too long so let browser run
