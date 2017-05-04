@@ -151,9 +151,14 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.initialize_backside_conditions = function () {
 //          Any covered nests should be used as a condition
             var context = this.get_training_context();
-            // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
-            // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
-            original_backside_widgets_of_context = context.get_backside_widgets().slice();
+            if (context) {
+                // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
+                // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
+                original_backside_widgets_of_context = context.get_backside_widgets().slice();
+            } else {
+                // seen to occur in Sentry logs
+                original_backside_widgets_of_context = [];
+            }
             original_backside_widgets_of_context_copy = TT.UTILITIES.copy_widget_sides(original_backside_widgets_of_context, {just_value: true});
             this.set_backside_conditions([]);
         };
