@@ -794,11 +794,16 @@ window.TOONTALK.UTILITIES =
         var video_file = file.type.indexOf("video") === 0;
         var widget, json, element_HTML, json_object;
         reader.onloadend = function () {
+            var audio_object;
             if (image_file) {
                 widget = TT.element.create("<img src='" + reader.result + "' class = 'toontalk-image' alt='" + file.name + "'/>");
             } else if (audio_file) {
                  widget = TT.element.create(file.name + " sound");
-                 widget.set_sound_effect(new Audio(reader.result));
+                 audio_object = new Audio(reader.result)
+                 audio_object.addEventListener('event', function (e) {
+                     utilities.display_message("Error trying to play a sound: " + e.message);
+                 });
+                 widget.set_sound_effect(audio_object);
             } else if (video_file) {
                 widget = TT.element.create("<video src='" + reader.result + "' alt='" + file.name + "'/>");
             } else {
@@ -1632,7 +1637,7 @@ window.TOONTALK.UTILITIES =
         var response_handler = function (response_event) {
             try {
                 var type = this.getResponseHeader('content-type');
-                var widget, origin;
+                var widget, origin, audio_object;
                 if (!type) {
                     origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
                     if (url.indexOf(origin) === 0) {
@@ -1650,12 +1655,16 @@ window.TOONTALK.UTILITIES =
                 }
                 if (type.indexOf("audio") === 0 || extension_is_of_type(original_url, 'audio')) {
                     widget = TT.element.create(original_url || url);
-                    widget.set_sound_effect(new Audio(original_url || url));
+                    audio_object = new Audio(original_url || url);
+                    audio_object.addEventListener('event', function (e) {
+                        utilities.display_message("Error trying to play a sound from " + (original_url || url) + ". Errror is " + e.message);
+                    });
+                    widget.set_sound_effect(audio_object);
                 } else if (type.indexOf("image") === 0 || extension_is_of_type(original_url, 'image')) {
                     widget = TT.element.create("<img src='" + (original_url || url) + "' class = 'toontalk-image' alt='" + url + "'/>");
                 } else if (type.indexOf("video") === 0 || extension_is_of_type(original_url, 'video')) {
                     widget = TT.element.create("<video src='" + (original_url || url) + " ' width='320' height='240'>");
-                } else if (type.indexOf("text") === 0 && 
+                } else if (type.indexOf("text") === 0 &&
                            (type.indexOf("text/html") < 0 || url.indexOf('.txt') === url.length-4)) {
                     // is text but not HTML
                     if (this.responseText) {
