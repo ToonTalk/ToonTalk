@@ -629,7 +629,11 @@ window.TOONTALK.robot_action =
             return;
         }
         robot_being_trained.run_next_step = new_continuation;
-        robot_being_trained.set_context(robot_being_trained.get_parent_of_frontside().get_widget());
+        if (robot_being_trained.get_parent_of_frontside()) {
+            robot_being_trained.set_context(robot_being_trained.get_parent_of_frontside().get_widget());
+        } else {
+            TT.UTILITIES.report_internal_error("Robot being trained by a robot doesn't know its parent widget.");
+        }
         watched_step(robot_being_trained);
     };
     var open_backside_animation = function (widget, robot, continuation) {
