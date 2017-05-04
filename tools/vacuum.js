@@ -30,6 +30,7 @@ window.TOONTALK.vacuum = (function (TT) {
         var removed_items = [];
         var set_mode = function (new_value) {
             if (mode !== new_value) {
+                // IE11 (in Windows RT) reported "Unexpected call to method or property access."
                 mode = new_value;
                 if (TT.sounds) {
                     TT.sounds.click.play();

@@ -679,7 +679,11 @@ window.TOONTALK.bird = (function (TT) {
                     // remove the bird element and add to top_level backside
                     this.top_level_widget().get_backside_element().appendChild(frontside_element);
                 }
-                frontside_element.appendChild(this.element_to_display_when_flying);
+                try {
+                    frontside_element.appendChild(this.element_to_display_when_flying);
+                } catch (e) {
+                    TT.UTILITIES.report_internal_error("Error attaching 'message' to bird. Message className is " + this.element_to_display_when_flying.className);
+                }
             } else {
                 $(frontside_element).children(".toontalk-side").remove();
             }
@@ -1414,8 +1418,8 @@ window.TOONTALK.nest = (function (TT) {
                         TT.UTILITIES.set_css(frontside_element,
                                              {left: nest_position.left-5,
                                               top:  nest_position.top+45});
+                        this.get_parent_of_frontside().render();
                     }
-                    this.get_parent_of_frontside().render();
                     bird_fly_continuation = function () {
                         $(bird_frontside_element).removeClass("toontalk-fly-southwest");
                         TT.UTILITIES.set_timeout(function () {

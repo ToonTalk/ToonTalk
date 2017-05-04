@@ -249,8 +249,12 @@ window.TOONTALK.SETTINGS =
                                                             "Check this if you want to publish the workspace and its widgets. Uncheck it you wish to publish just the widgets.");
           var display_published = function (google_file, extra_info) {
               // currently extra_info is the JSON of the current widgets if previously published
-              var link_to_publication = create_connection_to_google_file(google_file, widget.get_setting('program_name'), extra_info);
-              var $row = $(program_name.container).children("tr");
+              var link_to_publication, $row;
+              if (!google_file) {
+                  return;
+              }
+              link_to_publication = create_connection_to_google_file(google_file, widget.get_setting('program_name'), extra_info);
+              $row = $(program_name.container).children("tr");
               widget.display_message("Your web page is ready for you to edit. Just click on the link.", {dont_log: true});
               if ($row.length > 0) {
                   $row.get(0).appendChild(TT.UTILITIES.create_table_entry(link_to_publication));

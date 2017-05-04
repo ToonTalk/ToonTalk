@@ -794,11 +794,16 @@ window.TOONTALK.UTILITIES =
         var video_file = file.type.indexOf("video") === 0;
         var widget, json, element_HTML, json_object;
         reader.onloadend = function () {
+            var audio_object;
             if (image_file) {
                 widget = TT.element.create("<img src='" + reader.result + "' class = 'toontalk-image' alt='" + file.name + "'/>");
             } else if (audio_file) {
                  widget = TT.element.create(file.name + " sound");
-                 widget.set_sound_effect(new Audio(reader.result));
+                 audio_object = new Audio(reader.result)
+                 audio_object.addEventListener('event', function (e) {
+                     utilities.display_message("Error trying to play a sound: " + e.message);
+                 });
+                 widget.set_sound_effect(audio_object);
             } else if (video_file) {
                 widget = TT.element.create("<video src='" + reader.result + "' alt='" + file.name + "'/>");
             } else {
@@ -1121,7 +1126,7 @@ window.TOONTALK.UTILITIES =
                 widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, uninitialised_widget, true);
                 return handle_delayed_backside_widgets(widget_side, additional_info, json_semantic.shared_widget_index);
             } else if (!json_semantic.type) {
-                TT.UTILITIES.report_internal_error("No type attribute given in " + JSON.stringify(json_semantic));
+                TT.UTILITIES.report_internal_error("No type attribute given in " + JSON.stringify(json_semantic, utilities.clean_json, '  '));
                 return;
             } else if (TT.creators_from_json[json_semantic.type]) {
                 if (!additional_info) {
@@ -1140,7 +1145,7 @@ window.TOONTALK.UTILITIES =
                         widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info, uninitialised_widget);
                     } catch (e) {
                         console.error(e.stack);
-                        utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e);
+                        utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e + ". JSON is " + JSON.stringify(json, utilities.clean_json, '  '));
                     }
                 }
             } else {
@@ -1628,11 +1633,11 @@ window.TOONTALK.UTILITIES =
         return value;
     };
 
-    utilities.create_widget_from_URL = function (url, widget_callback, error_callback) {
+    utilities.create_widget_from_URL = function (url, widget_callback, error_callback, original_url) {
         var response_handler = function (response_event) {
             try {
                 var type = this.getResponseHeader('content-type');
-                var widget, origin;
+                var widget, origin, audio_object;
                 if (!type) {
                     origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
                     if (url.indexOf(origin) === 0) {
@@ -1648,14 +1653,18 @@ window.TOONTALK.UTILITIES =
                         return;
                     }
                 }
-                if (type.indexOf("audio") === 0) {
-                    widget = TT.element.create(url);
-                    widget.set_sound_effect(new Audio(url));
-                } else if (type.indexOf("image") === 0) {
-                    widget = TT.element.create("<img src='" + url + "' class = 'toontalk-image' alt='" + url + "'/>");
-                } else if (type.indexOf("video") === 0) {
-                    widget = TT.element.create("<video src='" + url + " ' width='320' height='240'>");
-                } else if (type.indexOf("text") === 0 && 
+                if (type.indexOf("audio") === 0 || extension_is_of_type(original_url, 'audio')) {
+                    widget = TT.element.create(original_url || url);
+                    audio_object = new Audio(original_url || url);
+                    audio_object.addEventListener('event', function (e) {
+                        utilities.display_message("Error trying to play a sound from " + (original_url || url) + ". Errror is " + e.message);
+                    });
+                    widget.set_sound_effect(audio_object);
+                } else if (type.indexOf("image") === 0 || extension_is_of_type(original_url, 'image')) {
+                    widget = TT.element.create("<img src='" + (original_url || url) + "' class = 'toontalk-image' alt='" + url + "'/>");
+                } else if (type.indexOf("video") === 0 || extension_is_of_type(original_url, 'video')) {
+                    widget = TT.element.create("<video src='" + (original_url || url) + " ' width='320' height='240'>");
+                } else if (type.indexOf("text") === 0 &&
                            (type.indexOf("text/html") < 0 || url.indexOf('.txt') === url.length-4)) {
                     // is text but not HTML
                     if (this.responseText) {
@@ -1683,13 +1692,35 @@ window.TOONTALK.UTILITIES =
             }
             request.removeEventListener('load', response_handler);
        };
+       var extension_is_of_type = function (url, type) {
+           var extension_start = url.lastIndexOf('.');
+           var extension, query_start;
+           if (extension_start >= 0) {
+               extension = url.substring(extension_start+1);
+               query_start = extension.indexOf('?');
+               if (query_start > 0) {
+                   extension = extension.substring(0, query_start);
+               }
+               switch (type) {
+                   case 'image':
+                       // see https://en.wikipedia.org/wiki/Comparison_of_web_browsers#Image_format_support
+                       return ["png", "jpg", "jpeg", "gif", "PNG", "JPG", "JPEG", "GIF"].includes(extension);
+                   case 'audio':
+                       // see https://en.wikipedia.org/wiki/Comparison_of_layout_engines_(HTML5_media)#Audio_format_support
+                       return ["wav", "mp3", "WAV", "MP3"].includes(extension);
+                   case 'video':
+                       // see https://en.wikipedia.org/wiki/HTML5_video
+                       return ["mp4", "MP4"].includes(extension);
+               };
+           }
+       };
        var request = new XMLHttpRequest();
        request.addEventListener('load', response_handler);
 //        request.addEventListener('error', error_callback);
        request.open('GET', url, true);
        request.onerror = function (e) {
            if (TT.is_already_cross_origin_url && !TT.is_already_cross_origin_url(url)) {
-               utilities.create_widget_from_URL(TT.cross_origin_url_function(url), widget_callback, error_callback);
+               utilities.create_widget_from_URL(TT.cross_origin_url_function(url), widget_callback, error_callback, url);
                return;
            }
            if (error_callback) {

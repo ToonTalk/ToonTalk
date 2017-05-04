@@ -151,9 +151,14 @@ window.TOONTALK.robot = (function (TT) {
         new_robot.initialize_backside_conditions = function () {
 //          Any covered nests should be used as a condition
             var context = this.get_training_context();
-            // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
-            // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
-            original_backside_widgets_of_context = context.get_backside_widgets().slice();
+            if (context) {
+                // following used to also include copy_covered_nests: true but that caused nest sharing between members of a robot team
+                // that led to several bugs -- also robots shouldn't be able to tell if it has a widget or has a nest with that widget on top
+                original_backside_widgets_of_context = context.get_backside_widgets().slice();
+            } else {
+                // seen to occur in Sentry logs
+                original_backside_widgets_of_context = [];
+            }
             original_backside_widgets_of_context_copy = TT.UTILITIES.copy_widget_sides(original_backside_widgets_of_context, {just_value: true});
             this.set_backside_conditions([]);
         };
@@ -888,18 +893,20 @@ window.TOONTALK.robot = (function (TT) {
             if (target_widget_side.is_backside()) {
                 $target_element = $(target_widget_side.get_element());
                 target_location = $target_element.offset();
-                target_width    = $target_element.width();
-                target_height   = $target_element.height();
-                source_location = $(source_widget.get_frontside_element()).offset();
-                left_offset_fraction = (source_location.left-target_location.left)/target_width;
-                top_offset_fraction  = (source_location.top -target_location.top) /target_height;
-                // ensure that the fractions are between 0 and 1
-                // can be out of range if waiting for a IMG element to load
-                left_offset_fraction = Math.max(0, Math.min(1, left_offset_fraction));
-                top_offset_fraction  = Math.max(0, Math.min(1, top_offset_fraction));
-                // store the drop location as a fraction of width and height of target so does something sensible when run on different size target
-                additional_info = {left_offset_fraction: left_offset_fraction,
-                                   top_offset_fraction:  top_offset_fraction};
+                if (target_location) { // logs show it can be undefined
+                    target_width    = $target_element.width();
+                    target_height   = $target_element.height();
+                    source_location = $(source_widget.get_frontside_element()).offset();
+                    left_offset_fraction = (source_location.left-target_location.left)/target_width;
+                    top_offset_fraction  = (source_location.top -target_location.top) /target_height;
+                    // ensure that the fractions are between 0 and 1
+                    // can be out of range if waiting for a IMG element to load
+                    left_offset_fraction = Math.max(0, Math.min(1, left_offset_fraction));
+                    top_offset_fraction  = Math.max(0, Math.min(1, top_offset_fraction));
+                    // store the drop location as a fraction of width and height of target so does something sensible when run on different size target
+                    additional_info = {left_offset_fraction: left_offset_fraction,
+                                       top_offset_fraction:  top_offset_fraction};
+                }
             } else {
                 additional_info = {};
             }

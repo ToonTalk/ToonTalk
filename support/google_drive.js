@@ -12,7 +12,12 @@
     // Is a global function since called by Google API
 function handle_client_load() {
     "use strict";
-    window.TOONTALK.google_drive.handle_client_load();
+    if (window.TOONTALK) {
+        window.TOONTALK.google_drive.handle_client_load();
+    } else {
+        // called before fully initialised (seen in Sentry logs)
+        setTimeout(handle_client_load, 1000);
+    }
 };
 
 window.TOONTALK.google_drive =
