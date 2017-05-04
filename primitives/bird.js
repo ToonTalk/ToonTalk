@@ -679,7 +679,11 @@ window.TOONTALK.bird = (function (TT) {
                     // remove the bird element and add to top_level backside
                     this.top_level_widget().get_backside_element().appendChild(frontside_element);
                 }
-                frontside_element.appendChild(this.element_to_display_when_flying);
+                try {
+                    frontside_element.appendChild(this.element_to_display_when_flying);
+                } catch (e) {
+                    TT.UTILITIES.report_internal_error("Error attaching 'message' to bird. Message className is " + this.element_to_display_when_flying.className);
+                }
             } else {
                 $(frontside_element).children(".toontalk-side").remove();
             }
