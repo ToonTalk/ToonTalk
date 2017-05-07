@@ -804,6 +804,8 @@ window.TOONTALK.robot = (function (TT) {
         if (this.get_first_in_team().visible()) {
             return this.get_body().run_watched(this);
         }
+        // may have just switched to running unwatched
+        this.set_parent_of_frontside(this.get_context());
         return this.get_body().run_unwatched(this);
     };
 
