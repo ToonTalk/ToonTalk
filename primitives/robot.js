@@ -399,7 +399,7 @@ window.TOONTALK.robot = (function (TT) {
                 }
             }
             if (new_value && !new_value.constrained_by_container()) {
-                // if location is constrained by container than so is size so don't save this
+                // if location is constrained by container then so is size so don't save this
                 new_value.save_dimensions();
             }
             thing_in_hand = new_value;

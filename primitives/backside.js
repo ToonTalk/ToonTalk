@@ -123,6 +123,7 @@ window.TOONTALK.backside =
                                         if (widget.is_top_level()) {
                                             TT.UTILITIES.stop_audio_objects();
                                         }
+                                        widget.backup_all();
                                     };
             var help_button_clicked = function (event) {
                                           if (relative_URL) {
