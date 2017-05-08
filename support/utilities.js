@@ -524,7 +524,9 @@ window.TOONTALK.UTILITIES =
                 }
             }
         } else {
-            if (event.dataTransfer.files.length > 0) {
+            if (json_object) {
+                source_widget_side = utilities.create_from_json(json_object, {event: event});
+            } else if (event.dataTransfer.files.length > 0) {
                 // forEach doesn't work isn't really an array
                 for (i = 0; i < event.dataTransfer.files.length; i++) {
                     handle_drop_from_file_contents(event.dataTransfer.files[i], $target, target_widget_side, target_position, event);
@@ -536,8 +538,6 @@ window.TOONTALK.UTILITIES =
                 handle_drop_from_uri_list(event.dataTransfer.getData("URL"), $target, target_widget_side, target_position, event);
                 event.stopPropagation();
                 return;
-            } else {
-                source_widget_side = utilities.create_from_json(json_object, {event: event});
             }
            if (!source_widget_side) {
                 if (json_object) {
@@ -1918,10 +1918,6 @@ window.TOONTALK.UTILITIES =
                 // not really an error -- could be a drag of an image into ToonTalk
                 return;
             }
-            if (event.dataTransfer.files.length > 0 || non_data_URL_in_data_transfer(event)) {
-                // these create element widgets without going through JSON
-                return;
-            }
             // following code could be simplified by using event.dataTransfer.types
             // unless in IE should use text/html to enable dragging of HTML elements
             // perhaps better than catching error to use is_internet_explorer()
@@ -1952,6 +1948,9 @@ window.TOONTALK.UTILITIES =
                 if (json) {
                     return json;
                 }
+            } else if (event.dataTransfer.files.length > 0 || non_data_URL_in_data_transfer(event)) {
+                // these create element widgets without going through JSON
+                return;
             }
             // treat the data as rich text (HTML) or a plain text element
             element = TT.element.create("");
