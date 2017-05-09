@@ -183,7 +183,9 @@ window.TOONTALK.UTILITIES =
         $(".ui-tooltip").removeClass("toontalk-side-animating");
         // was using text/plain but IE complained
         // see http://stackoverflow.com/questions/18065840/html5-drag-and-drop-not-working-on-ie11
-        if (event.dataTransfer && event.dataTransfer.getData("text") && event.dataTransfer.getData("text").length > 0) {
+        if (event.dataTransfer && event.dataTransfer.getData("text") && event.dataTransfer.getData("text").length > 0 &&
+            // in FireFox image elements become data: URLs -- ignore that here
+            event.dataTransfer.getData("text").indexOf("data:") != 0) {
             // e.g. dragging some text off the backside of a widget
             return;
         }
@@ -1933,9 +1935,6 @@ window.TOONTALK.UTILITIES =
                 // see https://bugzilla.mozilla.org/show_bug.cgi?id=900414
                 // may not have been text/html but just plain text
                 data = event.dataTransfer.getData("text");
-//                 if (data) {
-//                     data = "<div class='ui-widget'>" + data + "</div>";
-//                 }
             }
             if (!data) {
                 // not really an error -- could be a drag of an image into ToonTalk
