@@ -774,7 +774,9 @@ window.TOONTALK.robot_action =
                         robot);
                     return;
                 }
-                additional_info.running_watched = false;
+                if (additional_info) {
+                    additional_info.running_watched = false;
+                }
                 if (unwatched_run_function(referenced, robot, additional_info)) {
                     robot.run_next_step();
                 } // else robot will stop due to the error
@@ -818,7 +820,9 @@ window.TOONTALK.robot_action =
                     }
                     return;
                 }
-                additional_info.running_watched = true;
+                if (additional_info) {
+                    additional_info.running_watched = true;
+                }
                 watched_run_function(referenced, robot, continuation, additional_info);
             };
             new_action.toString = function (to_string_info) {
