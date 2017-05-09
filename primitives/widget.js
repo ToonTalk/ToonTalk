@@ -705,7 +705,7 @@ window.TOONTALK.widget = (function (TT) {
                     return; // already knew this
                 }
                 parent_of_frontside = new_parent;
-                if (old_parent_of_frontside && !backside_widget_already_removed && !parent_is_backside) {
+                if (old_parent_of_frontside && !backside_widget_already_removed && !parent_is_backside && old_parent_of_frontside.is_backside()) {
                     old_parent_of_frontside.get_widget().remove_backside_widget(this, true);
                 }
                 parent_of_frontside_change_listeners.forEach(function (listener) {
