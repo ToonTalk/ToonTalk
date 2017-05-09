@@ -707,7 +707,10 @@ window.TOONTALK.widget = (function (TT) {
                 parent_of_frontside = new_parent;
                 if (old_parent_of_frontside && !backside_widget_already_removed && !parent_is_backside) {
                     old_parent_of_frontside.get_widget().remove_backside_widget(this, true);
-                    new_parent.add_backside_widget(this);
+                    if (new_parent && new_parent.add_backside_widget) {
+                        // might be a hole (not sure if this is the best design)
+                        new_parent.add_backside_widget(this);
+                    }
                 }
                 parent_of_frontside_change_listeners.forEach(function (listener) {
                         listener(old_parent_of_frontside, parent_of_frontside);
