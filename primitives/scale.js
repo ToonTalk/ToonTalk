@@ -189,6 +189,7 @@ window.TOONTALK.scale = (function (TT) {
                             contents.update_display(); // TODO: see if render is OK
                             contents.scale_to(contents_width, contents_height);
                         }
+                        contents.set_visible(true);
                         contents.render();
                     }
                     hole_element.appendChild(content_element); // no-op if already there

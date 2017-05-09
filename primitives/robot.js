@@ -399,7 +399,7 @@ window.TOONTALK.robot = (function (TT) {
                 }
             }
             if (new_value && !new_value.constrained_by_container()) {
-                // if location is constrained by container than so is size so don't save this
+                // if location is constrained by container then so is size so don't save this
                 new_value.save_dimensions();
             }
             thing_in_hand = new_value;
@@ -804,6 +804,8 @@ window.TOONTALK.robot = (function (TT) {
         if (this.get_first_in_team().visible()) {
             return this.get_body().run_watched(this);
         }
+        // may have just switched to running unwatched
+        this.set_parent_of_frontside(this.get_context());
         return this.get_body().run_unwatched(this);
     };
 

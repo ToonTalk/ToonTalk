@@ -774,6 +774,9 @@ window.TOONTALK.robot_action =
                         robot);
                     return;
                 }
+                if (additional_info) {
+                    additional_info.running_watched = false;
+                }
                 if (unwatched_run_function(referenced, robot, additional_info)) {
                     robot.run_next_step();
                 } // else robot will stop due to the error
@@ -816,6 +819,9 @@ window.TOONTALK.robot_action =
                         robot.get_frontside().remove();
                     }
                     return;
+                }
+                if (additional_info) {
+                    additional_info.running_watched = true;
                 }
                 watched_run_function(referenced, robot, continuation, additional_info);
             };
