@@ -105,7 +105,7 @@ window.TOONTALK.path =
                     return path;
                 }
                 // if context is undefined something is wrong much earlier
-                if (TT.debugging && !context) {
+                if (!context) {
                     TT.UTILITIES.report_internal_error("No context to compute the path");
                     return;
                 }

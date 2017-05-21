@@ -1566,9 +1566,9 @@ window.TOONTALK.backside =
             // ignore it since only frontsides "run"
         },
 
-        can_run: function () {
+        can_run: function (options) {
             // while the backside can't run its contents may be able to
-            return this.get_widget().can_run();
+            return this.get_widget().can_run(options);
         },
 
         dereference: function () {

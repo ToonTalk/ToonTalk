@@ -249,9 +249,9 @@ window.TOONTALK.sensor = (function (TT) {
             }
         };
         widget_can_run = new_sensor.can_run;
-        new_sensor.can_run = function (widgets_considered, robots_only) {
+        new_sensor.can_run = function (options) {
             // can run in the sense of becoming active
-            return !robots_only || widget_can_run.call(this, widgets_considered, robots_only);
+            return !(options && options.robots_only) || widget_can_run.call(this, options);
         };
         attribute_values = function (event) {
             return new_sensor.get_attributes().map(
