@@ -53,6 +53,26 @@ window.TOONTALK.widget = (function (TT) {
                     widget.walk_children(action);
                 }
             };
+            if (widget.walk_children) {
+                widget.walk_children_now_or_later = function(callback, depth) {
+                    // depth of a structure might be larger than the stack so delay this every depth%TT.maximum_recursion_depth
+                    if (depth && depth%TT.maximum_recursion_depth === 0) {
+                        // to avoid a stack overflow delay this
+                        // if structure is circular this will keep running
+                        setTimeout(function () {
+                                      this.walk_children(function (child_side) {
+                                                           callback(child_side, depth+1);
+                                                           return true; // continue to next child
+                                                         });
+                                           });
+                    } else {
+                        this.walk_children(function (child_side) {
+                                               callback(child_side, depth ? depth+1 : 1);
+                                               return true; // continue to next child
+                                           });
+                    }
+                }.bind(this);
+            }
             widget.top_level_widget = function () {
                 var parent, $top_level_backsides;
                 if (top_level_widget) {

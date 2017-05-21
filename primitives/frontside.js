@@ -107,22 +107,11 @@ window.TOONTALK.frontside =
                     TT.UTILITIES.when_attached(this.get_element(true),
                                                widget.render.bind(widget));
                 }
-                if (widget.walk_children) {
-                    if (depth && depth%TT.maximum_recursion_depth === 0) {
-                        // to avoid a stack overflow delay this
-                        // if structure is circular this will keep running
-                        setTimeout(function () {
-                                       widget.walk_children(function (child_side) {
-                                                                child_side.set_visible(new_value, depth+1);
-                                                                return true; // continue to next child
-                                                            });
-                                   });
-                    } else {
-                        widget.walk_children(function (child_side) {
-                                                 child_side.set_visible(new_value, depth ? depth+1 : 1);
-                                                 return true; // continue to next child
-                        });
-                    }
+                if (widget.walk_children_now_or_later) {
+                    widget.walk_children_now_or_later(function (child_side, depth) {
+                                                          child_side.set_visible(new_value, depth);
+                                                      },
+                                                      depth);
                 }
             };
             // prefer addEventListener over JQuery's equivalent since when I inspect listeners I get a link to this code
