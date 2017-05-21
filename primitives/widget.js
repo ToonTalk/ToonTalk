@@ -61,14 +61,14 @@ window.TOONTALK.widget = (function (TT) {
                         // if structure is circular this will keep running
                         setTimeout(function () {
                                       this.walk_children(function (child_side) {
-                                                           callback(child_side, depth+1);
-                                                           return true; // continue to next child
+                                                             // continue to next child if callback returns true
+                                                             return callback(child_side, depth+1);
                                                          });
                                            });
                     } else {
                         this.walk_children(function (child_side) {
-                                               callback(child_side, depth ? depth+1 : 1);
-                                               return true; // continue to next child
+                                               // continue to next child if callback returns true
+                                               return callback(child_side, depth ? depth+1 : 1);
                                            });
                     }
                 }.bind(this);
@@ -628,7 +628,7 @@ window.TOONTALK.widget = (function (TT) {
                     } else if (!backside || !backside.get_element() || !TT.UTILITIES.visible_element(backside.get_element())) {
                         if (TT.open_backside_only_if_alt_key) {
                             // no title regarding backside since not readily available when in puzzle mode
-                        } else if (this.can_run && this.can_run([], true)) {
+                        } else if (this.can_run && this.can_run({widgets_considered: [], robots_only: true})) {
                             if (this.get_running()) {
                                 title = "Robots on my back are running (or waiting to run).\nTo see them click the stop sign " +
                                         TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-stop-sign-icon'></span>") +
@@ -1337,7 +1337,7 @@ window.TOONTALK.widget = (function (TT) {
             return this.backside_widgets_json_views;
         },
 
-        can_run: function () {
+        can_run: function (options) {
             // returns true if a backside element is a trained robot or
             // or a widget this can_run
             var backside_widgets = this.get_backside_widgets();
@@ -1359,14 +1359,20 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
             });
-            if (this.walk_children) {
-                this.walk_children(function (child) {
-                                       if (child.can_run()) {
-                                           can_run = true;
-                                       } else {
-                                           return true; // go on to next child
-                                       }
-                                   });
+            if (this.walk_children_now_or_later) {
+                this.walk_children_now_or_later(function (child_side, depth) {
+                                                    if (options) {
+                                                        options.depth = depth;
+                                                    } else {
+                                                        options = {depth: depth};
+                                                    }
+                                                    if (child_side.can_run(options)) {
+                                                         can_run = true;
+                                                     } else {
+                                                         return true; // go on to next child
+                                                     }
+                                                },
+                                                options && options.depth);
             }
             return can_run;
         },

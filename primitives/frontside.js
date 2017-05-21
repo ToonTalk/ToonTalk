@@ -110,6 +110,7 @@ window.TOONTALK.frontside =
                 if (widget.walk_children_now_or_later) {
                     widget.walk_children_now_or_later(function (child_side, depth) {
                                                           child_side.set_visible(new_value, depth);
+                                                          return true; // go on to next child
                                                       },
                                                       depth);
                 }

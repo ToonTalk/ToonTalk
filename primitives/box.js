@@ -1348,8 +1348,8 @@ window.TOONTALK.box_hole =
                 }
                 return this;
             };
-            hole.can_run = function (widgets_considered, robots_only) {
-                return contents && contents.can_run(widgets_considered, robots_only);
+            hole.can_run = function (options) {
+                return contents && contents.can_run(options);
             };
             hole.get_index = function () {
                 return index;

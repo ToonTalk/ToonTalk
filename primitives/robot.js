@@ -470,12 +470,12 @@ window.TOONTALK.robot = (function (TT) {
             watched_speed = new_value;
             return true;
         };
-        new_robot.can_run = function () {
+        new_robot.can_run = function (options) {
             // can run if just runs on top-level backside
             // perhaps this should check the match_status since if unable to match can't run
             // but some callers mean capable of running in general not just now
             return (this.get_frontside_conditions() && this.get_frontside_conditions().is_top_level()) ||
-                    TT.widget.can_run.call(this);
+                    TT.widget.can_run.call(this, options);
         };
         new_robot.training_started = function (robot_training_this_robot) {
             var context = this.get_training_context();

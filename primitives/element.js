@@ -580,9 +580,10 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             });
         };
         widget_can_run = new_element.can_run.bind(new_element);
-        new_element.can_run = function (widgets_considered, robots_only) {
-            // widgets_considered is to avoid infinite recursion
-            // it the list of widgets already tested if they can run 
+        new_element.can_run = function (options) {
+            // options.widgets_considered is to avoid infinite recursion
+            // it the list of widgets already tested if they can run_when_dimensions_known
+            var widgets_considered = options && options.widgets_considered;
             var result;
             if (typeof widgets_considered === 'undefined') {
                 widgets_considered = [];
@@ -591,11 +592,11 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return false;
             }
             widgets_considered.push(this);
-            if (widget_can_run(widgets_considered, robots_only)) {
+            if (widget_can_run(options)) {
                 return true;
             }
             Object.keys(attribute_widgets_in_backside_table).some(function (attribute_name) {
-                if (attribute_widgets_in_backside_table[attribute_name].can_run(widgets_considered, robots_only)) {
+                if (attribute_widgets_in_backside_table[attribute_name].can_run(options)) {
                     result = true;
                     return true;
                 }
@@ -604,7 +605,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 return result;
             }
             children.some(function (child) {
-                if (child.can_run(widgets_considered, robots_only)) {
+                if (child.can_run(options)) {
                     result = true;
                     return true;
                 }
