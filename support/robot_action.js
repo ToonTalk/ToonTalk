@@ -166,6 +166,10 @@ window.TOONTALK.robot_action =
              return true;
          },
          "start training": function (robot_to_be_trained, robot, additional_info) {
+             if (!robot_to_be_trained.is_robot()) {
+                 TT.UTILITIES.report_internal_error("Expected to train a robot but found instead " + robot_to_be_trained);
+                 return;
+             }
              if (!additional_info || !additional_info.running_watched) {
                  robot_to_be_trained.initialize_backside_conditions();
                  robot_to_be_trained.get_body().reset_steps();
