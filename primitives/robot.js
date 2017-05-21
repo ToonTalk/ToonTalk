@@ -1093,6 +1093,7 @@ window.TOONTALK.robot = (function (TT) {
         $(frontside_element).addClass("toontalk-robot");
         $(frontside_element).children(".toontalk-held-by-robot").remove(); // if needed will be added again below
         if (thing_in_hand_element) {
+            thing_in_hand_element.remove(); // in case -- seen in Sentry logs
             frontside_element.appendChild(thing_in_hand_element);
         }
         if (this.match_status) {
