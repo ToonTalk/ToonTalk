@@ -432,52 +432,54 @@ window.TOONTALK.widget = (function (TT) {
                     if (this.get_backside() && !unchanged_value) {
                         this.get_backside().run_status_changed(running);
                     }
-                    TT.UTILITIES.set_timeout(function () {
-                        // time out is to prevent stack overflows for deep structures
-                        TT.UTILITIES.for_each_batch(backside_widgets,
-                            function (backside_widget_side) {
-                                if (!backside_widget_side) {
-                                    return;
-                                }
-                                backside_widget = backside_widget_side.get_widget();
-                                if (backside_widget_side.is_backside()) {
-                                    // make sure that the frontside isn't also running
-                                    if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
+                    if (backside_widgets.length > 0) {
+                        TT.UTILITIES.set_timeout(function () {
+                            // time out is to prevent stack overflows for deep structures
+                            TT.UTILITIES.for_each_batch(backside_widgets,
+                                function (backside_widget_side) {
+                                    if (!backside_widget_side) {
                                         return;
                                     }
-                                    // if not a primary backside (e.g. from a sensor) then ignore it
-                                    if (!backside_widget_side.is_primary_backside()) {
-                                        return;
-                                    }
-                                }
-                                if (backside_widget.is_robot() && !backside_widget.being_trained && !backside_widget.get_body().is_empty()) {
-                                    // could this set_stopped stuff be combined with set_running?
-                                    if (running) {
-                                        if (running && TT.logging && TT.logging.indexOf("running") >= 0) {
-                                            console.log(backside_widget._debug_string.substring(0, 100) + " running.");
+                                    backside_widget = backside_widget_side.get_widget();
+                                    if (backside_widget_side.is_backside()) {
+                                        // make sure that the frontside isn't also running
+                                        if (this.get_backside_widgets().indexOf(backside_widget) >= 0) {
+                                            return;
                                         }
-                                        backside_widget.set_stopped(false);
-                                        // no need to create backside to run the robot but the robot needs to know if the backside of the widget is running
-                                        // e.g. to act like an "anima-gadget" if is a backside on a backside
-                                        backside_widget.run(widget, is_backside, top_level_context);
-                                        backside_widget.set_ok_to_run(true);
-                                    } else {
-                                        backside_widget.set_stopped(true);
-                                        backside_widget.set_running(false);
+                                        // if not a primary backside (e.g. from a sensor) then ignore it
+                                        if (!backside_widget_side.is_primary_backside()) {
+                                            return;
+                                        }
                                     }
-                                } else if (backside_widget.set_running) {
-                                    if (!top_level_context && backside_widget_side.is_backside() && widget.get_type_name() !== "top-level") {
-                                        // a robot is on the backside of a widget that is on the backside of another
-                                        // then its context is the containing widget
-                                        backside_widget.set_running(new_value, widget, true);
-                                    } else {
-                                        // if frontside then its context is the widget of the frontside (i.e. backside_widget)
-                                        backside_widget.set_running(new_value);
-                                    }
-                               }
-                               backside_widget.rerender();
+                                    if (backside_widget.is_robot() && !backside_widget.being_trained && !backside_widget.get_body().is_empty()) {
+                                        // could this set_stopped stuff be combined with set_running?
+                                        if (running) {
+                                            if (running && TT.logging && TT.logging.indexOf("running") >= 0) {
+                                                console.log(backside_widget._debug_string.substring(0, 100) + " running.");
+                                            }
+                                            backside_widget.set_stopped(false);
+                                            // no need to create backside to run the robot but the robot needs to know if the backside of the widget is running
+                                            // e.g. to act like an "anima-gadget" if is a backside on a backside
+                                            backside_widget.run(widget, is_backside, top_level_context);
+                                            backside_widget.set_ok_to_run(true);
+                                        } else {
+                                            backside_widget.set_stopped(true);
+                                            backside_widget.set_running(false);
+                                        }
+                                    } else if (backside_widget.set_running) {
+                                        if (!top_level_context && backside_widget_side.is_backside() && widget.get_type_name() !== "top-level") {
+                                            // a robot is on the backside of a widget that is on the backside of another
+                                            // then its context is the containing widget
+                                            backside_widget.set_running(new_value, widget, true);
+                                        } else {
+                                            // if frontside then its context is the widget of the frontside (i.e. backside_widget)
+                                            backside_widget.set_running(new_value);
+                                        }
+                                   }
+                                   backside_widget.rerender();
+                             }.bind(this));
                          }.bind(this));
-                    }.bind(this));
+                    }
                     if (this.walk_children) {
                         this.walk_children(function (child) {
                                 if (child.set_running) {
