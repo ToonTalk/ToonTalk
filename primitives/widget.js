@@ -1359,7 +1359,12 @@ window.TOONTALK.widget = (function (TT) {
                     can_run = true;
                     return true;
                 }
-                if (backside_widget.can_run()) {
+                if (options) {
+                    options.depth = depth;
+                } else {
+                    options = {depth: 1};
+                }
+                if (backside_widget.can_run(options)) {
                     can_run = true;
                     return true;
                 }
