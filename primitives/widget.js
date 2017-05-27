@@ -1360,7 +1360,11 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
                 if (options) {
-                    options.depth = depth;
+                    if (options.depth) {
+                        options.depth++;
+                    } else {
+                        options.depth = 1;
+                    }
                 } else {
                     options = {depth: 1};
                 }
