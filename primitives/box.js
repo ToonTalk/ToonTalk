@@ -1231,7 +1231,7 @@ window.TOONTALK.box_hole =
             hole.widget_side_dropped_on_me = function (dropped, options) {
                 var box = this.get_parent_of_frontside();
                 var contents = this.get_contents();
-                var hole_element, hole_position, parent_position, dropped_element, finished_animating, is_plain_text;
+                var hole_element, hole_visible, hole_position, parent_position, dropped_element, finished_animating, is_plain_text;
                 if (contents) {
                     return contents.widget_side_dropped_on_me && contents.widget_side_dropped_on_me(dropped, options);
                 }
@@ -1248,21 +1248,33 @@ window.TOONTALK.box_hole =
                     dropped_element = dropped.get_element();
                     $(dropped_element).css({"z-index": TT.UTILITIES.next_z_index()});
                     parent_position = $(dropped_element.parentElement).offset();
-                    hole_position   = $(hole_element).offset();
                     if (!is_plain_text) {
                         dropped_element.style.left = (options.event.pageX-parent_position.left)+"px";
                         dropped_element.style.top  = (options.event.pageY-parent_position.top) +"px";
+                        // and animate the style changes in the following code
                         $(dropped_element).addClass("toontalk-animating-element");
                     }
-                    dropped_element.style.width  = hole_element.style.width;
-                    dropped_element.style.height = hole_element.style.height;
-                    dropped_element.style.left = (hole_position.left-parent_position.left)+"px";
-                    dropped_element.style.top  = (hole_position.top -parent_position.top) +"px";
+                    hole_visible = TT.UTILITIES.is_attached(hole_element);
+                    if (hole_visible) {
+                        hole_position   = $(hole_element).offset();
+                        dropped_element.style.width  = hole_element.style.width;
+                        dropped_element.style.height = hole_element.style.height;
+                        dropped_element.style.left = (hole_position.left-parent_position.left)+"px";
+                        dropped_element.style.top  = (hole_position.top -parent_position.top) +"px";
+                    } else {
+                        // presumably hole is too small to be seen
+                        dropped_element.style.width  = 0;
+                        dropped_element.style.height = 0;
+                    }
                     finished_animating = function () {
                         $(dropped_element).removeClass("toontalk-animating-element");
                         this.set_contents(dropped);
-                        box.render();
-                        dropped.render();
+                        if (hole_visible) {
+                            box.render();
+                            dropped.render();
+                        } else {
+                            dropped_element.remove();
+                        }
                         if (options.event) {
                             box.backup_all();
                         }
