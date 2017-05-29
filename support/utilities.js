@@ -4464,26 +4464,12 @@ window.TOONTALK.UTILITIES =
                     if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
                         console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
                     }
-                    try {
-                        callback(json_string && utilities.parse_json(json_string));
-                    } catch (e) {
-                        if (e.toontalk_continuation) {
-                            e.toontalk_continuation();
-                        } else {
-                            throw e;
-                        }
-                    }
+                    callback(json_string && utilities.parse_json(json_string));
                 } catch (e) {
-                    if (utilities.is_stack_overflow(e)) {
-                        throw {toontalk_continuation: function () {
-                                                          utilities.retrieve_object(key, callback);
-                                                      }};
-                    } else {
-                        TT.UTILITIES.display_message("Unable to read from the browser's local storage. " +
-                                                     "You can read and save to Google Drive if you have an account. " +
-                                                     "The error message is: " + e,
-                                                     {only_if_new: true});
-                    }
+                    TT.UTILITIES.display_message("Unable to read from the browser's local storage. " +
+                                                 "You can read and save to Google Drive if you have an account. " +
+                                                 "The error message is: " + e,
+                                                 {only_if_new: true});
                 }
             };
             utilities.retrieve_string = function (key, callback) {
