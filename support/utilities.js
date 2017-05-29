@@ -229,7 +229,9 @@ window.TOONTALK.UTILITIES =
                         json.view.frontside_height = $dragee.height();
                     }
                 }
-                $dragee.data("json", json);
+                if ($dragee) {
+                    $dragee.data("json", json);
+                }
                 if (event.dataTransfer) {
                     json_div = utilities.toontalk_json_div(json, widget_side);
                     event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
