@@ -52,13 +52,13 @@ window.TOONTALK.scale = (function (TT) {
             copy = TT.scale.create(undefined, undefined, copy_as_box, parameters.just_value && this.get_state());
             return new_scale.add_to_copy(copy, parameters);
         };
-        new_scale.get_json = function (json_history, callback, start_time) {
-            var new_callback = function (json, start_time) {
+        new_scale.get_json = function (json_history, callback, start_time, depth) {
+            var new_callback = function (json, start_time, depth) {
                 json.type = 'scale';
                 json.inactive_state = this.get_inactive_state();
-                callback(json, start_time);
+                callback(json, start_time, depth+1);
             }.bind(this);
-            box_get_json.call(this, json_history, new_callback, start_time);
+            box_get_json.call(this, json_history, new_callback, start_time, depth+1);
         };
         new_scale.get_path_to = function (widget, robot) {
             var path = box_get_path_to.call(this, widget, robot);

@@ -113,8 +113,8 @@ window.TOONTALK.sensor = (function (TT) {
             copy.set_active(this.get_active());
             return copy;
         };
-        new_sensor.get_json = function (json_history, callback, start_time) {
-            var new_callback = function (json, start_time) {
+        new_sensor.get_json = function (json_history, callback, start_time, depth) {
+            var new_callback = function (json, start_time, depth) {
                 var widget_callback;
                 json.type = 'sensor';
                 json.event_name = event_name;
@@ -123,14 +123,14 @@ window.TOONTALK.sensor = (function (TT) {
                 if (widget) {
                     widget_callback = function (widget_json) {
                         json.sensor_of = widget_json;
-                        callback(json, start_time);
+                        callback(json, start_time, depth+1);
                     };
-                    TT.UTILITIES.get_json(widget, json_history, widget_callback, start_time);
+                    TT.UTILITIES.get_json(widget, json_history, widget_callback, start_time, depth+1);
                 } else {
-                    callback(json, start_time);
+                    callback(json, start_time, depth+1);
                 }
             }.bind(this);
-            nest_get_json.call(this, json_history, new_callback, start_time);
+            nest_get_json.call(this, json_history, new_callback, start_time, depth+1);
         };
         new_sensor.update_display = function () {
             var $frontside_element = $(this.get_frontside_element());

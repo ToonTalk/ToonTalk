@@ -1255,7 +1255,7 @@ window.TOONTALK.number = (function () {
         return "docs/manual/numbers.html";
     };
 
-    number.get_json = function (json_history, callback, start_time) {
+    number.get_json = function (json_history, callback, start_time, depth) {
         callback({type: "number",
                   operator:    this.get_operator(),
                   // break it up into lines so no HTML line is too long
@@ -1264,7 +1264,8 @@ window.TOONTALK.number = (function () {
                   format:      this.get_format(),
                   approximate: this.get_approximate()
                  },
-                 start_time);
+                 start_time,
+                 depth+1);
     };
 
     TT.creators_from_json["number"] = function (json) {

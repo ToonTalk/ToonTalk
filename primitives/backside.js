@@ -1652,7 +1652,7 @@ window.TOONTALK.backside =
             }
         },
 
-        get_json: function (json_history, callback, start_time) {
+        get_json: function (json_history, callback, start_time, depth) {
             var dimensions = this.get_backside_dimensions();
             var position = $(this.get_element()).position();
             var css, new_callback;
@@ -1667,15 +1667,16 @@ window.TOONTALK.backside =
             } else {
                 css = position;
             }
-            new_callback = function (json, start_time) {
+            new_callback = function (json, start_time, depth) {
                               callback({type: "backside",
                                         my_widget: json,
                                         css: css,
                                         erased: this.get_erased(),
                                         view: {}},
-                                       start_time);
+                                       start_time,
+                                       depth+1);
             }.bind(this);
-            TT.UTILITIES.get_json(this.get_widget(), json_history, new_callback, start_time);
+            TT.UTILITIES.get_json(this.get_widget(), json_history, new_callback, start_time, depth+1);
         },
 
         get_selection: function () {

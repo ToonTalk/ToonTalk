@@ -469,9 +469,9 @@ window.TOONTALK.box = (function (TT) {
         return "docs/manual/boxes.html";
     };
 
-    box.get_json = function (json_history, callback, start_time) {
+    box.get_json = function (json_history, callback, start_time, depth) {
         var contents_json = [];
-        var collect_contents_json = function (index, start_time) {
+        var collect_contents_json = function (index, start_time, depth) {
             // this is similar to utilities.get_json_of_array but iterates and terminates differently
             var widget_side, new_callback;
             if (index >= this.get_size()) {
@@ -481,39 +481,40 @@ window.TOONTALK.box = (function (TT) {
                           horizontal: this.get_horizontal(),
                           name: this.get_name()
                          },
-                         start_time);
+                         start_time,
+                         depth+1);
                 return;
             }
             widget_side = this.get_hole_contents(index);
             if (!widget_side) {
                 contents_json.push(null);
-                collect_contents_json(index+1, start_time);
+                collect_contents_json(index+1, start_time, depth+1);
                 return;
             }
             if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
-                new_callback = function (json, new_start_time) {
+                new_callback = function (json, new_start_time, depth) {
                     contents_json.push({widget: json,
                                         is_backside: true});
-                    collect_contents_json(index+1, new_start_time);
+                    collect_contents_json(index+1, new_start_time, depth+1);
                 }.bind(this);
-                TT.UTILITIES.get_json(widget_side.get_widget(), json_history, new_callback, start_time);
+                TT.UTILITIES.get_json(widget_side.get_widget(), json_history, new_callback, start_time, depth+1);
             } else
             if (widget_side.is_widget) {
-                new_callback = function (json, new_start_time) {
+                new_callback = function (json, new_start_time, depth) {
                     contents_json.push({widget: json});
-                    collect_contents_json(index+1, new_start_time);
+                    collect_contents_json(index+1, new_start_time, depth+1);
                 }.bind(this);
-                TT.UTILITIES.get_json(widget_side, json_history, new_callback, start_time);
+                TT.UTILITIES.get_json(widget_side, json_history, new_callback, start_time, depth+1);
             } else {
                 // isn't a widget -- e.g. is a path
-                new_callback = function (json, new_start_time) {
+                new_callback = function (json, new_start_time, depth) {
                     contents_json.push(json);
-                    collect_contents_json(index+1, new_start_time);
+                    collect_contents_json(index+1, new_start_time, depth+1);
                 }.bind(this);
-                widget_side.get_json(json_history, new_callback, start_time);
+                widget_side.get_json(json_history, new_callback, start_time, depth+1);
             }
         }.bind(this);
-        collect_contents_json(0, start_time);
+        collect_contents_json(0, start_time, depth+1);
     };
 
     box.walk_children = function (child_action) {
@@ -1064,18 +1065,19 @@ window.TOONTALK.box = (function (TT) {
                     }
                     return "the " + TT.UTILITIES.ordinal(index) + " hole ";
                 },
-                get_json: function (json_history, callback, start_time) {
-                    var next_path_callback= function (next_path_json, start_time) {
+                get_json: function (json_history, callback, start_time, depth) {
+                    var next_path_callback= function (next_path_json, start_time, depth) {
                         callback({type: "box_path",
                                   index: index,
                                   true_type: this.true_type,
                                   next: next_path_json},
-                                 start_time);
+                                 start_time,
+                                 depth+1);
                     }.bind(this);
                     if (this.next) {
-                        this.next.get_json(json_history, next_path_callback, start_time);
+                        this.next.get_json(json_history, next_path_callback, start_time, depth+1);
                     } else {
-                        next_path_callback(undefined, start_time);
+                        next_path_callback(undefined, start_time, depth+1);
                     }
                 }
             };

@@ -246,7 +246,7 @@ window.TOONTALK.UTILITIES =
                 }
             };
             if (event.dataTransfer) {
-                event.dataTransfer.setData("text", "Sorry, it took too long to generate the data structure needed to reconstruct " + widget_side + ".");
+                event.dataTransfer.setData("text", "Sorry, it took too long or required too large a stack to generate the data structure needed to reconstruct " + widget_side + ".");
             }
             // this may freeze the browser if a very large JSON is generated but the alternative is that drag and drop breaks
             // so let it take 10 minutes maximum
@@ -1265,26 +1265,31 @@ window.TOONTALK.UTILITIES =
             return new_array;
         };
 
-        utilities.get_json_of_array = function (array, json_array, index, json_history, callback, start_time) {
+        utilities.get_json_of_array = function (array, json_array, index, json_history, callback, start_time, depth) {
             var widget_side, new_callback;
+            if (depth > TT.maximum_recursion_depth) {
+                throw {toontalk_continuation: function () {
+                                                  utilities.get_json_of_array(array, json_array, index, json_history, callback, Date.now(), 0);
+                                              }};
+            }
             if (index >= array.length) {
-                callback();
+                callback(depth+1);
                 return;
             }
             widget_side = array[index];
             if (!widget_side) {
-                utilities.get_json_of_array(array, json_array, index+1, json_history, callback, start_time);
+                utilities.get_json_of_array(array, json_array, index+1, json_history, callback, start_time, depth+1);
                 return;
             }
             if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
-                new_callback = function (json, new_start_time) {
+                new_callback = function (json, new_start_time, depth) {
                     json_array.push({widget: json,
                                      is_backside: true});
-                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time, depth+1);
                 }.bind(this);
-                utilities.get_json(widget_side.get_widget(), json_history, new_callback, start_time);
+                utilities.get_json(widget_side.get_widget(), json_history, new_callback, start_time, depth+1);
             } else if (widget_side.is_widget) {
-                new_callback = function (json, new_start_time) {
+                new_callback = function (json, new_start_time, depth) {
                     json_array.push({widget: json});
                     if (index%default_batch_size === 0 &&
                          (!utilities.maximum_json_generation_duration || Date.now()-start_time > utilities.maximum_json_generation_duration)) {
@@ -1292,20 +1297,20 @@ window.TOONTALK.UTILITIES =
                         // also this way stack size not exceeded for large arrays
                         // however if maximum_json_generation_duration is set then drag and drop needs the JSON without a timeout
                         utilities.set_timeout(function () {
-                            this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                            this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time, 0);
                         }.bind(this));
                     } else {
-                        this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                        this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time, depth+1);
                     }
                 }.bind(this);
-                utilities.get_json(widget_side, json_history, new_callback, start_time);
+                utilities.get_json(widget_side, json_history, new_callback, start_time, depth+1);
             } else {
                 // isn't a widget -- e.g. is a path
-                new_callback = function (json, new_start_time) {
+                new_callback = function (json, new_start_time, depth) {
                     json_array.push(json);
-                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time);
+                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time, depth+1);
                 }.bind(this);
-                widget_side.get_json(json_history, new_callback, start_time);
+                widget_side.get_json(json_history, new_callback, start_time, depth+1);
             }
         };
 
@@ -1335,7 +1340,7 @@ window.TOONTALK.UTILITIES =
                 var json_of_widgets = json_history.shared_widgets.map(get_json_of_widget_from_history);
                 var shared_widgets_sorted, json_of_widgets;
                 if (json_history.shared_widgets.length > 0 && json_top_level.semantic) {
-                    json_of_widgets     = json_history.shared_widgets.map(get_json_of_widget_from_history);
+                    json_of_widgets = json_history.shared_widgets.map(get_json_of_widget_from_history);
                     json_top_level.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
                         // get the JSON of only those widgets that occurred more than once
                         var json_of_widget = get_json_of_widget_from_history(shared_widget);
@@ -1387,24 +1392,35 @@ window.TOONTALK.UTILITIES =
             };
             // may need to time out several times if is short so need to store it
             utilities.maximum_json_generation_duration = maximum_json_generation_duration;
-            utilities.get_json(widget_side, json_history, new_callback, Date.now());
+            try {
+                utilities.get_json(widget_side, json_history, new_callback, Date.now(), 0);
+            } catch (e) {
+                if (e.toontalk_continuation) {
+                    e.toontalk_continuation();
+                } else {
+                    throw e;
+                }
+            }
         };
 
-        utilities.get_json = function (widget_side, json_history, callback, start_time) {
+        utilities.get_json = function (widget_side, json_history, callback, start_time, depth) {
             var index, widget_json, is_primary_backside, new_callback;
             if (TT.debugging && !json_history) {
                 utilities.report_internal_error("no json_history");
                 return;
             }
+            if (depth === undefined) {
+                depth = 0;
+            }
             index = json_history.shared_widgets.indexOf(widget_side);
             if (index >= 0) {
-                callback({shared_widget_index: index}, start_time);
+                callback({shared_widget_index: index}, start_time, depth+1);
                 return;
             }
             index = json_history.widgets_encountered.indexOf(widget_side);
             if (index >= 0) {
                 index = json_history.shared_widgets.push(widget_side)-1;
-                callback({shared_widget_index: index}, start_time);
+                callback({shared_widget_index: index}, start_time, depth+1);
                 return;
             }
             // need to keep track of the index rather than push json_of_widgets_encountered to keep them aligned properly
@@ -1414,7 +1430,7 @@ window.TOONTALK.UTILITIES =
                 // save as widget with a flag that it is the backside
                 widget_side = widget_side.get_widget();
             }
-            new_callback = function (json, start_time) {
+            new_callback = function (json, start_time, depth) {
                 var add_backside_widgets_callback;
                 if (widget_side.add_to_json) {
                     json = widget_side.add_to_json(json, json_history);
@@ -1422,35 +1438,52 @@ window.TOONTALK.UTILITIES =
                 // need to push the widget on the list before computing the backside widgets' jSON in case there is a cycle
                 json_history.json_of_widgets_encountered[index] = json;
                 if (widget_side.add_backside_widgets_to_json) {
-                    add_backside_widgets_callback = function () {
-                        callback(json, start_time);
+                    add_backside_widgets_callback = function (depth) {
+                        callback(json, start_time, depth+1);
                     };
-                    widget_side.add_backside_widgets_to_json(json, json_history, add_backside_widgets_callback, start_time);
+                    widget_side.add_backside_widgets_to_json(json, json_history, add_backside_widgets_callback, start_time, depth+1);
                 } else {
-                    callback(json, start_time);
+                    callback(json, start_time, depth+1);
                 }
             };
-            if (Date.now()-start_time <= utilities.maximum_json_generation_duration) {
+            if (Date.now()-start_time <= utilities.maximum_json_generation_duration && depth < TT.maximum_recursion_depth) {
                 try {
-                    widget_side.get_json(json_history, new_callback, start_time);
+                    widget_side.get_json(json_history, new_callback, start_time, depth+1);
                 } catch (error) {
-                    if (utilities.is_stack_overflow(error)) {
-                        setTimeout(function () {
-                                       widget_side.get_json(json_history, new_callback, Date.now());
-                                   });
+                    if (error.toontalk_continuation) {
+                        // unwind the stack up to get_json_top_level
+                        throw error;
+                    } else if (utilities.is_stack_overflow(error)) {
+                        throw {toontalk_continuation: function () {
+                                                          widget_side.get_json(json_history, new_callback, Date.now(), 0);
+                                                      }};
                     } else {
                         utilities.display_message("Failed to save your project due to error: " + error.message, {only_if_new: true});
                     }
                 }
             } else {
-                // taking too long so let browser run
-                setTimeout(function () {
-                               widget_side.get_json(json_history, new_callback, Date.now());
-                           });
+                // taking too long or recursion depth too large so let browser run
+                utilities.avoid_stack_overflow(function () {
+                                                   widget_side.get_json(json_history, new_callback, Date.now(), 0);
+                                               });
             }
         };
 
-        utilities.get_json_of_keys = function (object, exceptions, callback, start_time) {
+        utilities.avoid_stack_overflow = function (callback) {
+            utilities.set_timeout(function () {
+                try {
+                    callback();
+                } catch (e) {
+                    if (e.toontalk_continuation) {
+                        e.toontalk_continuation();
+                    } else {
+                        throw e;
+                    }
+                }
+            })
+        }
+
+        utilities.get_json_of_keys = function (object, exceptions, callback, start_time, depth) {
             var json;
             if (!exceptions) {
                 exceptions = [];
@@ -1461,16 +1494,16 @@ window.TOONTALK.UTILITIES =
                         json = {};
                     }
                     if (object[key].get_json) {
-                        var key_callback = function (json_key, start_time) {
+                        var key_callback = function (json_key, start_time, depth) {
                             json[key] = {json: json_key};
                         };
-                        TT.path.get_json(object[key], undefined, key_callback, start_time);
+                        TT.path.get_json(object[key], undefined, key_callback, start_time, depth+1);
                     } else {
                         json[key] = object[key];
                     }
                 }
             });
-            callback(json, start_time);
+            callback(json, start_time, depth+1);
         };
 
         utilities.create_keys_from_json = function (json, additional_info) {
@@ -1960,13 +1993,15 @@ window.TOONTALK.UTILITIES =
                 element.set_text(data);
             }
             element.get_json(utilities.fresh_json_history(),
-                             function (element_json, start_time, json_history) {
+                             function (element_json, start_time, depth, json_history) {
                                  if (element_json.html.shared_html_index >= 0) {
                                      // replace shared HTML index with HTML
                                      element_json.html = json_history.shared_html[element_json.html.shared_html_index];
                                  }
                                  json = element_json;
-                             });
+                             },
+                             Date.now(),
+                             0);
             return json;
         };
 
@@ -2186,7 +2221,7 @@ window.TOONTALK.UTILITIES =
                                            widget = TT.widget.create_top_level_widget();
                                        }
                                        if (depth >= TT.maximum_recursion_depth && depth%TT.maximum_recursion_depth === 0) {
-                                           setTimeout(function () {
+                                           utilities.avoid_stack_overflow(function () {
                                                process_widget_callback(depth+1);
                                            });
                                        } else {
@@ -2215,9 +2250,9 @@ window.TOONTALK.UTILITIES =
                     widget.set_visible(true);
                 }
                 if (depth >= TT.maximum_recursion_depth && depth%TT.maximum_recursion_depth === 0) {
-                    setTimeout(function () {
-                                   process_widget_callback(depth+1);
-                               });
+                    utilities.avoid_stack_overflow(function () {
+                                                       process_widget_callback(depth+1);
+                                                   });
                 } else {
                     process_widget_callback(depth ? depth+1 : 1);
                 }
@@ -4427,12 +4462,26 @@ window.TOONTALK.UTILITIES =
                     if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
                         console.log("Retrieved " + (json_string && json_string.substring(0, 100)) + "... with key " + key);
                     }
-                    callback(json_string && utilities.parse_json(json_string));
+                    try {
+                        callback(json_string && utilities.parse_json(json_string));
+                    } catch (e) {
+                        if (e.toontalk_continuation) {
+                            e.toontalk_continuation();
+                        } else {
+                            throw e;
+                        }
+                    }
                 } catch (e) {
-                     TT.UTILITIES.display_message("Unable to read from the browser's local storage. " +
-                                                  "You can read and save to Google Drive if you have an account. " +
-                                                  "The error message is: " + e,
-                                                 {only_if_new: true});
+                    if (utilities.is_stack_overflow(e)) {
+                        throw {toontalk_continuation: function () {
+                                                          utilities.retrieve_object(key, callback);
+                                                      }};
+                    } else {
+                        TT.UTILITIES.display_message("Unable to read from the browser's local storage. " +
+                                                     "You can read and save to Google Drive if you have an account. " +
+                                                     "The error message is: " + e,
+                                                     {only_if_new: true});
+                    }
                 }
             };
             utilities.retrieve_string = function (key, callback) {
@@ -5338,7 +5387,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     utilities.set_timeout(function () {
                         utilities.for_each_batch(array, callback, chunk_size, i);
                     });
-                    return
+                    return;
                 } else {
                     throw error;
                 }
