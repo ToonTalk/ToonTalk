@@ -64,7 +64,7 @@ window.TOONTALK.widget = (function (TT) {
                                                              // continue to next child if callback returns true
                                                              return callback(child_side, depth+1);
                                                          });
-                                           });
+                                   }.bind(this));
                     } else {
                         this.walk_children(function (child_side) {
                                                // continue to next child if callback returns true
