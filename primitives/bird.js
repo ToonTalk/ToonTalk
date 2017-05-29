@@ -534,17 +534,18 @@ window.TOONTALK.bird = (function (TT) {
                 this.fly_to(target_offset,  bird_return_continuation,      options);
             }
         };
-        new_bird.get_json = function (json_history, callback, start_time) {
+        new_bird.get_json = function (json_history, callback, start_time, depth) {
             var new_callback;
             if (nest) {
-                new_callback = function (nest_json, start_time) {
+                new_callback = function (nest_json, start_time, depth) {
                     callback({type: "bird",
                               nest: nest_json},
-                             start_time);
+                             start_time,
+                             depth+1);
                 };
-                TT.UTILITIES.get_json(nest, json_history, new_callback, start_time);
+                TT.UTILITIES.get_json(nest, json_history, new_callback, start_time, depth+1);
             } else {
-                callback({type: "bird"}, start_time);
+                callback({type: "bird"}, start_time, depth+1);
             }
         };
         new_bird.copy = function (parameters) {
@@ -1246,26 +1247,27 @@ window.TOONTALK.nest = (function (TT) {
             return contents[0].get_widget();
         };
         // defined here so that contents and other state can be private
-        new_nest.get_json = function (json_history, callback, start_time) {
+        new_nest.get_json = function (json_history, callback, start_time, depth) {
             var json_array = [];
             var new_callback =
                 function () {
-                    var original_nest_callback = function (orginal_nest_json, start_time) {
+                    var original_nest_callback = function (orginal_nest_json, start_time, depth) {
                                                      callback({type: "nest",
                                                                contents: json_array,
                                                                guid: guid,
                                                                original_nest: orginal_nest_json,
                                                                serial_number: serial_number,
                                                                name: this.get_name()},
-                                                              start_time);
+                                                              start_time,
+                                                              depth+1);
                                                  }.bind(this);
                     if (original_nest) {
-                        TT.UTILITIES.get_json(original_nest, json_history, original_nest_callback, start_time);
+                        TT.UTILITIES.get_json(original_nest, json_history, original_nest_callback, start_time, depth+1);
                     } else {
-                        original_nest_callback(undefined, start_time);
+                        original_nest_callback(undefined, start_time, depth+1);
                     }
                 }.bind(this);
-            TT.UTILITIES.get_json_of_array(contents, json_array, 0, json_history, new_callback, start_time);
+            TT.UTILITIES.get_json_of_array(contents, json_array, 0, json_history, new_callback, start_time, depth+1);
         };
         new_nest.copy = function (parameters) {
             // notice that bird/nest semantics is that the nest is shared not copied
@@ -1797,12 +1799,13 @@ window.TOONTALK.nest = (function (TT) {
                     bird.animate_delivery_to(message_side, this, options);
                 },
             get_json:
-                function (json_history, callback, start_time) {
+                function (json_history, callback, start_time, depth) {
                     callback({type: 'function_nest',
                               function_type: type_name,
                               // default to first function if none known -- shouldn't really happen but better than an error
                               function_name: function_object ? function_object.name : TT.UTILITIES.get_first_property(TT[type_name].function)},
-                             start_time);
+                             start_time,
+                             depth+1);
                 },
             add_to_json: TT.widget.add_to_json,
             get_widget:

@@ -64,7 +64,7 @@ window.TOONTALK.widget = (function (TT) {
                                                              // continue to next child if callback returns true
                                                              return callback(child_side, depth+1);
                                                          });
-                                           });
+                                   }.bind(this));
                     } else {
                         this.walk_children(function (child_side) {
                                                // continue to next child if callback returns true
@@ -1170,7 +1170,7 @@ window.TOONTALK.widget = (function (TT) {
             return {};
         },
 
-        add_backside_widgets_to_json: function (json, json_history, callback, start_time) {
+        add_backside_widgets_to_json: function (json, json_history, callback, start_time, depth) {
             var backside_widgets = this.get_backside_widgets();
             var backside_widgets_json_views, json_backside_widget_side;
             if (backside_widgets.length > 0) {
@@ -1208,9 +1208,9 @@ window.TOONTALK.widget = (function (TT) {
                         }
                     });
                 }
-                TT.UTILITIES.get_json_of_array(backside_widgets, json.semantic.backside_widgets, 0, json_history, callback, start_time);
+                TT.UTILITIES.get_json_of_array(backside_widgets, json.semantic.backside_widgets, 0, json_history, callback, start_time, depth+1);
             } else {
-                callback();
+                callback(depth+1);
             }
         },
 
@@ -1359,7 +1359,16 @@ window.TOONTALK.widget = (function (TT) {
                     can_run = true;
                     return true;
                 }
-                if (backside_widget.can_run()) {
+                if (options) {
+                    if (options.depth) {
+                        options.depth++;
+                    } else {
+                        options.depth = 1;
+                    }
+                } else {
+                    options = {depth: 1};
+                }
+                if (backside_widget.can_run(options)) {
                     can_run = true;
                     return true;
                 }
@@ -1948,7 +1957,7 @@ window.TOONTALK.widget = (function (TT) {
             top_level_widget.is_plain_text_element = return_false;
             top_level_widget.is_attribute_widget = return_false;
             top_level_widget.ok_to_set_dimensions = return_false;
-            top_level_widget.get_json = function (json_history, callback, start_time) {
+            top_level_widget.get_json = function (json_history, callback, start_time, depth) {
                 var backside = this.get_backside(true);
                 var backside_element = backside.get_element();
                 var background_color = document.defaultView.getComputedStyle(backside_element, null).getPropertyValue("background-color");
@@ -1957,7 +1966,8 @@ window.TOONTALK.widget = (function (TT) {
                 callback({semantic: {type: "top_level",
                                      settings: settings},
                           view:     {background_color: background_color}},
-                         start_time);
+                         start_time,
+                         depth+1);
             };
             top_level_widget.get_type_name = function () {
                  return "top-level";

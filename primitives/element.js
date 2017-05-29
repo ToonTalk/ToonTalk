@@ -1041,11 +1041,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 toString: function () {
                     return "the " + TT.UTILITIES.ordinal(index) + " widget ";
                 },
-                get_json: function (json_history, callback, start_time) {
+                get_json: function (json_history, callback, start_time, depth) {
                     callback({type: "element_path",
                               index: index,
                               next: this.next && this.next.get_json(json_history)},
-                             start_time);
+                             start_time,
+                             depth+1);
                 }
             };
         }
@@ -1326,14 +1327,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                 }
                 return this.add_to_copy((copy_of_this_element_widget || this_element_widget).create_attribute_widget(attribute_name), parameters);
             };
-            attribute_widget.get_json = function (json_history, callback, start_time) {
-                var new_callback = function (json, start_time) {
+            attribute_widget.get_json = function (json_history, callback, start_time, depth) {
+                var new_callback = function (json, start_time, depth) {
                     callback({type: 'attribute_widget',
                               attribute_name: attribute_name,
                               element: json},
-                             start_time);
+                             start_time,
+                             depth+1);
                 };
-                TT.UTILITIES.get_json(this_element_widget, json_history, new_callback, start_time);
+                TT.UTILITIES.get_json(this_element_widget, json_history, new_callback, start_time, depth+1);
             };
             attribute_widget.get_original_attribute_widget = function () {
                 var copies = this_element_widget.get_original_copies()[attribute_name];
@@ -1655,7 +1657,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
         return "docs/manual/elements.html";
     };
 
-    element.get_json = function (json_history, callback, start_time) {
+    element.get_json = function (json_history, callback, start_time, depth) {
         // don't want them to appear where they were in the source page
         // need to revisit this since sometimes we want left and top
         // maybe when loading don't obey their values
@@ -1704,6 +1706,7 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                                   source_URL:            this.get_source_URL()
                                  },
                                  start_time,
+                                 depth+1,
                                  json_history);
                          return;
                     }
@@ -1712,18 +1715,18 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
                     if (backside_widget) {
                         backside_widgets_json = [];
                         attributes_backsides.push(backside_widgets_json);
-                        TT.UTILITIES.get_json_of_array(backside_widget.get_backside_widgets(), backside_widgets_json, 0, json_history, next_backside_widget_callback, start_time);
+                        TT.UTILITIES.get_json_of_array(backside_widget.get_backside_widgets(), backside_widgets_json, 0, json_history, next_backside_widget_callback, start_time, depth+1);
                     } else {
-                         attributes_backsides.push(null);
+                        attributes_backsides.push(null);
                         next_backside_widget_callback();
                     }
                 }.bind(this);
                 attributes_backsides_callback(0);
         }.bind(this);
         if (this.get_children().length > 0) {
-           TT.UTILITIES.get_json_of_array(this.get_children(), children_json, 0, json_history, new_callback, start_time);
+            TT.UTILITIES.get_json_of_array(this.get_children(), children_json, 0, json_history, new_callback, start_time, depth+1);
         } else {
-           new_callback();
+            new_callback();
         }
     };
 
@@ -1838,14 +1841,15 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             toString: function () {
                 return "the '" + attribute_name + "' property of " + TT.path.toString(path_to_element_widget);
             },
-            get_json: function (json_history, callback, start_time) {
-                var element_widget_path_callback = function (element_widget_path_json, start_time) {
+            get_json: function (json_history, callback, start_time, depth) {
+                var element_widget_path_callback = function (element_widget_path_json, start_time, depth) {
                     callback({type: "path_to_style_attribute",
                               attribute: attribute_name,
                               element_widget_path: element_widget_path_json},
-                             start_time);
+                             start_time,
+                             depth+1);
                 };
-                TT.path.get_json(path_to_element_widget, json_history, element_widget_path_callback, start_time);
+                TT.path.get_json(path_to_element_widget, json_history, element_widget_path_callback, start_time, depth+1);
             }};
     };
 

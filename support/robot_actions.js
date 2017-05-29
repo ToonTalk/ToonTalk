@@ -381,14 +381,15 @@ window.TOONTALK.actions =
             });
             return description;
         },
-                get_json: function (json_history, callback, start_time) {
+        get_json: function (json_history, callback, start_time, depth) {
             var json_array = [];
             var new_callback = function () {
                 callback({type: "body",
                           steps: json_array},
-                         start_time);
+                         start_time,
+                         depth+1);
             };
-            TT.UTILITIES.get_json_of_array(this.get_steps(), json_array, 0, json_history, new_callback, start_time);
+            TT.UTILITIES.get_json_of_array(this.get_steps(), json_array, 0, json_history, new_callback, start_time, depth+1);
         }
 
     };
@@ -428,10 +429,11 @@ window.TOONTALK.newly_created_widgets_path =
                 toString: function () {
                     return "the " + TT.UTILITIES.ordinal(index) + " new widget";
                 },
-                get_json: function (json_history, callback, start_time) {
+                get_json: function (json_history, callback, start_time, depth) {
                     callback({type: "newly_created_widgets_path",
                               index: index},
-                             start_time);
+                             start_time,
+                             depth+1);
                 }
             };
         }

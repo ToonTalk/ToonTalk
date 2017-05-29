@@ -922,21 +922,22 @@ window.TOONTALK.robot_action =
                 }
                 return prefix + action_description + " " + path_description + suffix;
             };
-            new_action.get_json = function (json_history, callback, start_time) {
-                var keys_callback = function (keys_json, start_time) {
-                    var path_callback = function (path_json, start_time) {
+            new_action.get_json = function (json_history, callback, start_time, depth) {
+                var keys_callback = function (keys_json, start_time, depth) {
+                    var path_callback = function (path_json, start_time, depth) {
                         callback({type: "robot_action",
                                   action_name: action_name,
                                   path: path_json,
                                   additional_info: keys_json},
-                                 start_time);
+                                 start_time,
+                                 depth+1);
                     };
-                    TT.path.get_json(path, json_history, path_callback, start_time);
+                    TT.path.get_json(path, json_history, path_callback, start_time, depth+1);
                 };
                 if (additional_info) {
-                    TT.UTILITIES.get_json_of_keys(additional_info, ["running_watched"], keys_callback, start_time);
+                    TT.UTILITIES.get_json_of_keys(additional_info, ["running_watched"], keys_callback, start_time, depth+1);
                 } else {
-                    keys_callback(undefined, start_time);
+                    keys_callback(undefined, start_time, depth+1);
                 }
             };
             return new_action;
