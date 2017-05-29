@@ -247,9 +247,9 @@ window.TOONTALK.UTILITIES =
                     widget_side.drag_started(json, is_resource);
                 }
             };
-            if (event.dataTransfer) {
-                event.dataTransfer.setData("text", "Sorry, it took too long or required too large a stack to generate the data structure needed to reconstruct " + widget_side + ".");
-            }
+//             if (event.dataTransfer) {
+//                 event.dataTransfer.setData("text", "Sorry, it took too long or required too large a stack to generate the data structure needed to reconstruct " + widget_side + ".");
+//             }
             // this may freeze the browser if a very large JSON is generated but the alternative is that drag and drop breaks
             // so let it take 10 minutes maximum
             TT.UTILITIES.get_json_top_level(widget_side, json_callback, 1000*60*10);
