@@ -4170,7 +4170,7 @@ window.TOONTALK.UTILITIES =
                 utilities.display_message("Error: " + message);
             }
             if (typeof Raven === 'object' && (!options || !options.dont_log_exception)) {
-                Raven.captureException(message); // message is sometimes an exception and sometimes not
+                Raven.captureException(message.toString()); // message is sometimes an exception and sometimes not
             }
         };
 
