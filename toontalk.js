@@ -54,6 +54,10 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
                    CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
                   };
 
+if (TOONTALK.TOONTALK_URL.indexOf("http:") === 0 && !TOONTALK.RUNNING_LOCALLY) {
+    alert("You are using a URL that begins with 'http:'. ToonTalk runs better if the URL starts with 'https:'.");
+}
+
 var reason_unable_to_run = function () {
     // tests on browserstack.com seem to indicate Chrome 31+, FireFox 14+, IE11, Safari 6.2+, Opera 15+
     var is_browser_of_type = function (type) {
