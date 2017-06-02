@@ -1634,7 +1634,12 @@ window.TOONTALK.widget = (function (TT) {
                         } else {
                             widget_side.set_visible(true);
                             widget_side.get_element(true).remove(); // added this after seeing HierarchyRequestError in Sentry log 
-                            backside_element.appendChild(widget_side.get_element());
+                            try {
+                                backside_element.appendChild(widget_side.get_element());
+                            } catch (e) {
+                                TT.report_internal_error("A backside is contained in one its backside widget. This makes no sense. " +
+                                                         this + " should not be part of " + widget_side + ". " + e);
+                            }
                         }
                 }.bind(this));
             }
