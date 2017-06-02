@@ -1361,6 +1361,7 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 if (options) {
                     if (options.depth) {
+                        options = Object.assign({}, options); // use a copy in the following recursive call
                         options.depth++;
                     } else {
                         options.depth = 1;
@@ -1376,15 +1377,16 @@ window.TOONTALK.widget = (function (TT) {
             if (this.walk_children_now_or_later) {
                 this.walk_children_now_or_later(function (child_side, depth) {
                                                     if (options) {
+                                                        options = Object.assign({}, options); // use a copy in the following recursive call
                                                         options.depth = depth;
                                                     } else {
                                                         options = {depth: depth};
                                                     }
                                                     if (child_side.can_run(options)) {
-                                                         can_run = true;
-                                                     } else {
-                                                         return true; // go on to next child
-                                                     }
+                                                        can_run = true;
+                                                    } else {
+                                                        return true; // go on to next child
+                                                    }
                                                 },
                                                 options && options.depth);
             }
@@ -1632,7 +1634,12 @@ window.TOONTALK.widget = (function (TT) {
                         } else {
                             widget_side.set_visible(true);
                             widget_side.get_element(true).remove(); // added this after seeing HierarchyRequestError in Sentry log 
-                            backside_element.appendChild(widget_side.get_element());
+                            try {
+                                backside_element.appendChild(widget_side.get_element());
+                            } catch (e) {
+                                TT.report_internal_error("A backside is contained in one its backside widget. This makes no sense. " +
+                                                         this + " should not be part of " + widget_side + ". " + e);
+                            }
                         }
                 }.bind(this));
             }

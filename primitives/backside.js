@@ -572,7 +572,12 @@ window.TOONTALK.backside =
                                         widget_side_element = backside_widget_side.get_element(true);
                                         if (!widget_side_element.parentElement) {
                                             // needs to be added to backside element
-                                            backside_element.appendChild(widget_side_element);
+                                            try {
+                                                 backside_element.appendChild(widget_side_element);
+                                            } catch (e) {
+                                                 TT.report_internal_error("A backside is contained in one its backside widget. This makes no sense. " +
+                                                                          this + " should not be part of " + backside_widget_side + ". " + e);
+                                            }
                                             if (TT.logging && TT.logging.indexOf('backside-widgets') >= 0) {
                                                console.log("Widget element added to backside element.");
                                             }
@@ -612,7 +617,7 @@ window.TOONTALK.backside =
                                         }
                                         backside_widget_side.set_visible(backside_visible);
                                         backside_widget_side.get_widget().rerender();
-                                    });
+                                    }.bind(this));
                     }.bind(this),
                     100);
             };
