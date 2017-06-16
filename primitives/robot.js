@@ -732,22 +732,24 @@ window.TOONTALK.robot = (function (TT) {
             queue.enqueue(this);
             return this.match_status;
         }
-        if (this.match_status.is_widget) { // failed to match - this.match_status is the cause
-            $(this.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
-            this.rerender();
-            if (this.get_next_robot()) {
-                return this.get_next_robot().run(context, context_is_backside, top_level_context, queue);
+        if (this.match_status) {
+            if (this.match_status.is_widget) { // failed to match - this.match_status is the cause
+                $(this.match_status.get_frontside_element()).addClass("toontalk-conditions-not-matched");
+                this.rerender();
+                if (this.get_next_robot()) {
+                    return this.get_next_robot().run(context, context_is_backside, top_level_context, queue);
+                }
+                return this.match_status;
             }
-            return this.match_status;
+            // suspended waiting on a nest
+            this.match_status.forEach(function (waiting_widget) {
+                if (waiting_widget[1]) {
+                    // true for nests but not birds busy delivering
+                    // waiting_widget is [widget, pattern]
+                    $(waiting_widget[1].get_element()).addClass("toontalk-conditions-waiting");
+                }
+            });
         }
-        // suspended waiting on a nest
-        this.match_status.forEach(function (waiting_widget) {
-            if (waiting_widget[1]) {
-                // true for nests but not birds busy delivering
-                // waiting_widget is [widget, pattern]
-                $(waiting_widget[1].get_element()).addClass("toontalk-conditions-waiting");
-            }
-        });
         if (this.get_next_robot()) {
             next_robot_match_status = this.get_next_robot().run(context, context_is_backside, top_level_context, queue);
             if (next_robot_match_status === 'matched') {
