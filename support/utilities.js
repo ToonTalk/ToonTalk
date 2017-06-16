@@ -1566,7 +1566,9 @@ window.TOONTALK.UTILITIES =
                 if (widget_side.is_backside()) {
                     // drag and drop should not preserve current settings
                     // they are part of the JSON for when saving the current state to the cloud or local storage
-                    json.semantic.settings = undefined;
+                    if (json.semantic) {
+                        json.semantic.settings = undefined;
+                    }
                     type_description = "a work area containing ";
                     if (backside_widgets.length === 0) {
                         type_description = "an empty work area";
