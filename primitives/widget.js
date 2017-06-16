@@ -56,13 +56,13 @@ window.TOONTALK.widget = (function (TT) {
             if (widget.walk_children) {
                 widget.walk_children_now_or_later = function(callback, depth) {
                     // depth of a structure might be larger than the stack so delay this every depth%TT.maximum_recursion_depth
-                    if (depth && depth%TT.maximum_recursion_depth === 0) {
+                    if (depth && depth > TT.maximum_recursion_depth) {
                         // to avoid a stack overflow delay this
-                        // if structure is circular this will keep running
+                        // Note: if structure is circular this will keep running
                         setTimeout(function () {
                                       this.walk_children(function (child_side) {
                                                              // continue to next child if callback returns true
-                                                             return callback(child_side, depth+1);
+                                                             return callback(child_side, 0); // start depth over again
                                                          });
                                    }.bind(this));
                     } else {
@@ -1173,6 +1173,12 @@ window.TOONTALK.widget = (function (TT) {
         add_backside_widgets_to_json: function (json, json_history, callback, start_time, depth) {
             var backside_widgets = this.get_backside_widgets();
             var backside_widgets_json_views, json_backside_widget_side;
+            if (depth >= TT.maximum_recursion_depth) {
+               TT.UTILITIES.avoid_stack_overflow(function () {
+                   this.add_backside_widgets_to_json(json, json_history, callback, Date.now(), 0);
+               }.bind(this));
+               return;
+            }
             if (backside_widgets.length > 0) {
                 json.semantic.backside_widgets = []; // TT.UTILITIES.get_json_of_array below will push json on to this
                 backside_widgets_json_views = this.get_backside_widgets_json_views();

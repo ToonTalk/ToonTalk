@@ -283,6 +283,10 @@ window.TOONTALK.google_drive =
 
       create_folder: function (folder_name, public_access, callback) {
           // based on https://developers.google.com/drive/web/publish-site
+          if (gapi.client.drive === undefined) {
+              console.log("Expected gapi.client.drive to be defined to accesss Google drive.")
+              return;
+          }
           var request_body = {'title':    folder_name,
                               'mimeType': "application/vnd.google-apps.folder"};
 //           var request = gapi.client.request({'path':   '/drive/v2/files',

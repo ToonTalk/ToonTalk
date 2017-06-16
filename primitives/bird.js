@@ -684,7 +684,7 @@ window.TOONTALK.bird = (function (TT) {
                     // despite the try-catch this Sentry log contained: Failed to execute 'appendChild' on 'Node': The new child element contains the parent.
                     frontside_element.appendChild(this.element_to_display_when_flying);
                 } catch (e) {
-                    TT.UTILITIES.report_internal_error("Error attaching 'message' to bird. Message className is " + this.element_to_display_when_flying.className);
+                    TT.UTILITIES.report_internal_error("Error attaching 'message' to bird. Message className is " + this.element_to_display_when_flying.className + ". Error is " + e);
                 }
             } else {
                 $(frontside_element).children(".toontalk-side").remove();

@@ -1293,8 +1293,9 @@ window.TOONTALK.UTILITIES =
             } else if (widget_side.is_widget) {
                 new_callback = function (json, new_start_time, depth) {
                     json_array.push({widget: json});
-                    if (index%default_batch_size === 0 &&
-                         (!utilities.maximum_json_generation_duration || Date.now()-start_time > utilities.maximum_json_generation_duration)) {
+                    if ((depth > TT.maximum_recursion_depth) ||
+                        (index%default_batch_size === 0 &&
+                         (!utilities.maximum_json_generation_duration || Date.now()-start_time > utilities.maximum_json_generation_duration))) {
                         // every so often let other processes run
                         // also this way stack size not exceeded for large arrays
                         // however if maximum_json_generation_duration is set then drag and drop needs the JSON without a timeout
@@ -1565,7 +1566,9 @@ window.TOONTALK.UTILITIES =
                 if (widget_side.is_backside()) {
                     // drag and drop should not preserve current settings
                     // they are part of the JSON for when saving the current state to the cloud or local storage
-                    json.semantic.settings = undefined;
+                    if (json.semantic) {
+                        json.semantic.settings = undefined;
+                    }
                     type_description = "a work area containing ";
                     if (backside_widgets.length === 0) {
                         type_description = "an empty work area";
@@ -2222,9 +2225,9 @@ window.TOONTALK.UTILITIES =
                                            utilities.report_internal_error("An error occurred loading the saved state. Sorry. Please report this. Error is " + error);
                                            widget = TT.widget.create_top_level_widget();
                                        }
-                                       if (depth >= TT.maximum_recursion_depth && depth%TT.maximum_recursion_depth === 0) {
+                                       if (depth >= TT.maximum_recursion_depth) {
                                            utilities.avoid_stack_overflow(function () {
-                                               process_widget_callback(depth+1);
+                                               process_widget_callback(0);
                                            });
                                        } else {
                                           process_widget_callback(depth ? depth+1 : 1);
@@ -2251,9 +2254,9 @@ window.TOONTALK.UTILITIES =
                     // check widget.set_visible since widget might be a tool
                     widget.set_visible(true);
                 }
-                if (depth >= TT.maximum_recursion_depth && depth%TT.maximum_recursion_depth === 0) {
+                if (depth >= TT.maximum_recursion_depth) {
                     utilities.avoid_stack_overflow(function () {
-                                                       process_widget_callback(depth+1);
+                                                       process_widget_callback(0);
                                                    });
                 } else {
                     process_widget_callback(depth ? depth+1 : 1);
@@ -4878,6 +4881,7 @@ window.TOONTALK.UTILITIES =
 
        utilities.play_audio = function (audio_object) {
            audio_object.play();
+           // TODO: use the future returned by the above to delay the following until the play has succeeded (or else catch the error)
            audio_objects_playing.push(audio_object);
            audio_object.addEventListener('ended', function () {
                                                       var index = audio_objects_playing.indexOf(audio_object);
@@ -5878,6 +5882,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 utilities.process_json_elements();
             }
+            console.log("test 10b");
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
             if (TT.volume > 0) {
