@@ -5887,7 +5887,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 utilities.process_json_elements();
             }
-            console.log("test 10b");
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
             if (TT.volume > 0) {
