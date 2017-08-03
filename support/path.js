@@ -130,7 +130,7 @@ window.TOONTALK.path =
 //                     return path;
 //                 }
                 robot_ancestor = !widget.is_robot() && widget.ancestor_of_type && widget.ancestor_of_type('robot');
-                if (robot_ancestor) {
+                if (robot_ancestor && robot_ancestor !== widget) { // robot_ancestor === widget when there is no ancestor that is a robot
                     // is a condition of a robot
                     return TT.robot.find_conditions_path(widget, robot_ancestor, robot);
                 }
