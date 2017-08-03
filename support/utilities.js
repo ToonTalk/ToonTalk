@@ -2222,7 +2222,8 @@ window.TOONTALK.UTILITIES =
                                        } catch (error) {
                                            console.error(error.stack);
                                            console.trace();
-                                           utilities.report_internal_error("An error occurred loading the saved state. Sorry. Please report this. Error is " + error);
+                                           utilities.report_internal_error("An error occurred loading the saved state. Sorry. the error is " + error +
+                                                                           " JSON is " + JSON.stringify(json));
                                            widget = TT.widget.create_top_level_widget();
                                        }
                                        if (depth >= TT.maximum_recursion_depth) {
