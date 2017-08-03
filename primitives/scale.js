@@ -68,7 +68,7 @@ window.TOONTALK.scale = (function (TT) {
             return path;
         };
         new_scale.drop_on = function (side_of_other, options) {
-            if (side_of_other.widget_side_dropped_on_me) {
+            if (side_of_other && side_of_other.widget_side_dropped_on_me) {
                 return side_of_other.widget_side_dropped_on_me(this, options);
             }
         };
@@ -106,8 +106,10 @@ window.TOONTALK.scale = (function (TT) {
                 }
             }
             // hole was empty so fill it
-            this.get_hole(hole_index).widget_side_dropped_on_me(dropped, options);
-            return true;
+            if (this.get_hole(hole_index)) {
+                this.get_hole(hole_index).widget_side_dropped_on_me(dropped, options);
+               return true;
+            }
         };
         new_scale.which_hole = function (event, or_entire_thing) {
             // if or_entire_thing is true can return -1 meaning the whole scale

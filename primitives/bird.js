@@ -1658,7 +1658,11 @@ window.TOONTALK.nest = (function (TT) {
         };
         new_nest.compare_with = function (other) {
             if (contents.length > 0) {
-                return contents[0].compare_with(other);
+                if (contents[0].compare_with) {
+                    return contents[0].compare_with(other);
+                }
+                TT.UTILITIES.report_internal_error("Nest contains something that doesn't understand 'compare_with'. It is " + contents[0]);
+                return;
             }
             if (other.compare_with_nest) {
                 return -1*other.compare_with_nest(this);

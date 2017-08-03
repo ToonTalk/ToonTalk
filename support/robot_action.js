@@ -183,6 +183,10 @@ window.TOONTALK.robot_action =
              return true;
          },
          "train": function (robot_in_training, robot, additional_info) {
+             if (!robot_in_training.add_step) {
+                 TT.UTILITIES.report_internal_error("Cannot peform a training step because cannot train a non-robot.");
+                 return;
+             }
              robot_in_training.add_step(additional_info.step);
              return true;
          },

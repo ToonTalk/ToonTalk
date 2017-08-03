@@ -1367,7 +1367,8 @@ window.TOONTALK.widget = (function (TT) {
                 }
                 if (options) {
                     if (options.depth) {
-                        options = Object.assign({}, options); // use a copy in the following recursive call
+                        // if browser doesn't support Object.assign should really copy the options another way
+                        options = Object.assign ? Object.assign({}, options) : options; // use a copy in the following recursive call 
                         options.depth++;
                     } else {
                         options.depth = 1;
@@ -1380,10 +1381,11 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
             });
-            if (this.walk_children_now_or_later) {
+            if (this.walk_children_now_or_later && !this.is_robot()) {
+                // no need to walk a robot's children (next in team or conditions) -- was overflowing the stack
                 this.walk_children_now_or_later(function (child_side, depth) {
                                                     if (options) {
-                                                        options = Object.assign({}, options); // use a copy in the following recursive call
+                                                        options = Object.assign ? Object.assign({}, options) : options; // use a copy in the following recursive call
                                                         options.depth = depth;
                                                     } else {
                                                         options = {depth: depth};
@@ -1643,8 +1645,8 @@ window.TOONTALK.widget = (function (TT) {
                             try {
                                 backside_element.appendChild(widget_side.get_element());
                             } catch (e) {
-                                TT.UTILITIES.report_internal_error("A backside is contained in one its backside widget. This makes no sense. " +
-                                                                   this + " should not be part of " + widget_side + ". " + e);
+                                TT.UTILITIES.report_internal_error("A backside is contained in one its backside widgets. This makes no sense. " +
+                                                                   this + " should not be part of " + widget_side + ". " + e + " In animate_backside_appearance.");
                             }
                         }
                 }.bind(this));

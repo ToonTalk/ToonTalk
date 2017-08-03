@@ -166,7 +166,7 @@ if (debugging) {
                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "libraries/DataTables-1.10.13/media/js/jquery.dataTables.min.js",
                   "libraries/rationaljs.js",
-                  log_errors && "https://cdn.ravenjs.com/3.12.1/raven.min.js", // only include this if not running locally 
+                  log_errors && "https://cdn.ravenjs.com/3.17.0/raven.min.js", // only include this if not running locally 
                   "support/initial.js",
                   "support/functions.js",
                   "primitives/widget.js",

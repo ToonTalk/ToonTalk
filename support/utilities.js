@@ -25,7 +25,7 @@ window.TOONTALK.UTILITIES =
     var id_counter = new Date().getTime();
     // Google translate and the like should not translate the JSON
     // The JSON should not be displayed - but once element is processed the display property will be removed
-    var div_json   = "<div class='toontalk-json' translate='no' style='display:none'>";
+    var div_json   = "<div class='toontalk-json notranslate' translate='no' style='display:none'>";
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_hidden_and_json_start = div_hidden + "{";
     var div_close  = "</div>";
@@ -233,14 +233,18 @@ window.TOONTALK.UTILITIES =
                     $dragee.data("json", json);
                 }
                 if (event.dataTransfer) {
-                    json_div = utilities.toontalk_json_div(json, widget_side);
-                    event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
-                    // text is good for dragging to text editors
-                    event.dataTransfer.setData("text", json_div);
-                    // text/html should work when dragging to a rich text editor
-                    if (!utilities.is_internet_explorer()) {
-                        // text/html causes an error in IE
-                        event.dataTransfer.setData("text/html", json_div);
+                    try {
+                        json_div = utilities.toontalk_json_div(json, widget_side);
+                        event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
+                        // text is good for dragging to text editors
+                        event.dataTransfer.setData("text", json_div);
+                        // text/html should work when dragging to a rich text editor
+                        if (!utilities.is_internet_explorer()) {
+                            // text/html causes an error in IE
+                            event.dataTransfer.setData("text/html", json_div);
+                        }
+                    } catch (ignore_error) {
+                        // this can happen if to avoid stack overflows setTimeout was used and now event is not "live"
                     }
                 }
                 if (widget_side.drag_started) {
@@ -2222,7 +2226,8 @@ window.TOONTALK.UTILITIES =
                                        } catch (error) {
                                            console.error(error.stack);
                                            console.trace();
-                                           utilities.report_internal_error("An error occurred loading the saved state. Sorry. Please report this. Error is " + error);
+                                           utilities.report_internal_error("An error occurred loading the saved state. Sorry. the error is " + error +
+                                                                           " JSON is " + JSON.stringify(json));
                                            widget = TT.widget.create_top_level_widget();
                                        }
                                        if (depth >= TT.maximum_recursion_depth) {
@@ -5882,7 +5887,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 utilities.process_json_elements();
             }
-            console.log("test 10b");
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
             if (TT.volume > 0) {
