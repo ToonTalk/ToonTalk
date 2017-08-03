@@ -205,7 +205,7 @@ window.TOONTALK.SETTINGS =
                                                              "toontalk-save-setting",
                                                              "When saving to the cloud use my Google Drive account",
                                                              'Check this if you want your programs saved to a "ToonTalk Programs" folder in your Google Drive.');
-          // ideally "ToonTalk Programs" should be <i translate='no'>ToonTalk Programs</i>
+          // ideally "ToonTalk Programs" should be <i class='notranslate' translate='no'>ToonTalk Programs</i>
           // but see http://stackoverflow.com/questions/15734105/jquery-ui-tooltip-does-not-support-html-content
           var auto_save_to_cloud    = TT.UTILITIES.create_check_box(widget.get_setting('auto_save_to_cloud'),
                                                              "toontalk-save-setting",

@@ -25,7 +25,7 @@ window.TOONTALK.UTILITIES =
     var id_counter = new Date().getTime();
     // Google translate and the like should not translate the JSON
     // The JSON should not be displayed - but once element is processed the display property will be removed
-    var div_json   = "<div class='toontalk-json' translate='no' style='display:none'>";
+    var div_json   = "<div class='toontalk-json notranslate' translate='no' style='display:none'>";
     var div_hidden = "<div style='display:none;'>"; // don't use a class since CSS might not be loaded
     var div_hidden_and_json_start = div_hidden + "{";
     var div_close  = "</div>";
