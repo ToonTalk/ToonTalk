@@ -1380,7 +1380,8 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
             });
-            if (this.walk_children_now_or_later) {
+            if (this.walk_children_now_or_later && !this.is_robot()) {
+                // no need to walk a robot's children (next in team or conditions) -- was overflowing the stack
                 this.walk_children_now_or_later(function (child_side, depth) {
                                                     if (options) {
                                                         options = Object.assign({}, options); // use a copy in the following recursive call
