@@ -233,14 +233,18 @@ window.TOONTALK.UTILITIES =
                     $dragee.data("json", json);
                 }
                 if (event.dataTransfer) {
-                    json_div = utilities.toontalk_json_div(json, widget_side);
-                    event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
-                    // text is good for dragging to text editors
-                    event.dataTransfer.setData("text", json_div);
-                    // text/html should work when dragging to a rich text editor
-                    if (!utilities.is_internet_explorer()) {
-                        // text/html causes an error in IE
-                        event.dataTransfer.setData("text/html", json_div);
+                    try {
+                        json_div = utilities.toontalk_json_div(json, widget_side);
+                        event.dataTransfer.effectAllowed = is_resource ? 'copy' : 'move';
+                        // text is good for dragging to text editors
+                        event.dataTransfer.setData("text", json_div);
+                        // text/html should work when dragging to a rich text editor
+                        if (!utilities.is_internet_explorer()) {
+                            // text/html causes an error in IE
+                            event.dataTransfer.setData("text/html", json_div);
+                        }
+                    } catch (ignore_error) {
+                        // this can happen if to avoid stack overflows setTimeout was used and now event is not "live"
                     }
                 }
                 if (widget_side.drag_started) {
