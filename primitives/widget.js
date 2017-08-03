@@ -1644,8 +1644,8 @@ window.TOONTALK.widget = (function (TT) {
                             try {
                                 backside_element.appendChild(widget_side.get_element());
                             } catch (e) {
-                                TT.UTILITIES.report_internal_error("A backside is contained in one its backside widget. This makes no sense. " +
-                                                                   this + " should not be part of " + widget_side + ". " + e);
+                                TT.UTILITIES.report_internal_error("A backside is contained in one its backside widgets. This makes no sense. " +
+                                                                   this + " should not be part of " + widget_side + ". " + e + " In animate_backside_appearance.");
                             }
                         }
                 }.bind(this));
