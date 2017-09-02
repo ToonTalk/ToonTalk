@@ -615,7 +615,7 @@ window.TOONTALK.box = (function (TT) {
                     }
                 }
             }
-            if (hole_element !== content_element && contents.get_parent() === hole) {
+            if (hole_element !== content_element && contents && contents.get_parent() === hole) {
                 // not an empty hole
                 // checked if contents still in hole since this was delayed and things may have changed
                 // save dimensions first?
