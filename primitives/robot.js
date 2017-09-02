@@ -1096,8 +1096,12 @@ window.TOONTALK.robot = (function (TT) {
         $(frontside_element).addClass("toontalk-robot");
         $(frontside_element).children(".toontalk-held-by-robot").remove(); // if needed will be added again below
         if (thing_in_hand_element) {
-            thing_in_hand_element.remove(); // in case -- seen in Sentry logs
-            frontside_element.appendChild(thing_in_hand_element);
+            try { 
+                frontside_element.appendChild(thing_in_hand_element);
+            } catch (e) {
+                // ignore error that thing_in_hand_element contains frontside_element (as seen in Sentry logs)
+                // something is probably wrong but better to continue than worry about seeing what the robot is carrying 
+            }
         }
         if (this.match_status) {
             if (this.match_status.is_widget) { // didn't match
