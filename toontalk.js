@@ -198,7 +198,7 @@ if (debugging) {
                   ];
 } else {
     file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
-                  log_errors && "https://cdn.ravenjs.com/3.12.1/raven.min.js",
+                  log_errors && "https://cdn.ravenjs.com/3.17.0/raven.min.js",
 //                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",

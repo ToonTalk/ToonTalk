@@ -155,6 +155,17 @@ window.TOONTALK.bird = (function (TT) {
             if (!options) {
                 options = {};
             }
+            if (!message_side) {
+                // seen in Sentry logs (not clear how this is possible)
+                if (options.after_delivery_continuation) {
+                    options.after_delivery_continuation();
+                }
+                if (TT.debugging) {
+                    console.error("animate_delivery_to called with undefined message_side.");
+                    console.trace();
+                }
+                return;
+            }
             // followings options are used so often convenient to make them variables
             var nest_recieving_message = options.nest_recieving_message;
             var after_delivery_continuation = options.after_delivery_continuation;

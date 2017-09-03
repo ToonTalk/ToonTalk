@@ -1350,7 +1350,7 @@ window.TOONTALK.widget = (function (TT) {
 
         can_run: function (options) {
             // returns true if a backside element is a trained robot or
-            // or a widget this can_run
+            // or is a widget that can_run
             var backside_widgets = this.get_backside_widgets();
             var can_run = false;
             var backside_widget;
@@ -1381,7 +1381,7 @@ window.TOONTALK.widget = (function (TT) {
                     return true;
                 }
             });
-            if (this.walk_children_now_or_later && !this.is_robot()) {
+            if (this.walk_children_now_or_later) {// new policy is robots don't call this function: && !this.is_robot()
                 // no need to walk a robot's children (next in team or conditions) -- was overflowing the stack
                 this.walk_children_now_or_later(function (child_side, depth) {
                                                     if (options) {

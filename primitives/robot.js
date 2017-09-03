@@ -471,11 +471,12 @@ window.TOONTALK.robot = (function (TT) {
             return true;
         };
         new_robot.can_run = function (options) {
+            return true; // robots are the kind of thing that can run even if just now this robot can't run
             // can run if just runs on top-level backside
             // perhaps this should check the match_status since if unable to match can't run
             // but some callers mean capable of running in general not just now
-            return (this.get_frontside_conditions() && this.get_frontside_conditions().is_top_level()) ||
-                    TT.widget.can_run.call(this, options);
+//             return (this.get_frontside_conditions() && this.get_frontside_conditions().is_top_level()) ||
+//                     TT.widget.can_run.call(this, options);
         };
         new_robot.training_started = function (robot_training_this_robot) {
             var context = this.get_training_context();
@@ -1095,8 +1096,12 @@ window.TOONTALK.robot = (function (TT) {
         $(frontside_element).addClass("toontalk-robot");
         $(frontside_element).children(".toontalk-held-by-robot").remove(); // if needed will be added again below
         if (thing_in_hand_element) {
-            thing_in_hand_element.remove(); // in case -- seen in Sentry logs
-            frontside_element.appendChild(thing_in_hand_element);
+            try { 
+                frontside_element.appendChild(thing_in_hand_element);
+            } catch (e) {
+                // ignore error that thing_in_hand_element contains frontside_element (as seen in Sentry logs)
+                // something is probably wrong but better to continue than worry about seeing what the robot is carrying 
+            }
         }
         if (this.match_status) {
             if (this.match_status.is_widget) { // didn't match
