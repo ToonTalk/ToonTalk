@@ -373,8 +373,11 @@ window.TOONTALK.bird = (function (TT) {
             }
             options.delay = TT.animation_settings.PAUSE_BETWEEN_BIRD_STEPS;
             $(bird_frontside_element).removeClass("toontalk-bird-gimme")
-            message_element = message_side.get_element(true);
-            carry_element(message_element, message_side);
+            if (message_side) {
+                // was undefined in a Sentry log entry
+                message_element = message_side.get_element(true);
+                carry_element(message_element, message_side);
+            }
             if (target_side && !target_side.is_function_nest()) {
                 // nests of functions are 'virtual'
                 target_frontside_element = target_side.get_widget().closest_visible_ancestor_or_frontside().get_widget().get_frontside_element();
@@ -418,12 +421,12 @@ window.TOONTALK.bird = (function (TT) {
                                top:  options.starting_top +top_level_backside_element_bounding_box.top};
             } else if (bird_offset.left === 0 && bird_offset.top === 0) {
                 // don't really know where the bird is so put him offscreen
-                bird_offset = {left: -message_element.clientWidth,
+                bird_offset = {left: message_side?-message_element.clientWidth:-1000,
                                top:  top_level_backside_element_bounding_box.top+$top_level_backside_element.height()/2};
             }
             if (!target_offset) {
                 // offscreen to the left at vertical center of top-level backside
-                target_offset = {left: -2*message_element.clientWidth,
+                target_offset = {left: message_element?-2*message_element.clientWidth:-1000,
                                  top:  top_level_backside_element_bounding_box.top+$top_level_backside_element.height()/2};
             }
             // save some state before clobbering it
