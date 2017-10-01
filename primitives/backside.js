@@ -577,7 +577,7 @@ window.TOONTALK.backside =
                                             } catch (e) {
                                                  TT.UTILITIES.report_internal_error("A backside is contained in one its backside widgets. This makes no sense. " +
                                                                                     this + " should not be part of " + backside_widget_side + ". " + e + " In add_backside_widgets. " +
-                                                                                    "This has been delayed so possibily things have changed since scheduled. " + e.message);
+                                                                                    "This has been delayed so possibily things have changed since scheduled. ");
                                             }
                                             if (TT.logging && TT.logging.indexOf('backside-widgets') >= 0) {
                                                console.log("Widget element added to backside element.");
