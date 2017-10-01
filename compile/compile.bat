@@ -1,4 +1,4 @@
-cd C:\Users\toont\Documents\GitHub\ToonTalk
+cd C:\Users\Ken\Documents\GitHub\ToonTalk
 rem ADVANCED_OPTIMIZATIONS caused the Fibonacci test to fail by doing nothing
 rem caused errors:  --js libraries\jquery.ui.touch-punch.min.js -- need to test again
 rem java -jar c:\bin\closure\closure-compiler-v20161201.jar --compilation_level ADVANCED_OPTIMIZATIONS ^
