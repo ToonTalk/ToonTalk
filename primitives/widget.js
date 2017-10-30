@@ -1641,7 +1641,7 @@ window.TOONTALK.widget = (function (TT) {
                             widget_side.hide_backside();
                         } else {
                             widget_side.set_visible(true);
-                            widget_side.get_element(true).remove(); // added this after seeing HierarchyRequestError in Sentry log 
+                            widget_side.get_element(true).remove(); // added this after seeing HierarchyRequestError in Sentry log (still occurs...)
                             try {
                                 backside_element.appendChild(widget_side.get_element());
                             } catch (e) {
