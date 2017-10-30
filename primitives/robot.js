@@ -816,7 +816,7 @@ window.TOONTALK.robot = (function (TT) {
         var backside_widgets;
         if (data_transferred_widget.is_top_level && data_transferred_widget.is_top_level()) {
             // wait for geometry to settle down before treating this as a series of pick up and drops
-            // need to get a copy of the list before other processing clobbes it
+            // need to get a copy of the list before other processing clobbers it
             backside_widgets = data_transferred_widget.get_backside_widgets().slice();
             setTimeout(function () {
                 backside_widgets.forEach(function (widget) {

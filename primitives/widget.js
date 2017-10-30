@@ -1390,7 +1390,7 @@ window.TOONTALK.widget = (function (TT) {
                                                     } else {
                                                         options = {depth: depth};
                                                     }
-                                                    if (child_side.can_run(options)) {
+                                                    if (child_side.can_run && child_side.can_run(options)) {
                                                         can_run = true;
                                                     } else {
                                                         return true; // go on to next child
