@@ -126,6 +126,8 @@ if (this_url.indexOf("http://localhost") === 0) {
 
 var debugging = get_parameter('debugging', '0') !== '0';
 
+var together = get_parameter('together', '0') !== '0';
+
 var add_css = function (URL) {
     var css;
     if (no_need_to_load_css) {
@@ -206,6 +208,11 @@ if (debugging) {
                   // following enables JQuery UI resize handles to respond to touch
                   // Note that including this in the closure compiler resulted in errors
                   "libraries/jquery.ui.touch-punch.min.js"];
+}
+
+if (together) {
+    window.TogetherJSConfig_cloneClicks = true;
+    file_names.push("https://togetherjs.com/togetherjs-min.js");
 }
 
 var local_replacements =

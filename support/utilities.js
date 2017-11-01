@@ -21,8 +21,6 @@ window.TOONTALK.UTILITIES =
     var utilities = {};
     var toontalk_initialized = false;
     var z_index = 100;
-    // id needs to be unique across ToonTalks due to drag and drop
-    var id_counter = new Date().getTime();
     // Google translate and the like should not translate the JSON
     // The JSON should not be displayed - but once element is processed the display property will be removed
     var div_json   = "<div class='toontalk-json notranslate' translate='no' style='display:none'>";
@@ -1043,7 +1041,7 @@ window.TOONTALK.UTILITIES =
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
     var $dragee, dragee_copy, resource_copy;
-    var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
+    var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip, id_counter;
     window.addEventListener("message",
                             function (event) {
                                 if (event.data === timeout_message_name && event.source === window) {
@@ -5696,16 +5694,20 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                             } else {
                                 button_or_link = document.createElement('a');
                                 button_or_link.innerHTML = label;
-                                button_or_link.href      = url;
                                 button_or_link.title     = title;
-                                button_or_link.target    = '_blank';
+                                if (url) {
+                                    button_or_link.href      = url;
+                                    button_or_link.target    = '_blank';
+                                }
                                 $(button_or_link).addClass('ui-widget toontalk-help-link');
                                 utilities.use_custom_tooltip(button_or_link);
                             }
                             element.appendChild(button_or_link);
                             $(button_or_link).css(css);
+                            return button_or_link;
                         }
                 };
+                var together_button_element;
                 add_button_or_link("toontalk-manual-button",
                                    "docs/manual/index.html?reset=1",
                                    "Learn about ToonTalk",
@@ -5721,6 +5723,29 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                    "What's new?",
                                    "Click to visit see what has changed recently.",
                                    {background: "cyan"});
+                if (TT.together) {
+                    together_button_element = 
+                        add_button_or_link("toontalk-together-button",
+                                           undefined, // "javascript:TogetherJS(document.getElementById('toontalk-together-button').children[0])",
+                                           "Collaborate",
+                                           "Click to work with someone else.",
+                                           {background: "orange"});
+                    together_button_element["data-end-togetherjs-html"] = "Stop collaborating";
+                    together_button_element.addEventListener("click",
+                                                             function () {
+                                                                 TogetherJS(together_button_element);
+//                                                                  together_button_element.innerHTML = "Stop collaborating";
+                                                             },
+                                                             false);
+                    window.TogetherJSConfig_on_close = function () {
+                        together_button_element.innerHTML = "Work alone";
+                        together_button_element.title = "Click to stop collaborating.";
+                    };
+                    window.TogetherJSConfig_on_ready = function () {
+                        together_button_element.innerHTML = "Work with others";
+                        together_button_element.title = "Click to start collaborating with others.";
+                    };
+                }
         };
         var unload_listener = function (event) {
             try {
@@ -5747,6 +5772,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 };
             TT.debugging                     = utilities.get_current_url_parameter('debugging');
             TT.logging                       = utilities.get_current_url_parameter('log');
+            TT.together                      = utilities.get_current_url_boolean_parameter('together', false); // together.js available
             TT.maximum_recursion_depth       = 100; // to prevent stack overflows every so often uses setTimeout
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
@@ -5891,6 +5917,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 utilities.process_json_elements();
             }
+            // id needs to be unique across ToonTalks due to drag and drop (but this interferes with together.js)
+            id_counter = TT.together ? 1 : new Date().getTime();
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
             if (TT.volume > 0) {
