@@ -306,6 +306,22 @@ window.TOONTALK.UTILITIES =
         drag_ended();
         event.stopPropagation();
     };
+    var together_send_message = 
+        function (event) {
+            if (event.simulatedEventMessage) {
+                return;
+            }
+            var elementFinder = TogetherJS.require("elementFinder");
+            var message = {type: event.type + '_together', // togehter.js type
+                           event_type: event.type, // DOM event type
+                           clientX: event.clientX,
+                           clientY: event.clientY,
+                           pageX: event.pageX,
+                           pageY: event.pageY,
+                           target: elementFinder.elementLocation(event.target),
+                           currentTarget: elementFinder.elementLocation(event.currentTarget)};
+            TogetherJS.send(message);
+    };
     var get_dropped_widget = function (event) {
         // TODO: use this within drop_handler
         var json_object;
@@ -2073,7 +2089,8 @@ window.TOONTALK.UTILITIES =
                                          drag_end_handler(event);
                                      });
             if (TT.together) {
-               utilities.drop_together(element);
+                element.addEventListener('dragstart', together_send_message);
+                element.addEventListener('dragend',   together_send_message);
             }
         };
 
@@ -2091,6 +2108,9 @@ window.TOONTALK.UTILITIES =
                                          drop_handler(event);
                                          event.stopPropagation();
                                      });
+            if (TT.together) {
+                element.addEventListener('drop', together_send_message);
+            }
             utilities.can_give_mouse_enter_feedback(element);
             // following attempt to use JQuery UI draggable but it provides mouseevents rather than dragstart and the like
             // and they don't have a dataTransfer attribute so forced to rely upon lower-level drag and drop functionality
@@ -5645,55 +5665,6 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             enable_translation();
         }
     };
-
-//     utilities.send_together_message = function (type, message, element) {
-//         if (element) {
-//             var elementFinder = TogetherJS.require("elementFinder");
-//             message.element = elementFinder.elementLocation(element);
-//         }
-//         message.type = type;
-//         TogetherJS.send(message);
-//     };
-
-//     utilities.receive_together_message = function (type, callback) {
-//         TogetherJS.hub.on(type, function (message) {
-//             var element;
-//             if (!message.sameUrl) {
-//                return;
-//             }
-//             var elementFinder = TogetherJS.require("elementFinder");
-//             if (message.element) {
-//                 try {
-//                     callback(elementFinder.findElement(message.element), message);
-//                 } catch (error) {
-//                     callback(null, error);
-//                 }
-//             }
-//         });
-//     };
-
-    utilities.drop_together = function (element) {
-        var together_send_message = 
-            function (event) {
-                if (event.simulatedEventMessage) {
-                    return;
-                }
-                var elementFinder = TogetherJS.require("elementFinder");
-                var message = {type: event.type + '_together', // togehter.js type
-                               event_type: event.type, // DOM event type
-                               clientX: event.clientX,
-                               clientY: event.clientY,
-                               pageX: event.pageX,
-                               pageY: event.pageY,
-                               target: elementFinder.elementLocation(event.target),
-                               currentTarget: elementFinder.elementLocation(event.currentTarget)};
-                TogetherJS.send(message);
-        };
-        element.addEventListener('dragstart', together_send_message);
-        element.addEventListener('dragend',   together_send_message);
-        element.addEventListener('drop',      together_send_message);
-    };
-
 
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
