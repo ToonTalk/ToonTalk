@@ -167,7 +167,8 @@ window.TOONTALK.UTILITIES =
         }
         return div_string.substring(json_start, json_end+1);
     };
-    var drag_start_handler = function (event, element) {
+    var drag_start_handler = function (event) {
+        var element = event.currentTarget;
         if ($(element).is(".toontalk-conditions-contents")) {
             // don't drag widget out of condition container
             return;
@@ -2065,7 +2066,7 @@ window.TOONTALK.UTILITIES =
             // TODO: simplify the following since the event has a reference back to the element
             element.addEventListener('dragstart',
                                      function (event) {
-                                         drag_start_handler(event, element);
+                                         drag_start_handler(event);
                                      });
             element.addEventListener('dragend',
                                      function (event) {
@@ -4576,7 +4577,7 @@ window.TOONTALK.UTILITIES =
                 if (!element_position) {
                     element_position = $(element).offset();
                 }
-                drag_start_handler(event, element);
+                drag_start_handler(event);
                 drag_x_offset = touch.pageX - element_position.left;
                 drag_y_offset = touch.pageY - element_position.top;
                 if (TT.logging && TT.logging.indexOf('touch') === 0) {
@@ -4666,8 +4667,12 @@ window.TOONTALK.UTILITIES =
 
         utilities.get_mouse_or_first_touch_event_attribute = function (attribute, event) {
             // either mouse event's attribute or first touch' location's attribute
+            // or simulatedEvent's message (if together.js enabled)
             if (event.changedTouches) {
                 return event.changedTouches[0][attribute];
+            }
+            if (event.simulatedEventMessage && typeof event.simulatedEventMessage[attribute] !== 'undefined') {
+                return  event.simulatedEventMessage[attribute];
             }
             return event[attribute];
         };
@@ -5668,19 +5673,25 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //     };
 
     utilities.drop_together = function (element) {
-        element.addEventListener('dragend',
-                                 function (event) {
-                                     if (event.simulatedEvent) {
-                                         return;
-                                     }
-                                     var message = {type: 'drop',
-                                                    pageX: event.pageX,
-                                                    pageY: event.pageY};
-                                     var elementFinder     = TogetherJS.require("elementFinder");
-                                     message.target        = elementFinder.elementLocation(event.target);
-                                     message.currentTarget = elementFinder.elementLocation(event.currentTarget);
-                                     TogetherJS.send(message);
-                                 });
+        var together_send_message = 
+            function (event) {
+                if (event.simulatedEventMessage) {
+                    return;
+                }
+                var elementFinder = TogetherJS.require("elementFinder");
+                var message = {type: event.type + '_together', // togehter.js type
+                               event_type: event.type, // DOM event type
+                               clientX: event.clientX,
+                               clientY: event.clientY,
+                               pageX: event.pageX,
+                               pageY: event.pageY,
+                               target: elementFinder.elementLocation(event.target),
+                               currentTarget: elementFinder.elementLocation(event.currentTarget)};
+                TogetherJS.send(message);
+        };
+        element.addEventListener('dragstart', together_send_message);
+        element.addEventListener('dragend',   together_send_message);
+        element.addEventListener('drop',      together_send_message);
     };
 
 
@@ -5754,7 +5765,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                             return button_or_link;
                         }
                 };
-                var together_button_element;
+                var together_button_element, together_listener;
                 add_button_or_link("toontalk-manual-button",
                                    "docs/manual/index.html?reset=1",
                                    "Learn",
@@ -5792,23 +5803,24 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         together_button_element.innerHTML = "Work alone";
                         together_button_element.title = "Click to stop collaborating.";
                     };
-                    TogetherJS.hub.on('drop', function (message) {
+                    together_listener = function (message) {
                         if (!message.sameUrl) {
-                           return;
+                            return;
                         }
                         var elementFinder = TogetherJS.require("elementFinder");
                         try {
-//                             var simulated_event = {};
-                            var simulated_event = new MouseEvent('dragend');
-//                             Object.assign(simulated_event, message);
-//                             simulated_event.target         = elementFinder.findElement(message.target);
-//                             simulated_event.currentTarget  = elementFinder.findElement(message.currentTarget);
-                            simulated_event.simulatedEvent = true;
-                            $(message.target).get(0).dispatchEvent(simulated_event);
+                            var target = elementFinder.findElement(message.target);
+                            var simulated_event = new DragEvent(message.event_type);
+                            // would like to update pageX and pageY of simulated_event but they are read only
+                            simulated_event.simulatedEventMessage = message;
+                            target.dispatchEvent(simulated_event);
                         } catch (error) {
                              console.error(error);
                         }
-                    });
+                    };
+                    TogetherJS.hub.on('dragstart_together', together_listener);
+                    TogetherJS.hub.on('dragend_together',   together_listener);
+                    TogetherJS.hub.on('drop_together',      together_listener);
                 }
         };
         var unload_listener = function (event) {
