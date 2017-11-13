@@ -265,7 +265,8 @@ window.TOONTALK.UTILITIES =
         }
         event.stopPropagation();
     };
-    var drag_end_handler = function (event, element) {
+    var drag_end_handler = function (event) {
+        var element = event.currentTarget;
         var widget_side, drop_listeners;
         if ($(element).is(".toontalk-conditions-contents")) {
             // don't drag widget out of condition container
@@ -278,11 +279,11 @@ window.TOONTALK.UTILITIES =
         if (widget_side) {
             widget_side.being_dragged = undefined;
             drop_listeners = widget_side.get_listeners('dropped');
-                if (drop_listeners) {
-                    drop_listeners.map(function (listener) {
-                            listener();
-                    });
-                }
+            if (drop_listeners) {
+                drop_listeners.map(function (listener) {
+                    listener();
+                });
+            }
         }
         if ($dragee.is(".toontalk-frontside")) {
             if ($dragee.parent().is(".toontalk-backside")) {
@@ -315,8 +316,9 @@ window.TOONTALK.UTILITIES =
             return utilities.create_from_json(json_object);
         }
     };
-    var drop_handler = function (event, element) {
-        // TODO: event.currentTarget should always be === element so this could simplified
+    var drop_handler = function (event) {
+        var element = event.currentTarget;  // the element that the listener is attached to 
+        var target  = event.target; // element that triggered the event
         var json_object = utilities.data_transfer_json_object(event);
         var insert_widget_in_editable_text = function (json_object, event) {
             var widget = utilities.create_from_json(json_object);
@@ -2067,8 +2069,11 @@ window.TOONTALK.UTILITIES =
                                      });
             element.addEventListener('dragend',
                                      function (event) {
-                                         drag_end_handler(event, element);
+                                         drag_end_handler(event);
                                      });
+            if (TT.together) {
+               utilities.drop_together(element);
+            }
         };
 
         utilities.can_receive_drops = function (element) {
@@ -2082,7 +2087,7 @@ window.TOONTALK.UTILITIES =
                                      function (event) {
                                          // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
                                          event.preventDefault();
-                                         drop_handler(event, element);
+                                         drop_handler(event);
                                          event.stopPropagation();
                                      });
             utilities.can_give_mouse_enter_feedback(element);
@@ -4614,7 +4619,7 @@ window.TOONTALK.UTILITIES =
                     if (TT.logging && TT.logging.indexOf('touch') === 0) {
                         add_to_touch_log("drag ended " + element.id);
                     }
-                    drop_handler(event, element); // widget.get_frontside_element());
+                    drop_handler(event);
                     if (TT.logging && TT.logging.indexOf('touch') === 0) {
                         add_to_touch_log("drop happened " + element.id);
                     }
@@ -5636,6 +5641,48 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         }
     };
 
+//     utilities.send_together_message = function (type, message, element) {
+//         if (element) {
+//             var elementFinder = TogetherJS.require("elementFinder");
+//             message.element = elementFinder.elementLocation(element);
+//         }
+//         message.type = type;
+//         TogetherJS.send(message);
+//     };
+
+//     utilities.receive_together_message = function (type, callback) {
+//         TogetherJS.hub.on(type, function (message) {
+//             var element;
+//             if (!message.sameUrl) {
+//                return;
+//             }
+//             var elementFinder = TogetherJS.require("elementFinder");
+//             if (message.element) {
+//                 try {
+//                     callback(elementFinder.findElement(message.element), message);
+//                 } catch (error) {
+//                     callback(null, error);
+//                 }
+//             }
+//         });
+//     };
+
+    utilities.drop_together = function (element) {
+        element.addEventListener('dragend',
+                                 function (event) {
+                                     if (event.simulatedEvent) {
+                                         return;
+                                     }
+                                     var message = {type: 'drop',
+                                                    pageX: event.pageX,
+                                                    pageY: event.pageY};
+                                     var elementFinder     = TogetherJS.require("elementFinder");
+                                     message.target        = elementFinder.elementLocation(event.target);
+                                     message.currentTarget = elementFinder.elementLocation(event.currentTarget);
+                                     TogetherJS.send(message);
+                                 });
+    };
+
 
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
@@ -5710,12 +5757,12 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 var together_button_element;
                 add_button_or_link("toontalk-manual-button",
                                    "docs/manual/index.html?reset=1",
-                                   "Learn about ToonTalk",
+                                   "Learn",
                                    "Click to visit the page that introduces everything.",
                                    {background: "yellow"});
                 add_button_or_link("toontalk-manual-tour",
                                    "docs/tours/tour1.html?reset=1",
-                                   "Watch a tour of ToonTalk",
+                                   "Watch",
                                    "Click to visit a page that replays a tour.",
                                    {background: "pink"});
                 add_button_or_link("toontalk-manual-whats-new",
@@ -5727,7 +5774,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     together_button_element = 
                         add_button_or_link("toontalk-together-button",
                                            undefined, // "javascript:TogetherJS(document.getElementById('toontalk-together-button').children[0])",
-                                           "Collaborate",
+                                           "Work with others",
                                            "Click to work with someone else.",
                                            {background: "orange"});
                     together_button_element["data-end-togetherjs-html"] = "Stop collaborating";
@@ -5738,13 +5785,30 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                                              },
                                                              false);
                     window.TogetherJSConfig_on_close = function () {
-                        together_button_element.innerHTML = "Work alone";
-                        together_button_element.title = "Click to stop collaborating.";
-                    };
-                    window.TogetherJSConfig_on_ready = function () {
                         together_button_element.innerHTML = "Work with others";
                         together_button_element.title = "Click to start collaborating with others.";
                     };
+                    window.TogetherJSConfig_on_ready = function () {
+                        together_button_element.innerHTML = "Work alone";
+                        together_button_element.title = "Click to stop collaborating.";
+                    };
+                    TogetherJS.hub.on('drop', function (message) {
+                        if (!message.sameUrl) {
+                           return;
+                        }
+                        var elementFinder = TogetherJS.require("elementFinder");
+                        try {
+//                             var simulated_event = {};
+                            var simulated_event = new MouseEvent('dragend');
+//                             Object.assign(simulated_event, message);
+//                             simulated_event.target         = elementFinder.findElement(message.target);
+//                             simulated_event.currentTarget  = elementFinder.findElement(message.currentTarget);
+                            simulated_event.simulatedEvent = true;
+                            $(message.target).get(0).dispatchEvent(simulated_event);
+                        } catch (error) {
+                             console.error(error);
+                        }
+                    });
                 }
         };
         var unload_listener = function (event) {
