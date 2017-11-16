@@ -311,14 +311,23 @@ window.TOONTALK.UTILITIES =
             if (event.simulatedEventMessage) {
                 return;
             }
+            if (event.type === 'drag' && $(event.target).is(".toontalk-backside-of-top-level")) {
+                // ignore drags of top-level backsides
+                return;
+            }
             var elementFinder = TogetherJS.require("elementFinder");
-            var message = {type: event.type + '_together', // togehter.js type
-                           event_type: event.type, // DOM event type
-                           clientX: event.clientX,
-                           clientY: event.clientY,
-                           pageX: event.pageX,
-                           pageY: event.pageY,
-                           target: elementFinder.elementLocation(event.target),
+            var json = $(event.target).data('json');
+            var message = {type:          event.type + '_together', // togehter.js type
+                           event_type:    event.type, // DOM event type
+                           clientX:       event.clientX,
+                           clientY:       event.clientY,
+                           pageX:         event.pageX,
+                           pageY:         event.pageY,
+                           offsetLeft:    event.target.offsetLeft,
+                           offsetTop:     event.target.offsetTop,
+                           dragXOffset:   json ? json.view.drag_x_offset : 0, // offset from corner of widget json is empty string after drop
+                           dragYOffset:   json ? json.view.drag_y_offset : 0,
+                           target:        elementFinder.elementLocation(event.target),
                            currentTarget: elementFinder.elementLocation(event.currentTarget)};
             TogetherJS.send(message);
     };
@@ -2091,6 +2100,16 @@ window.TOONTALK.UTILITIES =
             if (TT.together) {
                 element.addEventListener('dragstart', together_send_message);
                 element.addEventListener('dragend',   together_send_message);
+                element.addEventListener('drag',      together_send_message);
+                element.addEventListener('drag',
+                                         function (event) {
+                                             if (event.simulatedEventMessage) {
+                                                 // simulating drag by moving the dragee
+                                                 $(event.target).css({left: event.simulatedEventMessage.pageX-(event.simulatedEventMessage.offsetLeft+event.simulatedEventMessage.dragXOffset),
+                                                                      top:  event.simulatedEventMessage.pageY-(event.simulatedEventMessage.offsetTop +event.simulatedEventMessage.dragYOffset)});
+                                             }
+                                         }
+                );
             }
         };
 
@@ -5792,6 +5811,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     TogetherJS.hub.on('dragstart_together', together_listener);
                     TogetherJS.hub.on('dragend_together',   together_listener);
                     TogetherJS.hub.on('drop_together',      together_listener);
+                    TogetherJS.hub.on('drag_together',      together_listener);
                 }
         };
         var unload_listener = function (event) {
