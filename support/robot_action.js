@@ -159,7 +159,7 @@ window.TOONTALK.robot_action =
                  widget_frontside_element = robot.add_to_top_level_backside(widget);
                  robot_location = $(robot.get_frontside_element()).offset();
                  widget.update_display(); // so it has width and height for the following
-                 TT.UTILITIES.set_position_relative_to_top_level_backside($(widget_frontside_element), robot_location, true);
+                 TT.UTILITIES.set_position_relative_to_top_level_backside(widget_frontside_element, robot_location, true);
              } else {
                  widget.drop_on(robot.get_context().get_backside(true), {robot: robot});
              }

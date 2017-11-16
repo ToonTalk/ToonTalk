@@ -315,6 +315,10 @@ window.TOONTALK.UTILITIES =
                 // ignore drags of top-level backsides
                 return;
             }
+            if (!TogetherJS.require) {
+                // too soon to mirror this
+                return;
+            }
             var elementFinder = TogetherJS.require("elementFinder");
             var json = $(event.target).data('json');
             var message = {type:          event.type + '_together', // togehter.js type
@@ -323,6 +327,8 @@ window.TOONTALK.UTILITIES =
                            clientY:       event.clientY,
                            pageX:         event.pageX,
                            pageY:         event.pageY,
+                           screenX:       event.screenX,
+                           screenY:       event.screenY,
                            offsetLeft:    event.target.offsetLeft,
                            offsetTop:     event.target.offsetTop,
                            dragXOffset:   json ? json.view.drag_x_offset : 0, // offset from corner of widget json is empty string after drop
@@ -503,8 +509,8 @@ window.TOONTALK.UTILITIES =
                 // just moved it a little bit
                 // only called now that elementFromPoint is used to find another target when dropped on part of itself
                 utilities.set_css($source,
-                                  {left: $source.get(0).offsetLeft + (event.layerX - drag_x_offset),
-                                   top:  $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
+                                  {left: $source.get(0).offsetLeft+(event.layerX-drag_x_offset),
+                                   top:  $source.get(0).offsetTop +(event.layerY-drag_y_offset)});
                 event.stopPropagation();
                 return;
             }
@@ -2105,11 +2111,28 @@ window.TOONTALK.UTILITIES =
                                          function (event) {
                                              if (event.simulatedEventMessage) {
                                                  // simulating drag by moving the dragee
-                                                 $(event.target).css({left: event.simulatedEventMessage.pageX-(event.simulatedEventMessage.offsetLeft+event.simulatedEventMessage.dragXOffset),
-                                                                      top:  event.simulatedEventMessage.pageY-(event.simulatedEventMessage.offsetTop +event.simulatedEventMessage.dragYOffset)});
+                                                 if ($(event.target).is(".toontalk-top-level-resource")) {
+                                                     // hasn't been dropped ever 
+                                                     // should really copy it make it semi-transparent and move the copy around
+                                                     $(event.target).css({left: event.simulatedEventMessage.pageX-(event.simulatedEventMessage.offsetLeft+event.simulatedEventMessage.dragXOffset),
+                                                                          top:  event.simulatedEventMessage.pageY-(event.simulatedEventMessage.offsetTop +event.simulatedEventMessage.dragYOffset)});
+                                                 } else {}
+                                                     utilities.set_position_relative_to_top_level_backside(
+                                                                                 event.target,
+                                                                                 {left: event.clientX-event.simulatedEventMessage.dragXOffset,
+                                                                                  top:  event.clientY-event.simulatedEventMessage.dragYOffset});
                                              }
-                                         }
-                );
+                                         });
+//                 element.addEventListener('mousemove', together_send_message);
+//                 element.addEventListener('mousedown', together_send_message);
+//                 element.addEventListener('mouseup',   together_send_message);
+//                 element.addEventListener('mousemove',
+//                                          function (event) {
+//                                              if (event.simulatedEventMessage) {
+//                                                  $(event.target).css({left: event.simulatedEventMessage.pageX-(event.simulatedEventMessage.offsetLeft+event.simulatedEventMessage.dragXOffset),
+//                                                                       top:  event.simulatedEventMessage.pageY-(event.simulatedEventMessage.offsetTop +event.simulatedEventMessage.dragYOffset)});
+//                                              }
+//                                          });
             }
         };
 
@@ -2344,7 +2367,8 @@ window.TOONTALK.UTILITIES =
             }
         };
 
-        utilities.set_position_relative_to_top_level_backside = function ($element, absolute_position, stay_inside_parent) {
+        utilities.set_position_relative_to_top_level_backside = function (element, absolute_position, stay_inside_parent) {
+            var $element = $(element); 
             return this.set_position_relative_to_element($element, $element.closest(".toontalk-backside-of-top-level"), absolute_position, stay_inside_parent);
         };
 
@@ -5799,8 +5823,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         }
                         var elementFinder = TogetherJS.require("elementFinder");
                         try {
-                            var target = elementFinder.findElement(message.target);
-                            var simulated_event = new DragEvent(message.event_type);
+                            var target = message.event_type === 'drop' ? elementFinder.findElement(message.currentTarget) : elementFinder.findElement(message.target);
+                            var simulated_event = (message.event_type === 'mousemove' || message.event_type === 'mousedown' || message.event_type === 'mouseup') ? new MouseEvent(message.event_type, message) : new DragEvent(message.event_type, message);
                             // would like to update pageX and pageY of simulated_event but they are read only
                             simulated_event.simulatedEventMessage = message;
                             target.dispatchEvent(simulated_event);
