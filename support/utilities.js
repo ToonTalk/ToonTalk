@@ -5817,6 +5817,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         together_button_element.innerHTML = "Work alone";
                         together_button_element.title = "Click to stop collaborating.";
                     };
+                    TogetherJS.hub.on("togetherjs.hello-back", window.TogetherJSConfig_on_ready);
                     together_listener = function (message) {
                         if (!message.sameUrl) {
                             return;
