@@ -306,37 +306,6 @@ window.TOONTALK.UTILITIES =
         drag_ended();
         event.stopPropagation();
     };
-    var together_send_message = 
-        function (event) {
-            if (event.simulatedEventMessage) {
-                return;
-            }
-            if (event.type === 'drag' && $(event.target).is(".toontalk-backside-of-top-level")) {
-                // ignore drags of top-level backsides
-                return;
-            }
-            if (!TogetherJS.require) {
-                // too soon to mirror this
-                return;
-            }
-            var elementFinder = TogetherJS.require("elementFinder");
-            var json = $(event.target).data('json');
-            var message = {type:          event.type + '_together', // togehter.js type
-                           event_type:    event.type, // DOM event type
-                           clientX:       event.clientX,
-                           clientY:       event.clientY,
-                           pageX:         event.pageX,
-                           pageY:         event.pageY,
-                           screenX:       event.screenX,
-                           screenY:       event.screenY,
-                           offsetLeft:    event.target.offsetLeft,
-                           offsetTop:     event.target.offsetTop,
-                           dragXOffset:   json ? json.view.drag_x_offset : 0, // offset from corner of widget json is empty string after drop
-                           dragYOffset:   json ? json.view.drag_y_offset : 0,
-                           target:        elementFinder.elementLocation(event.target),
-                           currentTarget: elementFinder.elementLocation(event.currentTarget)};
-            TogetherJS.send(message);
-    };
     var get_dropped_widget = function (event) {
         // TODO: use this within drop_handler
         var json_object;
@@ -2104,9 +2073,9 @@ window.TOONTALK.UTILITIES =
                                          drag_end_handler(event);
                                      });
             if (TT.together) {
-                element.addEventListener('dragstart', together_send_message);
-                element.addEventListener('dragend',   together_send_message);
-                element.addEventListener('drag',      together_send_message);
+                ['dragstart', 'dragend', 'drag'].forEach(function (event_type) {
+                    element.addEventListener(event_type, utilities.together_send_message);
+                });
                 element.addEventListener('drag',
                                          function (event) {
                                              if (event.simulatedEventMessage) {
@@ -2114,25 +2083,16 @@ window.TOONTALK.UTILITIES =
                                                  if ($(event.target).is(".toontalk-top-level-resource")) {
                                                      // hasn't been dropped ever 
                                                      // should really copy it make it semi-transparent and move the copy around
-                                                     $(event.target).css({left: event.simulatedEventMessage.pageX-(event.simulatedEventMessage.offsetLeft+event.simulatedEventMessage.dragXOffset),
-                                                                          top:  event.simulatedEventMessage.pageY-(event.simulatedEventMessage.offsetTop +event.simulatedEventMessage.dragYOffset)});
-                                                 } else {}
+                                                     $(event.target).css({left: event.pageX-(event.simulatedEventMessage.offsetLeft+event.simulatedEventMessage.dragXOffset),
+                                                                          top:  event.pageY-(event.simulatedEventMessage.offsetTop +event.simulatedEventMessage.dragYOffset)});
+                                                 } else {
                                                      utilities.set_position_relative_to_top_level_backside(
                                                                                  event.target,
                                                                                  {left: event.clientX-event.simulatedEventMessage.dragXOffset,
                                                                                   top:  event.clientY-event.simulatedEventMessage.dragYOffset});
+                                                 }
                                              }
                                          });
-//                 element.addEventListener('mousemove', together_send_message);
-//                 element.addEventListener('mousedown', together_send_message);
-//                 element.addEventListener('mouseup',   together_send_message);
-//                 element.addEventListener('mousemove',
-//                                          function (event) {
-//                                              if (event.simulatedEventMessage) {
-//                                                  $(event.target).css({left: event.simulatedEventMessage.pageX-(event.simulatedEventMessage.offsetLeft+event.simulatedEventMessage.dragXOffset),
-//                                                                       top:  event.simulatedEventMessage.pageY-(event.simulatedEventMessage.offsetTop +event.simulatedEventMessage.dragYOffset)});
-//                                              }
-//                                          });
             }
         };
 
@@ -2151,20 +2111,9 @@ window.TOONTALK.UTILITIES =
                                          event.stopPropagation();
                                      });
             if (TT.together) {
-                element.addEventListener('drop', together_send_message);
+                element.addEventListener('drop', utilities.together_send_message);
             }
             utilities.can_give_mouse_enter_feedback(element);
-            // following attempt to use JQuery UI draggable but it provides mouseevents rather than dragstart and the like
-            // and they don't have a dataTransfer attribute so forced to rely upon lower-level drag and drop functionality
-//             $element.draggable({
-//                 create = function (event, ui) {
-//                     $(this).css({position: "absolute"})
-//                 };
-// //                  appendTo: $element.parents(".toontalk-side:last"), // top-most
-//                 greedy: true,
-// //                 containment: false, // doesn't seem to work... -- nor does "none"
-//                 stack: ".toontalk-side",
-//             });
         };
 
         utilities.can_give_mouse_enter_feedback = function (element) {
@@ -2369,10 +2318,18 @@ window.TOONTALK.UTILITIES =
 
         utilities.set_position_relative_to_top_level_backside = function (element, absolute_position, stay_inside_parent) {
             var $element = $(element); 
-            return this.set_position_relative_to_element($element, $element.closest(".toontalk-backside-of-top-level"), absolute_position, stay_inside_parent);
+            var $parent_element = $element.closest(".toontalk-backside-of-top-level");
+            if ($parent_element.length === 0) {
+                $parent_element =  $(".toontalk-backside-of-top-level");
+            }
+            return this.set_position_relative_to_element($element, $parent_element, absolute_position, stay_inside_parent);
         };
 
         utilities.set_position_relative_to_element = function ($element, $parent_element, absolute_position, stay_inside_parent) {
+            if ($parent_element.length === 0) {
+                console.log("utilities.set_position_relative_to_element called with a parent element. Ignoring it.");
+                return;
+            }
             var parent_position = $parent_element.offset();
             var left, top, element_width, element_height, parent_element_width, parent_element_height, css;
             // make sure element is a child of parent_element
@@ -3146,10 +3103,14 @@ window.TOONTALK.UTILITIES =
 
         utilities.create_button = function (label, class_name, title, click_handler) {
             var $button = $("<button>" + label + "</button>").button();
+            var button = $button.get(0);
             $button.addClass(class_name + " toontalk-button");
-            $button.get(0).addEventListener('click', click_handler);
-            utilities.give_tooltip($button.get(0), title);
-            return $button.get(0);
+            button.get.addEventListener('click', click_handler);
+            utilities.give_tooltip(button, title);
+            if (TT.together) {
+                button.addEventListener('click', utilities.together_send_message);
+            }
+            return button;
         };
 
         utilities.create_close_button = function (handler, title) {
@@ -3160,6 +3121,9 @@ window.TOONTALK.UTILITIES =
             utilities.give_tooltip(close_button, title);
             x.innerHTML = "&times;";
             close_button.appendChild(x);
+            if (TT.together) {
+                close_button.addEventListener('click', utilities.together_send_message);
+            }
             return close_button;
         };
 
@@ -3173,24 +3137,6 @@ window.TOONTALK.UTILITIES =
             $(button_elements.button).prop("checked", true);
             $(button_elements.label).addClass('ui-state-active');
         };
-
-//         utilities.create_button_set = function () {
-//             // takes any number of parameters, any of which can be an array of buttons
-//             var container = document.createElement("div");
-//             var i, j;
-//             // arguments isn't an ordinary array so can't use forEach
-//             for (i = 0; i < arguments.length; i++) {
-//                 if (arguments[i].length >= 0) {
-//                     for (j = 0; j < arguments[i].length; j++) {
-//                         container.appendChild(arguments[i][j]);
-//                     }
-//                 } else {
-//                     container.appendChild(arguments[i]);
-//                 }
-//             }
-//             $(container).controlgroup();
-//             return container;
-//         };
 
         utilities.create_alert_element = function (text) {
             var processed_text = process_encoded_HTML(text, decodeURIComponent);
@@ -5709,6 +5655,41 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         }
     };
 
+    utilities.together_send_message = 
+        function (event) {
+            if (event.simulatedEventMessage) {
+                return;
+            }
+            if (event.type === 'drag' && $(event.target).is(".toontalk-backside-of-top-level")) {
+                // ignore drags of top-level backsides
+                return;
+            }
+            if (!TogetherJS.require) {
+                // too soon to mirror this
+                return;
+            }
+            var elementFinder = TogetherJS.require("elementFinder");
+            var json = $(event.target).data('json');
+            var properties = ["pageX", "pageY"];
+            if (event instanceof MouseEvent) {
+                properties = properties.concat(["altKey", "button", "buttons", "clientX", "clientY", "ctrlKey", "metaKey", "movementX", "movementY", "region", "screenX", "screenY", "shiftKey"]);
+            }
+            var message = {type:          event.type + '_together', // together.js type
+                           event_class:   event.constructor.name,
+                           event_type:    event.type, // DOM event type
+                           offsetLeft:    event.target.offsetLeft,
+                           offsetTop:     event.target.offsetTop,
+                           dragXOffset:   json ? json.view.drag_x_offset : 0, // offset from corner of widget json is empty string after drop
+                           dragYOffset:   json ? json.view.drag_y_offset : 0,
+                           target:        elementFinder.elementLocation(event.target),
+                           currentTarget: elementFinder.elementLocation(event.currentTarget),
+                           relatedTarget: event.relatedTarget && elementFinder.elementLocation(event.relatedTarget)};
+            properties.forEach(function (property_name) {
+                message[property_name] = event[property_name];
+            });
+            TogetherJS.send(message);
+    };
+
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
 // utilities.to_words = function (n) {
@@ -5825,18 +5806,28 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                         var elementFinder = TogetherJS.require("elementFinder");
                         try {
                             var target = message.event_type === 'drop' ? elementFinder.findElement(message.currentTarget) : elementFinder.findElement(message.target);
-                            var simulated_event = (message.event_type === 'mousemove' || message.event_type === 'mousedown' || message.event_type === 'mouseup') ? new MouseEvent(message.event_type, message) : new DragEvent(message.event_type, message);
-                            // would like to update pageX and pageY of simulated_event but they are read only
+                            var simulated_event = message.event_class === 'MouseEvent' ? new MouseEvent(message.event_type, message) : new DragEvent(message.event_type, message);
                             simulated_event.simulatedEventMessage = message;
                             target.dispatchEvent(simulated_event);
                         } catch (error) {
                              console.error(error);
                         }
                     };
-                    TogetherJS.hub.on('dragstart_together', together_listener);
-                    TogetherJS.hub.on('dragend_together',   together_listener);
-                    TogetherJS.hub.on('drop_together',      together_listener);
-                    TogetherJS.hub.on('drag_together',      together_listener);
+                    ['dragstart_together', 'dragend_together', 'drop_together', 'drag_together'].forEach(function (message_type) {
+                        TogetherJS.hub.on(message_type, together_listener);
+                    });  
+                    TogetherJS.hub.on('click_together',  function (message) { 
+                        if (!message.sameUrl) {
+                            return;
+                        }
+                        try {
+                            var elementFinder = TogetherJS.require("elementFinder");
+                            var element =  elementFinder.findElement(message.target);
+                            element.dispatchEvent(new MouseEvent('click', message));
+                        } catch (error) {
+                             console.error(error);
+                        }                  
+                    });               
                 }
         };
         var unload_listener = function (event) {
