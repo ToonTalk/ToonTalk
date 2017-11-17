@@ -5816,18 +5816,18 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                     ['dragstart_together', 'dragend_together', 'drop_together', 'drag_together'].forEach(function (message_type) {
                         TogetherJS.hub.on(message_type, together_listener);
                     });  
-                    TogetherJS.hub.on('click_together',  function (message) { 
-                        if (!message.sameUrl) {
-                            return;
-                        }
-                        try {
-                            var elementFinder = TogetherJS.require("elementFinder");
-                            var element =  elementFinder.findElement(message.target);
-                            element.dispatchEvent(new MouseEvent('click', message));
-                        } catch (error) {
-                             console.error(error);
-                        }                  
-                    });               
+//                     TogetherJS.hub.on('click_together',  function (message) { 
+//                         if (!message.sameUrl) {
+//                             return;
+//                         }
+//                         try {
+//                             var elementFinder = TogetherJS.require("elementFinder");
+//                             var element =  elementFinder.findElement(message.target);
+//                             element.dispatchEvent(new MouseEvent('click', message));
+//                         } catch (error) {
+//                              console.error(error);
+//                         }                  
+//                     });               
                 }
         };
         var unload_listener = function (event) {

@@ -1570,6 +1570,9 @@ window.TOONTALK.widget = (function (TT) {
                                 }
                             };
                             $(element).addClass("toontalk-side-appearing");
+                            if (typeof duration !== 'number') {
+                                duration = 0;
+                            }
                             TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", duration || 2500, remove_transition_class);
                             $(element).css({left:    final_left,
                                             top:     final_top,

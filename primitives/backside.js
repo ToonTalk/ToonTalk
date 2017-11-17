@@ -881,9 +881,11 @@ window.TOONTALK.backside =
                 backside_widgets = widget.get_backside_widgets();
                 backside.add_backside_widgets(backside_widgets, widget.get_backside_widgets_json_views());
             }
+            if (TT.debugging || TT.together) {
+                backside_element.id = widget.get_frontside_element(true).id  + "_backside";
+            }
             if (TT.debugging) {
-                backside_element.id = widget._debug_id;
-                backside._debug_id =  widget._debug_id;
+                backside._debug_id = widget._debug_id + "_backside";
                 backside._debug_string = "backside of " + widget._debug_string;
             }
             return backside;
