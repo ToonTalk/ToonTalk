@@ -3241,7 +3241,7 @@ window.TOONTALK.UTILITIES =
             text_area.id = utilities.generate_unique_id();
             label_element.htmlFor = text_area.id;
             if (place_label_above) {
-                container = utilities.create_vertical_table(  label_element, text_area);
+                container = utilities.create_vertical_table  (label_element, text_area);
             } else {
                 container = utilities.create_horizontal_table(label_element, text_area);
             }
