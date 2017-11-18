@@ -1428,7 +1428,7 @@ window.TOONTALK.number_backside =
             var set      = TT.UTILITIES.create_radio_button("operator", "=", "toontalk-set-equal-radio-button", "&equals;", "Set what I'm dropped on to my value.", true);
 //          var power = TT.UTILITIES.create_radio_button("operator", "^", "toontalk-power-radio-button", "Integer power", "Use me as the number of times to multiply together what I'm dropped on.", true);
             var update_value = function (event) {
-                var numerator = numerator_input.button.value.trim();
+                var numerator   = numerator_input.button  .value.trim();
                 var denominator = denominator_input.button.value.trim();
                 var string, first_class_name, numerator_as_float, numerator_as_fraction, denominator_as_float, denominator_as_fraction;
                 var valid_integer = function (string, ator, negative_not_allowed) {
@@ -1530,7 +1530,7 @@ window.TOONTALK.number_backside =
                     number.set_operator(operator, true, true);
                 }
             };
-            var number_set = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
+            var number_set   = TT.UTILITIES.create_horizontal_table(numerator_input.container, slash, denominator_input.container);
             var format_set   = TT.UTILITIES.create_div(decimal_format, mixed_number_format, improper_format, scientific_format);
             var operator_set = TT.UTILITIES.create_div(plus, minus, multiply, divide, set);
             var advanced_settings_button = TT.backside.create_advanced_settings_button(backside, number);

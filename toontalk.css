@@ -207,6 +207,7 @@ body > .toontalk-local-alert {
 	border-radius: 8px;
 	padding: 8px;
 	font-size: 1.2em;
+	cursor: auto;
 }
 .toontalk-frontside {
     position: absolute;

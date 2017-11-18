@@ -21,8 +21,6 @@ window.TOONTALK.UTILITIES =
     var utilities = {};
     var toontalk_initialized = false;
     var z_index = 100;
-    // id needs to be unique across ToonTalks due to drag and drop
-    var id_counter = new Date().getTime();
     // Google translate and the like should not translate the JSON
     // The JSON should not be displayed - but once element is processed the display property will be removed
     var div_json   = "<div class='toontalk-json notranslate' translate='no' style='display:none'>";
@@ -169,7 +167,8 @@ window.TOONTALK.UTILITIES =
         }
         return div_string.substring(json_start, json_end+1);
     };
-    var drag_start_handler = function (event, element) {
+    var drag_start_handler = function (event) {
+        var element = event.currentTarget;
         if ($(element).is(".toontalk-conditions-contents")) {
             // don't drag widget out of condition container
             return;
@@ -267,7 +266,8 @@ window.TOONTALK.UTILITIES =
         }
         event.stopPropagation();
     };
-    var drag_end_handler = function (event, element) {
+    var drag_end_handler = function (event) {
+        var element = event.currentTarget;
         var widget_side, drop_listeners;
         if ($(element).is(".toontalk-conditions-contents")) {
             // don't drag widget out of condition container
@@ -280,11 +280,11 @@ window.TOONTALK.UTILITIES =
         if (widget_side) {
             widget_side.being_dragged = undefined;
             drop_listeners = widget_side.get_listeners('dropped');
-                if (drop_listeners) {
-                    drop_listeners.map(function (listener) {
-                            listener();
-                    });
-                }
+            if (drop_listeners) {
+                drop_listeners.map(function (listener) {
+                    listener();
+                });
+            }
         }
         if ($dragee.is(".toontalk-frontside")) {
             if ($dragee.parent().is(".toontalk-backside")) {
@@ -317,8 +317,9 @@ window.TOONTALK.UTILITIES =
             return utilities.create_from_json(json_object);
         }
     };
-    var drop_handler = function (event, element) {
-        // TODO: event.currentTarget should always be === element so this could simplified
+    var drop_handler = function (event) {
+        var element = event.currentTarget;  // the element that the listener is attached to 
+        var target  = event.target; // element that triggered the event
         var json_object = utilities.data_transfer_json_object(event);
         var insert_widget_in_editable_text = function (json_object, event) {
             var widget = utilities.create_from_json(json_object);
@@ -477,8 +478,8 @@ window.TOONTALK.UTILITIES =
                 // just moved it a little bit
                 // only called now that elementFromPoint is used to find another target when dropped on part of itself
                 utilities.set_css($source,
-                                  {left: $source.get(0).offsetLeft + (event.layerX - drag_x_offset),
-                                   top:  $source.get(0).offsetTop  + (event.layerY - drag_y_offset)});
+                                  {left: $source.get(0).offsetLeft+(event.layerX-drag_x_offset),
+                                   top:  $source.get(0).offsetTop +(event.layerY-drag_y_offset)});
                 event.stopPropagation();
                 return;
             }
@@ -674,6 +675,10 @@ window.TOONTALK.UTILITIES =
                            json_view = backside_widgets_json[index].widget.view;
                        }
                        element_of_backside_widget = backside_widget_side.get_element(true);
+                       if (utilities.has_ancestor_element(element_of_backside_widget, top_level_element)) {
+                           // seen in a Sentry log (Node cannot be inserted at the specified point in the hierarchy)
+                           return;
+                       }
                        if (backside_widget_side.is_backside()) {
                            left_offset = json_view.backside_left;
                            top_offset  = json_view.backside_top;
@@ -1039,7 +1044,7 @@ window.TOONTALK.UTILITIES =
     var timeout_message_name = "zero-timeout-message";
     var messages_displayed = [];
     var $dragee, dragee_copy, resource_copy;
-    var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip;
+    var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip, id_counter;
     window.addEventListener("message",
                             function (event) {
                                 if (event.data === timeout_message_name && event.source === window) {
@@ -2061,12 +2066,34 @@ window.TOONTALK.UTILITIES =
             // TODO: simplify the following since the event has a reference back to the element
             element.addEventListener('dragstart',
                                      function (event) {
-                                         drag_start_handler(event, element);
+                                         drag_start_handler(event);
                                      });
             element.addEventListener('dragend',
                                      function (event) {
-                                         drag_end_handler(event, element);
+                                         drag_end_handler(event);
                                      });
+            if (TT.together) {
+                ['dragstart', 'dragend', 'drag'].forEach(function (event_type) {
+                    element.addEventListener(event_type, utilities.together_send_message);
+                });
+                element.addEventListener('drag',
+                                         function (event) {
+                                             if (event.simulatedEventMessage) {
+                                                 // simulating drag by moving the dragee
+                                                 if ($(event.target).is(".toontalk-top-level-resource")) {
+                                                     // hasn't been dropped ever 
+                                                     // should really copy it make it semi-transparent and move the copy around
+                                                     $(event.target).css({left: event.pageX-(event.simulatedEventMessage.offsetLeft+event.simulatedEventMessage.dragXOffset),
+                                                                          top:  event.pageY-(event.simulatedEventMessage.offsetTop +event.simulatedEventMessage.dragYOffset)});
+                                                 } else {
+                                                     utilities.set_position_relative_to_top_level_backside(
+                                                                                 event.target,
+                                                                                 {left: event.clientX-event.simulatedEventMessage.dragXOffset,
+                                                                                  top:  event.clientY-event.simulatedEventMessage.dragYOffset});
+                                                 }
+                                             }
+                                         });
+            }
         };
 
         utilities.can_receive_drops = function (element) {
@@ -2080,21 +2107,13 @@ window.TOONTALK.UTILITIES =
                                      function (event) {
                                          // prevent default first so if there is an exception the default behaviour for some drags of going to a new page is prevented
                                          event.preventDefault();
-                                         drop_handler(event, element);
+                                         drop_handler(event);
                                          event.stopPropagation();
                                      });
+            if (TT.together) {
+                element.addEventListener('drop', utilities.together_send_message);
+            }
             utilities.can_give_mouse_enter_feedback(element);
-            // following attempt to use JQuery UI draggable but it provides mouseevents rather than dragstart and the like
-            // and they don't have a dataTransfer attribute so forced to rely upon lower-level drag and drop functionality
-//             $element.draggable({
-//                 create = function (event, ui) {
-//                     $(this).css({position: "absolute"})
-//                 };
-// //                  appendTo: $element.parents(".toontalk-side:last"), // top-most
-//                 greedy: true,
-// //                 containment: false, // doesn't seem to work... -- nor does "none"
-//                 stack: ".toontalk-side",
-//             });
         };
 
         utilities.can_give_mouse_enter_feedback = function (element) {
@@ -2297,11 +2316,20 @@ window.TOONTALK.UTILITIES =
             }
         };
 
-        utilities.set_position_relative_to_top_level_backside = function ($element, absolute_position, stay_inside_parent) {
-            return this.set_position_relative_to_element($element, $element.closest(".toontalk-backside-of-top-level"), absolute_position, stay_inside_parent);
+        utilities.set_position_relative_to_top_level_backside = function (element, absolute_position, stay_inside_parent) {
+            var $element = $(element); 
+            var $parent_element = $element.closest(".toontalk-backside-of-top-level");
+            if ($parent_element.length === 0) {
+                $parent_element =  $(".toontalk-backside-of-top-level");
+            }
+            return this.set_position_relative_to_element($element, $parent_element, absolute_position, stay_inside_parent);
         };
 
         utilities.set_position_relative_to_element = function ($element, $parent_element, absolute_position, stay_inside_parent) {
+            if ($parent_element.length === 0) {
+                console.log("utilities.set_position_relative_to_element called with a parent element. Ignoring it.");
+                return;
+            }
             var parent_position = $parent_element.offset();
             var left, top, element_width, element_height, parent_element_width, parent_element_height, css;
             // make sure element is a child of parent_element
@@ -3075,10 +3103,14 @@ window.TOONTALK.UTILITIES =
 
         utilities.create_button = function (label, class_name, title, click_handler) {
             var $button = $("<button>" + label + "</button>").button();
+            var button = $button.get(0);
             $button.addClass(class_name + " toontalk-button");
-            $button.get(0).addEventListener('click', click_handler);
-            utilities.give_tooltip($button.get(0), title);
-            return $button.get(0);
+            button.get.addEventListener('click', click_handler);
+            utilities.give_tooltip(button, title);
+//             if (TT.together) {
+//                 button.addEventListener('click', utilities.together_send_message);
+//             }
+            return button;
         };
 
         utilities.create_close_button = function (handler, title) {
@@ -3089,6 +3121,9 @@ window.TOONTALK.UTILITIES =
             utilities.give_tooltip(close_button, title);
             x.innerHTML = "&times;";
             close_button.appendChild(x);
+//             if (TT.together) {
+//                 close_button.addEventListener('click', utilities.together_send_message);
+//             }
             return close_button;
         };
 
@@ -3102,24 +3137,6 @@ window.TOONTALK.UTILITIES =
             $(button_elements.button).prop("checked", true);
             $(button_elements.label).addClass('ui-state-active');
         };
-
-//         utilities.create_button_set = function () {
-//             // takes any number of parameters, any of which can be an array of buttons
-//             var container = document.createElement("div");
-//             var i, j;
-//             // arguments isn't an ordinary array so can't use forEach
-//             for (i = 0; i < arguments.length; i++) {
-//                 if (arguments[i].length >= 0) {
-//                     for (j = 0; j < arguments[i].length; j++) {
-//                         container.appendChild(arguments[i][j]);
-//                     }
-//                 } else {
-//                     container.appendChild(arguments[i]);
-//                 }
-//             }
-//             $(container).controlgroup();
-//             return container;
-//         };
 
         utilities.create_alert_element = function (text) {
             var processed_text = process_encoded_HTML(text, decodeURIComponent);
@@ -3224,7 +3241,7 @@ window.TOONTALK.UTILITIES =
             text_area.id = utilities.generate_unique_id();
             label_element.htmlFor = text_area.id;
             if (place_label_above) {
-                container = utilities.create_vertical_table(  label_element, text_area);
+                container = utilities.create_vertical_table  (label_element, text_area);
             } else {
                 container = utilities.create_horizontal_table(label_element, text_area);
             }
@@ -3415,7 +3432,7 @@ window.TOONTALK.UTILITIES =
         utilities.selected_radio_button = function () {
             var i;
             for (i = 0; i < arguments.length; i++) {
-                if ($(arguments[i].label).is(".ui-state-focus")) {
+                if (arguments[i].button.checked) {
                     return arguments[i];
                 }
             }
@@ -4569,7 +4586,7 @@ window.TOONTALK.UTILITIES =
                 if (!element_position) {
                     element_position = $(element).offset();
                 }
-                drag_start_handler(event, element);
+                drag_start_handler(event);
                 drag_x_offset = touch.pageX - element_position.left;
                 drag_y_offset = touch.pageY - element_position.top;
                 if (TT.logging && TT.logging.indexOf('touch') === 0) {
@@ -4612,7 +4629,7 @@ window.TOONTALK.UTILITIES =
                     if (TT.logging && TT.logging.indexOf('touch') === 0) {
                         add_to_touch_log("drag ended " + element.id);
                     }
-                    drop_handler(event, element); // widget.get_frontside_element());
+                    drop_handler(event);
                     if (TT.logging && TT.logging.indexOf('touch') === 0) {
                         add_to_touch_log("drop happened " + element.id);
                     }
@@ -4659,8 +4676,12 @@ window.TOONTALK.UTILITIES =
 
         utilities.get_mouse_or_first_touch_event_attribute = function (attribute, event) {
             // either mouse event's attribute or first touch' location's attribute
+            // or simulatedEvent's message (if together.js enabled)
             if (event.changedTouches) {
                 return event.changedTouches[0][attribute];
+            }
+            if (event.simulatedEventMessage && typeof event.simulatedEventMessage[attribute] !== 'undefined') {
+                return  event.simulatedEventMessage[attribute];
             }
             return event[attribute];
         };
@@ -5634,6 +5655,40 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         }
     };
 
+    utilities.together_send_message = 
+        function (event) {
+            if (event.simulatedEventMessage) {
+                return;
+            }
+            if (event.type === 'drag' && $(event.target).is(".toontalk-backside-of-top-level")) {
+                // ignore drags of top-level backsides
+                return;
+            }
+            if (!TogetherJS.require) {
+                // too soon to mirror this
+                return;
+            }
+            var elementFinder = TogetherJS.require("elementFinder");
+            var json = $(event.target).data('json');
+            var properties = ["pageX", "pageY"];
+            if (event instanceof MouseEvent) {
+                properties = properties.concat(["altKey", "button", "buttons", "clientX", "clientY", "ctrlKey", "metaKey", "movementX", "movementY", "region", "screenX", "screenY", "shiftKey"]);
+            }
+            var message = {type:          event.type + '_together', // together.js type
+                           event_class:   event.constructor.name,
+                           event_type:    event.type, // DOM event type
+                           offsetLeft:    event.target.offsetLeft,
+                           offsetTop:     event.target.offsetTop,
+                           dragXOffset:   json ? json.view.drag_x_offset : 0, // offset from corner of widget json is empty string after drop
+                           dragYOffset:   json ? json.view.drag_y_offset : 0,
+                           target:        elementFinder.elementLocation(event.target),
+                           currentTarget: elementFinder.elementLocation(event.currentTarget),
+                           relatedTarget: event.relatedTarget && elementFinder.elementLocation(event.relatedTarget)};
+            properties.forEach(function (property_name) {
+                message[property_name] = event[property_name];
+            });
+            TogetherJS.send(message);
+    };
 
 // for comparison with the above (which handles much bigger numbers than this)
 // it does differ in whether it should be Duotrigintillion or Dotrigintillion -- see http://mathforum.org/library/drmath/view/57227.html
@@ -5692,24 +5747,28 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                             } else {
                                 button_or_link = document.createElement('a');
                                 button_or_link.innerHTML = label;
-                                button_or_link.href      = url;
                                 button_or_link.title     = title;
-                                button_or_link.target    = '_blank';
+                                if (url) {
+                                    button_or_link.href      = url;
+                                    button_or_link.target    = '_blank';
+                                }
                                 $(button_or_link).addClass('ui-widget toontalk-help-link');
                                 utilities.use_custom_tooltip(button_or_link);
                             }
                             element.appendChild(button_or_link);
                             $(button_or_link).css(css);
+                            return button_or_link;
                         }
                 };
+                var together_button_element, together_listener;
                 add_button_or_link("toontalk-manual-button",
                                    "docs/manual/index.html?reset=1",
-                                   "Learn about ToonTalk",
+                                   "Learn",
                                    "Click to visit the page that introduces everything.",
                                    {background: "yellow"});
                 add_button_or_link("toontalk-manual-tour",
                                    "docs/tours/tour1.html?reset=1",
-                                   "Watch a tour of ToonTalk",
+                                   "Watch",
                                    "Click to visit a page that replays a tour.",
                                    {background: "pink"});
                 add_button_or_link("toontalk-manual-whats-new",
@@ -5717,6 +5776,59 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                                    "What's new?",
                                    "Click to visit see what has changed recently.",
                                    {background: "cyan"});
+                if (TT.together) {
+                    together_button_element = 
+                        add_button_or_link("toontalk-together-button",
+                                           undefined, // "javascript:TogetherJS(document.getElementById('toontalk-together-button').children[0])",
+                                           "Work with others",
+                                           "Click to work with someone else.",
+                                           {background: "orange"});
+                    together_button_element["data-end-togetherjs-html"] = "Stop collaborating";
+                    together_button_element.addEventListener("click",
+                                                             function () {
+                                                                 TogetherJS(together_button_element);
+//                                                                  together_button_element.innerHTML = "Stop collaborating";
+                                                             },
+                                                             false);
+                    window.TogetherJSConfig_on_close = function () {
+                        together_button_element.innerHTML = "Work with others";
+                        together_button_element.title = "Click to start collaborating with others.";
+                    };
+                    window.TogetherJSConfig_on_ready = function () {
+                        together_button_element.innerHTML = "Work alone";
+                        together_button_element.title = "Click to stop collaborating.";
+                    };
+                    TogetherJS.hub.on("togetherjs.hello-back", window.TogetherJSConfig_on_ready);
+                    together_listener = function (message) {
+                        if (!message.sameUrl) {
+                            return;
+                        }
+                        var elementFinder = TogetherJS.require("elementFinder");
+                        try {
+                            var target = message.event_type === 'drop' ? elementFinder.findElement(message.currentTarget) : elementFinder.findElement(message.target);
+                            var simulated_event = message.event_class === 'MouseEvent' ? new MouseEvent(message.event_type, message) : new DragEvent(message.event_type, message);
+                            simulated_event.simulatedEventMessage = message;
+                            target.dispatchEvent(simulated_event);
+                        } catch (error) {
+                             console.error(error);
+                        }
+                    };
+                    ['dragstart_together', 'dragend_together', 'drop_together', 'drag_together'].forEach(function (message_type) {
+                        TogetherJS.hub.on(message_type, together_listener);
+                    });  
+//                     TogetherJS.hub.on('click_together',  function (message) { 
+//                         if (!message.sameUrl) {
+//                             return;
+//                         }
+//                         try {
+//                             var elementFinder = TogetherJS.require("elementFinder");
+//                             var element =  elementFinder.findElement(message.target);
+//                             element.dispatchEvent(new MouseEvent('click', message));
+//                         } catch (error) {
+//                              console.error(error);
+//                         }                  
+//                     });               
+                }
         };
         var unload_listener = function (event) {
             try {
@@ -5743,6 +5855,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                 };
             TT.debugging                     = utilities.get_current_url_parameter('debugging');
             TT.logging                       = utilities.get_current_url_parameter('log');
+            TT.together                      = utilities.get_current_url_boolean_parameter('together', false); // together.js available
             TT.maximum_recursion_depth       = 100; // to prevent stack overflows every so often uses setTimeout
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
@@ -5887,6 +6000,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             } else {
                 utilities.process_json_elements();
             }
+            // id needs to be unique across ToonTalks due to drag and drop (but this interferes with together.js)
+            id_counter = TT.together ? 1 : new Date().getTime();
             toontalk_initialized = true;
             document.dispatchEvent(TT.UTILITIES.create_event('toontalk_initialized', {}));
             if (TT.volume > 0) {

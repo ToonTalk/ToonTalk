@@ -38,7 +38,7 @@ window.TOONTALK.frontside =
                         // URL parameter used to restrict opening backside -- useful for puzzle construction
                         return;
                     }
-                    widget.open_backside();
+                    widget.open_backside(undefined, event.togetherjsInternal && 0);
                     if (widget.robot_in_training()) {
                         widget.robot_in_training().backside_opened(widget);
                     }

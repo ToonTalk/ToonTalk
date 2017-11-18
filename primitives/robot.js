@@ -352,7 +352,7 @@ window.TOONTALK.robot = (function (TT) {
                 $(frontside_element).css({width:  '', // rely upon toontalk-robot-animating for dimensions
                                           height: '', // otherwise doesn't animate well
                                           "z-index": TT.UTILITIES.next_z_index()});
-                TT.UTILITIES.set_position_relative_to_top_level_backside($(frontside_element), robot_offset);
+                TT.UTILITIES.set_position_relative_to_top_level_backside(frontside_element, robot_offset);
                 $top_level_element = $(frontside_element).closest(".toontalk-backside-of-top-level");
                 if ($top_level_element.length > 0) {
                     $top_level_element.get(0).appendChild(frontside_element);
@@ -482,7 +482,7 @@ window.TOONTALK.robot = (function (TT) {
             var context = this.get_training_context();
             var backside_element;
             if (!context) {
-                TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'.");
+                TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'. Best to remove this robot and train a fresh robot.");
                 return;
             }
             if (this.being_trained) {
@@ -816,7 +816,7 @@ window.TOONTALK.robot = (function (TT) {
         var backside_widgets;
         if (data_transferred_widget.is_top_level && data_transferred_widget.is_top_level()) {
             // wait for geometry to settle down before treating this as a series of pick up and drops
-            // need to get a copy of the list before other processing clobbes it
+            // need to get a copy of the list before other processing clobbers it
             backside_widgets = data_transferred_widget.get_backside_widgets().slice();
             setTimeout(function () {
                 backside_widgets.forEach(function (widget) {
@@ -1201,10 +1201,11 @@ window.TOONTALK.robot = (function (TT) {
             return "robot " + this.get_name();
         }
         frontside_conditions = this.get_frontside_conditions();
-        if (!frontside_conditions) {
+        backside_conditions = this.get_backside_conditions();
+        if (!frontside_conditions && !backside_conditions) {
             return "an untrained robot";
         }
-        frontside_is_top_level = frontside_conditions.is_top_level();
+        frontside_is_top_level = frontside_conditions && frontside_conditions.is_top_level();
         if (!to_string_info) {
             to_string_info = {};
         }
@@ -1216,7 +1217,7 @@ window.TOONTALK.robot = (function (TT) {
             // a robot manipulating another robot so switch person
             to_string_info.person = 'third';
         }
-        backside_conditions = this.get_backside_conditions();
+
         body = this.get_body();
         prefix = "";
         postfix = "";
@@ -1225,7 +1226,7 @@ window.TOONTALK.robot = (function (TT) {
             robot_conditions_description = "When the workspace's green flag " +
                                            TT.UTILITIES.encode_HTML_for_title("<span class='toontalk-green-flag-icon'></span>") +
                                            " is pressed";
-        } else {
+        } else if (frontside_conditions) {
             frontside_conditions_string = TT.UTILITIES.add_a_or_an(frontside_conditions.get_full_description({role: "conditions"}));
             robot_conditions_description = "When working on something that matches " + frontside_conditions_string;
         }
@@ -1242,6 +1243,9 @@ window.TOONTALK.robot = (function (TT) {
                 // need new line before the "he will"
                 robot_conditions_description += "\n";
             }
+        }
+        if (!robot_conditions_description) {
+            robot_conditions_description = "";
         }
         if (this.being_trained) {
             if (body.is_empty()) {
@@ -1269,7 +1273,7 @@ window.TOONTALK.robot = (function (TT) {
             return robot_description.replace(/\n/g, " ");
         }
         if (this.match_status) {
-            if (this.match_status.is_widget) {
+            if (this.match_status.is_widget && frontside_conditions) {
                 if (frontside_conditions.is_top_level()) {
                     backside_description = "the work area I'm running on";
                 } else {
@@ -1336,7 +1340,7 @@ window.TOONTALK.robot = (function (TT) {
 
     robot.get_top_level_context_description = function (to_string_info) {
         var frontside_conditions = this.get_frontside_conditions();
-        var type = frontside_conditions.get_type_name();
+        var type = frontside_conditions ? frontside_conditions.get_type_name() : 'top-level';
         if (type === 'top-level') {
             if (to_string_info && to_string_info.person === "third") {
                 return "his workspace";

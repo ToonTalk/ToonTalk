@@ -881,9 +881,11 @@ window.TOONTALK.backside =
                 backside_widgets = widget.get_backside_widgets();
                 backside.add_backside_widgets(backside_widgets, widget.get_backside_widgets_json_views());
             }
+            if (TT.debugging || TT.together) {
+                backside_element.id = widget.get_frontside_element(true).id  + "_backside";
+            }
             if (TT.debugging) {
-                backside_element.id = widget._debug_id;
-                backside._debug_id =  widget._debug_id;
+                backside._debug_id = widget._debug_id + "_backside";
                 backside._debug_string = "backside of " + widget._debug_string;
             }
             return backside;
@@ -1387,8 +1389,8 @@ window.TOONTALK.backside =
         },
 
         create_advanced_settings_button: function (backside, widget) {
-            var buuton = document.createElement('div');
-            var $settings_button = $(buuton);
+            var button = document.createElement('div');
+            var $settings_button = $(button);
             var settings_button_clicked =
                 function (event) {
                     backside.set_advanced_settings_showing(!backside.get_advanced_settings_showing(), backside.get_element(), $settings_button);
@@ -1397,12 +1399,15 @@ window.TOONTALK.backside =
                         widget.robot_in_training().button_clicked(".toontalk-settings-backside-button", widget);
                     }
                 };
-            buuton.innerHTML = '&gt;';
+            button.innerHTML = '&gt;';
             $settings_button.addClass("toontalk-settings-backside-button toontalk-button toontalk-button-style");
             $settings_button.css({"z-index": TT.UTILITIES.next_z_index()});
-            $settings_button.get(0).addEventListener('click', settings_button_clicked);
+            button.addEventListener('click', settings_button_clicked);
+//             if (TT.together) {
+//                 button.addEventListener('click', TT.UTILITIES.together_send_message);
+//             }
             TT.UTILITIES.give_tooltip($settings_button.get(0), "Click to see the advanced settings of this " + widget.get_type_name() + ".");
-            return $settings_button.get(0);
+            return button;
         },
 
         scale_backside: function (backside_element, x_scale, y_scale, original_width, original_height) {

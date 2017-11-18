@@ -1390,7 +1390,7 @@ window.TOONTALK.widget = (function (TT) {
                                                     } else {
                                                         options = {depth: depth};
                                                     }
-                                                    if (child_side.can_run(options)) {
+                                                    if (child_side.can_run && child_side.can_run(options)) {
                                                         can_run = true;
                                                     } else {
                                                         return true; // go on to next child
@@ -1570,6 +1570,9 @@ window.TOONTALK.widget = (function (TT) {
                                 }
                             };
                             $(element).addClass("toontalk-side-appearing");
+                            if (typeof duration !== 'number') {
+                                duration = 0;
+                            }
                             TT.UTILITIES.add_one_shot_event_handler(element, "transitionend", duration || 2500, remove_transition_class);
                             $(element).css({left:    final_left,
                                             top:     final_top,
@@ -1641,7 +1644,7 @@ window.TOONTALK.widget = (function (TT) {
                             widget_side.hide_backside();
                         } else {
                             widget_side.set_visible(true);
-                            widget_side.get_element(true).remove(); // added this after seeing HierarchyRequestError in Sentry log 
+                            widget_side.get_element(true).remove(); // added this after seeing HierarchyRequestError in Sentry log (still occurs...)
                             try {
                                 backside_element.appendChild(widget_side.get_element());
                             } catch (e) {
