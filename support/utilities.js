@@ -3107,9 +3107,9 @@ window.TOONTALK.UTILITIES =
             $button.addClass(class_name + " toontalk-button");
             button.get.addEventListener('click', click_handler);
             utilities.give_tooltip(button, title);
-            if (TT.together) {
-                button.addEventListener('click', utilities.together_send_message);
-            }
+//             if (TT.together) {
+//                 button.addEventListener('click', utilities.together_send_message);
+//             }
             return button;
         };
 
@@ -3121,9 +3121,9 @@ window.TOONTALK.UTILITIES =
             utilities.give_tooltip(close_button, title);
             x.innerHTML = "&times;";
             close_button.appendChild(x);
-            if (TT.together) {
-                close_button.addEventListener('click', utilities.together_send_message);
-            }
+//             if (TT.together) {
+//                 close_button.addEventListener('click', utilities.together_send_message);
+//             }
             return close_button;
         };
 
@@ -3432,7 +3432,7 @@ window.TOONTALK.UTILITIES =
         utilities.selected_radio_button = function () {
             var i;
             for (i = 0; i < arguments.length; i++) {
-                if ($(arguments[i].label).is(".ui-state-focus")) {
+                if (arguments[i].button.checked) {
                     return arguments[i];
                 }
             }
