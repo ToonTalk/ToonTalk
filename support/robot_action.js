@@ -167,6 +167,7 @@ window.TOONTALK.robot_action =
          },
          "start training": function (robot_to_be_trained, robot, additional_info) {
              if (!robot_to_be_trained.is_robot()) {
+                 // Seen in Sentry logs on IE11
                  TT.UTILITIES.report_internal_error("Expected to train a robot but found instead " + robot_to_be_trained);
                  return;
              }
