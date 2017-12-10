@@ -76,7 +76,7 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_frontside_conditions = function (new_value) {
             frontside_conditions = new_value;
-            if (frontside_conditions) {
+            if (frontside_conditions && !frontside_conditions.is_top_level()) {
                 frontside_conditions.set_parent_of_frontside(this);
             }
         };
@@ -475,7 +475,7 @@ window.TOONTALK.robot = (function (TT) {
             // can run if just runs on top-level backside
             // perhaps this should check the match_status since if unable to match can't run
             // but some callers mean capable of running in general not just now
-//             return (this.get_frontside_conditions() && this.get_frontside_conditions().is_top_level()) ||
+//             return (this.get_frontside_conditions() && this.get_frontside_conditions().is_top_level())
 //                     TT.widget.can_run.call(this, options);
         };
         new_robot.training_started = function (robot_training_this_robot) {
@@ -726,6 +726,9 @@ window.TOONTALK.robot = (function (TT) {
             }
         }
         if (this.match_status === 'matched') {
+            if (this.get_body().is_empty()) {
+                return; // don't do anything if not trained to do anything
+            }
             if (!queue) {
                 queue = this.get_queue() || TT.DEFAULT_QUEUE;
             }

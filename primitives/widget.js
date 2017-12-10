@@ -488,7 +488,7 @@ window.TOONTALK.widget = (function (TT) {
                                 return true; // continue to next child
                         });
                     }
-                    if (this.is_robot()) {
+                    if (this.is_robot() && !this.get_body().is_empty()) {
                         // this is here to support clicking on the green flag of a robot that works on the top-level backside
                         // this way one can run just those robots on the backside one wants rather than use the backside's green flag
                         if (running) {
@@ -1639,17 +1639,19 @@ window.TOONTALK.widget = (function (TT) {
             backside_widgets = this.get_backside_widgets();
             if (backside_widgets.length > 0) {
                 backside_widgets.forEach(function (widget_side) {
+                        var widget_side_element;
                         if (widget_side.is_backside() && backside_widgets.indexOf(widget_side.get_widget()) >= 0) {
                             // hide backside if front side also on the back
                             widget_side.hide_backside();
                         } else {
                             widget_side.set_visible(true);
-                            widget_side.get_element(true).remove(); // added this after seeing HierarchyRequestError in Sentry log (still occurs...)
+                            widget_side_element = widget_side.get_element(true);
+                            widget_side_element.remove(); // added this after seeing HierarchyRequestError in Sentry log (still occurs...)
                             try {
-                                backside_element.appendChild(widget_side.get_element());
+                                backside_element.appendChild(widget_side_element);
                             } catch (e) {
                                 TT.UTILITIES.report_internal_error("A backside is contained in one its backside widgets. This makes no sense. " +
-                                                                   this + " should not be part of " + widget_side + ". " + e + " In animate_backside_appearance. ");
+                                                                   this + " should not be part of " + widget_side + ". " + e + " In open_backside. ");
                             }
                         }
                 }.bind(this));

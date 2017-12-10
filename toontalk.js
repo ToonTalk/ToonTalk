@@ -39,6 +39,20 @@ var get_url_parameter = function (name, parameters, default_value) {
     return value;
 };
 
+if (get_parameter("no-browser-warning", "1") !== "1") {
+    if (window.navigator.userAgent.indexOf("MSIE") >= 0) {
+        window.alert("This program does not work well on the Internet Explorer browser. " +
+                     "It has been well-tested on Chrome, FireFox, and Edge. " +
+                     "It may run OK on Safari. " +
+                     "To avoid seeing this warning in the future add &no-browser-warning=1 to the URL.");
+    } else if (window.navigator.userAgent.indexOf("Safari") >= 0 && window.navigator.userAgent.indexOf("Mobile") >= 0) {
+        window.alert("This program has not been tested on the Safari Mobile browser. " +
+                     "It has been well-tested on Chrome, FireFox, and Edge. " +
+                     "If you encounter problems please change the browser. "+
+                     "To avoid seeing this warning in the future add &no-browser-warning=1 to the URL.");
+    }
+}
+
 // following is needed to access the user's Google Drive 
 // default assumes web page is hosted on toontalk.github.io
 window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
