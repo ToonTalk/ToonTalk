@@ -640,7 +640,8 @@ window.TOONTALK.robot_action =
         if (robot_being_trained.get_parent_of_frontside()) {
             robot_being_trained.set_context(robot_being_trained.get_parent_of_frontside().get_widget());
         } else {
-            TT.UTILITIES.report_internal_error("Robot being trained by a robot doesn't know its parent widget.");
+            // seen in Sentry logs for IE11 
+            TT.UTILITIES.report_internal_error("Robot being trained by a robot that doesn't know its parent widget.");
         }
         watched_step(robot_being_trained);
     };
