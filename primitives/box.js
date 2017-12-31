@@ -879,7 +879,19 @@ window.TOONTALK.box = (function (TT) {
 
     box.widget_side_dropped_on_me = function (side_of_other, options) {
         var hole_index = this.which_hole(options.event);
-        var hole_contents, hole;
+        var hole_contents, hole, size;
+        if (hole_index === undefined && options.robot) {
+            size = this.get_size();
+            if (size > 0) {
+                if (size > 1) {
+                    TT.UTILITIES.display_message("Robot " +  options.robot.get_name() + " wasn't trained to know which hole of " + this + " to drop " + side_of_other + " on. Random hole chosen.");
+                }
+                hole_index = Math.floor(Math.random()*size);
+            } else {
+                TT.UTILITIES.display_message("Robot " +  options.robot.get_name() + " can't drop " + side_of_other + " on " + this + " because it has no holes. ");
+                return;
+            }
+        }
         if (hole_index >= 0) {
             hole = this.get_hole(hole_index);
             hole_contents = hole.get_contents();
