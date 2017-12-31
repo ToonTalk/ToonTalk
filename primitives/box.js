@@ -715,10 +715,7 @@ window.TOONTALK.box = (function (TT) {
             var element = containing_hole || frontside_element;
             // scales explicitly control the size of the contents of their pans
             var containing_element = $(frontside_element).parent().is(".toontalk-scale-half") ? frontside_element : element;
-            if (size === 0) {
-                box_width  = 0;
-                box_height = 0;
-            } else if (dimensions_constrained_by_container) {
+            if (dimensions_constrained_by_container) {
                 box_width  = $(containing_element).width();
                 box_height = $(containing_element).height();
             } else {
@@ -777,6 +774,9 @@ window.TOONTALK.box = (function (TT) {
             border_class = "toontalk-box-half-size-border";
         } else {
             border_class = "toontalk-box-full-size-border";
+        }
+        if (size === 0) {
+            border_class += " toontalk-zero-hole-box";
         }
         // recompute hole dimensions taking into account border width
         if (horizontal) {
