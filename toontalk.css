@@ -227,6 +227,9 @@ body > .toontalk-local-alert {
 	background-image: url("images/hole-tile-half-size.png");
     background-repeat: round;
 }
+.toontalk-zero-hole-box {
+	background-color: black;
+}
 .toontalk-box-horizontal {
 }
 .toontalk-box-full-size-border {

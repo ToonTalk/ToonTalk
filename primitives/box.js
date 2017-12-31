@@ -715,10 +715,7 @@ window.TOONTALK.box = (function (TT) {
             var element = containing_hole || frontside_element;
             // scales explicitly control the size of the contents of their pans
             var containing_element = $(frontside_element).parent().is(".toontalk-scale-half") ? frontside_element : element;
-            if (size === 0) {
-                box_width  = 0;
-                box_height = 0;
-            } else if (dimensions_constrained_by_container) {
+            if (dimensions_constrained_by_container) {
                 box_width  = $(containing_element).width();
                 box_height = $(containing_element).height();
             } else {
@@ -777,6 +774,9 @@ window.TOONTALK.box = (function (TT) {
             border_class = "toontalk-box-half-size-border";
         } else {
             border_class = "toontalk-box-full-size-border";
+        }
+        if (size === 0) {
+            border_class += " toontalk-zero-hole-box";
         }
         // recompute hole dimensions taking into account border width
         if (horizontal) {
@@ -879,7 +879,19 @@ window.TOONTALK.box = (function (TT) {
 
     box.widget_side_dropped_on_me = function (side_of_other, options) {
         var hole_index = this.which_hole(options.event);
-        var hole_contents, hole;
+        var size = this.get_size();
+        var hole_contents, hole, size;
+        if (hole_index === undefined && options.robot) {
+            if (size > 0) {
+                if (size > 1) {
+                    TT.UTILITIES.display_message("Robot " +  options.robot.get_name() + " wasn't trained to know which hole of " + this + " to drop " + side_of_other + " on. Random hole chosen.");
+                }
+                hole_index = Math.floor(Math.random()*size);
+            } else {
+                TT.UTILITIES.display_message("Robot " +  options.robot.get_name() + " can't drop " + side_of_other + " on " + this + " because it has no holes.");
+                return;
+            }
+        }
         if (hole_index >= 0) {
             hole = this.get_hole(hole_index);
             hole_contents = hole.get_contents();
@@ -888,7 +900,11 @@ window.TOONTALK.box = (function (TT) {
             }
             return hole.widget_side_dropped_on_me(side_of_other, options);
         }
-        TT.UTILITIES.report_internal_error(side_of_other + " dropped on " + this + " but no event was provided.");
+        if (size === 0) {
+            TT.UTILITIES.display_message("Can't drop " + side_of_other + " on " + this + " because it has no holes.");
+        } else {
+            TT.UTILITIES.report_internal_error(side_of_other + " dropped on " + this + " but no event was provided.");
+        }
     };
 
     box.get_index_of = function (part) {

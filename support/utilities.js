@@ -3105,7 +3105,7 @@ window.TOONTALK.UTILITIES =
             var $button = $("<button>" + label + "</button>").button();
             var button = $button.get(0);
             $button.addClass(class_name + " toontalk-button");
-            button.get.addEventListener('click', click_handler);
+            button.addEventListener('click', click_handler);
             utilities.give_tooltip(button, title);
 //             if (TT.together) {
 //                 button.addEventListener('click', utilities.together_send_message);
