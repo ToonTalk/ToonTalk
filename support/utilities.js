@@ -675,7 +675,7 @@ window.TOONTALK.UTILITIES =
                            json_view = backside_widgets_json[index].widget.view;
                        }
                        element_of_backside_widget = backside_widget_side.get_element(true);
-                       if (utilities.has_ancestor_element(element_of_backside_widget, top_level_element)) {
+                       if (has_ancestor_element(element_of_backside_widget, top_level_element)) {
                            // seen in a Sentry log (Node cannot be inserted at the specified point in the hierarchy)
                            return;
                        }
