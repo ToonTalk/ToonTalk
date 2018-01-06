@@ -559,6 +559,14 @@ window.TOONTALK.box = (function (TT) {
                 }
             };
             var left, top, new_width, new_height, hole_contents, css;
+            
+            if (!hole_element.parentElement) {
+                // hole must be part of a box -- assume this is during initialisation so try again soon
+                setTimeout(function () {
+                    update_hole(hole_element, hole, index);
+                });
+                return;
+            }
             if (horizontal) {
                 top = 0;
                 if ($parents.length > 0 || $(frontside_element).is(".toontalk-conditions-contents")) {
@@ -777,12 +785,13 @@ window.TOONTALK.box = (function (TT) {
         }
         if (size === 0) {
             border_class += " toontalk-zero-hole-box";
-        }
-        // recompute hole dimensions taking into account border width
-        if (horizontal) {
-            hole_width  = hole_width -((size-1)*border_size)/size;
         } else {
-            hole_height = hole_height-((size-1)*border_size)/size;
+            // recompute hole dimensions taking into account border width
+            if (horizontal) {
+                hole_width  = hole_width -((size-1)*border_size)/size;
+            } else {
+                hole_height = hole_height-((size-1)*border_size)/size;
+            }
         }
         $(frontside_element).addClass(border_class);
         // delay it until browser has rendered current elements
