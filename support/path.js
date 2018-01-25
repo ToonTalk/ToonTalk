@@ -106,7 +106,8 @@ window.TOONTALK.path =
                 }
                 // if context is undefined something is wrong much earlier
                 if (!context) {
-                    TT.UTILITIES.report_internal_error("No context to compute the path");
+                    TT.UTILITIES.report_internal_error("No context to compute the path. Widget is " + widget + " robot is " + robot +
+                                                       ". Robot parent is" + this.get_parent_widget_of_frontside());
                     return;
                 }
                 if (context.get_path_to) {
