@@ -155,6 +155,11 @@ window.TOONTALK.robot_action =
          },
          "add a new widget to the work space": function (widget, robot, additional_info) {
              var widget_frontside_element, robot_location;
+             if (!robot.get_context()) {
+                 TT.UTILITIES.report_internal_error("Robot has no context in 'add a new widget to the work space'." +
+                                                    " Robot is " + robot + " and widget is " + widget);
+                 return;
+             }
              if (robot.get_context().is_top_level()) {
                  widget_frontside_element = robot.add_to_top_level_backside(widget);
                  robot_location = $(robot.get_frontside_element()).offset();
