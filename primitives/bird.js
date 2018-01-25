@@ -695,10 +695,16 @@ window.TOONTALK.bird = (function (TT) {
                     this.top_level_widget().get_backside_element().appendChild(frontside_element);
                 }
                 try {
-                    // despite the try-catch this Sentry log contained: Failed to execute 'appendChild' on 'Node': The new child element contains the parent.
-                    frontside_element.appendChild(this.element_to_display_when_flying);
+                    // despite the try-catch this Sentry log contained: 
+                    // Failed to execute 'appendChild' on 'Node': The new child element contains the parent.
+                    if (frontside_element !== this.element_to_display_when_flying) {
+                        // Sentry logs show without the condition that error is reported to be HierarchyRequestError
+                        // Failed to execute 'appendChild' on 'Node': The new child element contains the parent.
+                        frontside_element.appendChild(this.element_to_display_when_flying);
+                    }
                 } catch (e) {
-                    TT.UTILITIES.report_internal_error("Error attaching 'message' to bird. Message className is " + this.element_to_display_when_flying.className + ". Error is " + e);
+                    TT.UTILITIES.report_internal_error("Error attaching 'message' to bird. Message className is " + 
+                                                       this.element_to_display_when_flying.className + ". Error is " + e);
                 }
             } else {
                 $(frontside_element).children(".toontalk-side").remove();
