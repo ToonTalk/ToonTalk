@@ -4431,7 +4431,7 @@ window.TOONTALK.UTILITIES =
                                              callback(stored && stored[key]);
                                          });
             };
-        } else if (!window.localStorage) {
+        } else if (typeof window.localStorage === 'undefined' || !window.localStorage) {
             utilities.store_object = function () {
                 console.log("Browser local storage not available in this browser. Nothing stored");
             };
