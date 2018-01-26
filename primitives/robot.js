@@ -532,6 +532,8 @@ window.TOONTALK.robot = (function (TT) {
                 // robot finished training a robot
                 this.robot_in_training().finished_training_another(this);
             } else {
+                // following caused a 'Maximum call stack size exceeded' error
+                // when called after running more than 30 steps
                 $("*").css({cursor: ''}); // restore cursor
             }
         };
