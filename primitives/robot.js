@@ -534,6 +534,7 @@ window.TOONTALK.robot = (function (TT) {
             } else {
                 // following caused a 'Maximum call stack size exceeded' error
                 // when called after running more than 30 steps
+                // Running tour1 on Windows 7 Chrome 64
                 $("*").css({cursor: ''}); // restore cursor
             }
         };
