@@ -4498,10 +4498,10 @@ window.TOONTALK.UTILITIES =
                 }
             };
             utilities.retrieve_string = function (key, callback) {
-                if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
-                    console.log("Retrieved string " + (window.localStorage.getItem(key) && window.localStorage.getItem(key).substring(0, 100)) + "... with key " + key);
-                }
                 try {
+                    if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                        console.log("Retrieved string " + (window.localStorage.getItem(key) && window.localStorage.getItem(key).substring(0, 100)) + "... with key " + key);
+                    }
                     callback(window.localStorage.getItem(key));
                 } catch (e) {
                      TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,
