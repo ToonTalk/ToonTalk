@@ -499,7 +499,7 @@ window.TOONTALK.robot = (function (TT) {
                 // use miniature robot image for cursor
                 $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
                 // use moves the robot cursor and the robot being trained becomes ghostly until training finishes
-                $(this.get_frontside_element()).addClass("toontalk-ghost_robot");
+                $(this.get_frontside_element()).addClass("toontalk-ghost-robot");
             }
             this.update_title();
             backside_element = this.get_backside_element();
@@ -522,7 +522,7 @@ window.TOONTALK.robot = (function (TT) {
                     this.add_step(TT.robot_action.create(TT.newly_created_widgets_path.create(i), "add to the top-level backside"));
                 }
             }
-            $(this.get_frontside_element()).removeClass("toontalk-ghost_robot");
+            $(this.get_frontside_element()).removeClass("toontalk-ghost-robot");
             this.rerender();
             this.being_trained = false;
             this.update_title();
