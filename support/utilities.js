@@ -3865,7 +3865,8 @@ window.TOONTALK.UTILITIES =
                 // if iframe just set its dimensions
                 // -20 to account for the top margin
                 $iframe.attr('width', new_width).attr('height', new_height-20);
-                return;
+                return {x_scale: 1,
+                        y_scale: 1};
             }
             if ($(element).is(".toontalk-not-observable")) {
                 // this happens on FireFox where this is called before the widget has been "rendered"
