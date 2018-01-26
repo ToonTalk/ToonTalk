@@ -2970,7 +2970,7 @@ window.TOONTALK.UTILITIES =
             $(source_element).addClass("toontalk-side-animating");
             source_element.style.transitionDuration = duration+"ms";
             left = source_relative_position.left + (target_absolute_position.left - source_absolute_position.left);
-            top  = source_relative_position.top  + (target_absolute_position.top -  source_absolute_position.top);
+            top  = source_relative_position.top  + (target_absolute_position.top  - source_absolute_position.top);
             source_element.style.left = left + "px";
             source_element.style.top =  top  + "px";
             if (source_element.toontalk_followed_by) {
@@ -2984,7 +2984,7 @@ window.TOONTALK.UTILITIES =
                 duration = 0;
             }
             if (more_animation_follows) {
-               setTimeout(continuation, duration);
+                setTimeout(continuation, duration);
             } else {
                 setTimeout(function () {
                               $(source_element).removeClass("toontalk-side-animating");
@@ -2992,8 +2992,8 @@ window.TOONTALK.UTILITIES =
                               if (continuation) {
                                   continuation();
                               }
-                          },
-                          duration);
+                           },
+                           duration);
             }
         };
 
@@ -3865,7 +3865,8 @@ window.TOONTALK.UTILITIES =
                 // if iframe just set its dimensions
                 // -20 to account for the top margin
                 $iframe.attr('width', new_width).attr('height', new_height-20);
-                return;
+                return {x_scale: 1,
+                        y_scale: 1};
             }
             if ($(element).is(".toontalk-not-observable")) {
                 // this happens on FireFox where this is called before the widget has been "rendered"
@@ -4430,7 +4431,7 @@ window.TOONTALK.UTILITIES =
                                              callback(stored && stored[key]);
                                          });
             };
-        } else if (!window.localStorage) {
+        } else if (typeof window.localStorage === 'undefined' || !window.localStorage) {
             utilities.store_object = function () {
                 console.log("Browser local storage not available in this browser. Nothing stored");
             };
@@ -4498,10 +4499,10 @@ window.TOONTALK.UTILITIES =
                 }
             };
             utilities.retrieve_string = function (key, callback) {
-                if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
-                    console.log("Retrieved string " + (window.localStorage.getItem(key) && window.localStorage.getItem(key).substring(0, 100)) + "... with key " + key);
-                }
                 try {
+                    if (TT.logging && TT.logging.indexOf('retrieve') >= 0) {
+                        console.log("Retrieved string " + (window.localStorage.getItem(key) && window.localStorage.getItem(key).substring(0, 100)) + "... with key " + key);
+                    }
                     callback(window.localStorage.getItem(key));
                 } catch (e) {
                      TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,

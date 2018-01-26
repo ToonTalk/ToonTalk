@@ -482,7 +482,9 @@ window.TOONTALK.robot = (function (TT) {
             var context = this.get_training_context();
             var backside_element;
             if (!context) {
-                TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'. Best to remove this robot and train a fresh robot.");
+                TT.UTILITIES.report_internal_error("Robot started training but can't find its 'context'. Best to remove this robot and train a fresh robot. " +
+                                                   " robot_training_this_robot is " + robot_training_this_robot +
+                                                   " robot is " + robot);
                 return;
             }
             if (this.being_trained) {
@@ -497,7 +499,7 @@ window.TOONTALK.robot = (function (TT) {
                 // use miniature robot image for cursor
                 $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
                 // use moves the robot cursor and the robot being trained becomes ghostly until training finishes
-                $(this.get_frontside_element()).addClass("toontalk-ghost_robot");
+                $(this.get_frontside_element()).addClass("toontalk-ghost-robot");
             }
             this.update_title();
             backside_element = this.get_backside_element();
@@ -520,7 +522,7 @@ window.TOONTALK.robot = (function (TT) {
                     this.add_step(TT.robot_action.create(TT.newly_created_widgets_path.create(i), "add to the top-level backside"));
                 }
             }
-            $(this.get_frontside_element()).removeClass("toontalk-ghost_robot");
+            $(this.get_frontside_element()).removeClass("toontalk-ghost-robot");
             this.rerender();
             this.being_trained = false;
             this.update_title();
@@ -530,6 +532,9 @@ window.TOONTALK.robot = (function (TT) {
                 // robot finished training a robot
                 this.robot_in_training().finished_training_another(this);
             } else {
+                // following caused a 'Maximum call stack size exceeded' error
+                // when called after running more than 30 steps
+                // Running tour1 on Windows 7 Chrome 64
                 $("*").css({cursor: ''}); // restore cursor
             }
         };

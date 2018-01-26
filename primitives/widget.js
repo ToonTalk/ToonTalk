@@ -836,6 +836,10 @@ window.TOONTALK.widget = (function (TT) {
                     try {
                         return parent.has_ancestor_either_side(other);
                     } catch (e) {
+                        if (TT.UTILITIES.is_stack_overflow(error)) {
+                            // if contains itself then doesn't have other as ancestor
+                            return false;
+                        }
                         console.error("widget.has_ancestor_either_side encountered this error: " + e.message);
                     }
                 }
