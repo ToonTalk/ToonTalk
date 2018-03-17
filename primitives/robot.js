@@ -1208,8 +1208,11 @@ window.TOONTALK.robot = (function (TT) {
         if (to_string_info && to_string_info.role === "match_status") {
             return "robot " + this.get_name();
         }
-        frontside_conditions = this.get_frontside_conditions();
-        backside_conditions = this.get_backside_conditions();
+        // Sentry reported this.get_frontside_conditions is not a function - so check first it exists
+        frontside_conditions = typeof this.get_frontside_conditions === 'function' &&
+                               this.get_frontside_conditions();
+        backside_conditions  = typeof this.get_backside_conditions === 'function' &&
+                               this.get_backside_conditions();
         if (!frontside_conditions && !backside_conditions) {
             return "an untrained robot";
         }
