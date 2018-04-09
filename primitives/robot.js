@@ -409,6 +409,11 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_next_robot = function (new_value) {
             var backside_element = this.get_backside_element();
+            if (new_value === this) {
+                // a robot can't be in a team with itself
+                TT.UTILITIES.report_internal_error("Ignoring attempt to make a robot its next robot in the team. " + new_value);
+                return;
+            }
             if (new_value) {
                 new_value.set_first_in_team(this.get_first_in_team());
             }
