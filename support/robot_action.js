@@ -805,6 +805,10 @@ window.TOONTALK.robot_action =
             };
             new_action.run_watched = function (robot) {
                 var referenced, continuation;
+                if (!robot.stopped) {
+                    TT.UTILITIES.report_internal_error("Watched action not passed its robot. " + robot + " and action is " +  this);
+                    return;
+                }
                 if (robot.stopped() && !robot.being_trained) {
                     // if stopped finish the cycle as if unwatched
                     // don't stop if this is a robot being trained by another robot
