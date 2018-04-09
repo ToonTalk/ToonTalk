@@ -23,7 +23,7 @@ window.TOONTALK.robot_action =
          },
          "pick up": function (widget, robot, additional_info) {
              if (widget.is_empty_hole && widget.is_empty_hole()) {
-                 TT.UTILITIES.report_internal_error(robot + " trying to pick up an empty hole.");
+                 TT.UTILITIES.report_internal_error("The following robot is trying to pick up an empty hole.\n" + robot);
                  return;
              }
              if (widget.get_infinite_stack()) {
