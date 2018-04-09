@@ -409,6 +409,11 @@ window.TOONTALK.robot = (function (TT) {
         };
         new_robot.set_next_robot = function (new_value) {
             var backside_element = this.get_backside_element();
+            if (new_value === this) {
+                // a robot can't be in a team with itself
+                TT.UTILITIES.report_internal_error("Ignoring attempt to make a robot its next robot in the team. " + new_value);
+                return;
+            }
             if (new_value) {
                 new_value.set_first_in_team(this.get_first_in_team());
             }
@@ -498,7 +503,7 @@ window.TOONTALK.robot = (function (TT) {
             if (!robot_training_this_robot) {
                 // use miniature robot image for cursor
                 $("*").css({cursor: 'url(' + TT.UTILITIES.absolute_file_path("images/RB19.32x32.PNG") + '), default'});
-                // use moves the robot cursor and the robot being trained becomes ghostly until training finishes
+                // moves the robot cursor and the robot being trained becomes ghostly until training finishes
                 $(this.get_frontside_element()).addClass("toontalk-ghost-robot");
             }
             this.update_title();
@@ -540,7 +545,7 @@ window.TOONTALK.robot = (function (TT) {
         };
         if (TT.debugging || TT.logging) {
             new_robot.to_debug_string = function (max_length) {
-                var frontside_conditions = this.get_frontside_conditions();
+                var frontside_conditions = this.get_frontside_conditions && this.get_frontside_conditions();
                 return ("Robot (" + (this.get_description() || "") + " " + this.get_name() + ") runs if working on " +
                         (frontside_conditions ? TT.UTILITIES.add_a_or_an(frontside_conditions.toString()) : "anything")).substring(0, max_length);;
             };
@@ -1208,8 +1213,11 @@ window.TOONTALK.robot = (function (TT) {
         if (to_string_info && to_string_info.role === "match_status") {
             return "robot " + this.get_name();
         }
-        frontside_conditions = this.get_frontside_conditions();
-        backside_conditions = this.get_backside_conditions();
+        // Sentry reported this.get_frontside_conditions is not a function - so check first it exists
+        frontside_conditions = typeof this.get_frontside_conditions === 'function' &&
+                               this.get_frontside_conditions();
+        backside_conditions  = typeof this.get_backside_conditions === 'function' &&
+                               this.get_backside_conditions();
         if (!frontside_conditions && !backside_conditions) {
             return "an untrained robot";
         }

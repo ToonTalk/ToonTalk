@@ -1047,10 +1047,14 @@ window.TOONTALK.UTILITIES =
     var speech_recognition, path_to_toontalk_folder, widgets_left, element_displaying_tooltip, id_counter;
     window.addEventListener("message",
                             function (event) {
+                                var next_timeout;
                                 if (event.data === timeout_message_name && event.source === window) {
                                     event.stopPropagation();
                                     if (timeouts.length > 0) {
-                                        (timeouts.shift())();
+                                        next_timeout = timeouts.shift()
+                                        if (typeof next_timeout === 'function') {
+                                            next_timeout();
+                                        }
                                     }
                                     return;
                                 }

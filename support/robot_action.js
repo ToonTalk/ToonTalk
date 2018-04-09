@@ -23,7 +23,7 @@ window.TOONTALK.robot_action =
          },
          "pick up": function (widget, robot, additional_info) {
              if (widget.is_empty_hole && widget.is_empty_hole()) {
-                 TT.UTILITIES.report_internal_error(robot + " trying to pick up an empty hole.");
+                 TT.UTILITIES.report_internal_error("The following robot is trying to pick up an empty hole.\n" + robot);
                  return;
              }
              if (widget.get_infinite_stack()) {
@@ -149,7 +149,9 @@ window.TOONTALK.robot_action =
                  widget.update_display();
                  top_level_element.appendChild(widget_frontside_element);
                  widget.animate_to_element(top_level_element, undefined, robot.transform_animation_speed(TT.animation_settings.ANIMATION_SPEED));
-                 $(widget_frontside_element).css(top_level_widget.get_backside().get_free_location(widget));
+                 if (top_level_widget.get_backside) {
+                     $(widget_frontside_element).css(top_level_widget.get_backside().get_free_location(widget));
+                 }
              }
              return true;
          },
@@ -279,11 +281,14 @@ window.TOONTALK.robot_action =
                     animation_offset.top  -= thing_in_hand_location.top -robot_location.top;
                 }
             }
-            free_location = side.get_backside().get_free_location(thing_in_hand, {try_first: animation_offset});
-            widget_element.animation_left_offset = free_location.left;
-            widget_element.animation_top_offset  = free_location.top;
-            robot.animation_left_offset = free_location.left;
-            robot.animation_top_offset  = free_location.top;
+            if (side.get_backside) {
+                free_location = side.get_backside().get_free_location(thing_in_hand, {try_first: animation_offset});
+                widget_element.animation_left_offset = free_location.left;
+                widget_element.animation_top_offset  = free_location.top;
+                robot.animation_left_offset = free_location.left;
+                robot.animation_top_offset  = free_location.top;                
+            }
+            
         } else {
             left_offset = widget_bounding_box.width/2;
             top_offset  = widget_bounding_box.height/2;
@@ -800,6 +805,10 @@ window.TOONTALK.robot_action =
             };
             new_action.run_watched = function (robot) {
                 var referenced, continuation;
+                if (!robot.stopped) {
+                    TT.UTILITIES.report_internal_error("Watched action not passed its robot. Was passed " + robot + " and action is " +  this);
+                    return;
+                }
                 if (robot.stopped() && !robot.being_trained) {
                     // if stopped finish the cycle as if unwatched
                     // don't stop if this is a robot being trained by another robot
