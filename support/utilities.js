@@ -2782,7 +2782,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.speak = function (text, options) {
             // options include when_finished, volume, pitch, rate, voice_number, no_translation
-            var speech_utterance = new SpeechSynthesisUtterance(text);
+//             var speech_utterance = new SpeechSynthesisUtterance(text);
             var voices = window.speechSynthesis.getVoices();
             var maximum_length = 200; // not sure what a good value is
             var break_into_short_segments = function (text) {
@@ -2859,42 +2859,48 @@ window.TOONTALK.UTILITIES =
                 });
                 return;
             }
-            speech_utterance_index = speech_utterances.push(speech_utterance)-1;
-            // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
-            speech_utterance.volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
-            speech_utterance.pitch  = options.pitch  === undefined ? 1.2 : options.pitch; // higher value to sound more like a child -- should really be parameter
-            speech_utterance.rate   = options.rate   === undefined ? .75 : options.rate; // slow it down for kids
-            language_code = utilities.translation_language_code();
-            voices.some(function (voice) {
-                if (voice.lang.indexOf(language_code) === 0 || voice.lang === "") {
-                    // might be 'es' while voice.lang will be 'es-ES'
-                    speech_utterance.lang = voice.lang;
-                    speech_utterance.voice = voice;
-                    if (options.voice_number === 0 || options.voice_number === undefined) {
-                        // if undefined go with the first one
-                        return true;
-                    }
-                    // note that if voice number is greater than the number of matching voices the last one found is used
-                    options.voice_number--;
-                }
-            });
-            // if language_code's format is name-country and nothing found could try again with just the language name
-            if (options.when_finished) {
-                speech_utterance.onend = function () {
-                    speech_utterances.splice(speech_utterance_index, 1);
-                    options.when_finished();
-                    speech_utterance.onend = undefined;
-                };
-                setTimeout(function () {
-                               if (speech_utterance.onend && !window.speechSynthesis.speaking) {
-                                   // still hasn't run
-                                   utilities.display_message("Browser did not begin speaking after waiting 20 seconds. Continuing as if speech occurred.");
-                                   speech_utterance.onend();
-                               }
-                           },
-                           20000);
-            }
-            window.speechSynthesis.speak(speech_utterance);
+            // experimenting with ecraft2learn library - message, pitch, rate, voice_number, volume, language, finished_callback
+            let pitch  = options.pitch  === undefined ? 1.2 : options.pitch;
+            let volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
+            let rate =   options.rate   === undefined ? .75 : options.rate;
+            let voice_number = options.voice_number   === undefined ? 0 : options.voice_number;
+            ecraft2learn.speak(text, pitch, rate, voice_number, volume, options.language, options.when_finished); // language to do...
+//             speech_utterance_index = speech_utterances.push(speech_utterance)-1;
+//             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
+//             speech_utterance.volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
+//             speech_utterance.pitch  = options.pitch  === undefined ? 1.2 : options.pitch; // higher value to sound more like a child -- should really be parameter
+//             speech_utterance.rate   = options.rate   === undefined ? .75 : options.rate; // slow it down for kids
+//             language_code = utilities.translation_language_code();
+//             voices.some(function (voice) {
+//                 if (voice.lang.indexOf(language_code) === 0 || voice.lang === "") {
+//                     // might be 'es' while voice.lang will be 'es-ES'
+//                     speech_utterance.lang = voice.lang;
+//                     speech_utterance.voice = voice;
+//                     if (options.voice_number === 0 || options.voice_number === undefined) {
+//                         // if undefined go with the first one
+//                         return true;
+//                     }
+//                     // note that if voice number is greater than the number of matching voices the last one found is used
+//                     options.voice_number--;
+//                 }
+//             });
+//             // if language_code's format is name-country and nothing found could try again with just the language name
+//             if (options.when_finished) {
+//                 speech_utterance.onend = function () {
+//                     speech_utterances.splice(speech_utterance_index, 1);
+//                     options.when_finished();
+//                     speech_utterance.onend = undefined;
+//                 };
+//                 setTimeout(function () {
+//                                if (speech_utterance.onend && !window.speechSynthesis.speaking) {
+//                                    // still hasn't run
+//                                    utilities.display_message("Browser did not begin speaking after waiting 20 seconds. Continuing as if speech occurred.");
+//                                    speech_utterance.onend();
+//                                }
+//                            },
+//                            20000);
+//             }
+//             window.speechSynthesis.speak(speech_utterance);
         };
 
         utilities.translation_language_code = function () {

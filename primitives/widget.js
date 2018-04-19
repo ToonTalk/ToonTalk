@@ -1806,11 +1806,11 @@ window.TOONTALK.widget = (function (TT) {
                                                    functions.process_response(response, message_properties, message, options);
                                                };
                                                TT.UTILITIES.speak(translated_text,
-                                                                 {when_finished: when_finished,
-                                                                  volume: volume,
-                                                                  pitch: pitch,
-                                                                  rate: rate,
-                                                                  voice_number: voice_number});
+                                                                  {when_finished: when_finished,
+                                                                   volume: volume,
+                                                                   pitch: pitch,
+                                                                   rate: rate,
+                                                                   voice_number: voice_number});
                                            });
                 } else {
                     when_finished = function (event) {
