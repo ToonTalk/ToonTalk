@@ -11,7 +11,11 @@
 
 // this internal function is need by both element and element_backside
 var is_transformation_option = function (attribute) {
-    return (attribute === 'rotate' || attribute === 'skewX' || attribute === 'skewY' || attribute === 'transform-origin-x' || attribute === 'transform-origin-y');
+    return (attribute === 'rotate' ||
+            attribute === 'skewX' ||
+            attribute === 'skewY' ||
+            attribute === 'transform-origin-x' ||
+            attribute === 'transform-origin-y');
 };
 
 var attribute_type = function (attribute) {

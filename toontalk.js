@@ -55,7 +55,8 @@ if (get_parameter("no-browser-warning", "1") !== "1") {
 
 // following is needed to access the user's Google Drive 
 // default assumes web page is hosted on toontalk.github.io
-window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',  '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
+window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_ID',
+                                                          '148386604750-704q35l4gcffpj2nn3p4ivcopl81nm27.apps.googleusercontent.com'),
                    ORIGIN_FOR_GOOGLE_DRIVE: get_parameter('ORIGIN_FOR_GOOGLE_DRIVE', 'toontalk.github.io'),
                    // TOONTALK_URL is where the scripts, sounds, css, images, etc live
                    TOONTALK_URL: path_prefix,
@@ -127,7 +128,8 @@ if (reason_unable_to_run()) {
 }
 
 if (TOONTALK.TOONTALK_URL.indexOf("http:") === 0 && !TOONTALK.RUNNING_LOCALLY) {
-    if (window.confirm("You are using a URL that begins with 'http:'. ToonTalk runs better if the URL starts with 'https:'. OK to reload with HTTPS?")) {
+    if (window.confirm("You are using a URL that begins with 'http:'. ToonTalk runs better if the URL starts with 'https:'. " +
+                       "OK to reload with HTTPS?")) {
         window.location.replace("https" + window.location.href.substring(4));
     }
     log_errors = false;
@@ -208,6 +210,7 @@ if (debugging) {
                   "support/google_drive.js",
                   "support/utilities.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
+                  "https://ecraft2learn.github.io/ai/ecraft2learn.js", // only while debugging for now
 //                   "https://www.dropbox.com/static/api/2/dropins.js", // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
 //                   "libraries/jquery.ui.touch-punch.min.js"
