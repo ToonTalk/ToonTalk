@@ -1810,7 +1810,8 @@ window.TOONTALK.widget = (function (TT) {
                                                                    volume: volume,
                                                                    pitch: pitch,
                                                                    rate: rate,
-                                                                   voice_number: voice_number});
+                                                                   voice_number: voice_number,
+                                                                   language: language});
                                            });
                 } else {
                     when_finished = function (event) {
@@ -1823,10 +1824,11 @@ window.TOONTALK.widget = (function (TT) {
                                         volume: volume,
                                         pitch: pitch,
                                         rate: rate,
-                                        voice_number: voice_number});
+                                        voice_number: voice_number,
+                                        language: language});
                 }
             };
-            var message_properties, volume, pitch, rate, voice_number;
+            var message_properties, volume, pitch, rate, voice_number, language;
             if (!window.speechSynthesis) {
                 // ignore this
                 functions.report_error("This browser doesn't support speech output. Try another browser such as Chrome.", message_properties);
@@ -1842,19 +1844,23 @@ window.TOONTALK.widget = (function (TT) {
             }
             volume = message.get_hole_contents(2);
             if (volume) {
-                volume = volume && volume.to_float && volume.to_float();
+                volume = volume.to_float && volume.to_float();
             }
             pitch = message.get_hole_contents(3);
             if (pitch) {
-                pitch = pitch && pitch.to_float && pitch.to_float();
+                pitch = pitch.to_float && pitch.to_float();
             }
             rate = message.get_hole_contents(4);
             if (rate) {
-                rate = rate && rate.to_float && rate.to_float();
+                rate = rate.to_float && rate.to_float();
             }
             voice_number = message.get_hole_contents(5);
             if (voice_number) {
-                voice_number = voice_number && voice_number.to_float && voice_number.to_float();
+                voice_number = voice_number.to_float && voice_number.to_float();
+            }
+            language = message.get_hole_contents(6);
+            if (language) {
+                language = language.get_text && language.get_text();
             }
             speak(message.get_hole_contents(1));
             return true;

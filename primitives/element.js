@@ -2449,7 +2449,7 @@ window.TOONTALK.element.function =
         'speak',
         TT.widget.get_speak_function(functions),
         "The bird will cause the browser to speak what is in the second box hole. "
-        + "Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number</a>. "
+        + "Other holes can have numbers describing the <a href='https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance'>volume, pitch, rate, voice_number, and language</a>. "
         + "Might do nothing in <a href='http://caniuse.com/#search=speech%20syn'>some browsers</a>.",
         "speak",
         ['a widget']);
