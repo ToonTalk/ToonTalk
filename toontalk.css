@@ -1857,7 +1857,8 @@ background-image: url("images/dusty-morph.png");
 	width: 1px;
 	height: 1px;
 	color: white;
-	display:  none;
+/* 	The following stopped working presumably because hidden elements don't need translation */
+/* 	display:  none; */
 }
 .ui-tooltip > a {
 /* 	links in tool tips display as ordinary text but link may be used elsewhere - e.g. in generating function-birds.html */

@@ -1811,7 +1811,9 @@ window.TOONTALK.widget = (function (TT) {
                                                                    pitch: pitch,
                                                                    rate: rate,
                                                                    voice_number: voice_number,
-                                                                   language: language});
+                                                                   language: language,
+                                                                   // already translated so don't try again
+                                                                   no_translation: true});
                                            });
                 } else {
                     when_finished = function (event) {
