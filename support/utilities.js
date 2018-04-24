@@ -2864,7 +2864,10 @@ window.TOONTALK.UTILITIES =
             let volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
             let rate =   options.rate   === undefined ? .75 : options.rate;
             let voice_number = options.voice_number   === undefined ? 0 : options.voice_number;
-            ecraft2learn.speak(text, pitch, rate, voice_number, volume, options.language, options.when_finished); // language to do...
+            let language = options.language || 
+                           (document.getElementsByClassName("goog-te-menu-value").length > 0 && 
+                            document.getElementsByClassName("goog-te-menu-value")[0].firstChild.innerText)
+            ecraft2learn.speak(text, pitch, rate, voice_number, volume, language, options.when_finished); // language to do...
 //             speech_utterance_index = speech_utterances.push(speech_utterance)-1;
 //             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
 //             speech_utterance.volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
