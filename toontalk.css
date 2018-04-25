@@ -209,6 +209,11 @@ body > .toontalk-local-alert {
 	font-size: 1.2em;
 	cursor: auto;
 }
+.toontalk-side {
+/* 	the following works around a drag and drop display bug in Chrome 66
+	where dragged items aren't displayed (except for scales with already have a scale(1, 1) transform) */
+	transform: scale(1, 1);
+}
 .toontalk-frontside {
     position: absolute;
 }
