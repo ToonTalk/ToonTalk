@@ -255,8 +255,9 @@ window.TOONTALK.bird = (function (TT) {
                     if (nest_recieving_message) {
                         try {
                             options.delivery_bird = this; // TODO: determine if this should be passed along below
-                            nest_recieving_message.add_to_contents(message_side, {ignore_copies: true,
-                                                                                  make_message_nests_delivery_targets: nest_recieving_message.is_function_nest()});
+                            nest_recieving_message.add_to_contents(message_side,
+                                                                   {ignore_copies: true,
+                                                                    make_message_nests_delivery_targets: nest_recieving_message.is_function_nest()});
                             fly_back_continuation();
                         } catch (nest_or_error) {
                             if (nest_or_error.wait_for_nest_to_receive_something) {

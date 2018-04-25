@@ -2782,7 +2782,7 @@ window.TOONTALK.UTILITIES =
 
         utilities.speak = function (text, options) {
             // options include when_finished, volume, pitch, rate, voice_number, no_translation
-            var speech_utterance = new SpeechSynthesisUtterance(text);
+//             var speech_utterance = new SpeechSynthesisUtterance(text);
             var voices = window.speechSynthesis.getVoices();
             var maximum_length = 200; // not sure what a good value is
             var break_into_short_segments = function (text) {
@@ -2859,42 +2859,52 @@ window.TOONTALK.UTILITIES =
                 });
                 return;
             }
-            speech_utterance_index = speech_utterances.push(speech_utterance)-1;
-            // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
-            speech_utterance.volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
-            speech_utterance.pitch  = options.pitch  === undefined ? 1.2 : options.pitch; // higher value to sound more like a child -- should really be parameter
-            speech_utterance.rate   = options.rate   === undefined ? .75 : options.rate; // slow it down for kids
-            language_code = utilities.translation_language_code();
-            voices.some(function (voice) {
-                if (voice.lang.indexOf(language_code) === 0 || voice.lang === "") {
-                    // might be 'es' while voice.lang will be 'es-ES'
-                    speech_utterance.lang = voice.lang;
-                    speech_utterance.voice = voice;
-                    if (options.voice_number === 0 || options.voice_number === undefined) {
-                        // if undefined go with the first one
-                        return true;
-                    }
-                    // note that if voice number is greater than the number of matching voices the last one found is used
-                    options.voice_number--;
-                }
-            });
-            // if language_code's format is name-country and nothing found could try again with just the language name
-            if (options.when_finished) {
-                speech_utterance.onend = function () {
-                    speech_utterances.splice(speech_utterance_index, 1);
-                    options.when_finished();
-                    speech_utterance.onend = undefined;
-                };
-                setTimeout(function () {
-                               if (speech_utterance.onend && !window.speechSynthesis.speaking) {
-                                   // still hasn't run
-                                   utilities.display_message("Browser did not begin speaking after waiting 20 seconds. Continuing as if speech occurred.");
-                                   speech_utterance.onend();
-                               }
-                           },
-                           20000);
-            }
-            window.speechSynthesis.speak(speech_utterance);
+            // using ecraft2learn library - message, pitch, rate, voice_number, volume, language, finished_callback
+            let pitch  = options.pitch  === undefined ? 1.2 : options.pitch;
+            let volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
+            let rate =   options.rate   === undefined ? .75 : options.rate;
+            let voice_number = options.voice_number   === undefined ? 0 : options.voice_number;
+            let language = options.language || 
+                           (document.getElementsByClassName("goog-te-menu-value").length > 0 && 
+                            document.getElementsByClassName("goog-te-menu-value")[0].firstChild.innerText);
+            ecraft2learn.speak(text, pitch, rate, voice_number, volume, language, options.when_finished);
+            // following is how it worked before using the ecraft2learn library
+//             speech_utterance_index = speech_utterances.push(speech_utterance)-1;
+//             // TT.volume is used for speech and sound effects and speech is quieter so triple its volume
+//             speech_utterance.volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
+//             speech_utterance.pitch  = options.pitch  === undefined ? 1.2 : options.pitch; // higher value to sound more like a child -- should really be parameter
+//             speech_utterance.rate   = options.rate   === undefined ? .75 : options.rate; // slow it down for kids
+//             language_code = utilities.translation_language_code();
+//             voices.some(function (voice) {
+//                 if (voice.lang.indexOf(language_code) === 0 || voice.lang === "") {
+//                     // might be 'es' while voice.lang will be 'es-ES'
+//                     speech_utterance.lang = voice.lang;
+//                     speech_utterance.voice = voice;
+//                     if (options.voice_number === 0 || options.voice_number === undefined) {
+//                         // if undefined go with the first one
+//                         return true;
+//                     }
+//                     // note that if voice number is greater than the number of matching voices the last one found is used
+//                     options.voice_number--;
+//                 }
+//             });
+//             // if language_code's format is name-country and nothing found could try again with just the language name
+//             if (options.when_finished) {
+//                 speech_utterance.onend = function () {
+//                     speech_utterances.splice(speech_utterance_index, 1);
+//                     options.when_finished();
+//                     speech_utterance.onend = undefined;
+//                 };
+//                 setTimeout(function () {
+//                                if (speech_utterance.onend && !window.speechSynthesis.speaking) {
+//                                    // still hasn't run
+//                                    utilities.display_message("Browser did not begin speaking after waiting 20 seconds. Continuing as if speech occurred.");
+//                                    speech_utterance.onend();
+//                                }
+//                            },
+//                            20000);
+//             }
+//             window.speechSynthesis.speak(speech_utterance);
         };
 
         utilities.translation_language_code = function () {
@@ -5476,20 +5486,10 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
         array.push(string);
         return array;
     };
-
     utilities.listen_for_speech = function (options) {
-        // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
-        // tags would be a nice way to simplify this and make it language independent but at last Chrome doesn't currently support it
-        // options are commands, minimum_confidence, numbers_acceptable, descriptions_acceptable, widget, success_callback, fail_callback
-        var commands, minimum_confidence, SpeechGrammarList, SpeechRecognitionEvent, grammar, speechRecognitionList, turn_on_speech_recognition;
-        var command, confidence, i;
         if (!TT.listen) {
             return;
         }
-        commands = options.commands || "";
-        minimum_confidence = options.minimum_confidence || 0;
-        SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
-        SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
         if (window.speechSynthesis.speaking) {
             // busy wait until speech synthesis is over
             setTimeout(function () {
@@ -5498,6 +5498,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
                        1000);
             return;
         }
+        let commands = options.commands || ""; // for the grammar 
         // see https://www.w3.org/TR/jsgf/ for JSGF format
         if (options.descriptions_acceptable) {
             // accept anything that starts with I am or I'm
@@ -5507,103 +5508,158 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             // accept anything that starts with my name is or call me
             commands += " | My name is | call me ";
         }
-        grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
-        speechRecognitionList = new SpeechGrammarList();
-        turn_on_speech_recognition = function () {
-            try {
-                speech_recognition.start();
-//                 console.log("listening");
-            } catch (ignore_error) {
-                // assuming the error was that it had already started
-//                 console.log("Ignoring " + ignore_error);
-            }
-        };
+        let grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
         waiting_for_speech = true;
-        speech_recognition = (typeof SpeechRecognition === 'undefined') ? new webkitSpeechRecognition() : new SpeechRecognition();
-        speechRecognitionList.addFromString(grammar, 1);
-        speech_recognition.grammars = speechRecognitionList;
-        speech_recognition.continuous = false;
-        speech_recognition.lang = utilities.translation_language_code();
-        speech_recognition.interimResults = false;
-        speech_recognition.maxAlternatives = 5;
-        speech_recognition.onresult = function (event) {
-            // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
-            // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
-            // It has a getter so it can be accessed like an array
-            // The first [0] returns the SpeechRecognitionResult at position 0.
-            // Each SpeechRecognitionResult object contains SpeechRecognitionAlternative objects that contain individual results.
-            // These also have getters so they can be accessed like arrays.
-            // The second [0] returns the SpeechRecognitionAlternative at position 0.
-            // We then return the transcript property of the SpeechRecognitionAlternative object
-            var result;
-            for (i = 0; i < event.results[0].length; i++) {
-                if (event.results[0][i].confidence >= minimum_confidence) {
-                    result = event.results[0][i].transcript.toLowerCase();
-                    if (!commands ||
-                        (commands.indexOf(result + " |") >= 0 ||
-                         commands.indexOf("| " + result) >= 0 ||
-                         (options.numbers_acceptable && !isNaN(parseFloat(result))) ||
-                         (options.descriptions_acceptable && (result.indexOf('i am') === 0 || result.indexOf("i'm") === 0)) ||
-                         (options.names_acceptable && (result.indexOf('my name is') === 0 || result.indexOf("call me") === 0)))) {
-                        // if command is one of the expected tokens -- must have a | before and/or after it
-                        command = event.results[0][i].transcript.toLowerCase();
-                        confidence = event.results[0][i].confidence;
-                        // assumes that the most confident answers are first
-                        break;
-                    }
-                }
-            }
-            if (window.speechSynthesis.speaking) {
-                console.log("Ignoring speech since synthesising speech. " + (command || ""));
-            } else if (command) {
-                console.log(command + " confidence : " + confidence);
-                if (options.descriptions_acceptable && options.widget && utilities.spoken_command_is_a_description(command, options.widget)) {
-                    // description updated
-                    options.widget.rerender();
-                } else if (options.names_acceptable && options.widget && utilities.spoken_command_is_a_naming(command, options.widget)) {
-                    // name updated
-                    options.widget.rerender();
-                } else if (options.success_callback) {
-                    options.success_callback(command, event);
-                }
-            } else {
-                console.log("confidence too low"); // give better feedback
-            }
-            speech_recognition.stop(); // onend will restart listening
-        };
-
-        speech_recognition.onend = function () {
-            if (waiting_for_speech) {
-//                 console.log("speech ended but restarted");
-                turn_on_speech_recognition();
+        let success_callback = function (spoken, event) {
+            if (options.descriptions_acceptable && options.widget && utilities.spoken_command_is_a_description(spoken, options.widget)) {
+                // description updated
+                options.widget.rerender();
+            } else if (options.names_acceptable && options.widget && utilities.spoken_command_is_a_naming(spoken, options.widget)) {
+                // name updated
+                options.widget.rerender();
+            } else if (options.success_callback) {
+                options.success_callback(spoken, event);
             }
         };
-
-        speech_recognition.onnomatch = function (event) {
-            if (options.fail_callback) {
-                options.fail_callback(event);
-            }
-        };
-
-        speech_recognition.onerror = function (event) {
-            if (event.error !== 'no-speech') {
-                // hiding errors other than no speech
-//              console.log('no speech');
-            } else if (options.fail_callback) {
-                options.fail_callback(event);
-            }
-        }
-
-        if (waiting_for_speech) {
-            turn_on_speech_recognition();
-        }
+        let language = options.language || 
+                       (document.getElementsByClassName("goog-te-menu-value").length > 0 && 
+                        document.getElementsByClassName("goog-te-menu-value")[0].firstChild.innerText);
+        ecraft2learn.start_speech_recognition(success_callback,
+                                              options.fail_callback, 
+                                              undefined, // interim_spoken_callback,
+                                              language);
     };
 
+//     utilities.listen_for_speech = function (options) {
+//         // based upon http://mdn.github.io/web-speech-api/speech-color-changer/
+//         // tags would be a nice way to simplify this and make it language independent but at last Chrome doesn't currently support it
+//         // options are commands, minimum_confidence, numbers_acceptable, descriptions_acceptable, widget, success_callback, fail_callback
+//         var commands, minimum_confidence, SpeechGrammarList, SpeechRecognitionEvent, grammar, speechRecognitionList, turn_on_speech_recognition;
+//         var command, confidence, i;
+//         if (!TT.listen) {
+//             return;
+//         }
+//         commands = options.commands || "";
+//         minimum_confidence = options.minimum_confidence || 0;
+//         SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+//         SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
+//         if (window.speechSynthesis.speaking) {
+//             // busy wait until speech synthesis is over
+//             setTimeout(function () {
+//                            utilities.listen_for_speech(options);
+//                        },
+//                        1000);
+//             return;
+//         }
+//         // see https://www.w3.org/TR/jsgf/ for JSGF format
+//         if (options.descriptions_acceptable) {
+//             // accept anything that starts with I am or I'm
+//             commands += " | I am | I'm ";
+//         }
+//         if (options.names_acceptable) {
+//             // accept anything that starts with my name is or call me
+//             commands += " | My name is | call me ";
+//         }
+//         grammar = '#JSGF V1.0; grammar commands; public <commands> = ' + commands + ';';
+//         speechRecognitionList = new SpeechGrammarList();
+//         turn_on_speech_recognition = function () {
+//             try {
+//                 speech_recognition.start();
+// //                 console.log("listening");
+//             } catch (ignore_error) {
+//                 // assuming the error was that it had already started
+// //                 console.log("Ignoring " + ignore_error);
+//             }
+//         };
+//         waiting_for_speech = true;
+//         speech_recognition = (typeof SpeechRecognition === 'undefined') ? new webkitSpeechRecognition() : new SpeechRecognition();
+//         speechRecognitionList.addFromString(grammar, 1);
+//         speech_recognition.grammars = speechRecognitionList;
+//         speech_recognition.continuous = false;
+//         speech_recognition.lang = utilities.translation_language_code();
+//         speech_recognition.interimResults = false;
+//         speech_recognition.maxAlternatives = 5;
+//         speech_recognition.onresult = function (event) {
+//             // The SpeechRecognitionEvent results property returns a SpeechRecognitionResultList object
+//             // The SpeechRecognitionResultList object contains SpeechRecognitionResult objects.
+//             // It has a getter so it can be accessed like an array
+//             // The first [0] returns the SpeechRecognitionResult at position 0.
+//             // Each SpeechRecognitionResult object contains SpeechRecognitionAlternative objects that contain individual results.
+//             // These also have getters so they can be accessed like arrays.
+//             // The second [0] returns the SpeechRecognitionAlternative at position 0.
+//             // We then return the transcript property of the SpeechRecognitionAlternative object
+//             var result;
+//             for (i = 0; i < event.results[0].length; i++) {
+//                 if (event.results[0][i].confidence >= minimum_confidence) {
+//                     result = event.results[0][i].transcript.toLowerCase();
+//                     if (!commands ||
+//                         (commands.indexOf(result + " |") >= 0 ||
+//                          commands.indexOf("| " + result) >= 0 ||
+//                          (options.numbers_acceptable && !isNaN(parseFloat(result))) ||
+//                          (options.descriptions_acceptable && (result.indexOf('i am') === 0 || result.indexOf("i'm") === 0)) ||
+//                          (options.names_acceptable && (result.indexOf('my name is') === 0 || result.indexOf("call me") === 0)))) {
+//                         // if command is one of the expected tokens -- must have a | before and/or after it
+//                         command = event.results[0][i].transcript.toLowerCase();
+//                         confidence = event.results[0][i].confidence;
+//                         // assumes that the most confident answers are first
+//                         break;
+//                     }
+//                 }
+//             }
+//             if (window.speechSynthesis.speaking) {
+//                 console.log("Ignoring speech since synthesising speech. " + (command || ""));
+//             } else if (command) {
+//                 console.log(command + " confidence : " + confidence);
+//                 if (options.descriptions_acceptable && options.widget && utilities.spoken_command_is_a_description(command, options.widget)) {
+//                     // description updated
+//                     options.widget.rerender();
+//                 } else if (options.names_acceptable && options.widget && utilities.spoken_command_is_a_naming(command, options.widget)) {
+//                     // name updated
+//                     options.widget.rerender();
+//                 } else if (options.success_callback) {
+//                     options.success_callback(command, event);
+//                 }
+//             } else {
+//                 console.log("confidence too low"); // give better feedback
+//             }
+//             speech_recognition.stop(); // onend will restart listening
+//         };
+
+//         speech_recognition.onend = function () {
+//             if (waiting_for_speech) {
+// //                 console.log("speech ended but restarted");
+//                 turn_on_speech_recognition();
+//             }
+//         };
+
+//         speech_recognition.onnomatch = function (event) {
+//             if (options.fail_callback) {
+//                 options.fail_callback(event);
+//             }
+//         };
+
+//         speech_recognition.onerror = function (event) {
+//             if (event.error !== 'no-speech') {
+//                 // hiding errors other than no speech
+// //              console.log('no speech');
+//             } else if (options.fail_callback) {
+//                 options.fail_callback(event);
+//             }
+//         }
+
+//         if (waiting_for_speech) {
+//             turn_on_speech_recognition();
+//         }
+//     };
+
     utilities.stop_listening_for_speech = function () {
-        if (speech_recognition) {
-            speech_recognition.stop();
-            waiting_for_speech = false;
+        if (ecraft2learn.stop_speech_recognition) {
+            ecraft2learn.stop_speech_recognition();
         }
+//         if (speech_recognition) {
+//             speech_recognition.stop();
+//             waiting_for_speech = false;
+//         }
 //      console.log("stopped listening due to stop_listening_for_speech");
     };
 
