@@ -486,7 +486,10 @@ window.TOONTALK.UTILITIES =
             source_widget_side = utilities.widget_side_of_jquery($source);
             if ($source.parent().is(".toontalk-drop-area")) {
                 $source.removeClass("toontalk-widget-in-drop_area");
-                $source.parent().data("drop_area_owner").set_next_robot(undefined);
+                if (typeof $source.parent === 'function') {
+                    // Sentry reported this not being a function on Android 5.1 (Chrome 66)
+                    $source.parent().data("drop_area_owner").set_next_robot(undefined);
+                } 
             } else {
                 container = source_widget_side && source_widget_side.get_parent();
                 if (container) {
