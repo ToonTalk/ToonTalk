@@ -692,7 +692,12 @@ window.TOONTALK.element = (function (TT) { // TT is for convenience and more leg
             this.apply_css();
             if (children) {
                 children.forEach(function (child) {
-                    frontside_element.appendChild(child.get_frontside_element(true));
+                    try {
+                        frontside_element.appendChild(child.get_frontside_element(true));
+                    } catch (ignore_error) {
+                        // Sentry caught an error here:
+                        // Node cannot be inserted at the specified point in the hierarchy
+                    }
                     child.set_visible(true);
                     child.update_display();
                 });

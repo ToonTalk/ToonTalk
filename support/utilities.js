@@ -486,7 +486,10 @@ window.TOONTALK.UTILITIES =
             source_widget_side = utilities.widget_side_of_jquery($source);
             if ($source.parent().is(".toontalk-drop-area")) {
                 $source.removeClass("toontalk-widget-in-drop_area");
-                $source.parent().data("drop_area_owner").set_next_robot(undefined);
+                if (typeof $source.parent === 'function') {
+                    // Sentry reported this not being a function on Android 5.1 (Chrome 66)
+                    $source.parent().data("drop_area_owner").set_next_robot(undefined);
+                } 
             } else {
                 container = source_widget_side && source_widget_side.get_parent();
                 if (container) {
@@ -2261,7 +2264,8 @@ window.TOONTALK.UTILITIES =
                                           process_widget_callback(depth ? depth+1 : 1);
                                        }
                                    };
-                                   if (toontalk_last_key) {
+                                   if (toontalk_last_key && toontalk_last_key !== 'null') {
+                                       // localStorage always returns a string so treat 'null' as null
                                        utilities.retrieve_object(toontalk_last_key,
                                                                  function (json_from_storage) {
                                                                      if (json_from_storage) {
@@ -4520,7 +4524,7 @@ window.TOONTALK.UTILITIES =
                     callback(window.localStorage.getItem(key));
                 } catch (e) {
                      TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,
-                                                 {only_if_new: true});
+                                                  {only_if_new: true});
                 }
             };
         };

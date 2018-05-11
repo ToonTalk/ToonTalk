@@ -312,6 +312,8 @@ window.TOONTALK.widget = (function (TT) {
             }
             if (!widget.get_backside) {
                 widget.get_backside = function (create) {
+                    // Sentry reported too much recursion here so maybe somehow
+                    // a backside is on itself?
                     if (create && !backside) {
                         // backsides are customised by each kind of widget
                         backside = this.create_backside();

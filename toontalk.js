@@ -210,7 +210,7 @@ if (debugging) {
                   "support/google_drive.js",
                   "support/utilities.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
-                  "http://localhost:8080/ai/ecraft2learn.js", // only while debugging for now
+                  "support/ecraft2learn.js", 
 //                   "https://www.dropbox.com/static/api/2/dropins.js", // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
 //                   "libraries/jquery.ui.touch-punch.min.js"
