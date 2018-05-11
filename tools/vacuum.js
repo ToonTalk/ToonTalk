@@ -28,11 +28,13 @@ window.TOONTALK.vacuum = (function (TT) {
         var element, mode_class;
         var mode; // mode is either 'suck', 'erase', 'restore', or 'suck_all'
         var removed_items = [];
-        var set_mode = function (new_value) {
+        var set_mode = function (new_value, no_sound) {
             if (mode !== new_value) {
                 // IE11 (in Windows RT) reported "Unexpected call to method or property access."
                 mode = new_value;
-                if (TT.sounds) {
+                if (!no_sound && TT.sounds) {
+                    // due to https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+                    // this needs to optionally not attempt to play a sound 
                     TT.sounds.click.play();
                 }
                 $(element).removeClass(mode_class);
@@ -216,7 +218,7 @@ window.TOONTALK.vacuum = (function (TT) {
                     element = document.createElement("div");
                     $(element).addClass("toontalk-vacuum");
                     pick_me_up = TT.tool.add_listeners(element, this);
-                    set_mode('suck');
+                    set_mode('suck', true);
                     update_title();
                     element.toontalk_tool = TT.vacuum.the_vacuum;
                 }
