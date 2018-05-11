@@ -2261,7 +2261,8 @@ window.TOONTALK.UTILITIES =
                                           process_widget_callback(depth ? depth+1 : 1);
                                        }
                                    };
-                                   if (toontalk_last_key) {
+                                   if (toontalk_last_key && toontalk_last_key !== 'null') {
+                                       // not sure how localStorage ends up with 'null' value instead of null value
                                        utilities.retrieve_object(toontalk_last_key,
                                                                  function (json_from_storage) {
                                                                      if (json_from_storage) {
