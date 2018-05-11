@@ -2262,7 +2262,7 @@ window.TOONTALK.UTILITIES =
                                        }
                                    };
                                    if (toontalk_last_key && toontalk_last_key !== 'null') {
-                                       // not sure how localStorage ends up with 'null' value instead of null value
+                                       // localStorage always returns a string so treat 'null' as null
                                        utilities.retrieve_object(toontalk_last_key,
                                                                  function (json_from_storage) {
                                                                      if (json_from_storage) {
@@ -4521,7 +4521,7 @@ window.TOONTALK.UTILITIES =
                     callback(window.localStorage.getItem(key));
                 } catch (e) {
                      TT.UTILITIES.display_message("Unable to read from the browser's local storage. You can read and save to Google Drive if you have an account. The error message is: " + e,
-                                                 {only_if_new: true});
+                                                  {only_if_new: true});
                 }
             };
         };
