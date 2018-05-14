@@ -834,6 +834,7 @@ table.toontalk-documentation-table {
 	margin:  2px;
 	font-family: Segoe UI,Arial,sans-serif;
 	font-size: 1.1em;
+	box-shadow: 5px 3px 5px;
 }
 .toontalk-button-style:hover {
 	background-color: rgba(241, 121, 83, 0.98);
