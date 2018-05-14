@@ -205,9 +205,11 @@ body > .toontalk-local-alert {
 .toontalk-help-link {
 	font-weight: bold;
 	border-radius: 8px;
-	padding: 8px;
+	padding: 10px;
 	font-size: 1.2em;
 	cursor: auto;
+	box-shadow: 5px 3px 5px black;
+	text-decoration: none;
 }
 .toontalk-side {
 /* 	the following works around a drag and drop display bug in Chrome 66
