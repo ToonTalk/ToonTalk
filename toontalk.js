@@ -209,8 +209,8 @@ if (debugging) {
                   "support/publish.js",
                   "support/google_drive.js",
                   "support/utilities.js",
+                  "https://ecraft2learn.github.io/ai/ecraft2learn.js", 
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
-                  "support/ecraft2learn.js", 
 //                   "https://www.dropbox.com/static/api/2/dropins.js", // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
 //                   "libraries/jquery.ui.touch-punch.min.js"
@@ -220,6 +220,8 @@ if (debugging) {
                   log_errors && "https://cdn.ravenjs.com/3.22.1/raven.min.js",
 //                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
+                  // following caused errors when added to compiiled_toontalk due to ta-in entry
+                  "https://ecraft2learn.github.io/ai/ecraft2learn.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
 //                   "https://www.dropbox.com/static/api/2/dropins.js",  // handled below -- partial support for saving to DropBox
                   // following enables JQuery UI resize handles to respond to touch
@@ -241,42 +243,45 @@ var local_replacements =
 var load_file = function (index, offline) {
                    var script = document.createElement("script");
                    var file_name = file_names[index];
-                   var load_next_file = function () {
-                                            if (file_names[index] && file_names[index].indexOf("raven.min.js") >= 0) {
-                                                // previous load was error reporter code so install it
-                                                Raven.config('https://b58cd20d39f14d9dad94aaa904a94adc@sentry.io/131294').install();
-                                                if (reason_unable_to_run()) {
-                                                    Raven.captureException("User proceeded despite this warning: " + reason_unable_to_run());
-                                                }
-                                            }
-                                            index++;
-                                            if (index < file_names.length) {
-                                                load_file(index, offline);
-                                            } else {
-                                                if (log_errors) {
-                                                    if (typeof initialize_toontalk !== "function") {
-                                                        Raven.captureException("initialize_toontalk not defined. Probably error loading scripts.");
-                                                        alert("ToonTalk was not loaded properly. Some script files missing. See console for details.");
-                                                        return;
-                                                    }
-                                                }
-                                                initialize_toontalk();
-                                                // delay the following since its addition was delayed as well
-                                                setTimeout(function () {
-                                                    $(loading_please_wait).remove();
-                                                });
-                                            }
-                                        };
+                   var load_next_file = 
+                       function () {
+                           if (file_names[index] && file_names[index].indexOf("raven.min.js") >= 0) {
+                               // previous load was error reporter code so install it
+                               Raven.config('https://b58cd20d39f14d9dad94aaa904a94adc@sentry.io/131294').install();
+                               if (reason_unable_to_run()) {
+                                   Raven.captureException("User proceeded despite this warning: " + reason_unable_to_run());
+                               }
+                           }
+                           index++;
+                           if (index < file_names.length) {
+                               load_file(index, offline);
+                           } else {
+                               if (log_errors) {
+                                   if (typeof initialize_toontalk !== "function") {
+                                       Raven.captureException("initialize_toontalk not defined. Probably error loading scripts.");
+                                       alert("ToonTalk was not loaded properly. Some script files missing. See console for details.");
+                                       return;
+                                   }
+                               }
+                               initialize_toontalk();
+                               // delay the following since its addition was delayed as well
+                               setTimeout(function () {
+                                   $(loading_please_wait).remove();
+                               });
+                           }
+                   };
                    if (!file_name) {
                        load_next_file();
                        return;
                    }
                    if (file_name.indexOf("http") >= 0) {
                        if ((!offline && !TOONTALK.CHROME_APP) ||
-                           get_parameter('remote_storage') === "1") {
+                           get_parameter('remote_storage') === "1" ||
+                           file_name === "https://ecraft2learn.github.io/ai/ecraft2learn.js") {
                            // Chrome App complains:
                            // Refused to load the script 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js' because it violates the following Content Security Policy directive: ...
                            // if remote_storage is set then want to connect to remote storage even though running localhost 
+                           // ecraft2learn.js contains lots of Unicode that Tomcat's localhost serves incorrectly
                            script.src = file_name;
                        } else if (local_replacements[file_name]) {
                            script.src = path_prefix + local_replacements[file_name];
