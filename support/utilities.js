@@ -2866,7 +2866,7 @@ window.TOONTALK.UTILITIES =
             // using ecraft2learn library - message, pitch, rate, voice_number, volume, language, finished_callback
             let pitch  = options.pitch  === undefined ? 1.2 : options.pitch;
             let volume = options.volume === undefined ? Math.min(1, 3*TT.volume) : options.volume;
-            let rate =   options.rate   === undefined ? .75 : options.rate;
+            let rate   = options.rate   === undefined ? .75 : options.rate;
             let voice_number = options.voice_number   === undefined ? 0 : options.voice_number;
             let language = options.language || 
                            (document.getElementsByClassName("goog-te-menu-value").length > 0 && 
@@ -5658,6 +5658,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 
     utilities.stop_listening_for_speech = function () {
         if (ecraft2learn.stop_speech_recognition) {
+            // not defined if speech recognition hasn't been started
             ecraft2learn.stop_speech_recognition();
         }
 //         if (speech_recognition) {

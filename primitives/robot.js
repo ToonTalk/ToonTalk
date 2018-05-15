@@ -1851,7 +1851,7 @@ window.TOONTALK.robot_backside =
                     }
                     event.stopPropagation();
                 };
-            $train_button.addClass("toontalk-train-backside-button");
+            $train_button.addClass("toontalk-train-backside-button toontalk-button-style");
             backside.change_label_and_title_of_train_button = function (training_started) {
                 if (!jQuery.contains(window.document, $train_button.get(0))) {
                     // no longer attached
