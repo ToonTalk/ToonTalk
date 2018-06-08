@@ -5657,7 +5657,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //     };
 
     utilities.stop_listening_for_speech = function () {
-        if (ecraft2learn.stop_speech_recognition) {
+        if (typeof ecraft2learn !== 'undefined' && typeof ecraft2learn.stop_speech_recognition === 'function') {
             // not defined if speech recognition hasn't been started
             ecraft2learn.stop_speech_recognition();
         }
