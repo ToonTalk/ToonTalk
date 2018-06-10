@@ -1546,13 +1546,13 @@ window.TOONTALK.UTILITIES =
                             json: json_key
                         };
                     };
-                    TT.path.get_json(object[key], undefined, key_callback, start_time, depth + 1);
+                    TT.path.get_json(object[key], undefined, key_callback, start_time, depth+1);
                 } else {
                     json[key] = object[key];
                 }
             }
         });
-        callback(json, start_time, depth + 1);
+        callback(json, start_time, depth+1);
     };
 
     utilities.create_keys_from_json = function(json, additional_info) {
@@ -5947,7 +5947,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.debugging                     = utilities.get_current_url_parameter('debugging');
             TT.logging                       = utilities.get_current_url_parameter('log');
             TT.together                      = utilities.get_current_url_boolean_parameter('together', false); // together.js available
-            TT.maximum_recursion_depth       = 100; // to prevent stack overflows every so often uses setTimeout
+            // maximum depth was 100 but Sentry reported a "Maximum call stack size exceeded" error on a Mac running Chrome 66
+            TT.maximum_recursion_depth       = 32; // to prevent stack overflows every so often uses setTimeout
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
             TT.puzzle                        = utilities.get_current_url_boolean_parameter('puzzle', false);
