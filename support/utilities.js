@@ -4950,14 +4950,15 @@ window.TOONTALK.UTILITIES =
        };
 
        utilities.play_audio = function (audio_object) {
-           audio_object.play();
-           // TODO: use the future returned by the above to delay the following until the play has succeeded (or else catch the error)
-           audio_objects_playing.push(audio_object);
-           audio_object.addEventListener('ended', function () {
-                                                      var index = audio_objects_playing.indexOf(audio_object);
-                                                      if (index >= 0) {
-                                                          audio_objects_playing.splice(index, 1);
-                                                      }
+           // see https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
+           audio_object.play().then(function () {
+               audio_objects_playing.push(audio_object);
+               audio_object.addEventListener('ended', function () {
+                                                          var index = audio_objects_playing.indexOf(audio_object);
+                                                          if (index >= 0) {
+                                                              audio_objects_playing.splice(index, 1);
+                                                          }
+                                              });               
            });
        };
 
