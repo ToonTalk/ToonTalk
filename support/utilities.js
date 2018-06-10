@@ -1070,7 +1070,9 @@ window.TOONTALK.UTILITIES =
                                        subtree:   true});
     // following only used by "old format" robots -- kept for backwards compatibility
     utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];
+
     utilities.create_from_json = function(json, additional_info, uninitialised_widget, delay_backside_widgets) {
+        // uninitialised_widget is currently only used to properly construct birds that share a nest
         var handle_delayed_backside_widgets = function(widget, additional_info, shared_widget_index) {
             additional_info.shared_widgets[shared_widget_index] = widget;
             if (widget && widget.finish_create_from_json_continuation) {
@@ -1165,7 +1167,10 @@ window.TOONTALK.UTILITIES =
                     widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info, uninitialised_widget);
                 } catch (e) {
                     console.error(e.stack);
-                    utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e + ". JSON is " + JSON.stringify(json, utilities.clean_json, '  '));
+                    let message = "Unable to recreate a " + json_semantic.type + ". Error is " + e + ".";
+                    utilities.report_internal_error(message + " JSON is " + JSON.stringify(json, utilities.clean_json, '  '));
+                    // is the best we can do to leave an error message at this depth in the widget?
+                    widget_side = utilities.create_text_element(message);
                 }
             }
         } else {
