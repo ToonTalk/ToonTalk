@@ -4935,6 +4935,8 @@ window.TOONTALK.UTILITIES =
                                         var widget = utilities.widget_side_of_element(element);
                                         if (widget) {
                                             widget.update_display(true);
+                                            // make sure the widgets "know" if they are visible
+                                            widget.set_visible(document.contains(element));
                                         }
                                     });
        };
