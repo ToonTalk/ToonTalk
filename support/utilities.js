@@ -37,51 +37,55 @@ window.TOONTALK.UTILITIES =
     // see https://bugs.chromium.org/p/chromium/issues/detail?id=509488
     // so they are added to this array until they are finished speaking
     var speech_utterances = [];
+        const mutation_observer = function(mutation) {
+            var i, added_node;
+            // mutation.addedNodes is a NodeList so can't use forEach
+            for (i = 0; i < mutation.addedNodes.length; i++) {
+                added_node = mutation.addedNodes.item(i);
+                if (added_node.nodeType === 1) {
+                    // is an element
+                    if (!added_node.toontalk_widget_side && $(added_node).is(".toontalk-side")) {
+                        // has been removed since this callback was added
+                        $(added_node).remove();
+                        return;
+                    }
+                    setTimeout(function() {
+                        // delay seems necessary since callbacks below can trigger new mutations
+                        if (added_node.toontalk_attached_callback) {
+                            if (!$(added_node).is(".toontalk-not-observable") || added_node.toontalk_run_even_if_not_observable) {
+                                // was only attached to compute original dimensions and is not computing now
+                                $(added_node).removeClass("toontalk-has-attached-callback");
+                                added_node.toontalk_attached_callback();
+                                added_node.toontalk_attached_callback = undefined;
+                                added_node.toontalk_run_even_if_not_observable = undefined;
+                            }
+                        }
+                        $(added_node).find(".toontalk-has-attached-callback").each(function(index, element) {
+                            $(element).removeClass("toontalk-has-attached-callback");
+                            if (element.toontalk_attached_callback) {
+                                // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
+                                // When stepping through the code it works fine so must be some kind of timing dependent problem
+                                element.toontalk_attached_callback();
+                                element.toontalk_attached_callback = undefined;
+                            }
+                        });
+                    });
+                }
+                // TODO: determine if this needs to take into account elements with elements on top
+                if ($(added_node.parentElement).is(".toontalk-frontside")) {
+                    // if in a box or the like then z-index should come from parent
+                    $(added_node).css({
+                        "z-index": ''
+                    });
+                } else if ($(added_node.parentElement).is(".toontalk-backside")) {
+                    $(added_node).css({
+                        "z-index": utilities.next_z_index()
+                    });
+                }
+            }
+    };
     var observer = new MutationObserver(function (mutations) {
-                                            mutations.forEach(function(mutation) {
-                                                                  var i, added_node;
-                                                                  // mutation.addedNodes is a NodeList so can't use forEach
-                                                                  for (i = 0; i < mutation.addedNodes.length; i++) {
-                                                                      added_node = mutation.addedNodes.item(i);
-                                                                      if (added_node.nodeType === 1) {
-                                                                          // is an element
-                                                                          if (!added_node.toontalk_widget_side && $(added_node).is(".toontalk-side")) {
-                                                                              // has been removed since this callback was added
-                                                                              $(added_node).remove();
-                                                                              return;
-                                                                          }
-                                                                          setTimeout(function () {
-                                                                              // delay seems necessary since callbacks below can trigger new mutations
-                                                                              if (added_node.toontalk_attached_callback) {
-                                                                                  if (!$(added_node).is(".toontalk-not-observable") ||
-                                                                                      added_node.toontalk_run_even_if_not_observable) {
-                                                                                      // was only attached to compute original dimensions and is not computing now
-                                                                                      $(added_node).removeClass("toontalk-has-attached-callback");
-                                                                                      added_node.toontalk_attached_callback();
-                                                                                      added_node.toontalk_attached_callback = undefined;
-                                                                                      added_node.toontalk_run_even_if_not_observable = undefined;     ;
-                                                                                  }
-                                                                              }
-                                                                              $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
-                                                                                  $(element).removeClass("toontalk-has-attached-callback");
-                                                                                  if (element.toontalk_attached_callback) {
-                                                                                      // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
-                                                                                      // When stepping through the code it works fine so must be some kind of timing dependent problem
-                                                                                      element.toontalk_attached_callback();
-                                                                                      element.toontalk_attached_callback = undefined;
-                                                                                  }
-                                                                              });
-                                                                          });
-                                                                      }
-                                                                      // TODO: determine if this needs to take into account elements with elements on top
-                                                                      if ($(added_node.parentElement).is(".toontalk-frontside")) {
-                                                                          // if in a box or the like then z-index should come from parent
-                                                                          $(added_node).css({"z-index": ''});
-                                                                      } else if ($(added_node.parentElement).is(".toontalk-backside")) {
-                                                                          $(added_node).css({"z-index": utilities.next_z_index()});
-                                                                      }
-                                                                  }
-                                                              });
+                                            mutations.forEach(mutation_observer);
                                         });
     var enable_translation = function () {
         var translation_observer = new MutationObserver(function (mutations) {
@@ -2066,10 +2070,10 @@ window.TOONTALK.UTILITIES =
 
         utilities.is_stack_overflow = function (error) {
             // according to https://www.safaribooksonline.com/library/view/high-performance-javascript/9781449382308/ch04s03.html
-            // Internet Explorer: “Stack overflow at line x”
-            // Firefox: “Too much recursion”
-            // Safari: “Maximum call stack size exceeded”
-            // Opera: “Abort (control stack overflow)”
+            // Internet Explorer: â€œStack overflow at line xâ€
+            // Firefox: â€œToo much recursionâ€
+            // Safari: â€œMaximum call stack size exceededâ€
+            // Opera: â€œAbort (control stack overflow)â€
             // and I noticed that:
             // Chrome: "Maximum call stack size exceeded"
             return error.message.indexOf("Maximum call stack size exceeded") === 0 ||
