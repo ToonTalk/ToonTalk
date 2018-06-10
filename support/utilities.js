@@ -37,51 +37,55 @@ window.TOONTALK.UTILITIES =
     // see https://bugs.chromium.org/p/chromium/issues/detail?id=509488
     // so they are added to this array until they are finished speaking
     var speech_utterances = [];
+        const mutation_observer = function(mutation) {
+            var i, added_node;
+            // mutation.addedNodes is a NodeList so can't use forEach
+            for (i = 0; i < mutation.addedNodes.length; i++) {
+                added_node = mutation.addedNodes.item(i);
+                if (added_node.nodeType === 1) {
+                    // is an element
+                    if (!added_node.toontalk_widget_side && $(added_node).is(".toontalk-side")) {
+                        // has been removed since this callback was added
+                        $(added_node).remove();
+                        return;
+                    }
+                    setTimeout(function() {
+                        // delay seems necessary since callbacks below can trigger new mutations
+                        if (added_node.toontalk_attached_callback) {
+                            if (!$(added_node).is(".toontalk-not-observable") || added_node.toontalk_run_even_if_not_observable) {
+                                // was only attached to compute original dimensions and is not computing now
+                                $(added_node).removeClass("toontalk-has-attached-callback");
+                                added_node.toontalk_attached_callback();
+                                added_node.toontalk_attached_callback = undefined;
+                                added_node.toontalk_run_even_if_not_observable = undefined;
+                            }
+                        }
+                        $(added_node).find(".toontalk-has-attached-callback").each(function(index, element) {
+                            $(element).removeClass("toontalk-has-attached-callback");
+                            if (element.toontalk_attached_callback) {
+                                // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
+                                // When stepping through the code it works fine so must be some kind of timing dependent problem
+                                element.toontalk_attached_callback();
+                                element.toontalk_attached_callback = undefined;
+                            }
+                        });
+                    });
+                }
+                // TODO: determine if this needs to take into account elements with elements on top
+                if ($(added_node.parentElement).is(".toontalk-frontside")) {
+                    // if in a box or the like then z-index should come from parent
+                    $(added_node).css({
+                        "z-index": ''
+                    });
+                } else if ($(added_node.parentElement).is(".toontalk-backside")) {
+                    $(added_node).css({
+                        "z-index": utilities.next_z_index()
+                    });
+                }
+            }
+    };
     var observer = new MutationObserver(function (mutations) {
-                                            mutations.forEach(function(mutation) {
-                                                                  var i, added_node;
-                                                                  // mutation.addedNodes is a NodeList so can't use forEach
-                                                                  for (i = 0; i < mutation.addedNodes.length; i++) {
-                                                                      added_node = mutation.addedNodes.item(i);
-                                                                      if (added_node.nodeType === 1) {
-                                                                          // is an element
-                                                                          if (!added_node.toontalk_widget_side && $(added_node).is(".toontalk-side")) {
-                                                                              // has been removed since this callback was added
-                                                                              $(added_node).remove();
-                                                                              return;
-                                                                          }
-                                                                          setTimeout(function () {
-                                                                              // delay seems necessary since callbacks below can trigger new mutations
-                                                                              if (added_node.toontalk_attached_callback) {
-                                                                                  if (!$(added_node).is(".toontalk-not-observable") ||
-                                                                                      added_node.toontalk_run_even_if_not_observable) {
-                                                                                      // was only attached to compute original dimensions and is not computing now
-                                                                                      $(added_node).removeClass("toontalk-has-attached-callback");
-                                                                                      added_node.toontalk_attached_callback();
-                                                                                      added_node.toontalk_attached_callback = undefined;
-                                                                                      added_node.toontalk_run_even_if_not_observable = undefined;     ;
-                                                                                  }
-                                                                              }
-                                                                              $(added_node).find(".toontalk-has-attached-callback").each(function (index, element) {
-                                                                                  $(element).removeClass("toontalk-has-attached-callback");
-                                                                                  if (element.toontalk_attached_callback) {
-                                                                                      // Test "A team of 3 that each adds 1 to 1" calls this with element.toontalk_attached_callback undefined
-                                                                                      // When stepping through the code it works fine so must be some kind of timing dependent problem
-                                                                                      element.toontalk_attached_callback();
-                                                                                      element.toontalk_attached_callback = undefined;
-                                                                                  }
-                                                                              });
-                                                                          });
-                                                                      }
-                                                                      // TODO: determine if this needs to take into account elements with elements on top
-                                                                      if ($(added_node.parentElement).is(".toontalk-frontside")) {
-                                                                          // if in a box or the like then z-index should come from parent
-                                                                          $(added_node).css({"z-index": ''});
-                                                                      } else if ($(added_node.parentElement).is(".toontalk-backside")) {
-                                                                          $(added_node).css({"z-index": utilities.next_z_index()});
-                                                                      }
-                                                                  }
-                                                              });
+                                            mutations.forEach(mutation_observer);
                                         });
     var enable_translation = function () {
         var translation_observer = new MutationObserver(function (mutations) {
@@ -1070,349 +1074,456 @@ window.TOONTALK.UTILITIES =
                                        subtree:   true});
     // following only used by "old format" robots -- kept for backwards compatibility
     utilities.available_types = ["number", "box", "element", "robot", "nest", "sensor", "top-level"];
-    utilities.create_from_json = function (json, additional_info, uninitialised_widget, delay_backside_widgets) {
-            var handle_delayed_backside_widgets = function (widget, additional_info, shared_widget_index) {
-                additional_info.shared_widgets[shared_widget_index] = widget;
-                if (widget && widget.finish_create_from_json_continuation) {
-                    // this part of the work was postponed so that shared_widgets could be set above
-                    // this prevents infinite recursion when processing self-referential JSON, e.g. element with attribute_object on back
-                    widget.finish_create_from_json_continuation();
-                    widget.finish_create_from_json_continuation = undefined;
+
+    utilities.create_from_json = function(json, additional_info, uninitialised_widget, delay_backside_widgets) {
+        // uninitialised_widget is currently only used to properly construct birds that share a nest
+        var handle_delayed_backside_widgets = function(widget, additional_info, shared_widget_index) {
+            additional_info.shared_widgets[shared_widget_index] = widget;
+            if (widget && widget.finish_create_from_json_continuation) {
+                // this part of the work was postponed so that shared_widgets could be set above
+                // this prevents infinite recursion when processing self-referential JSON, e.g. element with attribute_object on back
+                widget.finish_create_from_json_continuation();
+                widget.finish_create_from_json_continuation = undefined;
+            }
+            return widget;
+        };
+        var widget_side, side_element, backside_widgets, json_semantic, json_view, size_css, json_of_shared_widget, shared_widget;
+        if (!json) {
+            // was undefined and still is
+            return;
+        }
+        if (!additional_info) {
+            additional_info = {};
+        }
+        if (!additional_info.guid_to_nest_table) {
+            // Nests are uniquely identified by their guid
+            additional_info.guid_to_nest_table = {};
+        }
+        if (json.shared_widgets) {
+            additional_info.json_of_shared_widgets = json.shared_widgets;
+            additional_info.shared_widgets = [];
+        }
+        if (json.shared_html) {
+            json.shared_html = json.shared_html.map(function(encoded_html_or_array_of_encoded_html) {
+                if (Array.isArray(encoded_html_or_array_of_encoded_html)) {
+                    // was long enough to be broken into pieces so put it back together
+                    return encoded_html_or_array_of_encoded_html.join("");
+                } else {
+                    return encoded_html_or_array_of_encoded_html;
                 }
-                return widget;
-            };
-            var widget_side, side_element, backside_widgets, json_semantic, json_view, size_css, json_of_shared_widget, shared_widget;
-            if (!json) {
-                // was undefined and still is
+            });
+            additional_info.shared_html = json.shared_html;
+        }
+        if (json.widget) {
+            // is a context where need to know which side of the widget
+            widget_side = utilities.create_from_json(json.widget, additional_info);
+            if (widget_side && json.is_backside) {
+                return widget_side.get_backside(true);
+            }
+            return widget_side;
+        }
+        if (additional_info && additional_info.shared_widgets && json.shared_widget_index >= 0) {
+            shared_widget = additional_info.shared_widgets[json.shared_widget_index];
+            if (shared_widget) {
+                return shared_widget;
+            }
+            // otherwise create it from the JSON and store it
+            json_of_shared_widget = additional_info.json_of_shared_widgets[json.shared_widget_index];
+            // to deal with reconstructing cyclic references first create the uninitialised widget
+            // add it to the shared_widgets and then initialise it
+            // call the following with no arguments to create the uninitialised widget
+            widget_side = TT.creators_from_json[json_of_shared_widget.semantic.type]();
+            // widget_side might be undefined if there is no change of cyclic references
+            additional_info.shared_widgets[json.shared_widget_index] = widget_side;
+            widget_side = utilities.create_from_json(json_of_shared_widget, additional_info, widget_side, true);
+            return handle_delayed_backside_widgets(widget_side, additional_info, json.shared_widget_index);
+        }
+        json_semantic = json.semantic;
+        if (!json_semantic) {
+            // e.g. body, paths, etc.
+            json_semantic = json;
+        }
+        json_view = json.view;
+        if (json_semantic.shared_widget_index >= 0) {
+            if (!additional_info.json_of_shared_widgets) {
+                utilities.report_internal_error("JSON refers to shared widgets but they can't be found. Sorry.");
                 return;
             }
+            widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, uninitialised_widget, true);
+            return handle_delayed_backside_widgets(widget_side, additional_info, json_semantic.shared_widget_index);
+        } else if (!json_semantic.type) {
+            TT.UTILITIES.report_internal_error("No type attribute given in " + JSON.stringify(json_semantic, utilities.clean_json, '  '));
+            return;
+        } else if (TT.creators_from_json[json_semantic.type]) {
             if (!additional_info) {
                 additional_info = {};
             }
-            if (!additional_info.guid_to_nest_table) {
-                // Nests are uniquely identified by their guid
-                additional_info.guid_to_nest_table = {};
-            }
-            if (json.shared_widgets) {
-                additional_info.json_of_shared_widgets = json.shared_widgets;
-                additional_info.shared_widgets = [];
-            }
-            if (json.shared_html) {
-               json.shared_html = json.shared_html.map(function (encoded_html_or_array_of_encoded_html) {
-                   if (Array.isArray(encoded_html_or_array_of_encoded_html)) {
-                       // was long enough to be broken into pieces so put it back together
-                       return encoded_html_or_array_of_encoded_html.join("");
-                   } else {
-                       return encoded_html_or_array_of_encoded_html;
-                   }
-               });
-               additional_info.shared_html = json.shared_html;
-            }
-            if (json.widget) {
-                // is a context where need to know which side of the widget
-                widget_side = utilities.create_from_json(json.widget, additional_info);
-                if (widget_side && json.is_backside) {
-                    return widget_side.get_backside(true);
-                }
-                return widget_side;
-            }
-            if (additional_info && additional_info.shared_widgets && json.shared_widget_index >= 0) {
-                shared_widget = additional_info.shared_widgets[json.shared_widget_index];
-                if (shared_widget) {
-                    return shared_widget;
-                }
-                // otherwise create it from the JSON and store it
-                json_of_shared_widget = additional_info.json_of_shared_widgets[json.shared_widget_index];
-                // to deal with reconstructing cyclic references first create the uninitialised widget
-                // add it to the shared_widgets and then initialise it
-                // call the following with no arguments to create the uninitialised widget
-                widget_side = TT.creators_from_json[json_of_shared_widget.semantic.type]();
-                // widget_side might be undefined if there is no change of cyclic references
-                additional_info.shared_widgets[json.shared_widget_index] = widget_side;
-                widget_side = utilities.create_from_json(json_of_shared_widget, additional_info, widget_side, true);
-                return handle_delayed_backside_widgets(widget_side, additional_info, json.shared_widget_index);
-            }
-            json_semantic = json.semantic;
-            if (!json_semantic) {
-                // e.g. body, paths, etc.
-                json_semantic = json;
-            }
-            json_view = json.view;
-            if (json_semantic.shared_widget_index >= 0) {
-                if (!additional_info.json_of_shared_widgets) {
-                    utilities.report_internal_error("JSON refers to shared widgets but they can't be found. Sorry.");
-                    return;
-                }
-                widget_side = utilities.create_from_json(additional_info.json_of_shared_widgets[json_semantic.shared_widget_index], additional_info, uninitialised_widget, true);
-                return handle_delayed_backside_widgets(widget_side, additional_info, json_semantic.shared_widget_index);
-            } else if (!json_semantic.type) {
-                TT.UTILITIES.report_internal_error("No type attribute given in " + JSON.stringify(json_semantic, utilities.clean_json, '  '));
-                return;
-            } else if (TT.creators_from_json[json_semantic.type]) {
-                if (!additional_info) {
-                    additional_info = {};
-                }
-                if (json_view) {
-                    additional_info.json_view = json_view;
-                } else {
-                    json_view = additional_info.json_view;
-                }
-                if (TT.debugging) {
-                    // much easier to debug since JQuery has plenty of caught exceptions
-                    widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info, uninitialised_widget);
-                } else {
-                    try {
-                        widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info, uninitialised_widget);
-                    } catch (e) {
-                        console.error(e.stack);
-                        utilities.report_internal_error("Unable to recreate a " + json_semantic.type + ". Error is " + e + ". JSON is " + JSON.stringify(json, utilities.clean_json, '  '));
-                    }
-                }
+            if (json_view) {
+                additional_info.json_view = json_view;
             } else {
-                utilities.report_internal_error("JSON type '" + json_semantic.type + "' not supported. Perhaps a JavaScript file implementing it is missing.");
-                return;
+                json_view = additional_info.json_view;
             }
-            if (widget_side && !widget_side.is_widget) {
-                // is really a path not a full widget
-                TT.path.process_path_json(widget_side, json, additional_info);
+            if (TT.debugging) {
+                // much easier to debug since JQuery has plenty of caught exceptions
+                widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info, uninitialised_widget);
+            } else {
+                try {
+                    widget_side = TT.creators_from_json[json_semantic.type](json_semantic, additional_info, uninitialised_widget);
+                } catch (e) {
+                    console.error(e.stack);
+                    let message = "Unable to recreate a " + json_semantic.type + ". Error is " + e + ".";
+                    utilities.report_internal_error(message + " JSON is " + JSON.stringify(json, utilities.clean_json, '  '));
+                    // is the best we can do to leave an error message at this depth in the widget?
+                    widget_side = utilities.create_text_element(message);
+                }
             }
-            if (widget_side && widget_side.get_backside) {
-                // widget_side may be a robot body or some other part of a widget
-                if (json_semantic.erased) {
-                    TT.widget.erasable(widget_side);
-                    widget_side.set_erased(json_semantic.erased);
-                }
-                if (json_semantic.infinite_stack) {
-                    widget_side.set_infinite_stack(json_semantic.infinite_stack);
-                }
-                if (json_semantic.open_backside_only_if_stopped) {
-                    widget_side.set_open_backside_only_if_stopped(true);
-                }
-                if (json_view) {
-                    if (json_view.frontside_width) {
-                        side_element = widget_side.get_element();
-                        if (side_element) {
-                            if (widget_side.ok_to_set_dimensions()) {
-                                // plain text elements don't need explicit width or height
-                                size_css = {width:  json_view.frontside_width,
-                                            height: json_view.frontside_height};
-                                if (json_semantic.type === 'element') {
-                                    // delay until updated
-                                    widget_side.on_update_display(function () {
-                                                                      utilities.set_css(side_element, size_css);
-                                                                  });
-                                } else {
+        } else {
+            utilities.report_internal_error("JSON type '" + json_semantic.type + "' not supported. Perhaps a JavaScript file implementing it is missing.");
+            return;
+        }
+        if (widget_side && !widget_side.is_widget) {
+            // is really a path not a full widget
+            TT.path.process_path_json(widget_side, json, additional_info);
+        }
+        if (widget_side && widget_side.get_backside) {
+            // widget_side may be a robot body or some other part of a widget
+            if (json_semantic.erased) {
+                TT.widget.erasable(widget_side);
+                widget_side.set_erased(json_semantic.erased);
+            }
+            if (json_semantic.infinite_stack) {
+                widget_side.set_infinite_stack(json_semantic.infinite_stack);
+            }
+            if (json_semantic.open_backside_only_if_stopped) {
+                widget_side.set_open_backside_only_if_stopped(true);
+            }
+            if (json_view) {
+                if (json_view.frontside_width) {
+                    side_element = widget_side.get_element();
+                    if (side_element) {
+                        if (widget_side.ok_to_set_dimensions()) {
+                            // plain text elements don't need explicit width or height
+                            size_css = {
+                                width: json_view.frontside_width,
+                                height: json_view.frontside_height
+                            };
+                            if (json_semantic.type === 'element') {
+                                // delay until updated
+                                widget_side.on_update_display(function() {
                                     utilities.set_css(side_element, size_css);
-                                }
+                                });
+                            } else {
+                                utilities.set_css(side_element, size_css);
                             }
-                        } else if (!json_view.saved_width && widget_side.is_resizable()) {
-                            // save the size until element is created (if this widget_side is ever viewed)
-                            widget_side.saved_width =  json_view.frontside_width;
-                            widget_side.saved_height = json_view.frontside_height;
                         }
+                    } else if (!json_view.saved_width && widget_side.is_resizable()) {
+                        // save the size until element is created (if this widget_side is ever viewed)
+                        widget_side.saved_width = json_view.frontside_width;
+                        widget_side.saved_height = json_view.frontside_height;
                     }
-                    if (json_view.saved_width && widget_side.is_resizable()) {
-                        // for backwards compatiblity need to check if is resizable since prior to 23 November 2016
-                        // JSON included saved_width and saved_height for non-resizable widgets
-                        widget_side.saved_width  = json_view.saved_width;
-                        widget_side.saved_height = json_view.saved_height;
-                    }
-                    if (json_view.backside_geometry) {
-                        widget_side.backside_geometry = json_view.backside_geometry;
-                    }
-                    widget_side.json_view = json_view; // needed while loading for at least the width and height
                 }
-                if (json_semantic.backside_widgets) {
-                    if (delay_backside_widgets) {
-                        widget_side.finish_create_from_json_continuation = function () {
-                            this.add_backside_widgets_from_json(widget_side, json_semantic.backside_widgets, additional_info);
-                        }.bind(this);
-                    } else {
+                if (json_view.saved_width && widget_side.is_resizable()) {
+                    // for backwards compatiblity need to check if is resizable since prior to 23 November 2016
+                    // JSON included saved_width and saved_height for non-resizable widgets
+                    widget_side.saved_width = json_view.saved_width;
+                    widget_side.saved_height = json_view.saved_height;
+                }
+                if (json_view.backside_geometry) {
+                    widget_side.backside_geometry = json_view.backside_geometry;
+                }
+                widget_side.json_view = json_view;
+                // needed while loading for at least the width and height
+            }
+            if (json_semantic.backside_widgets) {
+                if (delay_backside_widgets) {
+                    widget_side.finish_create_from_json_continuation = function() {
                         this.add_backside_widgets_from_json(widget_side, json_semantic.backside_widgets, additional_info);
                     }
-                }
-            }
-            return widget_side;
-        };
-
-        utilities.add_backside_widgets_from_json = function (widget_side, json_semantic_backside_widgets, additional_info) {
-            var backside_widgets;
-            if (!json_semantic_backside_widgets) {
-                return;
-            }
-            // the following caused elements on the back of elements to misbehave
-            // they acquired the wrong owner and parent and child dragged together
-            // running tests seems as if things are working without this
-//             if (!widget_side.is_top_level()) {
-//                 // the backside widgets need to know parent to be
-//                 // since they may be called recursively maintain a stack of them
-//                 if (additional_info.to_be_on_backside_of) {
-//                     additional_info.to_be_on_backside_of.push(widget_side);
-//                 } else {
-//                     additional_info.to_be_on_backside_of = [widget_side];
-//                 }
-//             }
-            backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
-            widget_side.set_backside_widgets(backside_widgets,
-                                             json_semantic_backside_widgets.map(
-                                                 function (json) {
-                                                     if (!json || !json.widget) {
-                                                         // json.widget will be undefined if json is for a backside
-                                                         return json;
-                                                     }
-                                                     if (json.widget.shared_widget_index >= 0 && additional_info.json_of_shared_widgets[json.widget.shared_widget_index]) {
-                                                         return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
-                                                     }
-                                                     return json.widget.view;
-                                                 }));
-//             if (!widget_side.is_top_level()) {
-//                 additional_info.to_be_on_backside_of.pop();
-//             }
-        };
-
-        utilities.create_array_from_json = function (json_array, additional_info) {
-            var new_array = [];
-            json_array.forEach(function (json_item, index) {
-                if (json_item) {
-                    new_array[index] = utilities.create_from_json(json_item, additional_info);
+                    .bind(this);
                 } else {
-                    // e.g. could be null representing an empty hole
-                    new_array[index] = json_item;
+                    this.add_backside_widgets_from_json(widget_side, json_semantic.backside_widgets, additional_info);
                 }
-            });
-            return new_array;
-        };
+            }
+        }
+        return widget_side;
+    };
 
-        utilities.get_json_of_array = function (array, json_array, index, json_history, callback, start_time, depth) {
-            var widget_side, new_callback;
-            if (depth > TT.maximum_recursion_depth) {
-                throw {toontalk_continuation: function () {
-                                                  utilities.get_json_of_array(array, json_array, index, json_history, callback, Date.now(), 0);
-                                              }};
+    utilities.add_backside_widgets_from_json = function(widget_side, json_semantic_backside_widgets, additional_info) {
+        var backside_widgets;
+        if (!json_semantic_backside_widgets) {
+            return;
+        }
+        // the following caused elements on the back of elements to misbehave
+        // they acquired the wrong owner and parent and child dragged together
+        // running tests seems as if things are working without this
+        //             if (!widget_side.is_top_level()) {
+        //                 // the backside widgets need to know parent to be
+        //                 // since they may be called recursively maintain a stack of them
+        //                 if (additional_info.to_be_on_backside_of) {
+        //                     additional_info.to_be_on_backside_of.push(widget_side);
+        //                 } else {
+        //                     additional_info.to_be_on_backside_of = [widget_side];
+        //                 }
+        //             }
+        backside_widgets = this.create_array_from_json(json_semantic_backside_widgets, additional_info);
+        widget_side.set_backside_widgets(backside_widgets, json_semantic_backside_widgets.map(function(json) {
+            if (!json || !json.widget) {
+                // json.widget will be undefined if json is for a backside
+                return json;
             }
-            if (index >= array.length) {
-                callback(depth+1);
-                return;
+            if (json.widget.shared_widget_index >= 0 && additional_info.json_of_shared_widgets[json.widget.shared_widget_index]) {
+                return additional_info.json_of_shared_widgets[json.widget.shared_widget_index].view;
             }
-            widget_side = array[index];
-            if (!widget_side) {
-                utilities.get_json_of_array(array, json_array, index+1, json_history, callback, start_time, depth+1);
-                return;
-            }
-            if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
-                new_callback = function (json, new_start_time, depth) {
-                    json_array.push({widget: json,
-                                     is_backside: true});
-                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time, depth+1);
-                }.bind(this);
-                utilities.get_json(widget_side.get_widget(), json_history, new_callback, start_time, depth+1);
-            } else if (widget_side.is_widget) {
-                new_callback = function (json, new_start_time, depth) {
-                    json_array.push({widget: json});
-                    if ((depth > TT.maximum_recursion_depth) ||
-                        (index%default_batch_size === 0 &&
-                         (!utilities.maximum_json_generation_duration || Date.now()-start_time > utilities.maximum_json_generation_duration))) {
-                        // every so often let other processes run
-                        // also this way stack size not exceeded for large arrays
-                        // however if maximum_json_generation_duration is set then drag and drop needs the JSON without a timeout
-                        utilities.set_timeout(function () {
-                            this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time, 0);
-                        }.bind(this));
-                    } else {
-                        this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time, depth+1);
-                    }
-                }.bind(this);
-                utilities.get_json(widget_side, json_history, new_callback, start_time, depth+1);
+            return json.widget.view;
+        }));
+        //             if (!widget_side.is_top_level()) {
+        //                 additional_info.to_be_on_backside_of.pop();
+        //             }
+    };
+
+    utilities.create_array_from_json = function(json_array, additional_info) {
+        var new_array = [];
+        json_array.forEach(function(json_item, index) {
+            if (json_item) {
+                new_array[index] = utilities.create_from_json(json_item, additional_info);
             } else {
-                // isn't a widget -- e.g. is a path
-                new_callback = function (json, new_start_time, depth) {
-                    json_array.push(json);
-                    this.get_json_of_array(array, json_array, index+1, json_history, callback, new_start_time, depth+1);
-                }.bind(this);
-                widget_side.get_json(json_history, new_callback, start_time, depth+1);
+                // e.g. could be null representing an empty hole
+                new_array[index] = json_item;
             }
-        };
+        });
+        return new_array;
+    };
 
-        utilities.fresh_json_history = function (current_json_history) {
-            var json_history = {widgets_encountered: [],
-                                shared_widgets: [],
-                                json_of_widgets_encountered: []};
-            if (current_json_history && current_json_history.shared_html) {
-                // fresh except for shared_html which just to avoid repeating large chunks of HTML
-                json_history.shared_html = current_json_history.shared_html;
-            }
-            return json_history;
-        };
-
-        utilities.get_json_top_level = function (widget_side, callback, maximum_json_generation_duration) {
-            // if maximum_json_generation_duration is exceeded then the browser will be given a chance to run (via setTimeout)
-            // this breaks dataTransfer in drag and drop
-            var json_history = this.fresh_json_history();
-            var new_callback = function (json_top_level) {
-                var get_json_of_widget_from_history = function (widget) {
-                     var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
-                     return json_history.json_of_widgets_encountered[index_among_all_widgets];
-                };
-                var get_json_of_widget_from_shared_widget_index = function (index) {
-                    return get_json_of_widget_from_history(json_history.shared_widgets[index]);
-                };
-                var json_of_widgets = json_history.shared_widgets.map(get_json_of_widget_from_history);
-                var shared_widgets_sorted, json_of_widgets;
-                if (json_history.shared_widgets.length > 0 && json_top_level.semantic) {
-                    json_of_widgets = json_history.shared_widgets.map(get_json_of_widget_from_history);
-                    json_top_level.shared_widgets = json_history.shared_widgets.map(function (shared_widget, widget_index) {
-                        // get the JSON of only those widgets that occurred more than once
-                        var json_of_widget = get_json_of_widget_from_history(shared_widget);
-                        if (widget_side === shared_widget) {
-                            // top-level widget itself is shared_widget_index
-                            // return shallow clone of json_of_widget since don't want to create circularity via shared_widgets
-                            return {semantic: json_of_widget.semantic,
-                                    view:     json_of_widget.view,
-                                    version:  json_of_widget.version};
-                        }
-                         return json_of_widget;
-                    });
-                    // sort the shared widgets so descendants are processed before ancestors
-                    // otherwise ancestor may have become a shared_widget_index before replacement
-                    shared_widgets_sorted = json_history.shared_widgets.slice().sort(function (w1, w2) {
-                        if (w1.is_nest()) {
-                            return -1;
-                        }
-                        if (w2.is_nest()) {
-                            return 1;
-                        }
-                        if (w1.has_ancestor_either_side(w2)) {
-                            return -1;
-                        }
-                        if (w2.has_ancestor_either_side(w1)) {
-                            return 1;
-                        }
-                        return 0;
-                    });
-                    shared_widgets_sorted.map(function (shared_widget) {
-                        var shared_widget_index = json_history.shared_widgets.indexOf(shared_widget);
-                        var json_of_widget = json_of_widgets[shared_widget_index];
-                        if (!utilities.tree_replace_once(json_top_level.semantic,
-                                                         json_of_widget,
-                                                         {shared_widget_index: shared_widget_index},
-                                                         get_json_of_widget_from_shared_widget_index,
-                                                         utilities.generate_unique_number())) {
-                              // TODO: determine why this sometimes returns false -- sees to work fine anyway
-//                            console.log("didn't replace");
-                        }
-                    });
-                    if (widget_side === shared_widgets_sorted[shared_widgets_sorted.length-1]) {
-                        // top level is shared (e.g. via sensors)
-                        json_top_level.semantic = {shared_widget_index: json_history.shared_widgets.indexOf(widget_side)};
-                    }
+    utilities.get_json_of_array = function(array, json_array, index, json_history, callback, start_time, depth) {
+        var widget_side, new_callback;
+        if (depth > TT.maximum_recursion_depth) {
+            throw {
+                toontalk_continuation: function() {
+                    utilities.get_json_of_array(array, json_array, index, json_history, callback, Date.now(), 0);
                 }
-                json_top_level.shared_html = json_history.shared_html;
-                callback(json_top_level);
             };
-            // may need to time out several times if is short so need to store it
-            utilities.maximum_json_generation_duration = maximum_json_generation_duration;
+        }
+        if (index >= array.length) {
+            callback(depth + 1);
+            return;
+        }
+        widget_side = array[index];
+        if (!widget_side) {
+            utilities.get_json_of_array(array, json_array, index + 1, json_history, callback, start_time, depth + 1);
+            return;
+        }
+        if (widget_side.is_primary_backside && widget_side.is_primary_backside()) {
+            new_callback = function(json, new_start_time, depth) {
+                json_array.push({
+                    widget: json,
+                    is_backside: true
+                });
+                this.get_json_of_array(array, json_array, index + 1, json_history, callback, new_start_time, depth + 1);
+            }
+            .bind(this);
+            utilities.get_json(widget_side.get_widget(), json_history, new_callback, start_time, depth + 1);
+        } else if (widget_side.is_widget) {
+            new_callback = function(json, new_start_time, depth) {
+                json_array.push({
+                    widget: json
+                });
+                if ((depth > TT.maximum_recursion_depth) || (index % default_batch_size === 0 && (!utilities.maximum_json_generation_duration || Date.now() - start_time > utilities.maximum_json_generation_duration))) {
+                    // every so often let other processes run
+                    // also this way stack size not exceeded for large arrays
+                    // however if maximum_json_generation_duration is set then drag and drop needs the JSON without a timeout
+                    utilities.set_timeout(function() {
+                        this.get_json_of_array(array, json_array, index + 1, json_history, callback, new_start_time, 0);
+                    }
+                    .bind(this));
+                } else {
+                    this.get_json_of_array(array, json_array, index + 1, json_history, callback, new_start_time, depth + 1);
+                }
+            }
+            .bind(this);
+            utilities.get_json(widget_side, json_history, new_callback, start_time, depth + 1);
+        } else {
+            // isn't a widget -- e.g. is a path
+            new_callback = function(json, new_start_time, depth) {
+                json_array.push(json);
+                this.get_json_of_array(array, json_array, index + 1, json_history, callback, new_start_time, depth + 1);
+            }
+            .bind(this);
+            widget_side.get_json(json_history, new_callback, start_time, depth + 1);
+        }
+    };
+
+    utilities.fresh_json_history = function(current_json_history) {
+        var json_history = {
+            widgets_encountered: [],
+            shared_widgets: [],
+            json_of_widgets_encountered: []
+        };
+        if (current_json_history && current_json_history.shared_html) {
+            // fresh except for shared_html which just to avoid repeating large chunks of HTML
+            json_history.shared_html = current_json_history.shared_html;
+        }
+        return json_history;
+    };
+
+    utilities.get_json_top_level = function(widget_side, callback, maximum_json_generation_duration) {
+        // if maximum_json_generation_duration is exceeded then the browser will be given a chance to run (via setTimeout)
+        // this breaks dataTransfer in drag and drop
+        var json_history = this.fresh_json_history();
+        var new_callback = function(json_top_level) {
+            var get_json_of_widget_from_history = function(widget) {
+                var index_among_all_widgets = json_history.widgets_encountered.indexOf(widget);
+                return json_history.json_of_widgets_encountered[index_among_all_widgets];
+            };
+            var get_json_of_widget_from_shared_widget_index = function(index) {
+                return get_json_of_widget_from_history(json_history.shared_widgets[index]);
+            };
+            var json_of_widgets = json_history.shared_widgets.map(get_json_of_widget_from_history);
+            var shared_widgets_sorted, json_of_widgets;
+            if (json_history.shared_widgets.length > 0 && json_top_level.semantic) {
+                json_of_widgets = json_history.shared_widgets.map(get_json_of_widget_from_history);
+                json_top_level.shared_widgets = json_history.shared_widgets.map(function(shared_widget, widget_index) {
+                    // get the JSON of only those widgets that occurred more than once
+                    var json_of_widget = get_json_of_widget_from_history(shared_widget);
+                    if (widget_side === shared_widget) {
+                        // top-level widget itself is shared_widget_index
+                        // return shallow clone of json_of_widget since don't want to create circularity via shared_widgets
+                        return {
+                            semantic: json_of_widget.semantic,
+                            view: json_of_widget.view,
+                            version: json_of_widget.version
+                        };
+                    }
+                    return json_of_widget;
+                });
+                // sort the shared widgets so descendants are processed before ancestors
+                // otherwise ancestor may have become a shared_widget_index before replacement
+                shared_widgets_sorted = json_history.shared_widgets.slice().sort(function(w1, w2) {
+                    if (w1.is_nest()) {
+                        return -1;
+                    }
+                    if (w2.is_nest()) {
+                        return 1;
+                    }
+                    if (w1.has_ancestor_either_side(w2)) {
+                        return -1;
+                    }
+                    if (w2.has_ancestor_either_side(w1)) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                shared_widgets_sorted.map(function(shared_widget) {
+                    var shared_widget_index = json_history.shared_widgets.indexOf(shared_widget);
+                    var json_of_widget = json_of_widgets[shared_widget_index];
+                    if (!utilities.tree_replace_once(json_top_level.semantic, json_of_widget, {
+                        shared_widget_index: shared_widget_index
+                    }, get_json_of_widget_from_shared_widget_index, utilities.generate_unique_number())) {// TODO: determine why this sometimes returns false -- sees to work fine anyway
+                    //                            console.log("didn't replace");
+                    }
+                });
+                if (widget_side === shared_widgets_sorted[shared_widgets_sorted.length - 1]) {
+                    // top level is shared (e.g. via sensors)
+                    json_top_level.semantic = {
+                        shared_widget_index: json_history.shared_widgets.indexOf(widget_side)
+                    };
+                }
+            }
+            json_top_level.shared_html = json_history.shared_html;
+            callback(json_top_level);
+        };
+        // may need to time out several times if is short so need to store it
+        utilities.maximum_json_generation_duration = maximum_json_generation_duration;
+        try {
+            utilities.get_json(widget_side, json_history, new_callback, Date.now(), 0);
+        } catch (e) {
+            if (e.toontalk_continuation) {
+                e.toontalk_continuation();
+            } else {
+                throw e;
+            }
+        }
+    };
+
+    utilities.get_json = function(widget_side, json_history, callback, start_time, depth) {
+        var index, widget_json, is_primary_backside, new_callback;
+        if (TT.debugging && !json_history) {
+            utilities.report_internal_error("no json_history");
+            return;
+        }
+        if (depth === undefined) {
+            depth = 0;
+        }
+        index = json_history.shared_widgets.indexOf(widget_side);
+        if (index >= 0) {
+            callback({
+                shared_widget_index: index
+            }, start_time, depth + 1);
+            return;
+        }
+        index = json_history.widgets_encountered.indexOf(widget_side);
+        if (index >= 0) {
+            index = json_history.shared_widgets.push(widget_side) - 1;
+            callback({
+                shared_widget_index: index
+            }, start_time, depth + 1);
+            return;
+        }
+        // need to keep track of the index rather than push json_of_widgets_encountered to keep them aligned properly
+        index = json_history.widgets_encountered.push(widget_side) - 1;
+        is_primary_backside = widget_side.is_primary_backside && widget_side.is_primary_backside();
+        if (is_primary_backside) {
+            // save as widget with a flag that it is the backside
+            widget_side = widget_side.get_widget();
+        }
+        new_callback = function(json, start_time, depth) {
+            var add_backside_widgets_callback;
+            if (widget_side.add_to_json) {
+                json = widget_side.add_to_json(json, json_history);
+            }
+            // need to push the widget on the list before computing the backside widgets' jSON in case there is a cycle
+            json_history.json_of_widgets_encountered[index] = json;
+            if (widget_side.add_backside_widgets_to_json) {
+                add_backside_widgets_callback = function(depth) {
+                    callback(json, start_time, depth + 1);
+                }
+                ;
+                widget_side.add_backside_widgets_to_json(json, json_history, add_backside_widgets_callback, start_time, depth + 1);
+            } else {
+                callback(json, start_time, depth + 1);
+            }
+        }
+        ;
+        if (Date.now() - start_time <= utilities.maximum_json_generation_duration && depth < TT.maximum_recursion_depth) {
             try {
-                utilities.get_json(widget_side, json_history, new_callback, Date.now(), 0);
+                widget_side.get_json(json_history, new_callback, start_time, depth + 1);
+            } catch (error) {
+                if (error.toontalk_continuation) {
+                    // unwind the stack up to get_json_top_level
+                    throw error;
+                } else if (utilities.is_stack_overflow(error)) {
+                    throw {
+                        toontalk_continuation: function() {
+                            widget_side.get_json(json_history, new_callback, Date.now(), 0);
+                        }
+                    };
+                } else {
+                    utilities.display_message("Failed to save your project due to error: " + error.message, {
+                        only_if_new: true
+                    });
+                }
+            }
+        } else {
+            // taking too long or recursion depth too large so let browser run
+            utilities.avoid_stack_overflow(function() {
+                widget_side.get_json(json_history, new_callback, Date.now(), 0);
+            });
+        }
+    };
+
+    utilities.avoid_stack_overflow = function(callback) {
+        utilities.set_timeout(function() {
+            try {
+                callback();
             } catch (e) {
                 if (e.toontalk_continuation) {
                     e.toontalk_continuation();
@@ -1420,217 +1531,135 @@ window.TOONTALK.UTILITIES =
                     throw e;
                 }
             }
-        };
+        })
+    };
 
-        utilities.get_json = function (widget_side, json_history, callback, start_time, depth) {
-            var index, widget_json, is_primary_backside, new_callback;
-            if (TT.debugging && !json_history) {
-                utilities.report_internal_error("no json_history");
-                return;
-            }
-            if (depth === undefined) {
-                depth = 0;
-            }
-            index = json_history.shared_widgets.indexOf(widget_side);
-            if (index >= 0) {
-                callback({shared_widget_index: index}, start_time, depth+1);
-                return;
-            }
-            index = json_history.widgets_encountered.indexOf(widget_side);
-            if (index >= 0) {
-                index = json_history.shared_widgets.push(widget_side)-1;
-                callback({shared_widget_index: index}, start_time, depth+1);
-                return;
-            }
-            // need to keep track of the index rather than push json_of_widgets_encountered to keep them aligned properly
-            index = json_history.widgets_encountered.push(widget_side)-1;
-            is_primary_backside = widget_side.is_primary_backside && widget_side.is_primary_backside();
-            if (is_primary_backside) {
-                // save as widget with a flag that it is the backside
-                widget_side = widget_side.get_widget();
-            }
-            new_callback = function (json, start_time, depth) {
-                var add_backside_widgets_callback;
-                if (widget_side.add_to_json) {
-                    json = widget_side.add_to_json(json, json_history);
-                }
-                // need to push the widget on the list before computing the backside widgets' jSON in case there is a cycle
-                json_history.json_of_widgets_encountered[index] = json;
-                if (widget_side.add_backside_widgets_to_json) {
-                    add_backside_widgets_callback = function (depth) {
-                        callback(json, start_time, depth+1);
-                    };
-                    widget_side.add_backside_widgets_to_json(json, json_history, add_backside_widgets_callback, start_time, depth+1);
-                } else {
-                    callback(json, start_time, depth+1);
-                }
-            };
-            if (Date.now()-start_time <= utilities.maximum_json_generation_duration && depth < TT.maximum_recursion_depth) {
-                try {
-                    widget_side.get_json(json_history, new_callback, start_time, depth+1);
-                } catch (error) {
-                    if (error.toontalk_continuation) {
-                        // unwind the stack up to get_json_top_level
-                        throw error;
-                    } else if (utilities.is_stack_overflow(error)) {
-                        throw {toontalk_continuation: function () {
-                                                          widget_side.get_json(json_history, new_callback, Date.now(), 0);
-                                                      }};
-                    } else {
-                        utilities.display_message("Failed to save your project due to error: " + error.message, {only_if_new: true});
-                    }
-                }
-            } else {
-                // taking too long or recursion depth too large so let browser run
-                utilities.avoid_stack_overflow(function () {
-                                                   widget_side.get_json(json_history, new_callback, Date.now(), 0);
-                                               });
-            }
-        };
-
-        utilities.avoid_stack_overflow = function (callback) {
-            utilities.set_timeout(function () {
-                try {
-                    callback();
-                } catch (e) {
-                    if (e.toontalk_continuation) {
-                        e.toontalk_continuation();
-                    } else {
-                        throw e;
-                    }
-                }
-            })
+    utilities.get_json_of_keys = function(object, exceptions, callback, start_time, depth) {
+        var json;
+        if (!exceptions) {
+            exceptions = [];
         }
-
-        utilities.get_json_of_keys = function (object, exceptions, callback, start_time, depth) {
-            var json;
-            if (!exceptions) {
-                exceptions = [];
-            }
-            Object.keys(object).forEach(function (key) {
-                if (exceptions.indexOf(key) < 0) {
-                    if (!json) {
-                        json = {};
-                    }
-                    if (object[key].get_json) {
-                        var key_callback = function (json_key, start_time, depth) {
-                            json[key] = {json: json_key};
+        Object.keys(object).forEach(function(key) {
+            if (exceptions.indexOf(key) < 0) {
+                if (!json) {
+                    json = {};
+                }
+                if (object[key].get_json) {
+                    var key_callback = function(json_key, start_time, depth) {
+                        json[key] = {
+                            json: json_key
                         };
-                        TT.path.get_json(object[key], undefined, key_callback, start_time, depth+1);
-                    } else {
-                        json[key] = object[key];
-                    }
-                }
-            });
-            callback(json, start_time, depth+1);
-        };
-
-        utilities.create_keys_from_json = function (json, additional_info) {
-            // reconstructs the object jsonified above
-            var object = {};
-            Object.keys(json).forEach(function (key) {
-                if (json[key].json) {
-                    object[key] = utilities.create_from_json(json[key].json, additional_info);
+                    };
+                    TT.path.get_json(object[key], undefined, key_callback, start_time, depth+1);
                 } else {
-                    object[key] = json[key];
+                    json[key] = object[key];
                 }
-            });
-            return object;
-        };
-
-        utilities.tree_replace_once = function (object, replace, replacement, get_json_of_widget_from_shared_widget_index, id) {
-            // replaces object's first occurence of replace with replacement
-            // whereever it occurs in object
-            // id is unique to this 'task' and is used to ignore cycles
-            if (object.id_of_tree_replace_once_task === id) {
-                return; // seen this already
             }
-            object.id_of_tree_replace_once_task = id;
-            var keys = Object.keys(object);
-            var value;
-            keys.some(function (property) {
-                    value = object[property];
-                    if (value === null) {
-                        // ignore it
-                    } else if (value === replace) {
-                        object[property] = replacement;
-                        return true;
-                    } else if (property === 'shared_widget_index') {
-                        // TODO: determine if should always ignore this now that the order of tree replacement calls
-                        // ensures that descendants are processed before ancestors
-//                         if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
-//                             return true;
-//                         }
-                    } else if (["string", "number", "function", "undefined", "boolean"].indexOf(typeof value) >= 0) {
-                        // skip atomic objects
-                    } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
-                        return true;
-                    }
-            }.bind(this));
-            return false;
-        };
+        });
+        callback(json, start_time, depth+1);
+    };
 
-        utilities.toontalk_json_div = function (json, widget_side) {
-            // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
-            // also for publishing to the cloud
-            var widget = widget_side.get_widget();
-            var backside_widgets = widget.get_backside_widgets();
-            var type_description = widget.get_type_name();
-            var title = widget.toString({for_json_div: true});
-            var data_image_start, data_image_end;
-            if (type_description === 'top-level') {
-                if (widget_side.is_backside()) {
-                    // drag and drop should not preserve current settings
-                    // they are part of the JSON for when saving the current state to the cloud or local storage
-                    if (json.semantic) {
-                        json.semantic.settings = undefined;
-                    }
-                    type_description = "a work area containing ";
-                    if (backside_widgets.length === 0) {
-                        type_description = "an empty work area";
-                    } else {
-                        if (backside_widgets.length === 1) {
-                            type_description += "one thing: ";
-                        } else {
-                            type_description += backside_widgets.length + " things: ";
-                        }
-                        type_description += utilities.describe_widgets(backside_widgets);
-                    }
+    utilities.create_keys_from_json = function(json, additional_info) {
+        // reconstructs the object jsonified above
+        var object = {};
+        Object.keys(json).forEach(function(key) {
+            if (json[key].json) {
+                object[key] = utilities.create_from_json(json[key].json, additional_info);
+            } else {
+                object[key] = json[key];
+            }
+        });
+        return object;
+    };
+
+    utilities.tree_replace_once = function(object, replace, replacement, get_json_of_widget_from_shared_widget_index, id) {
+        // replaces object's first occurence of replace with replacement
+        // whereever it occurs in object
+        // id is unique to this 'task' and is used to ignore cycles
+        if (object.id_of_tree_replace_once_task === id) {
+            return;
+            // seen this already
+        }
+        object.id_of_tree_replace_once_task = id;
+        var keys = Object.keys(object);
+        var value;
+        keys.some(function(property) {
+            value = object[property];
+            if (value === null) {// ignore it
+            } else if (value === replace) {
+                object[property] = replacement;
+                return true;
+            } else if (property === 'shared_widget_index') {// TODO: determine if should always ignore this now that the order of tree replacement calls
+            // ensures that descendants are processed before ancestors
+            //                         if (this.tree_replace_once(get_json_of_widget_from_shared_widget_index(value), replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
+            //                             return true;
+            //                         }
+            } else if (["string", "number", "function", "undefined", "boolean"].indexOf(typeof value) >= 0) {// skip atomic objects
+            } else if (this.tree_replace_once(value, replace, replacement, get_json_of_widget_from_shared_widget_index, id)) {
+                return true;
+            }
+        }
+        .bind(this));
+        return false;
+    };
+
+    utilities.toontalk_json_div = function(json, widget_side) {
+        // convenience for dragging into documents (e.g. Word or WordPad -- not sure what else)
+        // also for publishing to the cloud
+        var widget = widget_side.get_widget();
+        var backside_widgets = widget.get_backside_widgets();
+        var type_description = widget.get_type_name();
+        var title = widget.toString({
+            for_json_div: true
+        });
+        var data_image_start, data_image_end;
+        if (type_description === 'top-level') {
+            if (widget_side.is_backside()) {
+                // drag and drop should not preserve current settings
+                // they are part of the JSON for when saving the current state to the cloud or local storage
+                if (json.semantic) {
+                    json.semantic.settings = undefined;
+                }
+                type_description = "a work area containing ";
+                if (backside_widgets.length === 0) {
+                    type_description = "an empty work area";
                 } else {
-                    type_description = "a top-level widget";
+                    if (backside_widgets.length === 1) {
+                        type_description += "one thing: ";
+                    } else {
+                        type_description += backside_widgets.length + " things: ";
+                    }
+                    type_description += utilities.describe_widgets(backside_widgets);
                 }
             } else {
-                type_description = utilities.add_a_or_an(type_description);
-                if (widget_side.is_backside()) {
-                    type_description = "the back of " + type_description;
-                }
+                type_description = "a top-level widget";
             }
-            if (title) {
-                data_image_start = title.indexOf("data:image/");
-                if (data_image_start > 0) {
-                    // elide data images
-                    data_image_end = title.indexOf("alt=", data_image_start);
-                    if (data_image_end < 0) {
-                        data_image_end = title.indexOf(">", data_image_start);
-                    }
-                    title = title.substring(0, data_image_start+20) + " ... " + title.substring(data_image_end);
-                }
+        } else {
+            type_description = utilities.add_a_or_an(type_description);
+            if (widget_side.is_backside()) {
+                type_description = "the back of " + type_description;
             }
-            try {
-                return div_json + "\nThis will be replaced by " + type_description + ".\n" +
-                                  (title ? title + "\n" : "") +
-                                  div_hidden + JSON.stringify(json, utilities.clean_json, '  ') + div_close +
-                       div_close;
-            } catch (error) {
-                if (utilities.is_stack_overflow(error)) {
-                    return "<div>\n" + type_description + " is nested too deep to create a JSON string to save it.\n" +
-                           "You may be able to launch your browser with a larger stack.\n" +
-                           (title ? title + "\n" : "") + div_close;
-                } else {
-                    return "<div>\n" + type_description + " triggered the following error during save: " + error.message +
-                           (title ? title + "\n" : "") + div_close;
+        }
+        if (title) {
+            data_image_start = title.indexOf("data:image/");
+            if (data_image_start > 0) {
+                // elide data images
+                data_image_end = title.indexOf("alt=", data_image_start);
+                if (data_image_end < 0) {
+                    data_image_end = title.indexOf(">", data_image_start);
                 }
+                title = title.substring(0, data_image_start + 20) + " ... " + title.substring(data_image_end);
             }
+        }
+        try {
+            return div_json + "\nThis will be replaced by " + type_description + ".\n" + (title ? title + "\n" : "") + div_hidden + JSON.stringify(json, utilities.clean_json, '  ') + div_close + div_close;
+        } catch (error) {
+            if (utilities.is_stack_overflow(error)) {
+                return "<div>\n" + type_description + " is nested too deep to create a JSON string to save it.\n" + "You may be able to launch your browser with a larger stack.\n" + (title ? title + "\n" : "") + div_close;
+            } else {
+                return "<div>\n" + type_description + " triggered the following error during save: " + error.message + (title ? title + "\n" : "") + div_close;
+            }
+        }
     };
 
     utilities.describe_widgets = function (widget_array) {
@@ -2041,10 +2070,10 @@ window.TOONTALK.UTILITIES =
 
         utilities.is_stack_overflow = function (error) {
             // according to https://www.safaribooksonline.com/library/view/high-performance-javascript/9781449382308/ch04s03.html
-            // Internet Explorer: “Stack overflow at line x”
-            // Firefox: “Too much recursion”
-            // Safari: “Maximum call stack size exceeded”
-            // Opera: “Abort (control stack overflow)”
+            // Internet Explorer: â€œStack overflow at line xâ€
+            // Firefox: â€œToo much recursionâ€
+            // Safari: â€œMaximum call stack size exceededâ€
+            // Opera: â€œAbort (control stack overflow)â€
             // and I noticed that:
             // Chrome: "Maximum call stack size exceeded"
             return error.message.indexOf("Maximum call stack size exceeded") === 0 ||
@@ -4906,6 +4935,8 @@ window.TOONTALK.UTILITIES =
                                         var widget = utilities.widget_side_of_element(element);
                                         if (widget) {
                                             widget.update_display(true);
+                                            // make sure the widgets "know" if they are visible
+                                            widget.set_visible(document.contains(element));
                                         }
                                     });
        };
@@ -4925,14 +4956,15 @@ window.TOONTALK.UTILITIES =
        };
 
        utilities.play_audio = function (audio_object) {
-           audio_object.play();
-           // TODO: use the future returned by the above to delay the following until the play has succeeded (or else catch the error)
-           audio_objects_playing.push(audio_object);
-           audio_object.addEventListener('ended', function () {
-                                                      var index = audio_objects_playing.indexOf(audio_object);
-                                                      if (index >= 0) {
-                                                          audio_objects_playing.splice(index, 1);
-                                                      }
+           // see https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
+           audio_object.play().then(function () {
+               audio_objects_playing.push(audio_object);
+               audio_object.addEventListener('ended', function () {
+                                                          var index = audio_objects_playing.indexOf(audio_object);
+                                                          if (index >= 0) {
+                                                              audio_objects_playing.splice(index, 1);
+                                                          }
+                                              });               
            });
        };
 
@@ -5657,7 +5689,7 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
 //     };
 
     utilities.stop_listening_for_speech = function () {
-        if (ecraft2learn.stop_speech_recognition) {
+        if (typeof ecraft2learn !== 'undefined' && typeof ecraft2learn.stop_speech_recognition === 'function') {
             // not defined if speech recognition hasn't been started
             ecraft2learn.stop_speech_recognition();
         }
@@ -5922,7 +5954,8 @@ Edited by Ken Kahn for better integration with the rest of the ToonTalk code
             TT.debugging                     = utilities.get_current_url_parameter('debugging');
             TT.logging                       = utilities.get_current_url_parameter('log');
             TT.together                      = utilities.get_current_url_boolean_parameter('together', false); // together.js available
-            TT.maximum_recursion_depth       = 100; // to prevent stack overflows every so often uses setTimeout
+            // maximum depth was 100 but Sentry reported a "Maximum call stack size exceeded" error on a Mac running Chrome 66
+            TT.maximum_recursion_depth       = 32; // to prevent stack overflows every so often uses setTimeout
             // a value between 0 and 1 specified as a percent with a default of 10%
             TT.volume = utilities.get_current_url_numeric_parameter('volume', 10)/100;
             TT.puzzle                        = utilities.get_current_url_boolean_parameter('puzzle', false);

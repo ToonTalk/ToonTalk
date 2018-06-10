@@ -1321,11 +1321,16 @@ window.TOONTALK.robot = (function (TT) {
                                    " (highlighted in red on my backside) that I'm expecting doesn't match " + mismatch_description + ". Perhaps editing my conditions will help.\n" +
                                    robot_description;
             } else if (this.match_status !== 'matched') {
-                robot_description = "I'm waiting for something to be delivered to the nest that matches " +
-                                    ((this.match_status[0].length > 0 && this.match_status[0][1]) ?
-                                     TT.UTILITIES.add_a_or_an(this.match_status[0][1].toString()) :
-                                     TT.UTILITIES.add_a_or_an(this.match_status[0].toString())) +
-                                    " in my conditions (highlighted in yellow on my backside).\n" + robot_description;
+                if (this.match_status[0]) {
+                    robot_description = "I'm waiting for something to be delivered to the nest that matches " +
+                                        ((this.match_status[0].length > 0 && this.match_status[0][1]) ?
+                                         TT.UTILITIES.add_a_or_an(this.match_status[0][1].toString()) :
+                                         TT.UTILITIES.add_a_or_an(this.match_status[0].toString())) +
+                                        " in my conditions (highlighted in yellow on my backside).\n" + robot_description;
+                } else {
+                    // Sentry reported this.match_status[0] being undefined but not clear how it can happen 
+                    robot_description = "I'm waiting for something to be delivered to the nest.";
+                }
             }
         }
         if (next_robot) {
