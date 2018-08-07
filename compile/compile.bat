@@ -5,6 +5,7 @@ rem java -jar c:\bin\closure\closure-compiler-v20161201.jar --compilation_level 
 java -jar c:\bin\closure\closure-compiler-v20170626.jar ^
  --language_in ECMASCRIPT5_STRICT ^
  --language_in=ECMASCRIPT6 ^
+ --create_source_map compile/toontalk-source.map ^
  --js libraries\rationaljs.js ^
  --js libraries/DataTables-1.10.13/media/js/jquery.dataTables.js ^
  --js libraries/jquery-ui-1.12.1.custom/jquery-ui.js ^
