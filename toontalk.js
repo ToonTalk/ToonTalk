@@ -168,7 +168,7 @@ setTimeout(function () {
     }
 });
 
-add_css('libraries/jquery-ui-1.12.1.custom/jquery-ui.min.css');
+add_css('libraries/jquery-ui-1.13.2/jquery-ui.min.css'); 
 add_css('libraries/DataTables-1.10.13/media/css/jquery.dataTables.min.css');
 add_css('toontalk.css');
 
@@ -179,9 +179,9 @@ icon.href = path_prefix + 'images/favicon.ico';
 document.head.appendChild(icon);
 
 var file_names;
-if (debugging) {
+if (true) { // was debugging but needed to update JQuery UI and compilation isn't worth reviving
     file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
-                  "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
+                  "libraries/jquery-ui-1.13.2/jquery-ui.min.js",
                   "libraries/DataTables-1.10.13/media/js/jquery.dataTables.min.js",
                   "libraries/rationaljs.js",
                   log_errors && "https://cdn.ravenjs.com/3.22.1/raven.min.js", // only include this if not running locally 
@@ -220,7 +220,7 @@ if (debugging) {
                   log_errors && "https://cdn.ravenjs.com/3.22.1/raven.min.js",
 //                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
-                  // following caused errors when added to compiiled_toontalk due to ta-in entry
+                  // following caused errors when added to compiled_toontalk due to ta-in entry
                   "https://ecraft2learn.github.io/ai/ecraft2learn.js",
                   "https://apis.google.com/js/client.js?onload=handle_client_load",
 //                   "https://www.dropbox.com/static/api/2/dropins.js",  // handled below -- partial support for saving to DropBox
@@ -292,10 +292,6 @@ var load_file = function (index, offline) {
                        }
                    } else {
                        script.src = path_prefix + file_name;
-                   }
-                   if (file_name === "https://www.dropbox.com/static/api/2/dropins.js") {
-                       script.id ="dropboxjs";
-                       script["data-app-key"] = "ikwgpe4tcbvaxh4";
                    }
                    script.addEventListener('load', load_next_file);
                    script.addEventListener('error', function (event) {

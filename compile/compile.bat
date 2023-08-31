@@ -8,7 +8,7 @@ java -jar c:\bin\closure\closure-compiler-v20170626.jar ^
  --create_source_map compile/toontalk-source.map ^
  --js libraries\rationaljs.js ^
  --js libraries/DataTables-1.10.13/media/js/jquery.dataTables.js ^
- --js libraries/jquery-ui-1.12.1.custom/jquery-ui.js ^
+ --js libraries/jquery-ui-1.13.1/jquery-ui.js ^
  --js libraries\jquery.ui.touch-punch.min.js ^
  --js support\initial.js ^
  --js support\functions.js ^

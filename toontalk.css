@@ -699,40 +699,40 @@ table.toontalk-documentation-table {
 	border: solid 8px yellow;
 }
 .toontalk-green-flag-inactive, .toontalk-green-flag-active:hover {
-	background-image: url("images/green-flag-inactive.png");
+	background-image: url("images/green-flag-inactive.svg");
 	background-repeat: no-repeat;
 	cursor: pointer;
-	width:  20px;
-	height: 18px;
+	width:  40px;
+	height: 40px;
 	position: absolute;
-	top:   -25px;
+	top:   -42px;
 }
 .toontalk-green-flag-active, .toontalk-green-flag-inactive:hover {
-	background-image: url("images/green-flag-active.png");
+	background-image: url("images/green-flag-active.svg");
 	background-repeat: no-repeat;
 	cursor: pointer;
-	width:  20px;
-	height: 18px;
+	width:  40px;
+	height: 40px;
 	position: absolute;
-	top:   -25px;
+	top:   -42px;
 }
 .toontalk-stop-sign-inactive, .toontalk-stop-sign-active:hover {
-	background-image: url("images/stop-sign-inactive.png");
+	background-image: url("images/stop-sign-inactive.svg");
 	background-repeat: no-repeat;
 	cursor: pointer;
-    width:  21px;
-	height: 21px;
+    width:  40px;
+	height: 40px;
 	position: absolute;
-	top:   -25px;
+	top:   -42px;
 }
 .toontalk-stop-sign-active, .toontalk-stop-sign-inactive:hover {
-	background-image: url("images/stop-sign-active.png");
+	background-image: url("images/stop-sign-active.svg");
 	background-repeat: no-repeat;
 	cursor: pointer;
-	width:  21px;
-	height: 19px;
+	width:  40px;
+	height: 40px;
 	position: absolute;
-	top:   -25px;
+	top:   -42px;
 }
 .toontalk-stop-sign-icon::after {
 	content: url("images/stop-sign-active.png");
@@ -750,13 +750,13 @@ table.toontalk-documentation-table {
 	height: 22px;
 }
 .toontalk-settings-button {
-	background-image: url("images/settings-gear.png");
+	background-image: url("images/settings-gear.svg");
 	background-repeat: no-repeat;
 	cursor: pointer;
-	width:  22px;
-	height: 22px;
+	width:  40px;
+	height: 40px;
 	position: absolute;
-	top:   -25px;
+	top:   -42px;
 }
 .toontalk-settings-panel {
 	background-color: rgb(245, 222, 245);
