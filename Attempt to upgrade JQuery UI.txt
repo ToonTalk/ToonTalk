@@ -1,0 +1,3 @@
+I downloaded latest jquery ui and compiled. Then I copied old min.css since I had edited it. Still CSS is screwed up so didn't commit any of this.
+
+31/8/2023 turned off compilation so each file loaded separately - also upgrade JQuery UI

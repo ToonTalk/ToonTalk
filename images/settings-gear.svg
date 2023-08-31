@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="110"
+   height="110.001"
+   id="svg2461"
+   sodipodi:version="0.32"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   version="1.0"
+   sodipodi:docname="settings-gear.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs2463">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2469" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="175.37363"
+     inkscape:cy="405.71429"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1536"
+     inkscape:window-height="801"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata2466">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>eugrafia</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-320,-477.36168)">
+    <g
+       id="g7"
+       transform="translate(75,452.96168)">
+      <path
+         d="M 299.996,50.51 C 284.074,50.51 271.12,63.467 271.12,79.393 C 271.12,95.317 284.074,108.274 299.996,108.274 C 315.919,108.274 328.873,95.317 328.873,79.393 C 328.873,63.467 315.919,50.51 299.996,50.51 z M 299.996,87.631 C 295.447,87.631 291.759,83.942 291.759,79.393 C 291.759,74.843 295.447,71.154 299.996,71.154 C 304.546,71.154 308.235,74.843 308.235,79.393 C 308.234,83.942 304.546,87.631 299.996,87.631 z M 344.149,86.049 C 344.473,83.878 344.642,81.655 344.642,79.393 C 344.642,78.528 344.616,77.67 344.568,76.818 C 348.025,76.379 351.508,76.118 355,76.039 C 354.792,72.573 354.265,69.192 353.444,65.927 C 349.547,64.717 345.576,63.739 341.544,63.011 C 340.419,60.161 339.007,57.455 337.349,54.927 C 340.056,52.707 342.914,50.697 345.897,48.885 C 344.061,46.126 341.983,43.542 339.693,41.163 C 335.725,42.108 331.8,43.255 327.933,44.562 C 325.466,42.579 322.782,40.853 319.923,39.424 C 321.206,36.167 322.683,32.999 324.351,29.94 C 321.453,28.509 318.412,27.324 315.253,26.417 C 312.276,29.205 309.465,32.16 306.831,35.258 C 304.603,34.916 302.32,34.738 299.996,34.738 C 299.061,34.738 298.136,34.77 297.215,34.827 C 296.718,31.375 296.419,27.893 296.327,24.4 C 292.957,24.621 289.67,25.145 286.494,25.945 C 285.316,29.862 284.349,33.843 283.575,37.857 C 280.642,39.019 277.862,40.483 275.271,42.21 C 273.13,39.454 271.137,36.581 269.317,33.602 C 266.486,35.503 263.843,37.663 261.417,40.042 C 262.376,44.005 263.564,47.911 264.942,51.738 C 263.11,54.057 261.504,56.564 260.155,59.223 C 256.915,57.909 253.722,56.478 250.626,54.887 C 249.136,57.884 247.907,61.035 246.977,64.31 C 249.754,67.354 252.706,70.237 255.817,72.925 C 255.51,75.037 255.349,77.196 255.349,79.394 C 255.349,80.318 255.38,81.235 255.436,82.146 C 251.978,82.595 248.492,82.827 245,82.861 C 245.217,86.365 245.759,89.782 246.601,93.079 C 250.504,94.301 254.482,95.283 258.536,95.986 C 259.657,98.785 261.054,101.444 262.691,103.93 C 259.946,106.062 257.075,108.066 254.099,109.906 C 255.942,112.673 258.029,115.264 260.328,117.649 C 264.256,116.685 268.144,115.509 271.974,114.156 C 274.416,116.128 277.069,117.847 279.895,119.276 C 278.545,122.505 277.028,125.651 275.348,128.7 C 278.339,130.199 281.484,131.435 284.755,132.375 C 287.775,129.582 290.649,126.633 293.367,123.558 C 295.53,123.88 297.743,124.049 299.995,124.049 C 300.887,124.049 301.771,124.02 302.649,123.968 C 303.099,127.431 303.368,130.918 303.439,134.401 C 306.868,134.19 310.213,133.666 313.446,132.854 C 314.681,128.94 315.681,124.957 316.427,120.927 C 319.323,119.78 322.071,118.336 324.632,116.637 C 326.802,119.375 328.81,122.239 330.639,125.208 C 333.317,123.414 335.826,121.393 338.142,119.17 C 337.204,115.216 336.06,111.305 334.728,107.451 C 336.77,104.925 338.542,102.171 340.001,99.235 C 343.236,100.512 346.397,102.018 349.456,103.72 C 350.906,100.777 352.102,97.687 353.015,94.476 C 350.22,91.495 347.256,88.683 344.149,86.049 z M 299.996,110.333 C 282.938,110.333 269.06,96.454 269.06,79.394 C 269.06,62.333 282.938,48.452 299.996,48.452 C 317.055,48.452 330.933,62.333 330.933,79.394 C 330.933,96.454 317.055,110.333 299.996,110.333 z"
+         id="path9" />
+    </g>
+  </g>
+</svg>
