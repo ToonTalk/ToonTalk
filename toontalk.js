@@ -180,7 +180,7 @@ document.head.appendChild(icon);
 
 var file_names;
 if (true) { // was if(debugging) but needed to update JQuery UI and compilation isn't worth reviving
-    file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+    file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js",
                   "libraries/jquery-ui-1.13.2/jquery-ui.min.js",
                   "libraries/DataTables-1.10.13/media/js/jquery.dataTables.min.js",
                   "libraries/rationaljs.js",
