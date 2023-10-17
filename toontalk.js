@@ -169,7 +169,7 @@ setTimeout(function () {
 });
 
 add_css('libraries/jquery-ui-1.13.2/jquery-ui.min.css'); 
-add_css('libraries/DataTables-1.10.13/media/css/jquery.dataTables.min.css');
+add_css('https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css');
 add_css('toontalk.css');
 
 // <link rel="shortcut icon" href="../../images/favicon.ico" />
@@ -181,8 +181,8 @@ document.head.appendChild(icon);
 var file_names;
 if (true) { // was if(debugging) but needed to update JQuery UI and compilation isn't worth reviving
     file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js",
-                  "libraries/jquery-ui-1.13.2/jquery-ui.min.js",
-                  "libraries/DataTables-1.10.13/media/js/jquery.dataTables.min.js",
+                  "https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js",
+                  "https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js",
                   "libraries/rationaljs.js",
                   log_errors && "https://cdn.ravenjs.com/3.22.1/raven.min.js", // only include this if not running locally 
                   "support/initial.js",
@@ -218,7 +218,6 @@ if (true) { // was if(debugging) but needed to update JQuery UI and compilation 
 } else {
     file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
                   log_errors && "https://cdn.ravenjs.com/3.22.1/raven.min.js",
-//                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
                   // following caused errors when added to compiled_toontalk due to ta-in entry
                   "https://ecraft2learn.github.io/ai/ecraft2learn.js",
@@ -338,6 +337,6 @@ if (published_page) {
 //     file_names.push("libraries/translate_a/element.js?cb=googleTranslateElementInit");
 // }
 
-load_file(0, TOONTALK.RUNNING_LOCALLY);
+load_file(0, false); // TOONTALK.RUNNING_LOCALLY);
 
 }());
