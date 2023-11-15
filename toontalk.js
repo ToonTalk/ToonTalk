@@ -65,7 +65,7 @@ window.TOONTALK = {GOOGLE_DRIVE_CLIENT_ID:  get_parameter('GOOGLE_DRIVE_CLIENT_I
                    USABILITY_DRAG_OFFSET: {x: 0,
                                            y: 0},
                    // following needed since window.navigator.onLine was true even after disconnecting from the net
-                   RUNNING_LOCALLY: this_url.indexOf("file://") === 0 || this_url.indexOf("http://localhost") === 0,
+                   RUNNING_LOCALLY: false,// stopped supporting this //this_url.indexOf("file://") === 0 || this_url.indexOf("http://localhost") === 0,
                    CHROME_APP: path_prefix.indexOf("chrome-extension") === 0
                   };
 
@@ -216,7 +216,7 @@ if (true) { // was if(debugging) but needed to update JQuery UI and compilation 
 //                   "libraries/jquery.ui.touch-punch.min.js"
                   ];
 } else {
-    file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+    file_names = ["https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js",
                   log_errors && "https://cdn.ravenjs.com/3.22.1/raven.min.js",
 //                   "libraries/jquery-ui-1.12.1.custom/jquery-ui.min.js",
                   "compile/compiled_toontalk.js",
@@ -238,7 +238,7 @@ var local_replacements =
     // needed for running off-line
     // no need for an entry for https://apis.google.com/js/client.js?onload=handle_client_load
     // since requires an Internet connection to be useful
-    {"https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js": "libraries/jquery-3.1.1.min.js"};
+    {"https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js": "libraries/jquery-3.4.0.min.js"};
 
 var load_file = function (index, offline) {
                    var script = document.createElement("script");
