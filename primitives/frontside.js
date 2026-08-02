@@ -58,7 +58,7 @@ window.TOONTALK.frontside =
             var selection_feedback = function (widget, event) {
                  // note that this highlights the backside if visible even if the widget passes the selection to its parent
                 var backside = widget.get_backside();
-                var wiggling_widget = (widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget).get_selection();
+                var wiggling_widget = (widget.is_empty_hole() ? widget.get_parent_of_frontside() : widget).get_selection();
                 var frontside_element = wiggling_widget.get_frontside_element();
                 var $selected = $(frontside_element);
                 if (backside) {
@@ -73,7 +73,7 @@ window.TOONTALK.frontside =
             }
             var mouse_leave_handler = function (event) {
                 var backside = widget.get_backside();
-                var wiggling_widget = widget.is_empty_hole() ? wiget.get_parent_of_frontside() : widget;
+                var wiggling_widget = widget.is_empty_hole() ? widget.get_parent_of_frontside() : widget;
                 if (backside) {
                     TT.UTILITIES.remove_highlight();
                 }
